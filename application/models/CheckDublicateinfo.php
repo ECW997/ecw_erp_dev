@@ -1,15 +1,13 @@
 <?php 
 class CheckDublicateinfo extends CI_Model{
-    public function is_duplicate($column_name, $tablename, $input_value) {
-        $this->db->where($column_name, $input_value);
-        $this->db->where('status', '1');
-        $query = $this->db->get($tablename);
-
-        if ($query->num_rows() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    public function __construct() {
+        parent::__construct();
+        $this->load->helper('api_helper'); 
+    }
+    
+    public function is_duplicate($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'job_option_group_v1', $form_data, $headers);
     }
 }
 ?>

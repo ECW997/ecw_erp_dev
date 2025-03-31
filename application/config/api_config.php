@@ -14,4 +14,8 @@ $config['api_endpoints'] = [
     'sub_job_category_v1' => '/v1/sub_job_category',
     'get_sel2_mainjob_v1' => '/v1/get_sel2_mainjob',
     'get_sel2_subjob_v1' => '/v1/get_sel2_subjob',
+    'job_option_group_v1' => '/v1/job_option_group',
+    'job_option_group_details_list_v1' => '/v1/job_option_group_details_list',
+    'job_option_group_status_v1' => '/v1/job_option_group_status'
+
 ];

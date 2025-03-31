@@ -61,7 +61,6 @@ function refreshFollowupStatus() {
         .catch(error => console.error('Error refreshing follow-up status:', error));
 }
 
-
 // sales person today active first inquiry
 function refreshTodayActiveFirstFollowupStatus() {
     fetch("<?php echo base_url('Alert/get_today_active_first_alert_data'); ?>")
@@ -95,7 +94,6 @@ function refreshTodayActiveFirstFollowupStatus() {
         })
         .catch(error => console.error('Error refreshing follow-up status:', error));
 }
-
 
 // sales person today active second inquiry
 function refreshTodayActiveSecondFollowupStatus() {
@@ -149,11 +147,13 @@ function inquiryNoSave(inquiryText) {
 }
 </script>
 
+
 <script>
 $(function() {
     $('[data-toggle="tooltip"]').tooltip();
     setTimeout(tablerowhighlight, 1000);
 });
+
 <?php if($this->router->fetch_class()=='Cashier' && $this->router->fetch_method()=='Dashboard'){}else{ ?>
 
 function tablerowhighlight() {
@@ -242,6 +242,7 @@ $(document).ready(function() {
         refreshTodayActiveFirstFollowupStatus();
 
     }
+
 });
 
 function falseResponse(obj) {
