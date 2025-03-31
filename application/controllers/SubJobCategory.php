@@ -80,7 +80,7 @@ class SubJobCategory extends CI_Controller {
 		if($recordOption == '1'){
 			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($api_token,$form_data);
 		}else{
-			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($api_token,$form_data);
+			$response = $this->SubJobCategoryinfo->subJobCategoryUpdate($api_token,$form_data);
 		}
 
 		if ($response) {
@@ -121,6 +121,25 @@ class SubJobCategory extends CI_Controller {
         ];
 
         $response = $this->SubJobCategoryinfo->subJobCategoryStatus($api_token,$form_data);
+
+        if ($response) {
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+			redirect('SubJobCategory');      
+        } else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('SubJobCategory');
+        }
+    }
+	
+	public function subJobCategoryDelete($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $response = $this->SubJobCategoryinfo->subJobCategoryDelete($api_token,$id);
 
         if ($response) {
 			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);

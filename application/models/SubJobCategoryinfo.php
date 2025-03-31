@@ -25,9 +25,19 @@ class SubJobCategoryinfo extends CI_Model{
         return call_api('GET', 'sub_job_category_v1', $id, $headers);
     }
 
+    public function subJobCategoryUpdate($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('PUT', 'sub_job_category_v1', $form_data, $headers);
+    }
+
     public function subJobCategoryStatus($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('PUT', 'sub_job_category_status_v1', $form_data, $headers);
+    }
+
+    public function subJobCategoryDelete($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('DELETE', 'sub_job_category_v1', $form_data, $headers);
     }
 
 

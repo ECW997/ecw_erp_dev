@@ -249,6 +249,12 @@ else if($functionmenu=='JobOptionGroup'){
     $statuscheck=checkprivilege($menuprivilegearray, 62, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 62, 4);
 }
+else if($functionmenu=='JobOption'){
+    $addcheck=checkprivilege($menuprivilegearray, 63, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 63, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 63, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 63, 4);
+}
 
 function checkprivilege($arraymenu, $menuID, $type){
     foreach($arraymenu as $array){
@@ -361,6 +367,8 @@ function checkprivilege($arraymenu, $menuID, $type){
                         Jobs Category</a>
                     <?php }if(menucheck($menuprivilegearray, 62)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionGroup'; ?>">Job Option Group</a>
+                    <?php }if(menucheck($menuprivilegearray, 63)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOption'; ?>">Job Option</a>
                     <?php }if(menucheck($menuprivilegearray, 52)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
                         href="<?php echo base_url().'SalesJobsDetails'; ?>">Jobs Details</a>
