@@ -196,7 +196,7 @@ $(document).ready(function() {
                         '"><i class="fas fa-pen"></i></button>';
                     if (full['status'] == 1) {
                         button +=
-                            '<a title="Deactive" href="<?php echo base_url() ?>SubJobCategory/SubJobCategorystatus/' +
+                            '<a title="Deactive" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryStatus/' +
                             full['idtbl_sub_job_category'] +
                             '/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';
                         if (statuscheck != 1) {
@@ -205,7 +205,7 @@ $(document).ready(function() {
                         button += '"><i class="fas fa-check"></i></a>';
                     } else {
                         button +=
-                            '<a title="Active" href="<?php echo base_url() ?>SubJobCategory/SubJobCategorystatus/' +
+                            '<a title="Active" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryStatus/' +
                             full['idtbl_sub_job_category'] +
                             '/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';
                         if (statuscheck != 1) {
@@ -214,7 +214,7 @@ $(document).ready(function() {
                         button += '"><i class="fas fa-times"></i></a>';
                     }
                     button +=
-                        '<a title="Delete" href="<?php echo base_url() ?>SubJobCategory/SubJobCategorystatus/' +
+                        '<a title="Delete" href="<?php echo base_url() ?>SubJobCategory/SubJobCategorus/' +
                         full['idtbl_sub_job_category'] +
                         '/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
                     if (deletecheck != 1) {

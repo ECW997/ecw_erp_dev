@@ -107,19 +107,27 @@ class SubJobCategory extends CI_Controller {
     }
 
 
+    public function subJobCategoryStatus($id, $status) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
 
+        $form_data = [
+            'recordID' => $id,
+			'status' => $status,
+        ];
 
-	
-    // public function SubJobCategoryinsertupdate(){
-	// 	$this->load->model('SubJobCategoryinfo');
-    //     $result=$this->SubJobCategoryinfo->SubJobCategoryinsertupdate();
-	// }
-    public function SubJobCategorystatus($x, $y){
-		$this->load->model('SubJobCategoryinfo');
-        $result=$this->SubJobCategoryinfo->SubJobCategorystatus($x, $y);
-	}
-    // public function SubJobCategoryedit(){
-	// 	$this->load->model('SubJobCategoryinfo');
-    //     $result=$this->SubJobCategoryinfo->SubJobCategoryedit();
-	// }
+        $response = $this->SubJobCategoryinfo->subJobCategoryStatus($api_token,$form_data);
+
+        if ($response) {
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+			redirect('SubJobCategory');      
+        } else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('SubJobCategory');
+        }
+    }
 }
