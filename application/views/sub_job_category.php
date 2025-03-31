@@ -214,9 +214,9 @@ $(document).ready(function() {
                         button += '"><i class="fas fa-times"></i></a>';
                     }
                     button +=
-                        '<a title="Delete" href="<?php echo base_url() ?>SubJobCategory/SubJobCategorus/' +
+                        '<a title="Delete" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryDelete/' +
                         full['idtbl_sub_job_category'] +
-                        '/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
+                        '" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
                     if (deletecheck != 1) {
                         button += 'd-none';
                     }
