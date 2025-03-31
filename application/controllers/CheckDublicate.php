@@ -4,19 +4,32 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class CheckDublicate extends CI_Controller {
-    public function check_duplicate() {
+    public function __construct() {
+        parent::__construct();
         $this->load->model('CheckDublicateinfo');
+    }
 
-        $input_value = $this->input->post('input_value'); 
-        $tablename = $this->input->post('tablename'); 
-        $column_name = $this->input->post('column_name'); 
+    public function check_duplicate() {
+        $api_token = $this->session->userdata('api_token');
+        if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
 
-        $is_duplicate = $this->CheckDublicateinfo->is_duplicate($column_name, $tablename, $input_value);
+        $form_data = [
+            'input_value' => $this->input->post('input_value'),
+			'column_name' => $this->input->post('column_name'),
+			'table_name' => $this->input->post('table_name'),
+        ];
+ 
+        $response = $this->CheckDublicateinfo->is_duplicate($api_token,$form_data);
+        if ($response) {
+			echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobOptionGroup');
+		}
 
-        if ($is_duplicate) {
-            echo json_encode(['status' => 'error', 'message' => 'Duplicate entry found']);
-        } else {
-            echo json_encode(['status' => 'success', 'message' => 'No duplicate found']);
-        }
     }
 }

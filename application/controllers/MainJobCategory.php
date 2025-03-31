@@ -8,7 +8,7 @@ class MainJobCategory extends CI_Controller {
         parent::__construct();
         $this->load->model('MainJobCategoryinfo');
     }
-
+	
 	public function index(){
 		$api_token = $this->session->userdata('api_token');
 		if (!$api_token) {

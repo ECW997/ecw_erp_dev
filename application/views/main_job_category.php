@@ -69,7 +69,7 @@ $(document).ready(function() {
     var editcheck = '<?php echo $editcheck; ?>';
     var statuscheck = '<?php echo $statuscheck; ?>';
     var deletecheck = '<?php echo $deletecheck; ?>';
-
+     
     $('#dataTable').DataTable({
         "destroy": true,
         "processing": true,
@@ -107,18 +107,34 @@ $(document).ready(function() {
             // 'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         ajax: {
-            url: "<?php echo base_url() ?>scripts/mainjobcategorylist.php",
-            type: "POST", // you can use GET
-            // data: function(d) {}
+            url: apiBaseUrl+'/v1/main_job_category', 
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token 
+            }, 
+            dataSrc: function (json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;  
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
         },
         "order": [
             [0, "desc"]
         ],
         "columns": [{
-                "data": "idtbl_main_job_category"
+                "data": "id"
             },
             {
-                "data": "main_job_category"
+                "data": "name"
             },
             {
                 "targets": -1,
@@ -131,12 +147,12 @@ $(document).ready(function() {
                     if (editcheck != 1) {
                         button += 'd-none';
                     }
-                    button += '" id="' + full['idtbl_main_job_category'] +
+                    button += '" id="' + full['id'] +
                         '"><i class="fas fa-pen"></i></button>';
                     if (full['status'] == 1) {
                         button +=
                             '<a title="Deactive" href="<?php echo base_url() ?>MainJobCategory/mainJobCategoryStatus/' +
-                            full['idtbl_main_job_category'] +
+                            full['id'] +
                             '/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';
                         if (statuscheck != 1) {
                             button += 'd-none';
@@ -145,7 +161,7 @@ $(document).ready(function() {
                     } else {
                         button +=
                             '<a title="Active" href="<?php echo base_url() ?>MainJobCategory/mainJobCategoryStatus/' +
-                            full['idtbl_main_job_category'] +
+                            full['id'] +
                             '/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';
                         if (statuscheck != 1) {
                             button += 'd-none';
@@ -153,9 +169,9 @@ $(document).ready(function() {
                         button += '"><i class="fas fa-times"></i></a>';
                     }
                     button +=
-                        '<a title="Delete" href="<?php echo base_url() ?>MainJobCategory/mainJobCategoryStatus/' +
-                        full['idtbl_main_job_category'] +
-                        '/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
+                        '<a title="Delete" href="<?php echo base_url() ?>MainJobCategory/mainJobCategoryDelete/' +
+                        full['id'] +
+                        '" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
                     if (deletecheck != 1) {
                         button += 'd-none';
                     }
@@ -166,7 +182,7 @@ $(document).ready(function() {
             }
         ],
         drawCallback: function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
+            // $('[data-toggle="tooltip"]').tooltip();
         }
     });
     $('#dataTable tbody').on('click', '.btnEdit', function() {
