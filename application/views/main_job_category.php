@@ -107,18 +107,35 @@ $(document).ready(function() {
             // 'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         ajax: {
-            url: "<?php echo base_url() ?>scripts/mainjobcategorylist.php",
-            type: "POST", // you can use GET
-            // data: function(d) {}
+            url: apiBaseUrl + '/v1/main_job_category',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            dataSrc: function(json) {
+                ;
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
         },
         "order": [
             [0, "desc"]
         ],
         "columns": [{
-                "data": "idtbl_main_job_category"
+                "data": "id"
             },
             {
-                "data": "main_job_category"
+                "data": "name"
             },
             {
                 "targets": -1,
@@ -127,7 +144,7 @@ $(document).ready(function() {
                 "render": function(data, type, full) {
                     var button = '';
                     button +=
-                    '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
+                        '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
                     if (editcheck != 1) {
                         button += 'd-none';
                     }

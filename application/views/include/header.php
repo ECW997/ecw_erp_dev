@@ -63,10 +63,20 @@ function menucheck($arraymenu, $menuID){
         cursor: pointer;
     }
     </style>
+
+    <script>
+    var apiBaseUrl = "https://devapi.ecw.lk/api";
+    var api_token = <?php echo json_encode($_SESSION['api_token']); ?>;
+    var errorObj = {
+        message: "Your session has expired. Please login again.",
+        code: 401
+    };
+    </script>
+
 </head>
 
 <body class="nav-fixed">
-<!-- <div id="snow"></div> -->
+    <!-- <div id="snow"></div> -->
 
     <!-- <div class="snowflakes" aria-hidden="true">
         <div class="snowflake">

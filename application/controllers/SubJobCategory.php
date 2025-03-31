@@ -59,17 +59,67 @@ class SubJobCategory extends CI_Controller {
 
 		echo json_encode($response);
 	}
+
+	public function subJobCategoryInsert() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$recordOption = $this->input->post('recordOption');
+
+        $form_data = [
+            'main_job_category' => $this->input->post('main_job_category'),
+			'sub_job_category' => $this->input->post('sub_job_category'),
+			'recordID' => $this->input->post('recordID'),
+        ];
+
+		$response='';
+		if($recordOption == '1'){
+			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($api_token,$form_data);
+		}else{
+			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($api_token,$form_data);
+		}
+
+		if ($response) {
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+        	redirect('SubJobCategory');   
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('SubJobCategory');
+		}
+    }
+
+
+	public function subJobCategoryEdit($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $response = $this->SubJobCategoryinfo->subJobCategoryEdit($api_token,$id);
+
+		echo json_encode($response);
+    }
+
+
+
+
 	
-    public function SubJobCategoryinsertupdate(){
-		$this->load->model('SubJobCategoryinfo');
-        $result=$this->SubJobCategoryinfo->SubJobCategoryinsertupdate();
-	}
+    // public function SubJobCategoryinsertupdate(){
+	// 	$this->load->model('SubJobCategoryinfo');
+    //     $result=$this->SubJobCategoryinfo->SubJobCategoryinsertupdate();
+	// }
     public function SubJobCategorystatus($x, $y){
 		$this->load->model('SubJobCategoryinfo');
         $result=$this->SubJobCategoryinfo->SubJobCategorystatus($x, $y);
 	}
-    public function SubJobCategoryedit(){
-		$this->load->model('SubJobCategoryinfo');
-        $result=$this->SubJobCategoryinfo->SubJobCategoryedit();
-	}
+    // public function SubJobCategoryedit(){
+	// 	$this->load->model('SubJobCategoryinfo');
+    //     $result=$this->SubJobCategoryinfo->SubJobCategoryedit();
+	// }
 }
