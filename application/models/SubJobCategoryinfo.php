@@ -15,14 +15,21 @@ class SubJobCategoryinfo extends CI_Model{
         return call_api('POST', 'get_sel2_subjob_v1', $form_data, $headers);
     }
 
-    // public function Getmainjob() {
-    //     $this->db->select('idtbl_main_job_category , main_job_category');
-    //     $this->db->from('tbl_main_job_category');
-    //     $this->db->where('status', 1);
+    public function subJobCategoryInsert($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'sub_job_category_v1', $form_data, $headers);
+    }
 
-    //     return $respond=$this->db->get();
-    // }
-    
+    public function subJobCategoryEdit($api_token,$id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'sub_job_category_v1', $id, $headers);
+    }
+
+
+
+
+
+
     public function SubJobCategoryinsertupdate(){
         $this->db->trans_begin();
 
@@ -127,6 +134,21 @@ class SubJobCategoryinfo extends CI_Model{
             }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function SubJobCategorystatus($x, $y){
         $this->db->trans_begin();
 
@@ -268,22 +290,22 @@ class SubJobCategoryinfo extends CI_Model{
             }
         }
     }
-    public function SubJobCategoryedit(){
-        $recordID=$this->input->post('recordID');
+    // public function SubJobCategoryedit(){
+    //     $recordID=$this->input->post('recordID');
 
-        $this->db->select('*');
-        $this->db->from('tbl_sub_job_category');
-        $this->db->where('idtbl_sub_job_category', $recordID);
-        $this->db->where('status', 1);
+    //     $this->db->select('*');
+    //     $this->db->from('tbl_sub_job_category');
+    //     $this->db->where('idtbl_sub_job_category', $recordID);
+    //     $this->db->where('status', 1);
 
-        $respond=$this->db->get();
+    //     $respond=$this->db->get();
 
-        $obj=new stdClass();
-        $obj->id=$respond->row(0)->idtbl_sub_job_category;
-        $obj->main_job_category_id=$respond->row(0)->main_job_category_id;
-        $obj->sub_job_category=$respond->row(0)->sub_job_category;
+    //     $obj=new stdClass();
+    //     $obj->id=$respond->row(0)->idtbl_sub_job_category;
+    //     $obj->main_job_category_id=$respond->row(0)->main_job_category_id;
+    //     $obj->sub_job_category=$respond->row(0)->sub_job_category;
         
 
-        echo json_encode($obj);
-    }
+    //     echo json_encode($obj);
+    // }
 }

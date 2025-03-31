@@ -143,7 +143,7 @@ $(document).ready(function() {
                 "render": function(data, type, full) {
                     var button = '';
                     button +=
-                    '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
+                        '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
                     if (editcheck != 1) {
                         button += 'd-none';
                     }

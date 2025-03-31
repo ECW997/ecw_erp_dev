@@ -24,8 +24,8 @@ include "include/topnavbar.php";
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-3">
-                                <form action="<?php echo base_url() ?>SubJobCategory/SubJobCategoryinsertupdate"
-                                    method="post" autocomplete="off">
+                                <form action="<?php echo base_url() ?>SubJobCategory/subJobCategoryInsert" method="post"
+                                    autocomplete="off">
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold text-dark">Main Job Category*</label>
                                         <select class="form-control form-control-sm " name="main_job_category"
@@ -148,9 +148,26 @@ $(document).ready(function() {
             // 'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         ajax: {
-            url: "<?php echo base_url() ?>scripts/subjobcategorylist.php",
-            type: "POST", // you can use GET
-            // data: function(d) {}
+            url: apiBaseUrl + '/v1/sub_job_category',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            dataSrc: function(json) {
+                ;
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
         },
         "order": [
             [0, "desc"]
@@ -171,7 +188,7 @@ $(document).ready(function() {
                 "render": function(data, type, full) {
                     var button = '';
                     button +=
-                    '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
+                        '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
                     if (editcheck != 1) {
                         button += 'd-none';
                     }
@@ -214,27 +231,31 @@ $(document).ready(function() {
         }
     });
     $('#dataTable tbody').on('click', '.btnEdit', function() {
-        var r = confirm("Are you sure, You want to Edit this ? ");
+        var r = confirm("Are you sure, You want to Edit this?");
         if (r == true) {
             var id = $(this).attr('id');
             $.ajax({
-                type: "POST",
-                data: {
-                    recordID: id
-                },
-                url: '<?php echo base_url() ?>SubJobCategory/SubJobCategoryedit',
-                success: function(result) { //alert(result);
-                    var obj = JSON.parse(result);
-                    $('#recordID').val(obj.id);
-                    $('#main_job_category').val(obj.main_job_category_id);
-                    $('#sub_job_category').val(obj.sub_job_category);
+                type: "GET",
+                dataType: 'json',
+                url: '<?php echo base_url() ?>SubJobCategory/subJobCategoryEdit/' + id,
+                success: function(result) {
+                    if (result.status == true) {
+                        $('#recordID').val(result.data.id);
 
-                    $('#recordOption').val('2');
-                    $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                        var Main_job = new Option(result.data.main_job_name, result.data.main_jobid, true, true);
+                        $('#main_job_category').append(Main_job).trigger('change');
+
+                        $('#sub_job_category').val(result.data.name);
+                        $('#recordOption').val('2');
+                        $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                    } else {
+                        falseResponse(result);
+                    }
                 }
             });
         }
     });
+
 });
 
 function deactive_confirm() {
