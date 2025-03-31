@@ -231,20 +231,21 @@ $(document).ready(function() {
         }
     });
     $('#dataTable tbody').on('click', '.btnEdit', function() {
-        var r = confirm("Are you sure, You want to Edit this ? ");
+        var r = confirm("Are you sure, You want to Edit this?");
         if (r == true) {
             var id = $(this).attr('id');
             $.ajax({
                 type: "GET",
                 dataType: 'json',
                 url: '<?php echo base_url() ?>SubJobCategory/subJobCategoryEdit/' + id,
-                success: function(result) { //alert(result);
+                success: function(result) {
                     if (result.status == true) {
                         $('#recordID').val(result.data.id);
-                        $('#main_job_category').val(result.data.main_jobid).trigger(
-                            'change');;
-                        $('#sub_job_category').val(result.data.name);
 
+                        var Main_job = new Option(result.data.main_job_name, result.data.main_jobid, true, true);
+                        $('#main_job_category').append(Main_job).trigger('change');
+
+                        $('#sub_job_category').val(result.data.name);
                         $('#recordOption').val('2');
                         $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
                     } else {
@@ -254,6 +255,7 @@ $(document).ready(function() {
             });
         }
     });
+
 });
 
 function deactive_confirm() {
