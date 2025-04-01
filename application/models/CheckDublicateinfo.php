@@ -7,7 +7,7 @@ class CheckDublicateinfo extends CI_Model{
     
     public function is_duplicate($api_token,$form_data) {
         $headers = get_api_headers($api_token);
-        return call_api('POST', 'job_option_group_v1', $form_data, $headers);
+        return call_api('POST', 'check_dublicate_entry_v1', $form_data, $headers);
     }
 }
 ?>
