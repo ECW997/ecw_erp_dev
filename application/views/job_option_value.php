@@ -14,7 +14,7 @@ include "include/topnavbar.php";
         			<div class="page-header-content py-3">
         				<h1 class="page-header-title">
         					<div class="page-header-icon"><i class="fab fa-hire-a-helper"></i></div>
-        					<span>Job Option Group</span>
+        					<span>Job Option Value</span>
         				</h1>
         			</div>
         		</div>
@@ -25,7 +25,7 @@ include "include/topnavbar.php";
                     	<div class="row">
                     		<div class="col">
                                 <button type="button" id="addBtn" class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>" onclick="showInsertModal();">
-                                <i class="fas fa-plus mr-3"></i>Option Group</button>
+                                <i class="fas fa-plus mr-3"></i>Option Value</button>
                     		</div>
                     	</div>
                     </div>
@@ -37,7 +37,7 @@ include "include/topnavbar.php";
         								<thead>
         									<tr>
                                                 <th>#</th>
-                                                <th>Sub Job Category</th>
+                                                <th>Job Option</th>
         										<th class="text-right">Actions</th>
         									</tr>
         								</thead>
@@ -55,7 +55,7 @@ include "include/topnavbar.php";
         	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         		<div class="modal-content">
         			<div class="modal-header">
-        				<h5 class="modal-title" id="addModalLabel">Option Group</h5>
+        				<h5 class="modal-title" id="addModalLabel">Option Value</h5>
         				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
         					<span aria-hidden="true">&times;</span>
         				</button>
@@ -66,36 +66,35 @@ include "include/topnavbar.php";
                             	<form action="<?php echo base_url() ?>JobOptionGroup/jobOptionGroupInsertUpdate"
                             		method="post" autocomplete="off">
                             		<div class="form-group mb-1">
-                            			<label class="small font-weight-bold">Main Job Category*</label>
-                            			<select class="form-control form-control-sm " name="main_job_category"
-                            				id="main_job_category" required>
+                            			<label class="small font-weight-bold">Job Option*</label>
+                            			<select class="form-control form-control-sm " name="job_option"
+                            				id="job_option" onchange="showDetailsList(this.value,1);" required>
                             				<option value="">Select</option>
                             			</select>
                             		</div>
                             		<div class="form-group mb-1">
-                            			<label class="small font-weight-bold">Sub Job Category*</label>
-                            			<select class="form-control form-control-sm " name="sub_job_category"
-                            				id="sub_job_category" onchange="showGroupDetailsList(this.value,1);">
-                            				<option value="">Select</option>
-                            			</select>
-                            		</div>
-                            		<div class="form-group mb-1">
-                            			<label class="small font-weight-bold">Group Name*</label>
-                            			<input type="text" class="form-control form-control-sm" name="group_name"
-                            				id="group_name" data-field="GroupName" onkeyup="checkedDublicate(this)"
+                            			<label class="small font-weight-bold">Value Name*</label>
+                            			<input type="text" class="form-control form-control-sm" name="value_name"
+                            				id="value_name" data-field="ValueName" onkeyup="checkedDublicate(this)"
                             				required>
-                            			<div id="GroupName_errorMsg"
+                            			<div id="ValueName_errorMsg"
                             				style="color: red; display: none;font-size: 0.8rem;"></div>
                             		</div>
-                            		<div class="form-group mb-1">
-                            			<label class="small font-weight-bold">Sort Order*</label>
-                            			<input type="number" class="form-control form-control-sm" name="sort_order"
-                            				id="sort_order" required>
+                                    <div class="form-group mb-1">
+                            			<label class="small font-weight-bold">Parent Option Value*</label>
+                            			<select class="form-control form-control-sm " name="parent_option_value"
+                            				id="parent_option_value">
+                            				<option value="">Select</option>
+                            			</select>
                             		</div>
                             		<div class="form-group mb-3">
-                            			<label class="small font-weight-bold">Description*</label>
-                            			<input type="text" class="form-control form-control-sm" name="description"
-                            				id="description">
+                            			<label class="small font-weight-bold">Status*</label>
+                                        <select class="form-control form-control-sm " name="status"
+                            				id="status">
+                            				<option value="">Select</option>
+                                            <option value="1">Active</option>
+                                            <option value="0">Deactive</option>
+                            			</select>
                             		</div>
                             		<div class="form-group mb-1">
                             			<button type="button" id="addtolistBtn" class="btn btn-primary btn-sm px-4 mt-auto p-2">
@@ -126,7 +125,7 @@ include "include/topnavbar.php";
         	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         		<div class="modal-content">
         			<div class="modal-header">
-        				<h5 class="modal-title" id="viewModalLabel">View Option Group</h5>
+        				<h5 class="modal-title" id="viewModalLabel">View Option Value</h5>
         				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
         					<span aria-hidden="true">&times;</span>
         				</button>
@@ -158,15 +157,16 @@ include "include/topnavbar.php";
     var deletecheck='<?php echo $deletecheck; ?>';
 
     $(document).ready(function() {
-        let main_job_category = $('#main_job_category');
-        let sub_job_category = $('#sub_job_category');
+        let job_option = $('#job_option');
+        let parent_option_value = $('#parent_option_value');
 
-        main_job_category.select2({
+
+        job_option.select2({
             placeholder: 'Select...',
             width: '100%',
             allowClear: true,
             ajax: {
-                url: '<?php echo base_url() ?>SubJobCategory/getMainJob',
+                url: '<?php echo base_url() ?>JobOptionValue/getJobOption',
                 dataType: 'json',
                 data: function (params) {
                     return {
@@ -190,18 +190,17 @@ include "include/topnavbar.php";
             }
         });
 
-        sub_job_category.select2({
+        parent_option_value.select2({
             placeholder: 'Select...',
             width: '100%',
             allowClear: true,
             ajax: {
-                url: '<?php echo base_url() ?>SubJobCategory/getSubJob',
+                url: '<?php echo base_url() ?>JobOptionValue/getJobOptionValue',
                 dataType: 'json',
                 data: function (params) {
                     return {
                         term: params.term || '',
                         page: params.page || 1,
-                        mainJob:main_job_category.val()
                     }
                 },
                 cache: true,
@@ -231,11 +230,11 @@ include "include/topnavbar.php";
                 [10, 25, 50, 'All'],
             ],
             "buttons": [
-                { extend: 'csv', className: 'btn btn-success btn-sm', title: 'Job Option Group Information', text: '<i class="fas fa-file-csv mr-2"></i> CSV', },
-                { extend: 'pdf', className: 'btn btn-danger btn-sm', title: 'Job Option Group Information', text: '<i class="fas fa-file-pdf mr-2"></i> PDF', },
+                { extend: 'csv', className: 'btn btn-success btn-sm', title: 'Job Option Value Information', text: '<i class="fas fa-file-csv mr-2"></i> CSV', },
+                { extend: 'pdf', className: 'btn btn-danger btn-sm', title: 'Job Option Value Information', text: '<i class="fas fa-file-pdf mr-2"></i> PDF', },
                 { 
                     extend: 'print', 
-                    title: 'Job Option Group Information',
+                    title: 'Job Option Value Information',
                     className: 'btn btn-primary btn-sm', 
                     text: '<i class="fas fa-print mr-2"></i> Print',
                     customize: function ( win ) {
@@ -246,7 +245,7 @@ include "include/topnavbar.php";
                 },
             ],
             ajax: {
-                url: apiBaseUrl+'/v1/job_option_group', 
+                url: apiBaseUrl+'/v1/job_option_value', 
                 type: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -269,10 +268,10 @@ include "include/topnavbar.php";
             "order": [[ 0, "desc" ]],
             "columns": [
                 {
-                    "data": "idtbl_sub_job_category"
+                    "data": "JobOptionID"
                 },
                 {
-                    "data": "sub_job_category"
+                    "data": "OptionName"
                 },
                 {
                     "targets": -1,
@@ -280,7 +279,7 @@ include "include/topnavbar.php";
                     "data": null,
                     "render": function(data, type, full) {
                         var button='';
-                        button+='<button title="View" class="btn btn-secondary btn-sm btnView mr-1 " onclick="showViewModal('+full['idtbl_sub_job_category']+');"><i class="fas fa-eye"></i></button>';
+                        button+='<button title="View" class="btn btn-secondary btn-sm btnView mr-1 " onclick="showViewModal('+full['JobOptionID']+');"><i class="fas fa-eye"></i></button>';
                         return button;
                     }
                 }
@@ -291,10 +290,10 @@ include "include/topnavbar.php";
         });
 
         $(document).on('click', '#addtolistBtn', function(){
-           var sub_job_category = $('#sub_job_category').val();
-           var group_name = $('#group_name').val();
-           var sort_order = $('#sort_order').val();
-           var description = $('#description').val();
+           var job_option = $('#job_option').val();
+           var value_name = $('#value_name').val();
+           var parent_option_value = $('#parent_option_value').val();
+           var status = $('#status').val();
            var recordID = $('#recordID').val();
            var recordOption = $('#recordOption').val();
 
@@ -302,19 +301,19 @@ include "include/topnavbar.php";
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    sub_job_category: sub_job_category,
-                    group_name: group_name,
-                    sort_order: sort_order,
-                    description: description,
+                    job_option: job_option,
+                    value_name: value_name,
+                    parent_option_value: parent_option_value,
+                    status: status,
                     recordOption: recordOption,
                     recordID: recordID
                 },
-                url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupInsertUpdate',
+                url: '<?php echo base_url() ?>JobOptionValue/jobOptionValueInsertUpdate',
                 success: function(result) { 
                     if (result.status == true) {
                         cancelBtn();
                         success_toastify(result.message);
-                        showGroupDetailsList(sub_job_category,1);
+                        showDetailsList(job_option,1);
                     } else {
                         falseResponse(result);
                     }
@@ -329,13 +328,14 @@ include "include/topnavbar.php";
                 $.ajax({
                     type: "GET",
                     dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupEdit/'+id,
+                    url: '<?php echo base_url() ?>JobOptionValue/jobOptionValueEdit/'+id,
                     success: function(result) { 
                         if(result.status){
                             $('#recordID').val(result.data.id);
-                            $('#group_name').val(result.data.group_name);
-                            $('#sort_order').val(result.data.sort_order);
-                            $('#description').val(result.data.description);
+                            $('#value_name').val(result.data.ValueName);
+                            $('#parent_option_value').val(result.data.ParentOptionValueID);
+                            setSelect2Value(parent_option_value, result.data.ParentOptionValueID, result.data.parent_value_name);
+                            $('#status').val(result.data.IsActive);
 
                             $('#recordOption').val('2');
                             $('#addtolistBtn').html('<i class="far fa-save"></i>&nbsp;Update');
@@ -353,14 +353,14 @@ include "include/topnavbar.php";
             var r = (status == '1'? confirm("Are you sure, You want to Active this ? ") : confirm("Are you sure, You want to Deactive this ? "));
             if (r == true) {
                 var id = $(this).attr('id');
-                var sub_id = $(this).attr('sub_id');
+                var job_option_id = $(this).attr('job_option_id');
                 $.ajax({
                     type: "PUT",
                     dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupStatus/'+id+'/'+status,
+                    url: '<?php echo base_url() ?>JobOptionValue/jobOptionValueStatus/'+id+'/'+status,
                     success: function(result) { 
                         if(result.status){
-                            showGroupDetailsList(sub_id,1);
+                            showDetailsList(job_option_id,1);
                             success_toastify(result.message);
                         }else{
                             falseResponse(result);
@@ -374,14 +374,14 @@ include "include/topnavbar.php";
             var r = confirm("Are you sure, You want to Delete this ? ");
             if (r == true) {
                 var id = $(this).attr('id');
-                var sub_id = $(this).attr('sub_id');
+                var job_option_id = $(this).attr('job_option_id');
                 $.ajax({
                     type: "DELETE",
                     dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupDelete/'+id,
+                    url: '<?php echo base_url() ?>JobOptionValue/jobOptionValueDelete/'+id,
                     success: function(result) { 
                         if(result.status){
-                            showGroupDetailsList(sub_id,1);
+                            showDetailsList(job_option_id,1);
                             success_toastify(result.message);
                         }else{
                             falseResponse(result);
@@ -392,21 +392,31 @@ include "include/topnavbar.php";
         });
     });
 
+    function setSelect2Value(selectElement, id, text) {
+        console.log(id);
+        
+        if (id) {
+            var newOption = new Option(text, id, true, true);
+            selectElement.append(newOption).trigger('change');
+        }else{
+            selectElement.val('').trigger('change');
+        }
+    }
+
     function showInsertModal() {
-        $('#main_job_category').val('').trigger('change');
-        $('#sub_job_category').val('').trigger('change');
+        $('#job_option').val('').trigger('change');
         $("#crudTable").html('');
         $('#addModal').modal('show');
         cancelBtn();
     }
 
-    function showViewModal(sub_id) {
-        showGroupDetailsList(sub_id,2);
+    function showViewModal(job_option) {
+        showDetailsList(job_option,2);
         $('#viewModal').modal('show');
     }
 
-    function showGroupDetailsList(sub_id,modalOption){  
-        if(sub_id == ''){
+    function showDetailsList(job_option,modalOption){  
+        if(job_option == ''){
             return false;
         }
 
@@ -414,8 +424,8 @@ include "include/topnavbar.php";
         $("#"+tableOption+"").html('');
         $.ajax({
             type: "GET",
-            url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupDetailsList',
-            data: { sub_id: sub_id, 
+            url: '<?php echo base_url() ?>JobOptionValue/jobOptionValueDetailsList',
+            data: { job_option: job_option, 
                     modalOption: modalOption,
                     editcheck: editcheck,
                     statuscheck: statuscheck,
@@ -432,9 +442,9 @@ include "include/topnavbar.php";
     }
 
     function cancelBtn(){
-        $('#group_name').val('');
-        $('#sort_order').val('');
-        $('#description').val('');
+        $('#value_name').val('');
+        $('#parent_option_value').val('').trigger('change');
+        $('#status').val('');
         $('#recordID').val('');
         $('#recordOption').val('1');
         $('#cancellistBtn').addClass('d-none');
@@ -443,11 +453,11 @@ include "include/topnavbar.php";
 
     function checkedDublicate(input) {
         var inputValue = input.value;
-        var table_name = 'job_optiongroups';
+        var table_name = 'ValueName';
         var columnName = input.getAttribute('data-field');
 
         var whereConditions = {
-            'JobSubcategoryID': $('#sub_job_category').val()
+            'JobOptionID': $('#job_option').val()
         };
 
         $.ajax({
