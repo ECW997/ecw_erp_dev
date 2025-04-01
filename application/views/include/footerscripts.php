@@ -182,6 +182,24 @@ function success_toastify(actionText) {
     }).showToast();
 }
 
+function success_Update_toastify(actionText) {
+    Toastify({
+        text: actionText,
+        duration: 5000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: "linear-gradient(to right, #f4a100,rgb(216, 139, 7))",
+        style: {
+            color: "#fff",
+            fontSize: "16px",
+            borderRadius: "15px",
+            padding: "18px 30px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)"
+        },
+    }).showToast();
+}
+
 function error_toastify(actionText) {
     Toastify({
         text: actionText,
@@ -204,14 +222,15 @@ var response_code = $('#action_response_code').val();
 var actionText = $('#actiontext').val();
 
 if (actionText) {
-    if (response_code == '200' || response_code == '201') {
+    if (response_code == '201') {
         success_toastify(actionText);
+    } else if (response_code == '200') {
+        success_Update_toastify(actionText);
     } else {
         error_toastify(actionText);
         if (response_code == '401') {
             setTimeout(function() {
                 window.location.href = "<?php echo base_url(); ?>Welcome/Logout";
-                exit();
             }, 2000);
         }
     }
