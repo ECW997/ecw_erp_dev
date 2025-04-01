@@ -1,23 +1,23 @@
 {
     "roboto": {
-        "normal": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_744a525d3dfcb8e50d148956703b6b68",
-        "500": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_41ea8fd5770bc278dbd15851922ff806",
-        "100_italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_italic_fc13b8f8feee89c41c95bf27309dcb8b",
-        "300_italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_italic_d54a1bf1f9b064b835ac1d6bec9ebec1",
-        "italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_italic_ddc798b08272d4e38b2814a9416af97b",
-        "500_italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_italic_f8306c9019d1b34cbc31af36a98bf42b",
-        "bold_italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_italic_fc1d968bd454a4f0ad1ea1fa2c6fb96d",
-        "900_italic": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_italic_8edcce9844866f9d8e9b3db832880d0e",
-        "100": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_c639033bf7f18123515bf2c8d5f6e5f6",
-        "300": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_7f0f040993bb35f67d8431439cbf7385",
-        "bold": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_8c645f7f06cc7058298670914de0e599",
-        "900": "roboto_900_8c2f973c7818bcf66c70e9cce4eda0d4"
+        "normal": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_744a525d3dfcb8e50d148956703b6b68",
+        "500": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_41ea8fd5770bc278dbd15851922ff806",
+        "100_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_italic_fc13b8f8feee89c41c95bf27309dcb8b",
+        "300_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_italic_d54a1bf1f9b064b835ac1d6bec9ebec1",
+        "italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_italic_ddc798b08272d4e38b2814a9416af97b",
+        "500_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_italic_f8306c9019d1b34cbc31af36a98bf42b",
+        "bold_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_italic_fc1d968bd454a4f0ad1ea1fa2c6fb96d",
+        "900_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_italic_8edcce9844866f9d8e9b3db832880d0e",
+        "100": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_c639033bf7f18123515bf2c8d5f6e5f6",
+        "300": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_7f0f040993bb35f67d8431439cbf7385",
+        "bold": "roboto_bold_8c645f7f06cc7058298670914de0e599",
+        "900": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_8c2f973c7818bcf66c70e9cce4eda0d4"
     },
     "font awesome 5 brands": {
         "normal": "font_awesome_5_brands_normal_a76103d897ef2b94cd65e7ef83ea3d57"
     },
     "font awesome 5 free": {
-        "normal": "C:\\xampp\\htdocs\\ECW_Software\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_5_free_normal_c2dce70438fe701fef848f8f75894a9d",
-        "900": "font_awesome_5_free_900_f26b9f105fc4eee58f2077ddb9c6b513"
+        "normal": "font_awesome_5_free_normal_c2dce70438fe701fef848f8f75894a9d",
+        "900": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/font_awesome_5_free_900_f26b9f105fc4eee58f2077ddb9c6b513"
     }
 }
