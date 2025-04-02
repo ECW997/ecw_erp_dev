@@ -9,6 +9,7 @@ $config['api_endpoints'] = [
     'get_profile' => '/profile',
     'update_profile' => '/profile/update',
     'logout' => '/logout',
+    'check_dublicate_entry_v1' => '/v1/check_dublicate_entry',
     'main_job_category_v1' => '/v1/main_job_category',
     'main_job_category_status_v1' => '/v1/main_job_category_status',
 
@@ -25,5 +26,12 @@ $config['api_endpoints'] = [
     'job_option_details_list_v1' => '/v1/job_option_details_list',
     'get_sel2_optiongroup_v1' => '/v1/get_sel2_optiongroup',
     'job_option_status_v1' => '/v1/job_option_status'
+  
+    'job_option_value_v1' => '/v1/job_option_value',
+    'get_sel2_job_option_v1' => '/v1/get_sel2_job_option',
+    'get_sel2_job_option_value_v1' => '/v1/get_sel2_job_option_value',
+    'job_option_value_details_list_v1' => '/v1/job_option_value_details_list',
+    'job_option_value_status_v1' => '/v1/job_option_value_status'
+
 
 ];

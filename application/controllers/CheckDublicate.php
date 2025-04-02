@@ -21,6 +21,7 @@ class CheckDublicate extends CI_Controller {
             'input_value' => $this->input->post('input_value'),
 			'column_name' => $this->input->post('column_name'),
 			'table_name' => $this->input->post('table_name'),
+            'where' => $this->input->post('where')
         ];
  
         $response = $this->CheckDublicateinfo->is_duplicate($api_token,$form_data);
