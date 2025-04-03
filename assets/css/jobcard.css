@@ -1,0 +1,158 @@
+
+
+.modal-header{
+    border-radius: 1rem 1rem 0 0;
+}
+
+/* next confirmation model */
+.next-step-confirmation {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.next-step-header {
+    border-bottom: none;
+    padding: 1.5rem 1.5rem 0.5rem;
+    background: linear-gradient(to right, #4d94ff, #80b3ff); 
+    border-radius: 1rem 1rem 0 0;
+    color: white;
+}
+
+.next-step-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.next-step-btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.next-step-btn-close:hover {
+    opacity: 1;
+}
+
+.next-step-icon {
+    font-size: 3rem;
+    color: #4d94ff;
+    margin-bottom: 1rem;
+}
+
+.next-step-btn-cancel {
+    background-color: #e9ecef;
+    border: none;
+    color: #495057;
+}
+
+.next-step-btn-cancel:hover {
+    background-color: #dee2e6;
+}
+
+.next-step-btn-confirm {
+    background: linear-gradient(to right, #4d94ff, #80b3ff); 
+    border: none;
+}
+
+.next-step-btn-confirm:hover {
+    background: linear-gradient(to right, #3b7ce3, #4d94ff);
+    transform: translateY(-1px);
+}
+
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+
+
+/* delete confirmation model */
+.delete-confirmation {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.delete-header {
+    border-bottom: none;
+    padding: 1.5rem 1.5rem 0.5rem;
+    background: linear-gradient(to right, #ff6b6b, #ff8787);
+    border-radius: 1rem 1rem 0 0;
+    color: white;
+}
+
+.delete-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.delete-btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.delete-btn-close:hover {
+    opacity: 1;
+}
+
+.delete-warning-icon {
+    font-size: 3rem;
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+}
+
+.delete-btn-cancel {
+    background-color: #e9ecef;
+    border: none;
+    color: #495057;
+}
+
+.delete-btn-cancel:hover {
+    background-color: #dee2e6;
+}
+
+.delete-btn-confirm {
+    background: linear-gradient(to right, #ff6b6b, #ff8787);
+    border: none;
+}
+
+.delete-btn-confirm:hover {
+    background: linear-gradient(to right, #fa5252, #ff6b6b);
+    transform: translateY(-1px);
+}
+
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+.section_border_with_shadow{
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.details_section{
+    background-color: #f0efef;
+    padding: 0.7rem;
+}
+
+.job-header-title{
+    line-height: normal;
+    font-size: 1.25rem;
+    font-weight: 500;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}

@@ -26,7 +26,7 @@ class Auth extends CI_Controller {
             $user_data = [
                 'userid' => $loginData['id'],
                 'name' => $loginData['name'],
-                'typename' => 1,
+                'typename'=>$loginData['role'],
                 'email' => $loginData['email'],
                 'api_token' => $loginData['api_token'],
                 'employee_id' => $loginData['emp_id'],

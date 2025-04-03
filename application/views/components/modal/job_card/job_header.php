@@ -1,0 +1,90 @@
+<div class="modal fade" id="jobHeaderModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content rounded-4">
+			<div class="modal-header bg-primary">
+				<h5 class="modal-title text-white" id="jobHeaderModalLabel">New Job Card - Job Header Details</h5>
+				<button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3 row">
+					<div class="col">
+						<label class="form-label">Confirm Customer Info</label>
+						<input type="text" class="form-control mb-2" id="cus_name" name="cus_name"
+							placeholder="Customer Name">
+						<input type="text" class="form-control" id="contact_no" name="contact_no"
+							placeholder="Contact No">
+					</div>
+					<div class="col">
+						<label class="form-label">Address</label>
+						<input type="text" class="form-control mb-2" id="address1" name="address1"
+							placeholder="Address 1">
+						<input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
+					</div>
+				</div>
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="col-form-label">Schedule Date</label>
+						<input type="date" class="form-control" id="schedule_date" name="schedule_date"
+								placeholder="Schedule Date">
+					</div>
+					<div class="col-6">
+						<label class="col-form-label">Delivery Date</label>
+						<input type="date" class="form-control" id="delivery_date" name="delivery_date"
+								placeholder="Delivery Date">
+					</div>
+				</div>
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="col-form-label">Price Category</label>
+						<select class="form-select" id="pc_category" name="pc_category">
+							<option selected>Open this select menu</option>
+							<option value="1">One</option>
+							<option value="2">Two</option>
+							<option value="3">Three</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="createJobCardBtn" class="btn btn-primary">Create Job Card<i
+						class="fas fa-plus-circle ml-2"></i></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="createJobCardConfirmModal" tabindex="-1" aria-labelledby="createJobCardConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content next-step-confirmation">
+            <div class="modal-header next-step-header">
+                <h5 class="next-step-title" id="createJobCardConfirmModalLabel">Proceed to Create Job Card</h5>
+                <button type="button" class="btn-close next-step-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-question-circle next-step-icon"></i>
+                <p class="mb-0">Are you sure you want to proceed?<br>This action will create a new Job Card and cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary next-step-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary next-step-btn-confirm" onclick="confirmCreateJobCard()">
+                    <i class="fas fa-arrow-right me-2"></i>Proceed
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).on('click','#createJobCardBtn', function(){
+	$('#createJobCardConfirmModal').modal('show');
+})
+
+function confirmCreateJobCard(){
+	$('#createJobCardConfirmModal').modal('hide');
+	$('#jobHeaderModal').modal('hide');
+	$('.modal-backdrop').remove();
+}
+</script>
