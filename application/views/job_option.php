@@ -5,6 +5,13 @@ include "include/topnavbar.php";
 ?>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
+        <style>
+        .custom-modal {
+            max-width: 65vw;
+            /* Adjusts modal width to 95% of the viewport */
+            width: 65vw;
+        }
+        </style>
         <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
@@ -55,7 +62,7 @@ include "include/topnavbar.php";
 
         <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-dialog modal-dialog-centered custom-modal" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addModalLabel">Add Options</h5>
@@ -66,8 +73,8 @@ include "include/topnavbar.php";
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-4">
-                                <form action="<?php echo base_url() ?>JobOption/jobOptionInsertUpdate"
-                                    method="post" autocomplete="off">
+                                <form action="<?php echo base_url() ?>JobOption/jobOptionInsertUpdate" method="post"
+                                    autocomplete="off">
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold text-dark">Company*</label>
                                         <input type="text" id="f_company_name" name="f_company_name"
@@ -93,7 +100,8 @@ include "include/topnavbar.php";
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Sub Job Category*</label>
                                         <select class="form-control form-control-sm " name="sub_job_category"
-                                            id="sub_job_category" onchange="showGroupDetailsList(this.value,1);"required>
+                                            id="sub_job_category" onchange="showGroupDetailsList(this.value,1);"
+                                            required>
                                             <option value="">Select</option>
                                         </select>
                                     </div>
@@ -107,31 +115,35 @@ include "include/topnavbar.php";
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Option Type*</label>
-                                        <input type="text" class="form-control form-control-sm" name="option_type"
-                                            id="option_type" data-field="GroupName" onkeyup="checkedDublicate(this)"
-                                            required>
+                                        <select class="form-control form-control-sm " name="option_type"
+                                            id="option_type" required>
+                                            <option value="">Select</option>
+                                            <option value="Primary">Primary</option>
+                                            <option value="Conditional">Conditional</option>
+                                            <option value="Type">Type</option>
+                                        </select>
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Option Group*</label>
                                         <select class="form-control form-control-sm " name="option_group_id"
-                                            id="option_group_id"required>
+                                            id="option_group_id" required>
                                             <option value="">Select</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Required Status*</label>
                                         <select class="form-control form-control-sm " name="required_status"
-                                            id="required_status"required>
+                                            id="required_status" required>
                                             <option value="">Select</option>
                                             <option value="0">No</option>
                                             <option value="1">Yes</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label class="small font-weight-bold">Description*</label>
-                                        <textarea class="form-control" name="description" id="description "
-                                            placeholder="Enter your Description Here" required></textarea>
-                                    </div>
+                            			<label class="small font-weight-bold">Description*</label>
+                            			<input type="text" class="form-control form-control-sm" name="description"
+                            				id="description">
+                            		</div>
                                     <div class="form-group mb-1">
                                         <button type="button" id="addtolistBtn"
                                             class="btn btn-primary btn-sm px-4 mt-auto p-2">
@@ -313,18 +325,18 @@ $(document).ready(function() {
         "buttons": [{
                 extend: 'csv',
                 className: 'btn btn-success btn-sm',
-                title: 'Job Option Group Information',
+                title: 'Job Option Information',
                 text: '<i class="fas fa-file-csv mr-2"></i> CSV',
             },
             {
                 extend: 'pdf',
                 className: 'btn btn-danger btn-sm',
-                title: 'Job Option Group Information',
+                title: 'Job Option Information',
                 text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
             },
             {
                 extend: 'print',
-                title: 'Job Option Group Information',
+                title: 'Job Option Information',
                 className: 'btn btn-primary btn-sm',
                 text: '<i class="fas fa-print mr-2"></i> Print',
                 customize: function(win) {
@@ -335,7 +347,7 @@ $(document).ready(function() {
             },
         ],
         ajax: {
-            url: apiBaseUrl + '/v1/job_option_group',
+            url: apiBaseUrl + '/v1/job_option',
             type: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -393,7 +405,7 @@ $(document).ready(function() {
         var company_id = $('#company_id').val();
         var branch_id = $('#branch_id').val();
         var recordID = $('#recordID').val();
-        var recordOption = $('#recordOption').val();	
+        var recordOption = $('#recordOption').val();
 
         $.ajax({
             type: "POST",
@@ -430,12 +442,18 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 dataType: 'json',
-                url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupEdit/' + id,
+                url: '<?php echo base_url() ?>JobOption/jobOptionEdit/' + id,
                 success: function(result) {
                     if (result.status) {
+                        var Option_Group = new Option(result.data.option_group_name, result.data.option_group, true, true);
+                        $('#option_group_id').append(Option_Group).trigger('change');
+
                         $('#recordID').val(result.data.id);
-                        $('#group_name').val(result.data.group_name);
-                        $('#sort_order').val(result.data.sort_order);
+                        $('#option_name').val(result.data.option_name);
+                        $('#option_type').val(result.data.option_type);
+
+                        // $('#option_group_id').val(result.data.option_group);
+                        $('#required_status').val(result.data.is_required);
                         $('#description').val(result.data.description);
 
                         $('#recordOption').val('2');
@@ -481,7 +499,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "DELETE",
                 dataType: 'json',
-                url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupDelete/' + id,
+                url: '<?php echo base_url() ?>JobOption/jobOptionDelete/' + id,
                 success: function(result) {
                     if (result.status) {
                         showGroupDetailsList(sub_id, 1);
@@ -537,9 +555,11 @@ function showGroupDetailsList(sub_id, modalOption) {
 }
 
 function cancelBtn() {
-    $('#group_name').val('');
-    $('#sort_order').val('');
+    $('#option_name').val('');
+    $('#option_type').val('');
+    $('#option_group_id').val('').trigger('change');
     $('#description').val('');
+    $('#required_status').val('');
     $('#recordID').val('');
     $('#recordOption').val('1');
     $('#cancellistBtn').addClass('d-none');
@@ -548,7 +568,7 @@ function cancelBtn() {
 
 function checkedDublicate(input) {
     var inputValue = input.value;
-    var table_name = 'job_optiongroups';
+    var table_name = 'job_options';
     var columnName = input.getAttribute('data-field');
 
     $.ajax({

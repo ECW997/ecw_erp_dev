@@ -25,7 +25,7 @@ $config['api_endpoints'] = [
     'job_option_v1' => '/v1/job_option',
     'job_option_details_list_v1' => '/v1/job_option_details_list',
     'get_sel2_optiongroup_v1' => '/v1/get_sel2_optiongroup',
-    'job_option_status_v1' => '/v1/job_option_status'
+    'job_option_status_v1' => '/v1/job_option_status',
   
     'job_option_value_v1' => '/v1/job_option_value',
     'get_sel2_job_option_v1' => '/v1/get_sel2_job_option',
