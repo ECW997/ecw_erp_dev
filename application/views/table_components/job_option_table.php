@@ -5,7 +5,8 @@
             <th>Option Name</th>
             <th>Option Type</th>
             <th>Option Group</th>
-            <th>Is Required</th>
+            <th>Required Status</th>
+            <th>Description</th>
             <th class="text-right <?php echo ($modalOption == '2') ? 'd-none' : '' ?>">Actions</th>
             <th class="text-center <?php echo ($modalOption == '1') ? 'd-none' : '' ?>">Status</th>
         </tr>
@@ -18,8 +19,9 @@
                         <td><?php echo  $list['JobOptionID'] ?></td>
                         <td><?php echo  $list['OptionName'] ?></td>
                         <td><?php echo  $list['OptionType'] ?></td>
-                        <td><?php echo  $list['OptionGroupID'] ?></td>
-                        <td><?php echo  $list['IsRequired'] ?></td>
+                        <td><?php echo  $list['OptionGroupName'] ?></td>
+                        <td class="text-center"><?php echo  ($list['IsRequired'] == '1'?'<span class="badge badge-pill badge-success"><i class="fas fa-check"></i>':'<span class="badge badge-pill badge-warning"><i class="fas fa-times"></i>') ?></td>
+                        <td><?php echo  $list['Description'] ?></td>
                         <td class="text-right <?php echo ($modalOption == '2') ? 'd-none' : '' ?>">
                         <button title="Edit" class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck!=1? 'd-none' : '')?>" id="<?php echo  $list['JobOptionID'] ?>"><i class="fas fa-pen"></i></button>
                         <?php if ($list['status'] == '1'): ?>
