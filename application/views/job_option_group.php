@@ -13,7 +13,7 @@ include "include/topnavbar.php";
         		<div class="container-fluid">
         			<div class="page-header-content py-3">
         				<h1 class="page-header-title">
-        					<div class="page-header-icon"><i class="fab fa-hire-a-helper"></i></div>
+        					<div class="page-header-icon"><i class="fa fa-cogs" aria-hidden="true"></i></div>
         					<span>Job Option Group</span>
         				</h1>
         			</div>
@@ -25,7 +25,7 @@ include "include/topnavbar.php";
                     	<div class="row">
                     		<div class="col">
                                 <button type="button" id="addBtn" class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>" onclick="showInsertModal();">
-                                <i class="fas fa-plus mr-3"></i>Option Group</button>
+                                <i class="fas fa-plus mr-3"></i>Add Option Group</button>
                     		</div>
                     	</div>
                     </div>
@@ -55,7 +55,7 @@ include "include/topnavbar.php";
         	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         		<div class="modal-content">
         			<div class="modal-header">
-        				<h5 class="modal-title" id="addModalLabel">Option Group</h5>
+        				<h5 class="modal-title" id="addModalLabel">Add Option Group</h5>
         				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
         					<span aria-hidden="true">&times;</span>
         				</button>
@@ -223,7 +223,7 @@ include "include/topnavbar.php";
         $('#dataTable').DataTable({
             "destroy": true,
             "processing": true,
-            "serverSide": false,
+            "serverSide": true,
             dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             responsive: true,
             lengthMenu: [
@@ -446,10 +446,6 @@ include "include/topnavbar.php";
         var table_name = 'job_optiongroups';
         var columnName = input.getAttribute('data-field');
 
-        var whereConditions = {
-            'JobSubcategoryID': $('#sub_job_category').val()
-        };
-
         $.ajax({
             url: '<?php echo base_url() ?>CheckDublicate/check_duplicate',
             type: 'POST',
@@ -457,14 +453,13 @@ include "include/topnavbar.php";
             data: {
                 input_value: inputValue,
                 table_name: table_name,
-                column_name: columnName,
-                where: whereConditions
+                column_name: columnName
             },
             dataType: 'json',
             success: function(response) {
-                if(response.status){
+                if (response.status === 'error') {
                     $('#' + columnName + '_errorMsg').text(response.message).show();
-                }else{
+                } else {
                     $('#' + columnName + '_errorMsg').hide();
                 }
             }
