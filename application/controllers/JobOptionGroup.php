@@ -92,7 +92,7 @@ class JobOptionGroup extends CI_Controller {
 		$data['statuscheck'] = $statuscheck;
 		$data['deletecheck'] = $deletecheck;
 
-		$html = $this->load->view('table_components/job_option_group_table', $data, true);
+		$html = $this->load->view('components/table/job_option_group_table', $data, true);
 
 		echo ($html);
     }

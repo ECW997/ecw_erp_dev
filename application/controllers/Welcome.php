@@ -37,7 +37,7 @@ class Welcome extends CI_Controller {
 				$user_data=array(
 					'userid'=>$response['loginData']['id'],
 					'name'=>$response['loginData']['name'],
-					'typename'=>1,
+					'typename'=>$response['loginData']['role'],
 					'email'=>$response['loginData']['email'],
 					'api_token'=>$response['loginData']['api_token'],
 					'employee_id'=>$response['loginData']['emp_id'],
