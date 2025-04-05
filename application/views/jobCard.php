@@ -16,23 +16,12 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                 <div class="container-fluid">
                     <div class="page-header-content py-1">
                         <div class="row d-flex align-items-center">
-                            <div class="col-4">
-                                <h1 class="page-header-title">Job Card</h1>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title">Mr. Harshana Lakmal </h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title">CAB-4455</h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title">Toyota - Prado</h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title text-primary">JCN-2503-1012</h2>
-                            </div>
+                            <div class="col-4"><h1 class="page-header-title">Job Card</h1></div>
+                            <div class="col-2"><h2 class="job-header-title" id="top_nav_customer_name">Mr. Harshana Lakmal </h2></div>
+                            <div class="col-2"><h2 class="job-header-title" id="top_nav_vehicle_no">CAB-4455</h2></div>
+                            <div class="col-2"><h2 class="job-header-title" id="top_nav_vehicle">Toyota - Prado</h2></div>
+                            <div class="col-2"><h2 class="job-header-title text-primary" id="top_nav_job_card_no">JCN-2503-1012</h2></div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -78,6 +67,8 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
         </main>
         <?php include "components/modal/job_card/select_customer_inquiry.php"; ?>
+        <?php include "components/modal/job_card/job_header.php"; ?>
+        <?php include "components/modal/job_card/add_job_item.php"; ?>
 
         <?php include "include/v2/footerbar.php"; ?>
     </div>
@@ -86,6 +77,27 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 
 <script>
+const customerData = {
+  name: "",
+  email: "",
+  address1: "",
+  address2: "",
+  city: "",
+  nic: "",
+  contact: "",
+  inquiry_id: "",
+  inquiry_no: "",
+  inquiry_date: "",
+  vehicle_no: "",
+  vehicle_brand: "",
+  vehicle_model: "",
+  vehicle_type: "",
+  vehicle_gen: "",
+  vehicle_year: "",
+  price_category: "",
+  sales_person_name: ""
+};
+
 $(document).ready(function() {
     $.ajax({
         url: apiBaseUrl + '/v1/main_job_category',
@@ -125,7 +137,6 @@ $(document).ready(function() {
         }
     });
 });
-
 
 function deactive_confirm() {
 return confirm("Are you sure you want to deactive this?");
