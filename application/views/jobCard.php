@@ -40,7 +40,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                 <div class="card">
                     <div class="card-body p-0 p-2">
                         <div class="row mb-3">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <div class="row g-2 justify-content-center">
                                     <div class="col-12 col-sm-6 col-md-3 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
@@ -125,8 +125,6 @@ $(document).ready(function() {
         }
     });
 });
-</script>
-
 
 
 function deactive_confirm() {
