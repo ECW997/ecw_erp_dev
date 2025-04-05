@@ -23,14 +23,18 @@
 				</table>
 			</div>
 		</div>
-		<div class="row mb-4 mx-auto">
+		<!-- <div class="row mb-4 mx-auto">
 			<div class="col-6">
 				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm" onclick="showAddJobItemModal();"><i class="fas fa-plus-circle me-2"></i>Door Board</button>
 			</div>
-			<div class="col-6">
-				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm"><i class="fas fa-plus-circle me-2"></i>Hood</button>
-			</div>
-		</div>
+		</div> -->
+
+
+        <div class="row mb-4 mx-auto">
+            <div class="row" id="buttonsContainer" onclick="showAddJobItemModal();">
+
+            </div>
+        </div>
 	</div>
 	
 	<div class="col-9">
@@ -49,7 +53,7 @@
 						<td class="text-left" id="content_inq_no"></td>
 						<td colspan="2" class="text-left">2025-04-30</td>
 						<td class="text-left">Luxury</td>
-						<td colspan="2" class="text-left">DRAFT</td>
+						<td colspan="2" class="text-left fw-bold text-danger">DRAFT</td>
 					</tr>
 					<tr>
 						<td class="text-left" id="content_address"></td>
@@ -62,10 +66,10 @@
 						<td class="text-left" id="content_cus_contact"></td>
 						<td class="text-left"></td>
 						<td class="text-left">2025-05-05</td>
-						<td class="text-left fw-bold text-success">05</td>
+						<td class="text-left fw-bold text-success" style="font-size: 25px;">05</td>
 						<td colspan="2" class="text-left"></td>
-						<td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"><i
-									class="fas fa-edit"></i></button></td>
+                        <td class="text-right"><button type="button" title="Edit Header"
+                        class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit"><i class="fas fa-edit"></i></button></td>
 					</tr>
 				</table>
 			</div>
