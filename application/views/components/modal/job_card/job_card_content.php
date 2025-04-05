@@ -182,3 +182,4 @@
 		$('#addJobItemModal').modal('show');
 	}
 </script>
+

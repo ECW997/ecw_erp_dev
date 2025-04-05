@@ -20,7 +20,7 @@ include "include/topnavbar.php";
                 <div class="container-fluid">
                     <div class="page-header-content py-3">
                         <h1 class="page-header-title">
-                            <div class="page-header-icon"><i class="fab fa-hire-a-helper"></i></div>
+                            <div class="page-header-icon"><i class="fa fa-cog" aria-hidden="true"></i></div>
                             <span>Job Option</span>
                         </h1>
                     </div>

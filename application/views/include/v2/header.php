@@ -43,7 +43,7 @@ function menucheck($arraymenu, $menuID){
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 
     <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script data-search-pseudo-elements defer
@@ -64,6 +64,14 @@ function menucheck($arraymenu, $menuID){
     .table tr {
         cursor: pointer;
     }
+
+    /* .icon-green-bg {
+        background-color: #00bf63;
+        color: white;
+        border-radius: 50%;
+        padding: 3px;
+        font-size: 1.2em;
+    } */
     </style>
 
     <script>

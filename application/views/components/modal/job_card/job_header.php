@@ -39,9 +39,15 @@
 						<h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
 						<select class="form-select" id="pc_category" name="pc_category">
 							<option selected>Open this select menu</option>
-							<option value="1">One</option>
-							<option value="2">Two</option>
-							<option value="3">Three</option>
+							<option value="1">Small</option>
+							<option value="2">Medium</option>
+							<option value="3">Large</option>
+							<option value="4">Extra Large</option>
+							<option value="5">Luxury</option>
+							<option value="6">Super Luxury</option>
+							<option value="7">Premium 1</option>
+							<option value="8">Premium 2</option>
+							<option value="9">Premium 3</option>
 						</select>
 					</div>
 				</div>
@@ -77,6 +83,92 @@
     </div>
 </div>
 
+
+
+
+<div class="modal fade" id="jobHeaderModal_edit" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content rounded-4">
+			<div class="modal-header bg-warning">
+				<h5 class="modal-title text-white" id="jobHeaderModalLabel">Edit Job Card - Job Header Details</h5>
+				<button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="mb-3 row">
+					<div class="col">
+						<label class="form-label">Confirm Customer Info</label>
+						<input type="text" class="form-control mb-2" id="cus_name" name="cus_name"
+							placeholder="Customer Name">
+						<input type="text" class="form-control" id="contact_no" name="contact_no"
+							placeholder="Contact No">
+					</div>
+					<div class="col">
+						<label class="form-label">Address</label>
+						<input type="text" class="form-control mb-2" id="address1" name="address1"
+							placeholder="Address 1">
+						<input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
+					</div>
+				</div>
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="col-form-label">Schedule Date</label>
+						<input type="date" class="form-control" id="schedule_date" name="schedule_date"
+								placeholder="Schedule Date">
+					</div>
+					<div class="col-6">
+						<label class="col-form-label">Delivery Date</label>
+						<input type="date" class="form-control" id="delivery_date" name="delivery_date"
+								placeholder="Delivery Date">
+					</div>
+				</div>
+				<div class="mb-3 row">
+					<div class="col-6">
+						<label class="col-form-label">Price Category</label>
+						<select class="form-select" id="pc_category" name="pc_category">
+							<option selected>Open this select menu</option>
+							<option value="1">Small</option>
+							<option value="2">Medium</option>
+							<option value="3">Large</option>
+							<option value="4">Extra Large</option>
+							<option value="5">Luxury</option>
+							<option value="6">Super Luxury</option>
+							<option value="7">Premium 1</option>
+							<option value="8">Premium 2</option>
+							<option value="9">Premium 3</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="createJobCardBtn" class="btn btn-warning">Edit Job Card<i
+						class="fas fa-plus-circle ml-2"></i></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="modal fade" id="main_job_details" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg">
+		<div class="modal-content rounded-4">
+			<div class="modal-header bg-dark ">
+				<h5 class="modal-title text-white" id="jobHeaderModalLabel">Sample Job Details Model</h5>
+				<button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<h1>Job Options Here</h1>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="createJobCardBtn" class="btn btn-dark">Create<i
+						class="fas fa-plus-circle ml-2"></i></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 $(document).on('click','#createJobCardBtn', function(){
 	$('#createJobCardConfirmModal').modal('show');
@@ -96,6 +188,8 @@ function confirmCreateJobCard(){
 
 	$('#createJobCardConfirmModal').modal('hide');
 	$('#jobHeaderModal').modal('hide');
+	$('#jobHeaderModal_edit').modal('hide');
+	$('#main_job_details').modal('hide');
 	$('.modal-backdrop').remove();
 }
 
