@@ -2,7 +2,9 @@
 	<div class="modal-dialog modal-dialog-centered modal-xl">
 		<div class="modal-content rounded-4">
 			<div class="modal-header bg-info">
-				<h5 class="modal-title text-white" id="addJobItemModalLabel">Add Job Item</h5>
+			<h5 class="modal-title text-white" id="addJobItemModalLabel">
+                    Add Job Item to <span id="jobNameLabel"></span>
+                </h5>
 				<button type="button" class="btn-close btn-close-white addJobItemCloseBtn"
 					aria-label="Close"></button>
 			</div>
@@ -148,47 +150,48 @@
 </div>
 
 <script>
-	let isUnsaved = false;
+    let isUnsaved = false;
 
-	$(document).on('click','.jobSubItem',function(e){
-		isUnsaved = true;
-	});
+    $(document).on('change', '#jobCardForm input, #jobCardForm select', function() {
+        isUnsaved = true;
+    });
 
-	$(document).on('click','.addJobItemCloseBtn',function(e){
-		var item_total_net_price = parseFloat($('#item_total_net_price').text().replace(/,/g, ''));
-		if(item_total_net_price > 0 && isUnsaved){
-			e.preventDefault();
-			$('#addItemCloseConfirmModal').modal('show');
-		}else {
-			$('#addJobItemModal').modal('hide');
-			reSetContent('#jobCardForm');
-		}
-	});
+    $(document).on('click', '.addJobItemCloseBtn', function(e) {
+        var item_total_net_price = parseFloat($('#item_total_net_price').text().replace(/,/g, ''));
+        
+        if (item_total_net_price > 0 && isUnsaved) {
+            e.preventDefault();
+            $('#addItemCloseConfirmModal').modal('show');
+        } else {
+            $('#addJobItemModal').modal('hide');
+            reSetContent('#jobCardForm');
+        }
+    });
 
-	function confirmCloseBtn(){
-		isUnsaved = false;
-		$('#addItemCloseConfirmModal').modal('hide');
+    function confirmCloseBtn() {
+        isUnsaved = false;  
+        $('#addItemCloseConfirmModal').modal('hide');  
 
-		setTimeout(() => {
-			$('#addJobItemModal').modal('hide');
-			$('.modal-backdrop').remove();
-			reSetContent('#jobCardForm');
-		}, 500);
-	};
+        setTimeout(() => {
+            $('#addJobItemModal').modal('hide');
+            $('.modal-backdrop').remove();
+            reSetContent('#jobCardForm');
+        }, 500);
+    }
 
-	function reSetContent(target){
-		$('#item_pc_category').val('');
-		$('#item_discount').val(0);
-		$('#item_total_net_price').text('0');
+    function reSetContent(target) {
+        $('#item_pc_category').val('');
+        $('#item_discount').val(0);
+        $('#item_total_net_price').text('0');
 
-		const $el = $(target);
-		$el.find('input, textarea, select').val('');
-		$el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
-		$el.find('.collapse.show').collapse('hide');
+        const $el = $(target);
+        $el.find('input, textarea, select').val('');
+        $el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+        $el.find('.collapse.show').collapse('hide');
 
-		var icon = $el.find('svg');
-		icon.css('transform', '');
+        var icon = $el.find('svg');
+        icon.css('transform', '');
 
-		isUnsaved = false;
-	}
+        isUnsaved = false; 
+    }
 </script>
