@@ -156,3 +156,35 @@
     align-items: center;
     margin-bottom: 0.5rem;
 }
+
+hr{
+    border-top: 2px solid rgba(16, 16, 16, 0.747);
+}
+
+[data-bs-toggle="collapse"]::before {
+    content: "\f105"; /* Font Awesome "angle-right" icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 8px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+button[data-bs-toggle="collapse"]:not(.collapsed)::before {
+    transform: rotate(90deg); 
+}
+
+.jobSubItem{
+    text-decoration: none !important;
+    color: inherit;
+    font-size: 20px;
+}
+.jobSubItem a:hover {
+    text-decoration: none;
+}
+
+.collapse .card{
+    padding-top: 0;
+    box-shadow: none;
+    border: 0px solid rgba(31, 45, 65, 0.125);
+}

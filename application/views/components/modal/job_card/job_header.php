@@ -1,4 +1,4 @@
-<div class="modal fade" id="jobHeaderModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
+<div class="modal fade" id="jobHeaderModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true" data-bs-backdrop="static">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content rounded-4">
 			<div class="modal-header bg-primary">
@@ -9,14 +9,14 @@
 			<div class="modal-body">
 				<div class="mb-3 row">
 					<div class="col">
-						<label class="form-label">Confirm Customer Info</label>
+						<h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
 						<input type="text" class="form-control mb-2" id="cus_name" name="cus_name"
 							placeholder="Customer Name">
 						<input type="text" class="form-control" id="contact_no" name="contact_no"
 							placeholder="Contact No">
 					</div>
 					<div class="col">
-						<label class="form-label">Address</label>
+						<h6 class="col-form-label me-2 text-nowrap">Address</h6>
 						<input type="text" class="form-control mb-2" id="address1" name="address1"
 							placeholder="Address 1">
 						<input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
@@ -24,19 +24,19 @@
 				</div>
 				<div class="mb-3 row">
 					<div class="col-6">
-						<label class="col-form-label">Schedule Date</label>
+						<h6 class="col-form-label me-2 text-nowrap">Schedule Date</h6>
 						<input type="date" class="form-control" id="schedule_date" name="schedule_date"
 								placeholder="Schedule Date">
 					</div>
 					<div class="col-6">
-						<label class="col-form-label">Delivery Date</label>
+						<h6 class="col-form-label me-2 text-nowrap">Delivery Date</h6>
 						<input type="date" class="form-control" id="delivery_date" name="delivery_date"
 								placeholder="Delivery Date">
 					</div>
 				</div>
 				<div class="mb-3 row">
 					<div class="col-6">
-						<label class="col-form-label">Price Category</label>
+						<h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
 						<select class="form-select" id="pc_category" name="pc_category">
 							<option selected>Open this select menu</option>
 							<option value="1">One</option>
@@ -54,7 +54,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="createJobCardConfirmModal" tabindex="-1" aria-labelledby="createJobCardConfirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="createJobCardConfirmModal" tabindex="-1" aria-labelledby="createJobCardConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content next-step-confirmation">
             <div class="modal-header next-step-header">
@@ -83,8 +83,20 @@ $(document).on('click','#createJobCardBtn', function(){
 })
 
 function confirmCreateJobCard(){
+	customerData.name=$('#cus_name').val();
+	customerData.contact=$('#contact_no').val();
+	customerData.address1=$('#address1').val();
+	customerData.address2=$('#address2').val();
+
+	$('#content_customer_name').text(customerData.name)
+	$('#content_address').text(customerData.address1 +', '+customerData.address2)
+	$('#content_cus_contact').text(customerData.contact)
+	$('#content_inq_no').text(customerData.contact)
+	$('#content_inq_date').text(customerData.inquerydate)
+
 	$('#createJobCardConfirmModal').modal('hide');
 	$('#jobHeaderModal').modal('hide');
 	$('.modal-backdrop').remove();
 }
+
 </script>

@@ -1,4 +1,4 @@
-<div class="modal fade" id="selectCustomerInquiryModal" tabindex="-1" aria-labelledby="selectCustomerInquiryModalLabel" aria-hidden="true">
+<div class="modal fade" id="selectCustomerInquiryModal" tabindex="-1" aria-labelledby="selectCustomerInquiryModalLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content rounded-4">
       <div class="modal-header bg-primary">
@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="inqSelectConfirmModal" tabindex="-1" aria-labelledby="inqSelectConfirmModalLabel" aria-hidden="true">
+<div class="modal fade" id="inqSelectConfirmModal" tabindex="-1" aria-labelledby="inqSelectConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content next-step-confirmation">
             <div class="modal-header next-step-header">
@@ -52,11 +52,8 @@
     </div>
 </div>
 
-<?php include "job_header.php"; ?>
-
 <script>
 $(document).ready(function () {
-
 	$('#inquiryListDataTable').DataTable({
 		"destroy": true,
 		"processing": true,
@@ -122,19 +119,62 @@ $(document).ready(function () {
 	});
 });
 
+var customer_inq_id=0;
 $(document).on('click','#inqNextBtn', function(){
   var selectedId = $("input[name='ch_inquiry']:checked").val();
   if (!selectedId) {
     error_toastify("⚠️ Please select an inquiry before proceeding.");
   } else {
     $('#inqSelectConfirmModal').modal('show');
+	customer_inq_id = selectedId;
   }
-
 })
 
 function confirmNextStep(){
-	$('#inqSelectConfirmModal').modal('hide');
-	$('#selectCustomerInquiryModal').modal('hide');
-	$('#jobHeaderModal').modal('show');
+	getCustomerDetails();
 }
+
+function getCustomerDetails() {
+	$.ajax({
+		type: "GET",
+		dataType: 'json',
+		url: '<?php echo base_url() ?>JobCard/getCustomerDetails/' + customer_inq_id,
+		success: function (result) {
+			if (result.status) {
+				
+				customerData.name = result.data.customer_name;
+				customerData.email = result.data.customer_name;
+				customerData.address1 = result.data.address;
+				customerData.address2 = result.data.address_2;
+				customerData.city = result.data.city;
+				customerData.nic = result.data.nic;
+				customerData.contact = result.data.customer_number;
+				customerData.inquiry_date = result.data.inquerydate;
+				customerData.inquiry_id = result.data.idtbl_customer_inquiry;
+				customerData.inquiry_no = result.data.inquiry_number;
+				customerData.vehicle_brand = result.data.brand_name;
+				customerData.vehicle_gen = result.data.generation_name;
+				customerData.vehicle_model = result.data.model_name;
+				customerData.vehicle_no = result.data.vehicle_number;
+				customerData.vehicle_type = result.data.vehicle_type_name;
+				customerData.vehicle_year = result.data.year_name;
+				customerData.price_category = result.data.customer_name;
+				customerData.sales_person = result.data.sales_person_name;
+
+				$('#cus_name').val(customerData.name);
+				$('#contact_no').val(customerData.contact);
+				$('#address1').val(customerData.address1);
+				$('#address2').val(customerData.address2);
+
+				$('#inqSelectConfirmModal').modal('hide');
+				$('#selectCustomerInquiryModal').modal('hide');
+				$('.modal-backdrop').remove();
+				$('#jobHeaderModal').modal('show');
+			} else {
+				falseResponse(result);
+			}
+		}
+	});
+}
+
 </script>

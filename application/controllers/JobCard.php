@@ -4,6 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class JobCard extends CI_Controller {
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('JobCardinfo');
+    }
+
     public function index(){
         $this->load->model('JobCardinfo');
 		$this->load->model('Commeninfo');
@@ -61,5 +66,18 @@ class JobCard extends CI_Controller {
         $result=$this->JobCardinfo->jobCardPDF();
 	}
 
+
+    public function getCustomerDetails($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $response = $this->JobCardinfo->getCustomerDetails($api_token,$id);
+
+		echo json_encode($response);
+    }
 
 }

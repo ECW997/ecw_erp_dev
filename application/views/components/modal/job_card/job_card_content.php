@@ -25,7 +25,7 @@
 		</div>
 		<div class="row mb-4 mx-auto">
 			<div class="col-6">
-				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm"><i class="fas fa-plus-circle me-2"></i>Door Board</button>
+				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm" onclick="showAddJobItemModal();"><i class="fas fa-plus-circle me-2"></i>Door Board</button>
 			</div>
 			<div class="col-6">
 				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm"><i class="fas fa-plus-circle me-2"></i>Hood</button>
@@ -45,21 +45,21 @@
 						<td colspan="2" class="text-left fw-bold">Status</td>
 					</tr>
 					<tr>
-						<td class="text-left">Mr. Harshana Lakmala</td>
-						<td class="text-left">ECW24120023</td>
+						<td class="text-left" id="content_customer_name"></td>
+						<td class="text-left" id="content_inq_no"></td>
 						<td colspan="2" class="text-left">2025-04-30</td>
 						<td class="text-left">Luxury</td>
 						<td colspan="2" class="text-left">DRAFT</td>
 					</tr>
 					<tr>
-						<td class="text-left">#56, Main Street, Nittambuwa</td>
-						<td class="text-left">2024-12-28</td>
+						<td class="text-left" id="content_address"></td>
+						<td class="text-left" id="content_inq_date"></td>
 						<td class="text-left fw-bold">Handover Date</td>
 						<td class="text-left fw-bold">Days</td>
 						<td colspan="3" class="text-left"></td>
 					</tr>
 					<tr>
-						<td class="text-left">+94 77 445 4455</td>
+						<td class="text-left" id="content_cus_contact"></td>
 						<td class="text-left"></td>
 						<td class="text-left">2025-05-05</td>
 						<td class="text-left fw-bold text-success">05</td>
@@ -176,3 +176,9 @@
 
 	</div>
 </div>
+
+<script>
+	function showAddJobItemModal(){
+		$('#addJobItemModal').modal('show');
+	}
+</script>
