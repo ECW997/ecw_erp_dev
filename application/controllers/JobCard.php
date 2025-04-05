@@ -9,15 +9,29 @@ class JobCard extends CI_Controller {
         $this->load->model('JobCardinfo');
     }
 
-    public function index(){
-        $this->load->model('JobCardinfo');
+    public function index($id = null){
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
 		$this->load->model('Commeninfo');
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
         $result['brandlist']=$this->JobCardinfo->Getvehiclebrand();
         $result['mainjoblist']=$this->JobCardinfo->Getmainjob();
         $result['paymentlist']=$this->JobCardinfo->Getpayment_method();
         $result['materiallist']=$this->JobCardinfo->Getmaterial();
-      
+
+        if ($id !== null) {
+            $result['job_data'] = $this->JobCardinfo->getJobById($api_token,$id);
+            $result['is_edit'] = true;
+        } else {
+            $result['job_data'] = null;
+            $result['is_edit'] = false;
+        }
+    
 		$this->load->view('jobCard', $result);
 	}
     public function JobCardinsertupdate(){
@@ -67,6 +81,8 @@ class JobCard extends CI_Controller {
 	}
 
 
+
+
     public function getCustomerDetails($id) {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
@@ -76,8 +92,27 @@ class JobCard extends CI_Controller {
 		}
 
         $response = $this->JobCardinfo->getCustomerDetails($api_token,$id);
-
 		echo json_encode($response);
+    }
+
+    public function createJobCard() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $form_data = $this->input->post('data');
+
+		$response = $this->JobCardinfo->createJobCard($api_token,$form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobCard');
+		}
     }
 
 }

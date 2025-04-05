@@ -143,23 +143,32 @@ function getCustomerDetails() {
 			if (result.status) {
 				
 				customerData.name = result.data.customer_name;
-				customerData.email = result.data.customer_name;
+				customerData.email = result.data.email;
 				customerData.address1 = result.data.address;
 				customerData.address2 = result.data.address_2;
 				customerData.city = result.data.city;
+				customerData.district = result.data.district;
 				customerData.nic = result.data.nic;
 				customerData.contact = result.data.customer_number;
+				customerData.contact2 = result.data.customer_number2;
+				customerData.dob = result.data.dob;
 				customerData.inquiry_date = result.data.inquerydate;
 				customerData.inquiry_id = result.data.idtbl_customer_inquiry;
 				customerData.inquiry_no = result.data.inquiry_number;
 				customerData.vehicle_brand = result.data.brand_name;
+				customerData.vehicle_brand_id = result.data.idtbl_vehicle_brand;
 				customerData.vehicle_gen = result.data.generation_name;
+				customerData.vehicle_gen_id = result.data.idtbl_vehicle_generation;
 				customerData.vehicle_model = result.data.model_name;
+				customerData.vehicle_model_id = result.data.idtbl_vehicle_model;
 				customerData.vehicle_no = result.data.vehicle_number;
 				customerData.vehicle_type = result.data.vehicle_type_name;
+				customerData.vehicle_type_id = result.data.idtbl_vehicle_type;
 				customerData.vehicle_year = result.data.year_name;
+				customerData.vehicle_year_id = result.data.idtbl_vehicle_year;
 				customerData.price_category = result.data.customer_name;
-				customerData.sales_person = result.data.sales_person_name;
+				customerData.sales_person_name = result.data.sales_person_name;
+				customerData.sales_person_id = result.data.idtbl_sales_person;
 
 				$('#cus_name').val(customerData.name);
 				$('#contact_no').val(customerData.contact);

@@ -11,6 +11,15 @@ class JobCardinfo extends CI_Model{
         return call_api('GET', 'customer_details_v1', $id, $headers);
     }
 
+    public function createJobCard($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'job_card_v1', $form_data, $headers);
+    }
+
+    public function getJobById($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'job_card_v1', $form_data, $headers);
+    }
 
     public function Getvehicletype(){
         $this->db->select('idtbl_vehicle_type , vehicle_type');

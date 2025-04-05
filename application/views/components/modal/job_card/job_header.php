@@ -29,8 +29,8 @@
 								placeholder="Schedule Date">
 					</div>
 					<div class="col-6">
-						<h6 class="col-form-label me-2 text-nowrap">Delivery Date</h6>
-						<input type="date" class="form-control" id="delivery_date" name="delivery_date"
+						<h6 class="col-form-label me-2 text-nowrap">Handover_date</h6>
+						<input type="date" class="form-control" id="handover_date" name="handover_date"
 								placeholder="Delivery Date">
 					</div>
 				</div>
@@ -82,9 +82,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 <div class="modal fade" id="jobHeaderModal_edit" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
@@ -148,8 +145,6 @@
 	</div>
 </div>
 
-
-
 <div class="modal fade" id="main_job_details" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg">
 		<div class="modal-content rounded-4">
@@ -179,18 +174,36 @@ function confirmCreateJobCard(){
 	customerData.contact=$('#contact_no').val();
 	customerData.address1=$('#address1').val();
 	customerData.address2=$('#address2').val();
-
-	$('#content_customer_name').text(customerData.name)
-	$('#content_address').text(customerData.address1 +', '+customerData.address2)
-	$('#content_cus_contact').text(customerData.contact)
-	$('#content_inq_no').text(customerData.contact)
-	$('#content_inq_date').text(customerData.inquerydate)
+	customerData.schedule_date=$('#schedule_date').val();
+	customerData.handover_date=$('#handover_date').val();
+	customerData.status='DRAFT';
+	customerData.price_category=$('#pc_category').val();
 
 	$('#createJobCardConfirmModal').modal('hide');
 	$('#jobHeaderModal').modal('hide');
 	$('#jobHeaderModal_edit').modal('hide');
 	$('#main_job_details').modal('hide');
 	$('.modal-backdrop').remove();
+
+		createNewJobCard();
+}
+
+function createNewJobCard() { 
+	$.ajax({
+		type: "POST",
+		dataType: 'json',
+		data: {
+			data: customerData
+		},
+		url: '<?php echo base_url() ?>JobCard/createJobCard',
+		success: function (result) {
+			if (result.status == true) {
+				window.location.href = window.location.href + '/' + result.data;
+			} else {
+				falseResponse(result);
+			}
+		}
+	});
 }
 
 </script>

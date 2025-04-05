@@ -13,14 +13,24 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
     <div id="layoutSidenav_content">
         <main>
             <div class="page-header page-header-light bg-gray shadow">
-                <div class="container-fluid">
+                <div class="container-fluid">  
                     <div class="page-header-content py-1">
                         <div class="row d-flex align-items-center">
-                            <div class="col-4"><h1 class="page-header-title">Job Card</h1></div>
-                            <div class="col-2"><h2 class="job-header-title" id="top_nav_customer_name">Mr. Harshana Lakmal </h2></div>
-                            <div class="col-2"><h2 class="job-header-title" id="top_nav_vehicle_no">CAB-4455</h2></div>
-                            <div class="col-2"><h2 class="job-header-title" id="top_nav_vehicle">Toyota - Prado</h2></div>
-                            <div class="col-2"><h2 class="job-header-title text-primary" id="top_nav_job_card_no">JCN-2503-1012</h2></div>
+                            <div class="col-4">
+                            	<h1 class="page-header-title">Job Card</h1>
+                            </div>
+                            <div class="col-2">
+                            	<h2 class="job-header-title" id="top_nav_customer_name"><?= $job_data['data'][0]['customer_name'] ?? '' ?>
+                            </div>
+                            <div class="col-2">
+                            	<h2 class="job-header-title" id="top_nav_vehicle_no"><?= $job_data['data'][0]['vehicle_number'] ?? '' ?></h2>
+                            </div>
+                            <div class="col-2">
+                            	<h2 class="job-header-title" id="top_nav_vehicle"><?= $job_data['data'][0]['brand_name'] ?? '' ?> - <?= $job_data['data'][0]['model_name'] ?? '' ?></h2>
+                            </div>
+                            <div class="col-2">
+                            	<h2 class="job-header-title text-primary" id="top_nav_job_card_no"><?= $job_data['data'][0]['job_card_number'] ?? '' ?></h2>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,22 +93,37 @@ const customerData = {
   address1: "",
   address2: "",
   city: "",
+  district: "",
   nic: "",
   contact: "",
+  contact2: "",
+  dob: "",
   inquiry_id: "",
   inquiry_no: "",
   inquiry_date: "",
   vehicle_no: "",
   vehicle_brand: "",
+  vehicle_brand_id: "",
   vehicle_model: "",
+  vehicle_model_id: "",
   vehicle_type: "",
+  vehicle_type_id: "",
   vehicle_gen: "",
+  vehicle_gen_id: "",
   vehicle_year: "",
+  vehicle_year_id: "",
   price_category: "",
-  sales_person_name: ""
+  sales_person_name: "",
+  schedule_date: "",
+  handover_date: "",
+  days: "",
+  status: "",
+  company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
+  branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
 };
 
 $(document).ready(function() {
+    
     $.ajax({
         url: apiBaseUrl + '/v1/main_job_category',
         type: "GET",
@@ -108,8 +133,6 @@ $(document).ready(function() {
             'Authorization': 'Bearer ' + api_token
         },
         success: function(json) {
-            console.log("API Response:", json);
-
             if (json.status === false && json.code === 401) {
                 falseResponse(errorObj);
                 return;
@@ -117,7 +140,6 @@ $(document).ready(function() {
             let data = json.data;
             $('#buttonsContainer').empty();
 
-            // Loop and create buttons
             data.forEach(function(job) {
                 var buttonHtml = `
                     <div class="col-6 mb-3">
