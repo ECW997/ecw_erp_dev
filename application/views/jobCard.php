@@ -123,7 +123,9 @@ $(document).ready(function() {
                     <div class="col-6 mb-3">
                         <button type="button"
                             class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
-                            style="padding-left: 20px;">
+                            style="padding-left: 20px;"
+                            data-id="${job.id}"
+                            data-name="${job.name}" onclick="showAddJobItemModal(this);">
                             <i class="fas fa-plus-circle me-2"></i>${job.name}
                         </button>
                     </div>
