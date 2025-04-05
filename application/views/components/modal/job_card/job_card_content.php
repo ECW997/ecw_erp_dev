@@ -13,8 +13,8 @@
                         <td class="text-right">235,000</td>
                     </tr>
                     <tr>
-                        <td class="text-left" style="padding-top: 20px;">Discount (10%)</td>
-                        <td class="text-right" style="padding-top: 20px;">-23,800</td>
+                        <td class="text-left" style="padding-top: 40px;">Discount (10%)</td>
+                        <td class="text-right" style="padding-top: 40px;">-23,800</td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">
                         <td class="text-left fw-bold">Total</td>
@@ -26,7 +26,7 @@
         <div class="row mb-4 mx-auto">
 
 
-            <div class="row" id="buttonsContainer">
+            <div class="row" id="buttonsContainer" data-bs-toggle="modal" data-bs-target="#main_job_details">
 
             </div>
         </div>
@@ -84,13 +84,13 @@
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">05</td>
                         <td colspan="2" class="text-left"></td>
                         <td class="text-right"><button type="button" title="Edit Header"
-                                class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button></td>
+                                class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit"><i class="fas fa-edit"></i></button></td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="row mb-4 mx-auto">
-            <h5>Job Details</h5>
+            <h5 class="fw-bold">Job Details</h5>
             <div class="details_section mb-2">
                 <table class="w-100">
                     <thead>
