@@ -49,28 +49,28 @@
                         <td colspan="2" class="text-left fw-bold">Status</td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_customer_name"></td>
-                        <td class="text-left" id="content_inq_no"></td>
-                        <td colspan="2" class="text-left">2025-04-30</td>
+                        <td class="text-left" id="content_customer_name"><?= $job_data['data'][0]['customer_name'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_no"><?= $job_data['data'][0]['inquiry_number'] ?? '' ?></td>
+                        <td colspan="2" class="text-left" id="content_schedule_date"><?= $job_data['data'][0]['job_start_datetime'] ?? '' ?></td>
                         <td class="text-left">Luxury</td>
-                        <td colspan="2" class="text-left fw-bold text-danger">DRAFT</td>
+                        <td colspan="2" class="text-left fw-bold text-danger"><?php echo $is_edit? 'DRAFT' : ''; ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_address"></td>
-                        <td class="text-left" id="content_inq_date"></td>
+                        <td class="text-left" id="content_address"><?= $job_data['data'][0]['address'] ?? '' ?>, <?= $job_data['data'][0]['address_2'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_date">not get</td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
                         <td colspan="3" class="text-left"></td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_cus_contact"></td>
-                        <td class="text-left"></td>
-                        <td class="text-left">2025-05-05</td>
-                        <td class="text-left fw-bold text-success" style="font-size: 25px;">05</td>
-                        <td colspan="2" class="text-left"></td>
-                        <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
-                                data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit"><i
-                                    class="fas fa-edit"></i></button></td>
+                    	<td class="text-left" id="content_cus_contact"><?= $job_data['data'][0]['customer_mobile_num'] ?? '' ?></td>
+                    	<td class="text-left"></td>
+                    	<td class="text-left" id="content_hand_over_date"><?= $job_data['data'][0]['handover_date'] ?? '' ?></td>
+                    	<td class="text-left fw-bold text-success" style="font-size: 25px;"><?= $job_data['data'][0]['total_days'] ?? '' ?></td>
+                    	<td colspan="2" class="text-left"></td>
+                    	<td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
+                    			data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit"><i
+                    				class="fas fa-edit"></i></button></td>
                     </tr>
                 </table>
             </div>
