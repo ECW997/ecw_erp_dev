@@ -194,7 +194,7 @@ function showAddJobItemModal(button) {
         }
     });
     $('#jobCardForm').empty();
-    getSubCategoryListBaseOnMain(MainJobId)
+    getSubCategoryListBaseOnMain(MainJobId);
     // Show the modal
     $('#addJobItemModal').modal('show');
 
