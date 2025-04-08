@@ -29,7 +29,7 @@
 					</div>
 					<div class="col-12 col-md-2 d-flex justify-content-md-end align-items-center">
 						<h2 class="me-2 text-nowrap">Total:</h2>
-						<h2 id="item_total_net_price" class="me-2 text-nowrap">2,760,000</h2>
+						<h2 id="item_total_net_price" class="me-2 text-nowrap">0</h2>
 					</div>
 				</div>
 				<hr>

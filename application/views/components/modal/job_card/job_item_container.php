@@ -55,22 +55,25 @@
                             		<?php endif; ?>
                             		<div class="conditional-options-container"></div>
                             	</div>
+                                <?php
+                                    $uniqueKey = $subJob['sub_job_category']['idtbl_sub_job_category'] . '_' . $jobOptionGroup['job_option_group']['id'];
+                                ?>
                             	<div class="col-6">
                             		<div class="row justify-content-end">
                             			<div class="col-4">
                             				<h6 class="col-form-label me-2 text-nowrap">Price</h6>
-                            				<input class="form-control form-control-sm text-end" type="number" step="any"
-                            					id="item_price" name="item_price">
+                            				<input class="form-control form-control-sm text-end item-price" type="number" step="any"
+                            					id="item_price_<?php echo $uniqueKey; ?>" name="item_price_<?php echo $uniqueKey; ?>" data-uniq-id="<?php echo $uniqueKey; ?>">
                             			</div>
                             			<div class="col-3">
                             				<h6 class="col-form-label me-2 text-nowrap">QTY</h6>
-                            				<input class="form-control form-control-sm text-end" type="number" step="any"
-                            					id="item_qty" name="item_qty">
+                            				<input class="form-control form-control-sm text-end  item-qty" type="number" step="any"
+                            					id="item_qty_<?php echo $uniqueKey; ?>" name="item_qty_<?php echo $uniqueKey; ?>" data-uniq-id="<?php echo $uniqueKey; ?>">
                             			</div>
                             			<div class="col-4">
                             				<h6 class="col-form-label me-2 text-nowrap">Net Price</h6>
-                            				<input class="form-control form-control-sm text-end" type="number" step="any"
-                            					id="item_net_price" name="item_net_price">
+                            				<input class="form-control form-control-sm text-end item-net-price" type="number" step="any"
+                            					id="item_net_price_<?php echo $uniqueKey; ?>" name="item_net_price_<?php echo $uniqueKey; ?>" data-uniq-id="<?php echo $uniqueKey; ?>" readonly>
                             			</div>
                             		</div>
                             	</div>
@@ -90,58 +93,79 @@
 
 <script>
     $(document).on('change', '.job-option-select', function () {
-    var selectedOptionValue = $(this).val();   
-    var optionType = $(this).data('option-type'); 
-    var subJobCategoryID = $(this).data('sub-job-category'); 
-    const jobOptionID = $(this).data('option-id');
-    const currentWrapper = $(this).closest('.job-option-wrapper');
+        var selectedOptionValue = $(this).val();   
+        var optionType = $(this).data('option-type'); 
+        var subJobCategoryID = $(this).data('sub-job-category'); 
+        const jobOptionID = $(this).data('option-id');
+        const currentWrapper = $(this).closest('.job-option-wrapper');
 
-    
-    if (selectedOptionValue) {
-        $.ajax({
-            type: "POST",
-            url: '<?php echo base_url() ?>JobCard/getItemParentOptions',
-            dataType: 'json',
-            data: {
-                subJobCategoryID: subJobCategoryID,
-                selectedOptionValue: selectedOptionValue
-            },
-            success: function(res) {
-                if (res.status && res.data.length > 0) {
-                    let html = '';
+        
+        if (selectedOptionValue) {
+            $.ajax({
+                type: "POST",
+                url: '<?php echo base_url() ?>JobCard/getItemParentOptions',
+                dataType: 'json',
+                data: {
+                    subJobCategoryID: subJobCategoryID,
+                    selectedOptionValue: selectedOptionValue
+                },
+                success: function(res) {
+                    if (res.status && res.data.length > 0) {
+                        let html = '';
 
-                    res.data.forEach(function(group) {
-                        const jobOption = group.job_option;
-                        const optionValues = group.option_values;
+                        res.data.forEach(function(group) {
+                            const jobOption = group.job_option;
+                            const optionValues = group.option_values;
 
-                        if (optionValues.length > 0) {
-                            html += `
-                                    <label class="mt-2 fw-bold">${jobOption.OptionName}</label>
-                                    <select class="form-select job-option-select"
-                                        data-option-id="${jobOption.JobOptionID}"
-                                        data-sub-job-category="${jobOption.JobSubcategoryID}">
-                                        <option value="">Select an option</option>`;
+                            if (optionValues.length > 0) {
+                                html += `
+                                        <label class="mt-2 fw-bold">${jobOption.OptionName}</label>
+                                        <select class="form-select job-option-select"
+                                            data-option-id="${jobOption.JobOptionID}"
+                                            data-sub-job-category="${jobOption.JobSubcategoryID}">
+                                            <option value="">Select an option</option>`;
 
-                            optionValues.forEach(function(val) {
-                                html += `<option value="${val.id}">${val.ValueName}</option>`;
-                            });
+                                optionValues.forEach(function(val) {
+                                    html += `<option value="${val.id}">${val.ValueName}</option>`;
+                                });
 
-                            html += `</select>`;
+                                html += `</select>`;
+                            }
+                        });
+
+                        // Inject the generated HTML into the correct place (conditional options)
+                        if (html !== '') {
+                            $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html(html);
                         }
-                    });
-
-                    // Inject the generated HTML into the correct place (conditional options)
-                    if (html !== '') {
-                        $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html(html);
-                    }
-                }else {
-                        $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
-                    }
-        },
-        error: function() {
-            console.error("Failed to load conditional options.");
+                    }else {
+                            $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
+                        }
+            },
+            error: function() {
+                console.error("Failed to load conditional options.");
+            }
+            });
         }
+    });
+
+    $(document).on('input', '.item-price, .item-qty', function () {   
+        const uniqId = $(this).data('uniq-id');
+        const price = parseFloat($('#item_price_'+uniqId).val()) || 0;
+        const qty = parseFloat($('#item_qty_'+uniqId).val()) || 0;
+        const netPrice = price * qty;
+        $('#item_net_price_'+uniqId).val(netPrice.toFixed(2));
+
+        updateTotalNetPrice();
+    });
+
+    function updateTotalNetPrice() {
+        let total = 0;
+
+        $('.item-net-price').each(function () {
+            const val = parseFloat($(this).val()) || 0;
+            total += val;
         });
+
+        $('#item_total_net_price').text(total.toFixed(2));
     }
-});
 </script>
