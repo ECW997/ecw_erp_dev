@@ -38,7 +38,7 @@
 				<div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Price Category</label>
-                        <select class="form-control form-control-sm " id="pc_category" name="pc_category" required>
+                        <select class="form-control form-control-sm required-field" id="pc_category" name="pc_category" required>
                             <option value="">Select</option>
                         </select>
                     </div>
@@ -232,6 +232,8 @@ function confirmCreateJobCard(){
 }
 
 function createNewJobCard() { 
+	console.log(123);
+	
 	$.ajax({
 		type: "POST",
 		dataType: 'json',
@@ -252,16 +254,4 @@ function createNewJobCard() {
 	});
 }
 
-
-$(document).on('click', '#createJobCardBtn', function() {
-    $('#createJobCardConfirmModal').modal('show');
-})
-
-function confirmCreateJobCard() {
-    $('#createJobCardConfirmModal').modal('hide');
-    $('#jobHeaderModal').modal('hide');
-    $('#jobHeaderModal_edit').modal('hide');
-    $('#main_job_details').modal('hide');
-    $('.modal-backdrop').remove();
-}
 </script>

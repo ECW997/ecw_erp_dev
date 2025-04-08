@@ -121,14 +121,6 @@ class JobCard extends CI_Controller {
 			return;
 		}
 
-		$form_data = [
-			'term' => $this->input->get('term'),
-			'page' => $this->input->get('page'),
-		];
-
-		$response = $this->JobCardinfo->getPriceCategory($api_token,$form_data);
-		echo json_encode($response);
-
         $form_data = $this->input->post('data');
 
 		$response = $this->JobCardinfo->createJobCard($api_token,$form_data);

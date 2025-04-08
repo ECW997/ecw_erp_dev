@@ -3,14 +3,79 @@
         <?php foreach ($data['data'] as $subJob): ?>
             <div class="mb-3">
                 <p class="mb-0">
-                    <a class="jobSubItem text-info" data-toggle="collapse" href="#collapseExample<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>"
-                        role="button" aria-expanded="false" aria-controls="collapseExample<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
+                    <a class="jobSubItem text-info" data-toggle="collapse" href="#collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>"
+                        role="button" aria-expanded="false" aria-controls="collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
                         <i class="fas fa-caret-right text-dark"></i>
                         <?php echo  $subJob['sub_job_category']['sub_job_category'] ?> 
                     </a>
                 </p>
+                <div class="collapse" id="collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
+                	<div class="card card-body">
+                        <?php foreach ($subJob['job_options'] as $jobOptionGroup): ?>
+                            <div class="mb-3 p- border border-1">
+                            	<h6 class="text-secondary"><?php echo $jobOptionGroup['job_option_group']['GroupName']; ?></h6>
+                            	<div class="row">
+                            		<div class="col-6">
+                            			<div class="row">
+                            				<div class="col-6">
+                            					<h6 class="col-form-label me-2 text-nowrap">Material</h6>
+                            					<select class="form-select form-select-sm" id="pc_category"
+                            						name="pc_category">
+                            						<option value="">Select</option>
+                            						<option value="1">One</option>
+                            						<option value="2">Two</option>
+                            						<option value="3">Three</option>
+                            					</select>
+                            				</div>
+                            				<div class="col-6">
+                            					<h6 class="col-form-label me-2 text-nowrap">Colour</h6>
+                            					<select class="form-select form-select-sm" id="pc_category"
+                            						name="pc_category">
+                            						<option value="">Select</option>
+                            						<option value="1">One</option>
+                            						<option value="2">Two</option>
+                            						<option value="3">Three</option>
+                            					</select>
+                            				</div>
+                            			</div>
+                            			<div class="row">
+                            				<div class="col-6">
+                            					<h6 class="col-form-label me-2 text-nowrap">Painting</h6>
+                            					<select class="form-select form-select-sm" id="pc_category"
+                            						name="pc_category">
+                            						<option value="">Select</option>
+                            						<option value="1">Yes</option>
+                            						<option value="2">No</option>
+                            					</select>
+                            				</div>
+                            			</div>
+                            		</div>
+                            		<div class="col-6">
+                            			<div class="row justify-content-end">
+                            				<div class="col-4">
+                            					<h6 class="col-form-label me-2 text-nowrap">Price</h6>
+                            					<input class="form-control form-control-sm text-end" type="number"
+                            						step="any" id="item_price" name="item_price">
+                            				</div>
+                            				<div class="col-3">
+                            					<h6 class="col-form-label me-2 text-nowrap">QTY</h6>
+                            					<input class="form-control form-control-sm text-end" type="number"
+                            						step="any" id="item_qty" name="item_qty">
+                            				</div>
+                            				<div class="col-4">
+                            					<h6 class="col-form-label me-2 text-nowrap">Net Price</h6>
+                            					<input class="form-control form-control-sm text-end" type="number"
+                            						step="any" id="item_net_price" name="item_net_price">
+                            				</div>
+                            			</div>
+                            		</div>
+                            	</div>
+                            </div>
+                        <?php endforeach; ?>
+                	</div>
+                </div>
 
-                <div class="collapse" id="collapseExample<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
+                <div class="collapse" id="collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
                     <?php if (!empty($subJob['job_options'])): ?>
                         <?php foreach ($subJob['job_options'] as $jobOptionGroup): ?>
                             <div class="mb-2">
