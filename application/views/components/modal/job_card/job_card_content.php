@@ -31,7 +31,7 @@
 
 
         <div class="row mb-4 mx-auto">
-            <div class="row" id="buttonsContainer" onclick="showAddJobItemModal();">
+            <div class="row" id="buttonsContainer">
 
             </div>
         </div>
@@ -57,7 +57,7 @@
                     </tr>
                     <tr>
                         <td class="text-left" id="content_address"><?= $job_data['data'][0]['address'] ?? '' ?>, <?= $job_data['data'][0]['address_2'] ?? '' ?></td>
-                        <td class="text-left" id="content_inq_date">not get</td>
+                        <td class="text-left" id="content_inq_date"><?= $job_data['data'][0]['inquery_date'] ?? '' ?></td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
                         <td colspan="3" class="text-left"></td>
@@ -184,17 +184,38 @@
 
 <script>
 function showAddJobItemModal(button) {
-    var jobId = $(button).data('id');
-    var jobName = $(button).data('name');
-
+    var MainJobId = $(button).data('id');
+    var MainjobName = $(button).data('name');
+    const currentWrapper = $(this).closest('.job-option-wrapper');
+    const currentLevel = parseInt(currentWrapper.data('level'));
+    $('.job-option-wrapper').each(function () {
+        if (parseInt($(this).data('level')) > currentLevel) {
+            $(this).remove();
+        }
+    });
+    $('#jobCardForm').empty();
+    getSubCategoryListBaseOnMain(MainJobId)
     // Show the modal
     $('#addJobItemModal').modal('show');
 
     // Pass the jobId and jobName to the modal and display them in the labels
-    $('#jobIdLabel').text(jobId);  // Display jobId in the modal label
-    $('#jobNameLabel').text(jobName);  // Display jobName in the modal label
+    $('#jobIdLabel').text(MainJobId);  // Display jobId in the modal label
+    $('#jobNameLabel').text(MainjobName);  // Display jobName in the modal label
 
-    console.log("Job ID:", jobId);
-    console.log("Job Name:", jobName);
+}
+
+function getSubCategoryListBaseOnMain(MainJobId){
+    $.ajax({
+		type: "GET",
+		url: '<?php echo base_url() ?>JobCard/getSubJob/'+MainJobId,
+        success: function (result) {
+            if(result){
+                $('#jobCardForm').append(result);
+            }  
+        },
+        error: function () {
+            $('#jobCardForm').html('<p class="text-center text-danger">Error fetching data!</p>');
+        }
+	});
 }
 </script>

@@ -36,6 +36,8 @@ $config['api_endpoints'] = [
     'customer_details_v1' => '/v1/customer_details',
     'get_sel2_pricecategory_v1' => '/v1/get_sel2_price_category',
     'job_card_v1' => '/v1/job_card',
+    'get_sub_job_base_main_v1' => '/v1/get_sub_job_base_main',
+    'get_item_parent_options_v1' => '/v1/get_item_parent_options',
 
 
 

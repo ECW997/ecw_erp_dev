@@ -63,14 +63,14 @@
 				<div class="mb-3 row">
 					<div class="col">
 						<h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
-						<input type="text" class="form-control mb-2" id="cus_name" name="cus_name"
+						<input type="text" class="form-control mb-2 required-field" id="cus_name" name="cus_name"
 							placeholder="Customer Name">
 						<input type="text" class="form-control" id="contact_no" name="contact_no"
 							placeholder="Contact No">
 					</div>
 					<div class="col">
 						<h6 class="col-form-label me-2 text-nowrap">Address</h6>
-						<input type="text" class="form-control mb-2" id="address1" name="address1"
+						<input type="text" class="form-control mb-2 required-field" id="address1" name="address1"
 							placeholder="Address 1">
 						<input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
 					</div>
@@ -78,20 +78,20 @@
 				<div class="mb-3 row">
 					<div class="col-6">
 						<h6 class="col-form-label me-2 text-nowrap">Schedule Date</h6>
-						<input type="date" class="form-control" id="schedule_date" name="schedule_date"
+						<input type="date" class="form-control required-field" id="schedule_date" name="schedule_date"
 								placeholder="Schedule Date">
 					</div>
 					<div class="col-6">
 						<h6 class="col-form-label me-2 text-nowrap">Handover_date</h6>
-						<input type="date" class="form-control" id="handover_date" name="handover_date"
+						<input type="date" class="form-control required-field" id="handover_date" name="handover_date"
 								placeholder="Delivery Date">
 					</div>
 				</div>
 				<div class="mb-3 row">
 					<div class="col-6">
 						<h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
-						<select class="form-select" id="pc_category" name="pc_category">
-							<option selected>Open this select menu</option>
+						<select class="form-select required-field" id="pc_category" name="pc_category">
+							<option value="">select</option>
 							<option value="1">Small</option>
 							<option value="2">Medium</option>
 							<option value="3">Large</option>
@@ -222,10 +222,27 @@
 </div>
 
 <script>
+
+$(document).on('click','#createJobCardBtn', function(){
+	let isValid = true;
+	$('.required-field').each(function () {
+		let value = $(this).val();
+
+		if (!value || value === "") {
+			$(this).addClass('is-invalid');
+			isValid = false;
+		} else {
+			$(this).removeClass('is-invalid');
+		}
+	});	
+	if (isValid) {
+		$('#createJobCardConfirmModal').modal('show');
+	}
+})
+
 $(document).ready(function() {
 
     let price_category = $('#pc_category');
-
 
     price_category.select2({
         placeholder: 'Select...',
@@ -257,7 +274,6 @@ $(document).ready(function() {
     });
 });
 
-
 function confirmCreateJobCard(){
 	customerData.name=$('#cus_name').val();
 	customerData.contact=$('#contact_no').val();
@@ -274,7 +290,7 @@ function confirmCreateJobCard(){
 	$('#main_job_details').modal('hide');
 	$('.modal-backdrop').remove();
 
-		createNewJobCard();
+	createNewJobCard();
 }
 
 function createNewJobCard() { 
@@ -287,7 +303,10 @@ function createNewJobCard() {
 		url: '<?php echo base_url() ?>JobCard/createJobCard',
 		success: function (result) {
 			if (result.status == true) {
-				window.location.href = window.location.href + '/' + result.data;
+				success_toastify(result.message);
+				setTimeout(function() {
+					window.location.href = '<?= base_url("JobCard/") ?>' + result.data;
+				}, 1000);
 			} else {
 				falseResponse(result);
 			}

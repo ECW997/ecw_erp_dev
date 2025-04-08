@@ -188,3 +188,7 @@ button[data-bs-toggle="collapse"]:not(.collapsed)::before {
     box-shadow: none;
     border: 0px solid rgba(31, 45, 65, 0.125);
 }
+
+.is-invalid {
+	border-color: #dc3545 !important;
+}

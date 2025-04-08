@@ -126,4 +126,36 @@ class JobCard extends CI_Controller {
 		}
     }
 
+    public function getSubJob($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $response = $this->JobCardinfo->getSubJob($api_token,$id);
+        $data['data'] = $response;
+		$html = $this->load->view('components/modal/job_card/job_item_container', $data, true);
+        echo ($html);
+    }
+
+    public function getItemParentOptions() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $form_data = [
+            'sub_id' => $this->input->post('subJobCategoryID'),
+			'id' => $this->input->post('selectedOptionValue')
+        ];
+
+        $response = $this->JobCardinfo->getItemParentOptions($api_token,$form_data);
+        if ($response) {
+            echo json_encode($response);
+		}
+    }
 }
