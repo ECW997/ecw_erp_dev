@@ -12,104 +12,72 @@
                 <div class="collapse" id="collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
                 	<div class="card card-body">
                         <?php foreach ($subJob['job_options'] as $jobOptionGroup): ?>
-                            <div class="mb-3 p- border border-1">
+                            <div class="mb-3 p-2 border border-1 bg-light">
                             	<h6 class="text-secondary"><?php echo $jobOptionGroup['job_option_group']['GroupName']; ?></h6>
                             	<div class="row">
                             		<div class="col-6">
-                            			<div class="row">
-                            				<div class="col-6">
-                            					<h6 class="col-form-label me-2 text-nowrap">Material</h6>
-                            					<select class="form-select form-select-sm" id="pc_category"
-                            						name="pc_category">
-                            						<option value="">Select</option>
-                            						<option value="1">One</option>
-                            						<option value="2">Two</option>
-                            						<option value="3">Three</option>
-                            					</select>
-                            				</div>
-                            				<div class="col-6">
-                            					<h6 class="col-form-label me-2 text-nowrap">Colour</h6>
-                            					<select class="form-select form-select-sm" id="pc_category"
-                            						name="pc_category">
-                            						<option value="">Select</option>
-                            						<option value="1">One</option>
-                            						<option value="2">Two</option>
-                            						<option value="3">Three</option>
-                            					</select>
-                            				</div>
-                            			</div>
-                            			<div class="row">
-                            				<div class="col-6">
-                            					<h6 class="col-form-label me-2 text-nowrap">Painting</h6>
-                            					<select class="form-select form-select-sm" id="pc_category"
-                            						name="pc_category">
-                            						<option value="">Select</option>
-                            						<option value="1">Yes</option>
-                            						<option value="2">No</option>
-                            					</select>
-                            				</div>
-                            			</div>
-                            		</div>
-                            		<div class="col-6">
-                            			<div class="row justify-content-end">
-                            				<div class="col-4">
-                            					<h6 class="col-form-label me-2 text-nowrap">Price</h6>
-                            					<input class="form-control form-control-sm text-end" type="number"
-                            						step="any" id="item_price" name="item_price">
-                            				</div>
-                            				<div class="col-3">
-                            					<h6 class="col-form-label me-2 text-nowrap">QTY</h6>
-                            					<input class="form-control form-control-sm text-end" type="number"
-                            						step="any" id="item_qty" name="item_qty">
-                            				</div>
-                            				<div class="col-4">
-                            					<h6 class="col-form-label me-2 text-nowrap">Net Price</h6>
-                            					<input class="form-control form-control-sm text-end" type="number"
-                            						step="any" id="item_net_price" name="item_net_price">
-                            				</div>
-                            			</div>
-                            		</div>
-                            	</div>
-                            </div>
-                        <?php endforeach; ?>
-                	</div>
-                </div>
-
-                <div class="collapse" id="collapse<?php echo  $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
-                    <?php if (!empty($subJob['job_options'])): ?>
-                        <?php foreach ($subJob['job_options'] as $jobOptionGroup): ?>
-                            <div class="mb-2">
-                                <h6 class="text-secondary"><?php echo $jobOptionGroup['job_option_group']['GroupName']; ?></h6>
-                                <ul>
-                                    <?php foreach ($jobOptionGroup['job_options'] as $jobOption): ?>
-                                        <?php if ($jobOption['job_option']['OptionType'] == 'Primary'): ?>
-                                            <li class="job-option-wrapper" data-level="0">
-                                                <label for="job_option_<?php echo $jobOption['job_option']['JobOptionID']; ?>">
-                                                    <?php echo $jobOption['job_option']['OptionName']; ?>
-                                                </label>
-                                                <select class="form-select job-option-select" id="job_option_<?php echo $jobOption['job_option']['JobOptionID']; ?>"
-                                                        name="job_option_<?php echo $jobOption['job_option']['JobOptionID']; ?>" 
+                            		<?php 
+                                    $i = 0;
+                                    foreach ($jobOptionGroup['job_options'] as $jobOption): 
+                                        if ($jobOption['job_option']['OptionType'] == 'Primary'):
+                                            if ($i % 2 == 0): ?>
+                            			        <div class="row job-option-wrapper" data-level="0">
+                            				<?php endif; ?>
+                                                <div class="col-6">
+                                                    <h6 class="col-form-label me-2 text-nowrap">
+                                                        <?php echo $jobOption['job_option']['OptionName']; ?></h6>
+                                                    <select class="form-select form-select-sm job-option-select"
+                                                        id="job_option_<?php echo $jobOption['job_option']['JobOptionID']; ?>"
+                                                        name="job_option_<?php echo $jobOption['job_option']['JobOptionID']; ?>"
                                                         data-option-type="<?php echo $jobOption['job_option']['OptionType']; ?>"
-                                                        data-option_id="<?php echo $jobOption['job_option']['JobOptionID']; ?>"
+                                                        data-option-id="<?php echo $jobOption['job_option']['JobOptionID']; ?>"
                                                         data-option-group="<?php echo $jobOptionGroup['job_option_group']['id']; ?>"
-                                                        data-sub-job-category="<?php echo $subJob['sub_job_category']['idtbl_sub_job_category']; ?>">
-                                                    <option value="">Select an option</option>
-                                                    <?php foreach ($jobOption['option_values'] as $optionValue): ?>
+                                                        data-sub-job-category="<?php echo $subJob['sub_job_category']['idtbl_sub_job_category']; ?>"
+                                                        data-level="0">
+                                                        <option value="">Select an option</option>
+                                                        <?php foreach ($jobOption['option_values'] as $optionValue): ?>
                                                         <option value="<?php echo $optionValue['id']; ?>">
                                                             <?php echo $optionValue['ValueName']; ?>
                                                         </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                                <div class="conditional-container"></div>
-                                            </li>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                    <div class="child-options-wrapper" data-parent-option-id="<?php echo $jobOption['job_option']['JobOptionID']; ?>"></div>
+                                                </div>
+                            				<?php 
+                                            if ($i % 2 == 1): ?>
+                            			</div> 
+                            			<?php endif;
+                                            $i++;
+                                        endif;
+                                    endforeach;
+                                    if ($i % 2 != 0): ?>
+                            		</div> 
+                            		<?php endif; ?>
+                            		<div class="conditional-options-container"></div>
+                            	</div>
+                            	<div class="col-6">
+                            		<div class="row justify-content-end">
+                            			<div class="col-4">
+                            				<h6 class="col-form-label me-2 text-nowrap">Price</h6>
+                            				<input class="form-control form-control-sm text-end" type="number" step="any"
+                            					id="item_price" name="item_price">
+                            			</div>
+                            			<div class="col-3">
+                            				<h6 class="col-form-label me-2 text-nowrap">QTY</h6>
+                            				<input class="form-control form-control-sm text-end" type="number" step="any"
+                            					id="item_qty" name="item_qty">
+                            			</div>
+                            			<div class="col-4">
+                            				<h6 class="col-form-label me-2 text-nowrap">Net Price</h6>
+                            				<input class="form-control form-control-sm text-end" type="number" step="any"
+                            					id="item_net_price" name="item_net_price">
+                            			</div>
+                            		</div>
+                            	</div>
+                            	</div>
+                            	</div>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <h6>No job options found for this category.</h6>
-                    <?php endif; ?>
+                	</div>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -125,14 +93,9 @@
     var selectedOptionValue = $(this).val();   
     var optionType = $(this).data('option-type'); 
     var subJobCategoryID = $(this).data('sub-job-category'); 
+    const jobOptionID = $(this).data('option-id');
     const currentWrapper = $(this).closest('.job-option-wrapper');
-    const currentLevel = parseInt(currentWrapper.data('level'));
 
-    $('.job-option-wrapper').each(function () {
-        if (parseInt($(this).data('level')) > currentLevel) {
-            $(this).remove();
-        }
-    });
     
     if (selectedOptionValue) {
         $.ajax({
@@ -145,34 +108,39 @@
             },
             success: function(res) {
                 if (res.status && res.data.length > 0) {
-            res.data.forEach(function (group) {
-                const jobOption = group.job_option;
-                const optionValues = group.option_values;
+                    let html = '';
 
-                if (optionValues.length > 0) {
-                    let html = `
-                        <div class="job-option-wrapper" data-level="${currentLevel + 1}">
-                            <label class="mt-2 fw-bold">${jobOption.OptionName}</label>
-                            <select class="form-select job-option-select" 
-                                    data-option-id="${jobOption.JobOptionID}" 
-                                    data-sub-job-category="${jobOption.JobSubcategoryID}">
-                                <option value="">Select an option</option>`;
+                    res.data.forEach(function(group) {
+                        const jobOption = group.job_option;
+                        const optionValues = group.option_values;
 
-                    optionValues.forEach(function (val) {
-                        html += `<option value="${val.id}">${val.ValueName}</option>`;
+                        if (optionValues.length > 0) {
+                            html += `
+                                    <label class="mt-2 fw-bold">${jobOption.OptionName}</label>
+                                    <select class="form-select job-option-select"
+                                        data-option-id="${jobOption.JobOptionID}"
+                                        data-sub-job-category="${jobOption.JobSubcategoryID}">
+                                        <option value="">Select an option</option>`;
+
+                            optionValues.forEach(function(val) {
+                                html += `<option value="${val.id}">${val.ValueName}</option>`;
+                            });
+
+                            html += `</select>`;
+                        }
                     });
 
-                    html += `</select></div>`;
-
-                    // Insert after the current wrapper
-                    currentWrapper.after(html);
-                }
-            });
+                    // Inject the generated HTML into the correct place (conditional options)
+                    if (html !== '') {
+                        $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html(html);
+                    }
+                }else {
+                        $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
+                    }
+        },
+        error: function() {
+            console.error("Failed to load conditional options.");
         }
-            },
-            error: function() {
-                console.error("Failed to load conditional options.");
-            }
         });
     }
 });
