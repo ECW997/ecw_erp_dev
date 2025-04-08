@@ -80,4 +80,22 @@ class JobCard extends CI_Controller {
 		echo json_encode($response);
     }
 
+    public function getPriceCategory(){
+		$api_token = $this->session->userdata('api_token');
+
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->JobCardinfo->getPriceCategory($api_token,$form_data);
+		echo json_encode($response);
+	}
+
 }
