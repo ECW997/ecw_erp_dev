@@ -1,8 +1,9 @@
-<div class="modal fade" id="addJobItemModal" tabindex="-1" aria-labelledby="addJobItemModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-	<div class="modal-dialog modal-dialog-centered modal-xl">
-		<div class="modal-content rounded-4">
-			<div class="modal-header bg-info">
-			<h5 class="modal-title text-white" id="addJobItemModalLabel">
+<div class="modal fade" id="addJobItemModal" tabindex="-1" aria-labelledby="addJobItemModalLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-white" id="addJobItemModalLabel">
                     Add Job Item to <span id="jobNameLabel"></span>
                 </h5>
 				<button type="button" class="btn-close btn-close-white addJobItemCloseBtn"
@@ -126,12 +127,14 @@
 	</div>
 </div>
 
-<div class="modal fade" id="addItemCloseConfirmModal" tabindex="-1" aria-labelledby="addItemCloseConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="addItemCloseConfirmModal" tabindex="-1" aria-labelledby="addItemCloseConfirmModalLabel"
+    aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content delete-confirmation">
             <div class="modal-header delete-header">
                 <h5 class="delete-title" id="addItemCloseConfirmModalLabel">Unsaved Changes</h5>
-                <button type="button" class="btn-close delete-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close delete-btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <i class="fas fa-question-circle delete-warning-icon"></i>
@@ -150,48 +153,83 @@
 </div>
 
 <script>
-    let isUnsaved = false;
+let isUnsaved = false;
 
-    $(document).on('change', '#jobCardForm input, #jobCardForm select', function() {
-        isUnsaved = true;
-    });
+$(document).on('change', '#jobCardForm input, #jobCardForm select', function() {
+    isUnsaved = true;
+});
 
-    $(document).on('click', '.addJobItemCloseBtn', function(e) {
-        var item_total_net_price = parseFloat($('#item_total_net_price').text().replace(/,/g, ''));
-        
-        if (item_total_net_price > 0 && isUnsaved) {
-            e.preventDefault();
-            $('#addItemCloseConfirmModal').modal('show');
-        } else {
-            $('#addJobItemModal').modal('hide');
-            reSetContent('#jobCardForm');
+$(document).on('click', '.addJobItemCloseBtn', function(e) {
+    var item_total_net_price = parseFloat($('#item_total_net_price').text().replace(/,/g, ''));
+
+    if (item_total_net_price > 0 && isUnsaved) {
+        e.preventDefault();
+        $('#addItemCloseConfirmModal').modal('show');
+    } else {
+        $('#addJobItemModal').modal('hide');
+        reSetContent('#jobCardForm');
+    }
+});
+
+
+$(document).ready(function() {
+
+    let price_category = $('#price_category');
+
+    price_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getPriceCategory',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
         }
     });
+});
 
-    function confirmCloseBtn() {
-        isUnsaved = false;  
-        $('#addItemCloseConfirmModal').modal('hide');  
+function confirmCloseBtn() {
+    isUnsaved = false;
+    $('#addItemCloseConfirmModal').modal('hide');
 
-        setTimeout(() => {
-            $('#addJobItemModal').modal('hide');
-            $('.modal-backdrop').remove();
-            reSetContent('#jobCardForm');
-        }, 500);
-    }
+    setTimeout(() => {
+        $('#addJobItemModal').modal('hide');
+        $('.modal-backdrop').remove();
+        reSetContent('#jobCardForm');
+    }, 500);
+}
 
-    function reSetContent(target) {
-        $('#item_pc_category').val('');
-        $('#item_discount').val(0);
-        $('#item_total_net_price').text('0');
+function reSetContent(target) {
+    $('#item_pc_category').val('');
+    $('#item_discount').val(0);
+    $('#item_total_net_price').text('0');
 
-        const $el = $(target);
-        $el.find('input, textarea, select').val('');
-        $el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
-        $el.find('.collapse.show').collapse('hide');
+    const $el = $(target);
+    $el.find('input, textarea, select').val('');
+    $el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+    $el.find('.collapse.show').collapse('hide');
 
-        var icon = $el.find('svg');
-        icon.css('transform', '');
+    var icon = $el.find('svg');
+    icon.css('transform', '');
 
-        isUnsaved = false; 
-    }
+    isUnsaved = false;
+}
 </script>
