@@ -52,7 +52,7 @@
                         <td class="text-left" id="content_customer_name"><?= $job_data['data'][0]['customer_name'] ?? '' ?></td>
                         <td class="text-left" id="content_inq_no"><?= $job_data['data'][0]['inquiry_number'] ?? '' ?></td>
                         <td colspan="2" class="text-left" id="content_schedule_date"><?= $job_data['data'][0]['job_start_datetime'] ?? '' ?></td>
-                        <td class="text-left">Luxury</td>
+                        <td class="text-left" id="p_category"><?= $job_data['data'][0]['price_category_type'] ?? '' ?></td>
                         <td colspan="2" class="text-left fw-bold text-danger"><?php echo $is_edit? 'DRAFT' : ''; ?></td>
                     </tr>
                     <tr>
