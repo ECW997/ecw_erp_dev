@@ -49,28 +49,37 @@
                         <td colspan="2" class="text-left fw-bold">Status</td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_customer_name"><?= $job_data['data'][0]['customer_name'] ?? '' ?></td>
-                        <td class="text-left" id="content_inq_no"><?= $job_data['data'][0]['inquiry_number'] ?? '' ?></td>
-                        <td colspan="2" class="text-left" id="content_schedule_date"><?= $job_data['data'][0]['job_start_datetime'] ?? '' ?></td>
-                        <td class="text-left" id="p_category"><?= $job_data['data'][0]['price_category_type'] ?? '' ?></td>
+                        <td class="text-left" id="content_customer_name">
+                            <?= $job_data['data'][0]['customer_name'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_no"><?= $job_data['data'][0]['inquiry_number'] ?? '' ?>
+                        </td>
+                        <td colspan="2" class="text-left" id="content_schedule_date">
+                            <?= $job_data['data'][0]['job_start_datetime'] ?? '' ?></td>
+                        <td class="text-left" id="p_category"><?= $job_data['data'][0]['price_category_type'] ?? '' ?>
+                        </td>
                         <td colspan="2" class="text-left fw-bold text-danger"><?php echo $is_edit? 'DRAFT' : ''; ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_address"><?= $job_data['data'][0]['address'] ?? '' ?>, <?= $job_data['data'][0]['address_2'] ?? '' ?></td>
-                        <td class="text-left" id="content_inq_date"><?= $job_data['data'][0]['inquery_date'] ?? '' ?></td>
+                        <td class="text-left" id="content_address"><?= $job_data['data'][0]['address'] ?? '' ?>,
+                            <?= $job_data['data'][0]['address_2'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_date"><?= $job_data['data'][0]['inquery_date'] ?? '' ?>
+                        </td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
                         <td colspan="3" class="text-left"></td>
                     </tr>
                     <tr>
-                    	<td class="text-left" id="content_cus_contact"><?= $job_data['data'][0]['customer_mobile_num'] ?? '' ?></td>
-                    	<td class="text-left"></td>
-                    	<td class="text-left" id="content_hand_over_date"><?= $job_data['data'][0]['handover_date'] ?? '' ?></td>
-                    	<td class="text-left fw-bold text-success" style="font-size: 25px;"><?= $job_data['data'][0]['total_days'] ?? '' ?></td>
-                    	<td colspan="2" class="text-left"></td>
-                    	<td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
-                    			data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit"><i
-                    				class="fas fa-edit"></i></button></td>
+                        <td class="text-left" id="content_cus_contact">
+                            <?= $job_data['data'][0]['customer_mobile_num'] ?? '' ?></td>
+                        <td class="text-left"></td>
+                        <td class="text-left" id="content_hand_over_date">
+                            <?= $job_data['data'][0]['handover_date'] ?? '' ?></td>
+                        <td class="text-left fw-bold text-success" style="font-size: 25px;">
+                            <?= $job_data['data'][0]['total_days'] ?? '' ?></td>
+                        <td colspan="2" class="text-left"></td>
+                        <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
+                                data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit" id="openEditModalBtn"><i
+                                    class="fas fa-edit"></i></button></td>
                     </tr>
                 </table>
             </div>
@@ -183,12 +192,40 @@
 </div>
 
 <script>
+$(document).ready(function() {
+    $('#openEditModalBtn').on('click', function() {
+
+        var customerName = $('#content_customer_name').text().trim();
+        var contactNo = $('#content_cus_contact').text().trim();
+        var address = $('#content_address').text().trim().split(',');
+        var scheduleDate = $('#content_schedule_date').text().trim();
+        var deliveryDate = $('#content_hand_over_date').text().trim();
+        var priceCategory = $('#p_category').text().trim();
+
+        // Fill modal fields
+        $('#edit_cus_name').val(customerName);
+        $('#edit_contact_no').val(contactNo);
+        $('#edit_address1').val(address[0] ? address[0].trim() : '');
+        $('#edit_address2').val(address[1] ? address[1].trim() : '');
+        $('#edit_schedule_date').val(scheduleDate);
+        $('#edit_delivery_date').val(deliveryDate);
+
+        // Set the price category dropdown
+        $('#p_category option').each(function() {
+            if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
+                $(this).prop('selected', true);
+            }
+        });
+    });
+});
+
+
 function showAddJobItemModal(button) {
     var MainJobId = $(button).data('id');
     var MainjobName = $(button).data('name');
     const currentWrapper = $(this).closest('.job-option-wrapper');
     const currentLevel = parseInt(currentWrapper.data('level'));
-    $('.job-option-wrapper').each(function () {
+    $('.job-option-wrapper').each(function() {
         if (parseInt($(this).data('level')) > currentLevel) {
             $(this).remove();
         }
@@ -199,23 +236,23 @@ function showAddJobItemModal(button) {
     $('#addJobItemModal').modal('show');
 
     // Pass the jobId and jobName to the modal and display them in the labels
-    $('#jobIdLabel').text(MainJobId);  // Display jobId in the modal label
-    $('#jobNameLabel').text(MainjobName);  // Display jobName in the modal label
+    $('#jobIdLabel').text(MainJobId); // Display jobId in the modal label
+    $('#jobNameLabel').text(MainjobName); // Display jobName in the modal label
 
 }
 
-function getSubCategoryListBaseOnMain(MainJobId){
+function getSubCategoryListBaseOnMain(MainJobId) {
     $.ajax({
-		type: "GET",
-		url: '<?php echo base_url() ?>JobCard/getSubJob/'+MainJobId,
-        success: function (result) {
-            if(result){
+        type: "GET",
+        url: '<?php echo base_url() ?>JobCard/getSubJob/' + MainJobId,
+        success: function(result) {
+            if (result) {
                 $('#jobCardForm').append(result);
-            }  
+            }
         },
-        error: function () {
+        error: function() {
             $('#jobCardForm').html('<p class="text-center text-danger">Error fetching data!</p>');
         }
-	});
+    });
 }
 </script>
