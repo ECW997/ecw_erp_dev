@@ -16,11 +16,8 @@
 					</div>
 					<div class="col-12 col-md-3 d-flex align-items-center mb-2 mb-md-0">
 						<h6 class="col-form-label me-2 text-nowrap">P.C.</h6>
-						<select class="form-select form-select-sm" id="item_pc_category" name="item_pc_category">
+						<select class="form-select form-select-sm" id="price_category" name="price_category">
 							<option value="">Select</option>
-							<option value="1">One</option>
-							<option value="2">Two</option>
-							<option value="3">Three</option>
 						</select>
 					</div>
 					<div class="col-12 col-md-3 d-flex justify-content-md-end align-items-center mb-2 mb-md-0">

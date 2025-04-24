@@ -90,27 +90,27 @@
                 <div class="mb-3 row">
                     <div class="col">
                         <label class="form-label">Confirm Customer Info</label>
-                        <input type="text" class="form-control mb-2" id="cus_name" name="cus_name"
+                        <input type="text" class="form-control mb-2" id="edit_cus_name" name="edit_cus_name"
                             placeholder="Customer Name">
-                        <input type="text" class="form-control" id="contact_no" name="contact_no"
+                        <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no"
                             placeholder="Contact No">
                     </div>
                     <div class="col">
                         <label class="form-label">Address</label>
-                        <input type="text" class="form-control mb-2" id="address1" name="address1"
+                        <input type="text" class="form-control mb-2" id="edit_address1" name="edit_address1"
                             placeholder="Address 1">
-                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
+                        <input type="text" class="form-control" id="edit_address2" name="edit_address2" placeholder="Address 2">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Schedule Date</label>
-                        <input type="date" class="form-control" id="schedule_date" name="schedule_date"
+                        <input type="datetime-local" class="form-control" id="edit_schedule_date" name="edit_schedule_date"
                             placeholder="Schedule Date">
                     </div>
                     <div class="col-6">
                         <label class="col-form-label">Delivery Date</label>
-                        <input type="date" class="form-control" id="delivery_date" name="delivery_date"
+                        <input type="date" class="form-control" id="edit_delivery_date" name="edit_delivery_date"
                             placeholder="Delivery Date">
                     </div>
                 </div>
@@ -122,12 +122,6 @@
                             <option value="1">Small</option>
                             <option value="2">Medium</option>
                             <option value="3">Large</option>
-                            <option value="4">Extra Large</option>
-                            <option value="5">Luxury</option>
-                            <option value="6">Super Luxury</option>
-                            <option value="7">Premium 1</option>
-                            <option value="8">Premium 2</option>
-                            <option value="9">Premium 3</option>
                         </select>
                     </div>
                 </div>
