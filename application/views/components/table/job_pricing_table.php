@@ -22,20 +22,27 @@
                 <?php if (!empty($optionValues)): ?>
                     <?php foreach ($optionValues as $index => $value): ?>
                         <tr>
-                        <?php if ($index === 0): ?>
-                            <td rowspan="<?php echo $valueCount; ?>"><?php echo htmlspecialchars($jobOptionName); ?></td>
-                        <?php endif; ?>
+                            <?php if ($index === 0): ?>
+                                <td rowspan="<?php echo $valueCount; ?>"><?php echo htmlspecialchars($jobOptionName); ?></td>
+                            <?php endif; ?>
 
                             <td><?php echo htmlspecialchars($value['ValueName']); ?></td>
 
                             <?php foreach ($data['data'][0]['price_category'] as $category): ?>
-                                <td class="text-right">
-                                    <?php echo ($value['price_category_type'] == $category['price_category_type'])? htmlspecialchars($value['Price']) : '-'; ?>
-                                </td>
+                                <?php 
+                                    $type = $category['price_category_type'];
+                                    $price = isset($value['price_category_type'][$type]) ? $value['price_category_type'][$type] : '-';
+                                ?>
+                                <td class="text-right"><?php echo htmlspecialchars($price); ?></td>
                             <?php endforeach; ?>
 
                             <td class="text-right">
-                            <button title="Edit" class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck!=1? 'd-none' : '')?>" id="<?php echo htmlspecialchars($value['OptionValueID']); ?>" valuename="<?php echo htmlspecialchars($value['ValueName']); ?>"><i class="fas fa-pen"></i></button>
+                                <button title="Edit" 
+                                        class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck != 1 ? 'd-none' : '') ?>" 
+                                        id="<?php echo htmlspecialchars($value['OptionValueID']); ?>" 
+                                        valuename="<?php echo htmlspecialchars($value['ValueName']); ?>">
+                                    <i class="fas fa-pen"></i>
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -48,7 +55,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="<?php echo count($data['data'][0]['price_category']) + 3 ?>" class="text-center">No job options available.</td>
+                <td colspan="<?php echo count($data['data'][0]['price_category']) + 3; ?>" class="text-center">No job options available.</td>
             </tr>
         <?php endif; ?>
     </tbody>
