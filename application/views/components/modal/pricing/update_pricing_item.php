@@ -18,7 +18,7 @@
             <?php if ($data['status']): ?>
             <?php foreach ($data['data'] as $item): ?>
             <div class="row d-flex align-items-center mb-3">
-                <div class="col-4 d-flex align-items-center">
+                <div class="col-5 d-flex align-items-center">
                     <h6 class="small font-weight-bold mb-0 mr-2" style="width: 60px;">
                         <?= htmlspecialchars($item['category_name']) ?>
                     </h6>
@@ -35,7 +35,7 @@
                         style="width: 100%">
                 </div>
 
-                <div class="col-4">
+                <div class="col-3">
                     <?php $hasValues = !empty($item['valid_from']) && isset($item['price']) && $item['price'] !== ''; ?>
                     <select class="form-control form-control-sm"
                         id="status<?= htmlspecialchars($item['PriceCategoryID']) ?>"
