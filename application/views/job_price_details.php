@@ -80,8 +80,9 @@ include "include/topnavbar.php";
 			</div>
 			<div class="modal-body" id="updateModalContent">
 			</div>
+            <input type="text" id="option_value_id" name="option_value_id" hidden/>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary"><i
+				<button type="button" class="btn btn-primary priceUpdateBtn"><i
 						class="fas fa-save mr-2"></i>Update</button>
 			</div>
 		</div>
@@ -186,6 +187,7 @@ include "include/topnavbar.php";
         var id = $(this).attr('id');
         var valuename = $(this).attr('valuename');
         var subCategoryText = $('#sub_job_category option:selected').text();
+        $("#option_value_id").val(id);
         $("#updateModalContent").html('');
         $('#updateModal').modal('show');
         $.ajax({
@@ -201,6 +203,59 @@ include "include/topnavbar.php";
             }
         });
     });
+
+    $(document).on('click', '.priceUpdateBtn', function() {
+        var updatedData = [];
+        var recordID = $("#option_value_id").val();
+        $('.row-price-item').each(function() {
+            var $row = $(this);
+            var price_category_id = $row.data('price_category_id');
+
+            var priceInput = $row.find('.price-input');
+            var dateInput = $row.find('.date-input');
+            var statusInput = $row.find('.status-input');
+
+            var isPriceChanged = priceInput.val() !== priceInput.attr('data-original');
+            var isDateChanged = dateInput.val() !== dateInput.attr('data-original');
+            var isStatusChanged = statusInput.val() !== statusInput.attr('data-original');
+
+            if (isPriceChanged || isDateChanged || isStatusChanged) {
+                updatedData.push({
+                    price_category_id: price_category_id,
+                    price: priceInput.val(),
+                    valid_from: dateInput.val(),
+                    status: statusInput.val()
+                });
+            }
+        });
+        if (updatedData.length > 0) {
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    updatedData: updatedData,
+                    recordID:recordID
+                },
+                url: '<?php echo base_url() ?>Job_price_details/jobOptionPricingUpdate',
+                success: function(result) { 
+                    if (result.status == true) {
+                        success_toastify(result.message);
+                        setTimeout(function() {
+                            $("#updateModalContent").html('');
+                            $('#updateModal').modal('hide');
+                            showPricingDetailsList(sub_job_category.val());
+                        }, 1000);
+                    } else {
+                        falseResponse(result);
+                    }
+                }
+            });
+            
+        } else {
+            error_toastify('No changes detected!');
+        }
+    });
+
         
     function checkedDublicate(input) {
 

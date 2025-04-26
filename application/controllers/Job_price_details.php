@@ -68,4 +68,27 @@ class Job_price_details extends CI_Controller {
 
 		echo ($html);
     }
+
+	public function jobOptionPricingUpdate() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+			'updatedData' => $this->input->post('updatedData'),
+			'recordID' => $this->input->post('recordID'),
+        ];
+
+		$response = $this->Job_price_detailsinfo->jobOptionPricingUpdate($api_token,$form_data);
+		
+		if ($response) {
+			echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Job_price_details');
+		}
+    }
 }
