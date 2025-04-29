@@ -37,6 +37,8 @@ include "include/topnavbar.php";
         								<thead>
         									<tr>
                                                 <th>#</th>
+                                                <th>Sub Job Category</th>
+                                                <th>Job Option Group</th>
                                                 <th>Job Option</th>
         										<th class="text-right">Actions</th>
         									</tr>
@@ -269,6 +271,13 @@ include "include/topnavbar.php";
             "columns": [
                 {
                     "data": "JobOptionID"
+                },
+                {
+                    "data": "sub_job_category"
+                },
+                
+                {
+                    "data": "GroupName"
                 },
                 {
                     "data": "OptionName"
