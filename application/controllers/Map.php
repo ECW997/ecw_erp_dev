@@ -3,10 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 date_default_timezone_set('Asia/Colombo');
 
-class JobOption extends CI_Controller {
+class Map extends CI_Controller {
 	public function __construct() {
         parent::__construct();
-        $this->load->model('JobOptioninfo');
+        $this->load->model('Mapinfo');
     }
 
     public function index(){
@@ -19,7 +19,7 @@ class JobOption extends CI_Controller {
 		
 		$this->load->model('Commeninfo');
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
-		$this->load->view('job_option', $result);
+		$this->load->view('map', $result);
 	}
 
     public function getOptionGroup(){
@@ -34,10 +34,9 @@ class JobOption extends CI_Controller {
 		$form_data = [
 			'term' => $this->input->get('term'),
 			'page' => $this->input->get('page'),
-			'sub_job_category' => $this->input->get('sub_job_category'),
 		];
 
-		$response = $this->JobOptioninfo->getOptionGroup($api_token,$form_data);
+		$response = $this->Mapinfo->getOptionGroup($api_token,$form_data);
 		echo json_encode($response);
 	}
 
@@ -66,9 +65,9 @@ class JobOption extends CI_Controller {
 	
 		$response='';
 		if($recordOption == '1'){
-			$response = $this->JobOptioninfo->jobOptionInsert($api_token,$form_data);
+			$response = $this->Mapinfo->jobOptionInsert($api_token,$form_data);
 		}else{
-			$response = $this->JobOptioninfo->jobOptionUpdate($api_token,$form_data);
+			$response = $this->Mapinfo->jobOptionUpdate($api_token,$form_data);
 		}
 
 		if ($response) {
@@ -87,12 +86,10 @@ class JobOption extends CI_Controller {
 			return;
 		}
 
-        $response = $this->JobOptioninfo->jobOptionEdit($api_token,$id);
+        $response = $this->Mapinfo->jobOptionEdit($api_token,$id);
 
 		echo json_encode($response);
     }
-
-
 
     public function jobOptionDetailsList() {
         $api_token = $this->session->userdata('api_token');
@@ -107,7 +104,7 @@ class JobOption extends CI_Controller {
 		$statuscheck = $this->input->get('statuscheck');
 		$deletecheck = $this->input->get('deletecheck');
 
-        $response = $this->JobOptioninfo->jobOptionDetailsList($api_token,$sub_id);
+        $response = $this->Mapinfo->jobOptionDetailsList($api_token,$sub_id);
 
 		$data['data'] = $response;
 		$data['modalOption'] = $modalOption;
@@ -120,7 +117,6 @@ class JobOption extends CI_Controller {
 		echo ($html);
         echo "<script>console.log('PHP Data:', " . json_encode($data) . ");</script>";
     }
-
 
     public function jobOptionStatus($id, $status) {
         $api_token = $this->session->userdata('api_token');
@@ -135,7 +131,7 @@ class JobOption extends CI_Controller {
 			'status' => $status,
         ];
 
-        $response = $this->JobOptioninfo->jobOptionStatus($api_token,$form_data);
+        $response = $this->Mapinfo->jobOptionStatus($api_token,$form_data);
 
         if ($response) {
 			echo json_encode($response);
@@ -145,7 +141,6 @@ class JobOption extends CI_Controller {
         }
     }
 
-
     public function jobOptionDelete($id) {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
@@ -154,7 +149,7 @@ class JobOption extends CI_Controller {
 			return;
 		}
 
-        $response = $this->JobOptioninfo->jobOptionDelete($api_token,$id);
+        $response = $this->Mapinfo->jobOptionDelete($api_token,$id);
 
         if ($response) {
 			echo json_encode($response);

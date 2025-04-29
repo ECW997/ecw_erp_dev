@@ -80,9 +80,6 @@ class JobCard extends CI_Controller {
         $result=$this->JobCardinfo->jobCardPDF();
 	}
 
-
-
-
     public function getCustomerDetails($id) {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
@@ -161,6 +158,25 @@ class JobCard extends CI_Controller {
         ];
 
         $response = $this->JobCardinfo->getItemParentOptions($api_token,$form_data);
+        if ($response) {
+            echo json_encode($response);
+		}
+    }
+
+	public function getOptionvaluePrice() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $form_data = [
+            'optionValueId' => $this->input->post('optionValueId'),
+			'priceCategoryId' => $this->input->post('priceCategoryId')
+        ];
+
+        $response = $this->JobCardinfo->getOptionvaluePrice($api_token,$form_data);
         if ($response) {
             echo json_encode($response);
 		}

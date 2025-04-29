@@ -19,7 +19,7 @@
                             		<?php 
                                     $i = 0;
                                     foreach ($jobOptionGroup['job_options'] as $jobOption): 
-                                        if ($jobOption['job_option']['OptionType'] == 'Primary'):
+                                        if ($jobOption['job_option']['OptionType'] == 'Primary' || $jobOption['job_option']['OptionType'] == 'Type'):
                                             if ($i % 2 == 0): ?>
                             			        <div class="row job-option-wrapper" data-level="0">
                             				<?php endif; ?>
@@ -96,6 +96,7 @@
         var selectedOptionValue = $(this).val();   
         var optionType = $(this).data('option-type'); 
         var subJobCategoryID = $(this).data('sub-job-category'); 
+        var optionGroupID = $(this).data('option-group'); 
         const jobOptionID = $(this).data('option-id');
         const currentWrapper = $(this).closest('.job-option-wrapper');
 
@@ -146,6 +147,8 @@
             }
             });
         }
+
+        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue);
     });
 
     $(document).on('input', '.item-price, .item-qty', function () {   
@@ -157,6 +160,22 @@
 
         updateTotalNetPrice();
     });
+
+    function getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue){
+       var price_category = $('#price_category').val();
+       $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: '<?php echo base_url() ?>JobCard/getOptionvaluePrice',
+            data: { optionValueId: selectedOptionValue, 
+                    priceCategoryId: price_category},
+            success: function(result) { 
+                if(result.status){
+                    $('#item_price_' + subJobCategoryID + '_' + optionGroupID).val(result.data.Price);
+                }
+            }
+        });
+    }
 
     function updateTotalNetPrice() {
         let total = 0;

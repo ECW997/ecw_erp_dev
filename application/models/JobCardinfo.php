@@ -36,6 +36,11 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'get_item_parent_options_v1', $form_data, $headers);
     }
 
+    public function getOptionvaluePrice($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_item_price_v1', $form_data, $headers);
+    }
+
 
 
     public function Getvehicletype(){
