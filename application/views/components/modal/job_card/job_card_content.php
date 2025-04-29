@@ -242,6 +242,7 @@ function showAddJobItemModal(button) {
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
+    $('#jobCardForm').empty();
     $.ajax({
         type: "GET",
         url: '<?php echo base_url() ?>JobCard/getSubJob/' + MainJobId,

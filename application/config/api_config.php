@@ -38,6 +38,7 @@ $config['api_endpoints'] = [
     'job_card_v1' => '/v1/job_card',
     'get_sub_job_base_main_v1' => '/v1/get_sub_job_base_main',
     'get_item_parent_options_v1' => '/v1/get_item_parent_options',
+    'get_item_price_v1' => '/v1/get_item_price',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',

@@ -293,6 +293,7 @@ $(document).ready(function() {
                 return {
                     term: params.term || '',
                     page: params.page || 1,
+                    sub_job_category:sub_job_category.val()
                 }
             },
             cache: true,

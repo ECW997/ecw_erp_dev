@@ -474,6 +474,10 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
             <?php }?>
 
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Map'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Map
+            </a>
+
             <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1 | menucheck($menuprivilegearray, 4)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
