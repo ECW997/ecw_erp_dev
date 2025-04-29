@@ -43,6 +43,8 @@ $config['api_endpoints'] = [
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
     'job_option_pricing_v1' => '/v1/job_option_pricing',
+
+    'get_map_pdf_v1' => '/v1/get_map_pdf',
  
 
 ];

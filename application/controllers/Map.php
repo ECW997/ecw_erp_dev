@@ -22,7 +22,7 @@ class Map extends CI_Controller {
 		$this->load->view('map', $result);
 	}
 
-    public function getOptionGroup(){
+    public function getMapPdf(){
 		$api_token = $this->session->userdata('api_token');
 
 		if (!$api_token) {
@@ -32,11 +32,10 @@ class Map extends CI_Controller {
 		}
 
 		$form_data = [
-			'term' => $this->input->get('term'),
-			'page' => $this->input->get('page'),
+			'sub_job_category' => $this->input->get('sub_job_category')
 		];
 
-		$response = $this->Mapinfo->getOptionGroup($api_token,$form_data);
+		$response = $this->Mapinfo->getMapPdf($api_token,$form_data);
 		echo json_encode($response);
 	}
 
