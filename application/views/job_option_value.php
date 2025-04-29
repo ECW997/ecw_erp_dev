@@ -35,11 +35,12 @@ include "include/topnavbar.php";
                             <div class="me-5 mb-2" style="min-width: 300px;">
                                 <label class="small font-weight-bold">Sub Job Category*</label>
                                 <select class="form-control form-control-sm" name="sub_job_category"
-                                    id="sub_job_category" onchange="showPricingDetailsList(this.value);" required>
+                                    id="sub_job_category" onchange="showdatatable(this.value);" required>
                                     <option value="">Select</option>
                                 </select>
                             </div>
                         </div>
+                    
 
                         <div class="mb-2">
                             <button type="button" id="addBtn"
@@ -185,67 +186,73 @@ var statuscheck = '<?php echo $statuscheck; ?>';
 var deletecheck = '<?php echo $deletecheck; ?>';
 
 
-let main_job_category = $('#main_job_category');
-let sub_job_category = $('#sub_job_category');
+$(document).ready(function() {
+    let main_job_category = $('#main_job_category');
+    let sub_job_category = $('#sub_job_category');
 
-main_job_category.select2({
-    placeholder: 'Select...',
-    width: '100%',
-    allowClear: true,
-    ajax: {
-        url: '<?php echo base_url() ?>SubJobCategory/getMainJob',
-        dataType: 'json',
-        data: function(params) {
-            return {
-                term: params.term || '',
-                page: params.page || 1,
-            }
-        },
-        cache: true,
-        processResults: function(data) {
-            if (data.status == true) {
+    main_job_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>SubJobCategory/getMainJob',
+            dataType: 'json',
+            data: function(params) {
                 return {
-                    results: data.data.item,
-                    pagination: {
-                        more: data.data.item.length > 0
-                    }
+                    term: params.term || '',
+                    page: params.page || 1,
                 }
-            } else {
-                falseResponse(data);
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
             }
         }
-    }
-});
+    });
 
-sub_job_category.select2({
-    placeholder: 'Select...',
-    width: '100%',
-    allowClear: true,
-    ajax: {
-        url: '<?php echo base_url() ?>SubJobCategory/getSubJob',
-        dataType: 'json',
-        data: function(params) {
-            return {
-                term: params.term || '',
-                page: params.page || 1,
-                mainJob: main_job_category.val()
-            }
-        },
-        cache: true,
-        processResults: function(data) {
-            if (data.status == true) {
+    sub_job_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>SubJobCategory/getSubJob',
+            dataType: 'json',
+            data: function(params) {
                 return {
-                    results: data.data.item,
-                    pagination: {
-                        more: data.data.item.length > 0
-                    }
+                    term: params.term || '',
+                    page: params.page || 1,
+                    mainJob: main_job_category.val()
                 }
-            } else {
-                falseResponse(data);
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
             }
         }
-    }
+    });
+
+    showdatatable(sub_job_category.val());
 });
+
+
 
 $(document).ready(function() {
     let job_option = $('#job_option');
@@ -310,95 +317,95 @@ $(document).ready(function() {
         }
     });
 
-    $('#dataTable').DataTable({
-        "destroy": true,
-        "processing": true,
-        "serverSide": false,
-        dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        responsive: true,
-        lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, 'All'],
-        ],
-        "buttons": [{
-                extend: 'csv',
-                className: 'btn btn-success btn-sm',
-                title: 'Job Option Value Information',
-                text: '<i class="fas fa-file-csv mr-2"></i> CSV',
-            },
-            {
-                extend: 'pdf',
-                className: 'btn btn-danger btn-sm',
-                title: 'Job Option Value Information',
-                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
-            },
-            {
-                extend: 'print',
-                title: 'Job Option Value Information',
-                className: 'btn btn-primary btn-sm',
-                text: '<i class="fas fa-print mr-2"></i> Print',
-                customize: function(win) {
-                    $(win.document.body).find('table')
-                        .addClass('compact')
-                        .css('font-size', 'inherit');
-                },
-            },
-        ],
-        ajax: {
-            url: apiBaseUrl + '/v1/job_option_value',
-            type: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + api_token
-            },
-            dataSrc: function(json) {
-                if (json.status === false && json.code === 401) {
-                    falseResponse(errorObj);
-                } else {
-                    return json.data;
-                }
-            },
-            error: function(xhr, status, error) {
-                if (xhr.status === 401) {
-                    falseResponse(errorObj);
-                }
-            }
-        },
-        "order": [
-            [0, "desc"]
-        ],
-        "columns": [{
-                "data": "JobOptionID"
-            },
-            {
-                "data": "sub_job_category"
-            },
+    // $('#dataTable').DataTable({
+    //     "destroy": true,
+    //     "processing": true,
+    //     "serverSide": false,
+    //     dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
+    //         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    //     responsive: true,
+    //     lengthMenu: [
+    //         [10, 25, 50, -1],
+    //         [10, 25, 50, 'All'],
+    //     ],
+    //     "buttons": [{
+    //             extend: 'csv',
+    //             className: 'btn btn-success btn-sm',
+    //             title: 'Job Option Value Information',
+    //             text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+    //         },
+    //         {
+    //             extend: 'pdf',
+    //             className: 'btn btn-danger btn-sm',
+    //             title: 'Job Option Value Information',
+    //             text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+    //         },
+    //         {
+    //             extend: 'print',
+    //             title: 'Job Option Value Information',
+    //             className: 'btn btn-primary btn-sm',
+    //             text: '<i class="fas fa-print mr-2"></i> Print',
+    //             customize: function(win) {
+    //                 $(win.document.body).find('table')
+    //                     .addClass('compact')
+    //                     .css('font-size', 'inherit');
+    //             },
+    //         },
+    //     ],
+    //     // ajax: {
+    //     //     url: apiBaseUrl + '/v1/job_option_value',
+    //     //     type: "GET",
+    //     //     headers: {
+    //     //         'Accept': 'application/json',
+    //     //         'Content-Type': 'application/json',
+    //     //         'Authorization': 'Bearer ' + api_token
+    //     //     },
+    //     //     dataSrc: function(json) {
+    //     //         if (json.status === false && json.code === 401) {
+    //     //             falseResponse(errorObj);
+    //     //         } else {
+    //     //             return json.data;
+    //     //         }
+    //     //     },
+    //     //     error: function(xhr, status, error) {
+    //     //         if (xhr.status === 401) {
+    //     //             falseResponse(errorObj);
+    //     //         }
+    //     //     }
+    //     // },
+    //     "order": [
+    //         [0, "desc"]
+    //     ],
+    //     "columns": [{
+    //             "data": "JobOptionID"
+    //         },
+    //         {
+    //             "data": "sub_job_category"
+    //         },
 
-            {
-                "data": "GroupName"
-            },
-            {
-                "data": "OptionName"
-            },
-            {
-                "targets": -1,
-                "className": 'text-right',
-                "data": null,
-                "render": function(data, type, full) {
-                    var button = '';
-                    button +=
-                        '<button title="View" class="btn btn-secondary btn-sm btnView mr-1 " onclick="showViewModal(' +
-                        full['JobOptionID'] + ');"><i class="fas fa-eye"></i></button>';
-                    return button;
-                }
-            }
-        ],
-        drawCallback: function(settings) {
-            $('[data-toggle="tooltip"]').tooltip();
-        }
-    });
+    //         {
+    //             "data": "GroupName"
+    //         },
+    //         {
+    //             "data": "OptionName"
+    //         },
+    //         {
+    //             "targets": -1,
+    //             "className": 'text-right',
+    //             "data": null,
+    //             "render": function(data, type, full) {
+    //                 var button = '';
+    //                 button +=
+    //                     '<button title="View" class="btn btn-secondary btn-sm btnView mr-1 " onclick="showViewModal(' +
+    //                     full['JobOptionID'] + ');"><i class="fas fa-eye"></i></button>';
+    //                 return button;
+    //             }
+    //         }
+    //     ],
+    //     drawCallback: function(settings) {
+    //         $('[data-toggle="tooltip"]').tooltip();
+    //     }
+    // });
 
     $(document).on('click', '#addtolistBtn', function() {
         var job_option = $('#job_option').val();
@@ -505,6 +512,116 @@ $(document).ready(function() {
         }
     });
 });
+
+// console.log(showdatatable);
+// alert(sub_job_category);
+
+function showdatatable(sub_job_category) {
+
+    $('#dataTable').DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: false,
+        dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        responsive: true,
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All'],
+        ],
+        buttons: [{
+                extend: 'csv',
+                className: 'btn btn-success btn-sm',
+                title: 'Job Option Value Information',
+                text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-danger btn-sm',
+                title: 'Job Option Value Information',
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+            },
+            {
+                extend: 'print',
+                title: 'Job Option Value Information',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fas fa-print mr-2"></i> Print',
+                customize: function(win) {
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                },
+            },
+        ],
+        ajax: {
+            url: apiBaseUrl + '/v1/job_option_value',
+            data: {
+                sub_job_category: sub_job_category
+            },
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            dataSrc: function(json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                    return [];
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
+        },
+        order: [
+            [0, "desc"]
+        ],
+        columns: [{
+                data: "JobOptionID"
+            },
+            {
+                data: "sub_job_category"
+            },
+            {
+                data: "GroupName"
+            },
+            {
+                data: "OptionName"
+            },
+            {
+                targets: -1,
+                className: 'text-right',
+                data: null,
+                render: function(data, type, full) {
+                    return '<button title="View" class="btn btn-secondary btn-sm btnView mr-1" onclick="showViewModal(' +
+                        full['JobOptionID'] + ');"><i class="fas fa-eye"></i></button>';
+                }
+            }
+        ],
+        drawCallback: function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setSelect2Value(selectElement, id, text) {
     console.log(id);
