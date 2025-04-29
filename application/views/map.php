@@ -64,7 +64,28 @@ include "include/topnavbar.php";
                 <div class="card">
                     <div class="card-body p-0 p-2">
                         <div class="row">
-                        <div id="treeContainer"></div>
+                        	<div class="col-3">
+                        		<label class="small font-weight-bold">Main Job Category*</label>
+                        		<select class="form-control form-control-sm " name="main_job_category"
+                        			id="main_job_category" required>
+                        			<option value="">Select</option>
+                        		</select>
+                        	</div>
+                        	<div class="col-3">
+                        		<label class="small font-weight-bold">Sub Job Category*</label>
+                        		<select class="form-control form-control-sm " name="sub_job_category"
+                        			id="sub_job_category" onchange="getMapDetails(this.value);" required>
+                        			<option value="">Select</option>
+                        		</select>
+                        	</div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-danger btn-sm px-4 mt-auto p-2"><i class="fas fa-file-pdf mr-2" onclick="exportPDF();"></i>Export</button>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div id="treeContainer"></div>
                         </div>
                     </div>
                 </div>
@@ -77,10 +98,72 @@ include "include/topnavbar.php";
 
 <script>
 $(document).ready(function() {
-    getMapDetails();
+    let main_job_category = $('#main_job_category');
+    let sub_job_category = $('#sub_job_category');
+
+    main_job_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>SubJobCategory/getMainJob',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
+    sub_job_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>SubJobCategory/getSubJob',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                    mainJob: main_job_category.val()
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
+    getMapDetails(sub_job_category.val());
 });
 
-function getMapDetails(){
+function getMapDetails(sub_job_category){
     $.ajax({
         url: apiBaseUrl+'/v1/map', 
         type: "GET",
@@ -89,6 +172,7 @@ function getMapDetails(){
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + api_token 
         }, 
+        data: {sub_job_category: sub_job_category},
         success: function(result) {
             if (result.status) {
                 renderTree(result.data); 
@@ -119,8 +203,7 @@ function renderTree(data) {
                                 if (option.OptionType !== 'Conditional' && data.OptionValues[option.JobOptionID]) {
                                     html += '<ul>';
                                     data.OptionValues[option.JobOptionID].forEach(primaryValue => {
-                                        html += `<li><strong>${primaryValue.ValueName}</strong>`;
-
+                                        html += `<li><strong>${primaryValue.ValueName} (${primaryValue.price_category_type})</strong> - ${primaryValue.Price}`;
                                         Object.keys(data.jobOptions).forEach(childKey => {
                                             const childOptions = data.jobOptions[childKey];
                                             childOptions.forEach(childOption => { 
@@ -154,6 +237,7 @@ function renderTree(data) {
             });
         }
 
+        html += '<br><hr>';
         html += '</ul></li>';
     });
 
@@ -161,6 +245,35 @@ function renderTree(data) {
 
     document.getElementById('treeContainer').innerHTML = html;
 
+}
+
+function exportPDF() {
+    let sub_job_category = $('#sub_job_category').val();
+
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+            sub_job_category: sub_job_category
+        },
+        url: '<?php echo base_url() ?>Map/getMapPdf',
+        success: function(result) { 
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    $("#updateModalContent").html('');
+                    $('#updateModal').modal('hide');
+                    showPricingDetailsList(sub_job_category.val());
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
+
+    const baseUrl = "<?php echo base_url(); ?>Map/inquiry_summery_pdf";
+    const url = `${baseUrl}?inquiry_source=${encodeURIComponent(inquiry_source)}&sales_person=${encodeURIComponent(sales_person)}&job=${encodeURIComponent(job)}&date_from=${encodeURIComponent(date_from)}&date_to=${encodeURIComponent(date_to)}`;
+    window.open(url, '_blank');
 }
 
 
