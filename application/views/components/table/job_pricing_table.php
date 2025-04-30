@@ -19,38 +19,40 @@
                     $optionValues = $jobDetail['option_values'];
                     $valueCount = count($optionValues);
                 ?>
-                <?php if (!empty($optionValues)): ?>
-                    <?php foreach ($optionValues as $index => $value): ?>
-                        <tr>
-                            <?php if ($index === 0): ?>
-                                <td rowspan="<?php echo $valueCount; ?>"><?php echo htmlspecialchars($jobOptionName); ?></td>
-                            <?php endif; ?>
+                 <?php if ($jobDetail['job_option']['OptionType'] != 'Conditional'): ?>
+                    <?php if (!empty($optionValues)): ?>
+                        <?php foreach ($optionValues as $index => $value):?>
+                            <tr>
+                                <?php if ($index === 0): ?>
+                                    <td rowspan="<?php echo $valueCount; ?>"><?php echo htmlspecialchars($jobOptionName); ?></td>
+                                <?php endif; ?>
 
-                            <td><?php echo htmlspecialchars($value['ValueName']); ?></td>
+                                <td><?php echo htmlspecialchars($value['ValueName']); ?></td>
 
-                            <?php foreach ($data['data'][0]['price_category'] as $category): ?>
-                                <?php 
-                                    $type = $category['price_category_type'];
-                                    $price = isset($value['price_category_type'][$type]) ? $value['price_category_type'][$type] : '-';
-                                ?>
-                                <td class="text-right"><?php echo htmlspecialchars($price); ?></td>
-                            <?php endforeach; ?>
+                                <?php foreach ($data['data'][0]['price_category'] as $category): ?>
+                                    <?php 
+                                        $type = $category['price_category_type'];
+                                        $price = isset($value['price_category_type'][$type]) ? $value['price_category_type'][$type] : '-';
+                                    ?>
+                                    <td class="text-right"><?php echo htmlspecialchars($price); ?></td>
+                                <?php endforeach; ?>
 
-                            <td class="text-right">
-                                <button title="Edit" 
-                                        class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck != 1 ? 'd-none' : '') ?>" 
-                                        id="<?php echo htmlspecialchars($value['OptionValueID']); ?>" 
-                                        valuename="<?php echo htmlspecialchars($value['ValueName']); ?>">
-                                    <i class="fas fa-pen"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+                                <td class="text-right">
+                                    <button title="Edit" 
+                                            class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck != 1 ? 'd-none' : '') ?>" 
+                                            id="<?php echo htmlspecialchars($value['OptionValueID']); ?>" 
+                                            valuename="<?php echo htmlspecialchars($value['ValueName']); ?>">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                     <tr>
                         <td><?php echo htmlspecialchars($jobOptionName); ?></td>
                         <td colspan="<?php echo count($data['data'][0]['price_category']) + 2; ?>" class="text-center">No option values</td>
                     </tr>
+                <?php endif; ?>
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
