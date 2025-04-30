@@ -24,7 +24,7 @@ include "include/topnavbar.php";
                     <div class="card-header d-flex justify-content-between align-items-end flex-wrap">
                         <div class="d-flex flex-wrap">
                             <div class="me-5 mb-2" style="min-width: 300px;">
-                                <label class="small font-weight-bold">Main Job Category*</label>
+                                <label class="small font-weight-bold text-dark">Main Job Category*</label>
                                 <select class="form-control form-control-sm" name="main_job_category"
                                     id="main_job_category" required>
                                     <option value="">Select</option>
@@ -33,7 +33,7 @@ include "include/topnavbar.php";
                             <div class="me-5 mb-2" style="min-width: 50px;">
                             </div>
                             <div class="me-5 mb-2" style="min-width: 300px;">
-                                <label class="small font-weight-bold">Sub Job Category*</label>
+                                <label class="small font-weight-bold text-dark">Sub Job Category*</label>
                                 <select class="form-control form-control-sm" name="sub_job_category"
                                     id="sub_job_category" onchange="showdatatable(this.value);" required>
                                     <option value="">Select</option>
