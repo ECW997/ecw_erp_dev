@@ -40,7 +40,7 @@ include "include/topnavbar.php";
                                 </select>
                             </div>
                         </div>
-                    
+
 
                         <div class="mb-2">
                             <button type="button" id="addBtn"
@@ -259,36 +259,37 @@ $(document).ready(function() {
     let parent_option_value = $('#parent_option_value');
 
 
-    job_option.select2({
-        placeholder: 'Select...',
-        width: '100%',
-        allowClear: true,
-        ajax: {
-            url: '<?php echo base_url() ?>JobOptionValue/getJobOption',
-            dataType: 'json',
-            data: function(params) {
-                return {
-                    term: params.term || '',
-                    page: params.page || 1,
-                }
-            },
-            cache: true,
-            processResults: function(data) {
-                if (data.status == true) {
+    $('#addModal').on('shown.bs.modal', function() {
+        $('#job_option').select2({
+            dropdownParent: $('#addModal'),
+            placeholder: 'Select...',
+            width: '100%',
+            allowClear: true,
+            ajax: {
+                url: '<?php echo base_url() ?>JobOptionValue/getJobOption',
+                dataType: 'json',
+                data: function(params) {
                     return {
-                        results: data.data.item,
-                        pagination: {
-                            more: data.data.item.length > 0
+                        term: params.term || '',
+                        page: params.page || 1,
+                    }
+                },
+                processResults: function(data) {
+                    if (data.status == true) {
+                        return {
+                            results: data.data.item,
+                            pagination: {
+                                more: data.data.pagination.more
+                            }
                         }
                     }
-                } else {
-                    falseResponse(data);
                 }
             }
-        }
+        });
     });
 
-    parent_option_value.select2({
+    $('#parent_option_value').select2({
+        dropdownParent: $('#addModal'),
         placeholder: 'Select...',
         width: '100%',
         allowClear: true,
@@ -299,17 +300,16 @@ $(document).ready(function() {
                 return {
                     term: params.term || '',
                     page: params.page || 1,
-                }
+                };
             },
-            cache: true,
             processResults: function(data) {
                 if (data.status == true) {
                     return {
                         results: data.data.item,
                         pagination: {
-                            more: data.data.item.length > 0
+                            more: data.data.pagination.more
                         }
-                    }
+                    };
                 } else {
                     falseResponse(data);
                 }
@@ -317,95 +317,7 @@ $(document).ready(function() {
         }
     });
 
-    // $('#dataTable').DataTable({
-    //     "destroy": true,
-    //     "processing": true,
-    //     "serverSide": false,
-    //     dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
-    //         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-    //     responsive: true,
-    //     lengthMenu: [
-    //         [10, 25, 50, -1],
-    //         [10, 25, 50, 'All'],
-    //     ],
-    //     "buttons": [{
-    //             extend: 'csv',
-    //             className: 'btn btn-success btn-sm',
-    //             title: 'Job Option Value Information',
-    //             text: '<i class="fas fa-file-csv mr-2"></i> CSV',
-    //         },
-    //         {
-    //             extend: 'pdf',
-    //             className: 'btn btn-danger btn-sm',
-    //             title: 'Job Option Value Information',
-    //             text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
-    //         },
-    //         {
-    //             extend: 'print',
-    //             title: 'Job Option Value Information',
-    //             className: 'btn btn-primary btn-sm',
-    //             text: '<i class="fas fa-print mr-2"></i> Print',
-    //             customize: function(win) {
-    //                 $(win.document.body).find('table')
-    //                     .addClass('compact')
-    //                     .css('font-size', 'inherit');
-    //             },
-    //         },
-    //     ],
-    //     // ajax: {
-    //     //     url: apiBaseUrl + '/v1/job_option_value',
-    //     //     type: "GET",
-    //     //     headers: {
-    //     //         'Accept': 'application/json',
-    //     //         'Content-Type': 'application/json',
-    //     //         'Authorization': 'Bearer ' + api_token
-    //     //     },
-    //     //     dataSrc: function(json) {
-    //     //         if (json.status === false && json.code === 401) {
-    //     //             falseResponse(errorObj);
-    //     //         } else {
-    //     //             return json.data;
-    //     //         }
-    //     //     },
-    //     //     error: function(xhr, status, error) {
-    //     //         if (xhr.status === 401) {
-    //     //             falseResponse(errorObj);
-    //     //         }
-    //     //     }
-    //     // },
-    //     "order": [
-    //         [0, "desc"]
-    //     ],
-    //     "columns": [{
-    //             "data": "JobOptionID"
-    //         },
-    //         {
-    //             "data": "sub_job_category"
-    //         },
 
-    //         {
-    //             "data": "GroupName"
-    //         },
-    //         {
-    //             "data": "OptionName"
-    //         },
-    //         {
-    //             "targets": -1,
-    //             "className": 'text-right',
-    //             "data": null,
-    //             "render": function(data, type, full) {
-    //                 var button = '';
-    //                 button +=
-    //                     '<button title="View" class="btn btn-secondary btn-sm btnView mr-1 " onclick="showViewModal(' +
-    //                     full['JobOptionID'] + ');"><i class="fas fa-eye"></i></button>';
-    //                 return button;
-    //             }
-    //         }
-    //     ],
-    //     drawCallback: function(settings) {
-    //         $('[data-toggle="tooltip"]').tooltip();
-    //     }
-    // });
 
     $(document).on('click', '#addtolistBtn', function() {
         var job_option = $('#job_option').val();
