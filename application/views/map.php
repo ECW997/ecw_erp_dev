@@ -81,7 +81,7 @@ include "include/topnavbar.php";
                         </div>
                         <div class="row mt-3">
                             <div class="col-12">
-                                <button type="button" class="btn btn-danger btn-sm px-4 mt-auto p-2"><i class="fas fa-file-pdf mr-2" onclick="exportPDF();"></i>Export</button>
+                                <button type="button" class="btn btn-danger btn-sm px-4 mt-auto p-2" onclick="exportPDF();"><i class="fas fa-file-pdf mr-2"></i>Export</button>
                             </div>
                         </div>
                         <div class="row mt-5">
@@ -248,32 +248,34 @@ function renderTree(data) {
 }
 
 function exportPDF() {
-    let sub_job_category = $('#sub_job_category').val();
+
+    var content = $('#treeContainer').html();
 
     $.ajax({
-        type: "POST",
-        dataType: 'json',
-        data: {
-            sub_job_category: sub_job_category
+        url: '<?= base_url("Map/generate_pdf") ?>',
+        method: 'POST',
+        data: { html_content: content },
+        xhrFields: {
+            responseType: 'blob' // important for binary PDF response
         },
-        url: '<?php echo base_url() ?>Map/getMapPdf',
-        success: function(result) { 
-            if (result.status == true) {
-                success_toastify(result.message);
-                setTimeout(function() {
-                    $("#updateModalContent").html('');
-                    $('#updateModal').modal('hide');
-                    showPricingDetailsList(sub_job_category.val());
-                }, 1000);
-            } else {
-                falseResponse(result);
-            }
+        success: function (response) {
+            var blob = new Blob([response], { type: 'application/pdf' });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Map.pdf";
+            link.click();
+        },
+        error: function () {
+            alert("Error generating PDF");
         }
     });
 
-    const baseUrl = "<?php echo base_url(); ?>Map/inquiry_summery_pdf";
-    const url = `${baseUrl}?inquiry_source=${encodeURIComponent(inquiry_source)}&sales_person=${encodeURIComponent(sales_person)}&job=${encodeURIComponent(job)}&date_from=${encodeURIComponent(date_from)}&date_to=${encodeURIComponent(date_to)}`;
-    window.open(url, '_blank');
+    // let sub_job_category = $('#sub_job_category').val();
+
+    // const baseUrl = "<?php echo base_url(); ?>Map/getMapPdf";
+    // const url = `${baseUrl}?sub_job_category=${encodeURIComponent(sub_job_category)}`;
+
+    // window.location.href = url;
 }
 
 

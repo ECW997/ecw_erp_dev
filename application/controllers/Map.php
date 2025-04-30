@@ -22,7 +22,8 @@ class Map extends CI_Controller {
 		$this->load->view('map', $result);
 	}
 
-    public function getMapPdf(){
+    public function getMapPdf()
+	{
 		$api_token = $this->session->userdata('api_token');
 
 		if (!$api_token) {
@@ -31,13 +32,54 @@ class Map extends CI_Controller {
 			return;
 		}
 
-		$form_data = [
-			'sub_job_category' => $this->input->get('sub_job_category')
-		];
+		$sub_job_category = $this->input->get('sub_job_category');
+		$api_url = 'https://devapi.ecw.lk/api/v1/get_map_pdf';
 
-		$response = $this->Mapinfo->getMapPdf($api_token,$form_data);
-		echo json_encode($response);
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL, $api_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+			'sub_job_category' => $sub_job_category
+		]));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'Accept: application/pdf',
+			'Content-Type: application/json',
+			'Authorization: Bearer ' . $api_token
+		]);
+
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$error = curl_error($ch);
+		$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+		curl_close($ch);
+
+		if ($httpCode == 200) {
+			header("Content-Type: $contentType");
+			header("Content-Disposition: inline; filename=Map.pdf");
+			echo $response;
+		} else {
+			echo "Failed to generate PDF. Please try again.";
+		}
+
+		exit;
 	}
+
+	public function generate_pdf() {
+        $html = $this->input->post('html_content');
+
+		$this->load->library('Pdf');
+        $this->pdf->set_option('isRemoteEnabled', true);
+        $this->pdf->setPaper('A4', 'portrait');
+        $this->pdf->loadHtml($html, 'UTF-8');
+        $this->pdf->render();
+        $this->pdf->stream( "Map.pdf", array("Attachment"=>0));
+
+        // Output PDF
+        header("Content-type: application/pdf");
+        echo $pdf->output();
+    }
 
 	public function jobOptionInsertUpdate() {
         $api_token = $this->session->userdata('api_token');
