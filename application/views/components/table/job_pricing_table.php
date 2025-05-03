@@ -19,7 +19,7 @@
                     $optionValues = $jobDetail['option_values'];
                     $valueCount = count($optionValues);
                 ?>
-                 <?php if ($jobDetail['job_option']['OptionType'] != 'Conditional'): ?>
+
                     <?php if (!empty($optionValues)): ?>
                         <?php foreach ($optionValues as $index => $value):?>
                             <tr>
@@ -53,7 +53,7 @@
                         <td colspan="<?php echo count($data['data'][0]['price_category']) + 2; ?>" class="text-center">No option values</td>
                     </tr>
                 <?php endif; ?>
-                <?php endif; ?>
+             
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
