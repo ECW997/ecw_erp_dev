@@ -433,14 +433,14 @@ function showdatatable(sub_job_category) {
     $('#dataTable').DataTable({
         destroy: true,
         processing: true,
-        serverSide: false,
+        serverSide: true,
         dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         responsive: true,
         lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, 'All'],
+            [25, 50, -1],
+            [25, 50, 'All'],
         ],
         buttons: [{
                 extend: 'csv',
