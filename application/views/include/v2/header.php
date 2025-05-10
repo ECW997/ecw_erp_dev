@@ -33,6 +33,7 @@ function menucheck($arraymenu, $menuID){
     <link href="<?php echo base_url() ?>assets/bootstrap5-2/css/bootstrap.min.css" rel="stylesheet" />
     <link href="<?php echo base_url() ?>assets/css/style.css" rel="stylesheet" />
     <link href="<?php echo base_url() ?>assets/css/styles.css" rel="stylesheet" />
+    <link href="<?php echo base_url() ?>assets/css/style_v2.css" rel="stylesheet" />
     <link href="<?php echo base_url() ?>assets/css/jobcard.css" rel="stylesheet" />
     <link href="<?php echo base_url() ?>assets/css/animate.css" rel="stylesheet" />
     <link href="<?php echo base_url() ?>assets/css/select2.css" rel="stylesheet" />
