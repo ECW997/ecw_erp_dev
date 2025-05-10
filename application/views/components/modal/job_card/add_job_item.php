@@ -11,7 +11,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="row d-flex align-items-center">
-					<div class="col-12 col-md-4 mb-2 mb-md-0">
+					<div class="col-12 col-md-3 mb-2 mb-md-0">
 						<h2>Job Card</h2>
 					</div>
 					<div class="col-12 col-md-3 d-flex align-items-center mb-2 mb-md-0">
@@ -20,9 +20,17 @@
 							<option value="">Select</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-3 d-flex justify-content-md-end align-items-center mb-2 mb-md-0">
-						<h6 class="col-form-label me-2 text-nowrap">Discount %</h6>
-						<input class="form-control form-control-sm" type="number" step="any" id="item_discount"
+					<div class="col-12 col-md-4 d-flex justify-content-md-end align-items-center mb-2 mb-md-0">
+                        <div class="input-group input-group-sm justify-content-md-end align-items-center me-2">
+                        	<div class="input-group-prepend">
+                        		<h6 class="col-form-label me-1 text-nowrap">Discount</h6>
+                        	</div>
+                        	<select class="form-select form-select-sm w-50 discount_type" id="discount_type" onchange="updateTotalNetPrice();">
+                        		<option value="1">%</option>
+                        		<option value="2">Amount</option>
+                        	</select>
+                        </div>
+						<input class="form-control form-control-sm text-end item_discount" type="number" step="any" id="item_discount"
 							name="item_discount">
 					</div>
 					<div class="col-12 col-md-2 d-flex justify-content-md-end align-items-center">
@@ -34,7 +42,7 @@
 				<form action="" id="jobCardForm"></form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="addToJobCardBtn" class="btn btn-info">Add to Job Card<i
+				<button type="button" id="addToJobCardBtn" class="btn btn-info" onclick="addToJobCard();">Add to Job Card<i
 						class="fas fa-plus-circle ml-2"></i></i></button>
 			</div>
 		</div>
@@ -146,4 +154,150 @@ function reSetContent(target) {
 
     isUnsaved = false;
 }
+
+function addToJobCard(){
+    let allValid = true;
+    const validatedGroups = {};
+    const jobData = [];
+    const structuredJobData = {};
+ 
+    editedSubJobs.forEach(function (subJobId) {
+        const section = $('#collapse' + subJobId);
+        const requiredFields = section.find('[required]');
+        let sectionValid = true;
+
+
+        requiredFields.each(function () {
+            const $field = $(this);
+            const val = $field.val()?.trim();
+
+            if (!val || val == "0" ||  val == "") {
+                $field.addClass('is-invalid');
+                sectionValid = false;
+            } else {
+                $field.removeClass('is-invalid');
+            }
+        });
+
+        section.find('.job-option-select').each(function () {
+            const selectedVal = $(this).val()?.trim();
+            const optionType = $(this).data('option-type');
+            const optionID = $(this).data('option-id');
+            const subJobCategoryID = $(this).data('sub-job-category');
+            const optionGroupID = $(this).data('option-group');
+            const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
+
+            const priceField = $('#item_price_' + groupKey);
+            const qtyField = $('#item_qty_' + groupKey);
+            const netPriceField = $('#item_net_price_' + groupKey);
+
+            if (!priceField.length && !qtyField.length && !netPriceField.length) {
+                return;
+            }
+
+            if (validatedGroups[groupKey]) {
+                return; 
+            }
+
+            const groupHasSelection = section.find(`.job-option-select[data-sub-job-category="${subJobCategoryID}"][data-option-group="${optionGroupID}"][data-option-id="${optionID}"]`)
+                                        .toArray()
+                                        .some(el => $(el).val()?.trim() !== "");
+
+            if (groupHasSelection) {
+
+                if (!priceField.val()?.trim() || priceField.val().trim() === "0") {
+                    priceField.addClass('is-invalid');
+                    allValid = false;
+                } else {
+                    priceField.removeClass('is-invalid');
+                }
+
+                if (!qtyField.val()?.trim() || qtyField.val().trim() === "0") {
+                    qtyField.addClass('is-invalid');
+                    allValid = false;
+                } else {
+                    qtyField.removeClass('is-invalid');
+                }
+
+                if (!netPriceField.val()?.trim() || netPriceField.val().trim() === "0") {
+                    netPriceField.addClass('is-invalid');
+                    allValid = false;
+                } else {
+                    netPriceField.removeClass('is-invalid');
+                }
+            } else {
+                priceField.removeClass('is-invalid');
+                qtyField.removeClass('is-invalid');
+                netPriceField.removeClass('is-invalid');
+            }
+
+            validatedGroups[groupKey] = true;
+        });
+
+        section.find('.job-option-select').each(function () {
+            const selectedVal = $(this).val()?.trim();
+            if (!selectedVal) return;
+
+            const optionType = $(this).data('option-type');
+            const subJobCategoryID = $(this).data('sub-job-category');
+            const optionGroupID = $(this).data('option-group');
+            const optionID = $(this).data('option-id');
+            const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
+
+            const price = $('#item_price_' + groupKey).val()?.trim();
+            const qty = $('#item_qty_' + groupKey).val()?.trim();
+            const netPrice = $('#item_net_price_' + groupKey).val()?.trim();
+
+            if (!structuredJobData[subJobCategoryID]) {
+                structuredJobData[subJobCategoryID] = {};
+            }
+
+            if (!structuredJobData[subJobCategoryID][optionGroupID]) {
+                structuredJobData[subJobCategoryID][optionGroupID] = {
+                    Type: [],
+                    Primary: [],
+                    Conditional: []
+                };
+            }
+
+            if (["Type", "Primary", "Conditional"].includes(optionType)) {
+                structuredJobData[subJobCategoryID][optionGroupID][optionType].push({
+                    option_id: optionID,
+                    price: price || "0",
+                    qty: qty || "0",
+                    net_price: netPrice || "0"
+                });
+            }
+        });
+
+        if (!sectionValid) {
+            allValid = false;
+            section.collapse('show');
+        }
+    });
+
+    if (!allValid) {
+        error_toastify('Please fill all required fields in the edited sections.');
+        const $modalBody = $('.modal.show .modal-body');
+        const $invalidField = $modalBody.find('.is-invalid:first');
+
+        if ($invalidField.length) {
+            const scrollOffset = $invalidField.offset().top - $modalBody.offset().top + $modalBody.scrollTop() - 100;
+
+            $modalBody.animate({
+                scrollTop: scrollOffset
+            }, 500);
+        }
+        return;
+    }
+
+    console.log("Prepared Job Data: ", structuredJobData);
+
+}
+
+$(document).on('hidden.bs.modal', function () {
+    if ($('.modal.show').length > 0) {
+        $('body').addClass('modal-open');
+    }
+});
 </script>
