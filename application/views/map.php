@@ -191,28 +191,27 @@ function renderTree(data) {
         html += `<li><strong>${subCategory.sub_job_category}</strong><ul>`;
         if (data.optionGroups[subCategory.idtbl_sub_job_category]) {
             data.optionGroups[subCategory.idtbl_sub_job_category].forEach(group => {
-                if (group.JobSubcategoryID === subCategory.idtbl_sub_job_category) {
+                if (group.JobSubcategoryID == subCategory.idtbl_sub_job_category) {
                     html += `<li><strong>${group.GroupName}</strong><ul>`;
-
                     Object.keys(data.jobOptions).forEach(key => {
                         const options = data.jobOptions[key];
 
                         options.forEach(option => {
-                            if (option.JobSubcategoryID === subCategory.idtbl_sub_job_category && option.OptionGroupID === group.id && option.OptionType !== 'Conditional') {
+                            if (option.JobSubcategoryID == subCategory.idtbl_sub_job_category && option.OptionGroupID == group.id && option.OptionType != 'Conditional') {
                                 html += `<li><strong>${option.OptionName}</strong> - ${option.OptionType}`;
-                                if (option.OptionType !== 'Conditional' && data.OptionValues[option.JobOptionID]) {
+                                if (option.OptionType != 'Conditional' && data.OptionValues[option.JobOptionID]) {
                                     html += '<ul>';
                                     data.OptionValues[option.JobOptionID].forEach(primaryValue => {
                                         html += `<li><strong>${primaryValue.ValueName} (${primaryValue.price_category_type})</strong> - ${primaryValue.Price}`;
                                         Object.keys(data.jobOptions).forEach(childKey => {
                                             const childOptions = data.jobOptions[childKey];
                                             childOptions.forEach(childOption => { 
-                                                if (childOption.OptionType === 'Conditional' && childOption.OptionGroupID === group.id) {
+                                                if (childOption.OptionType == 'Conditional' && childOption.OptionGroupID == group.id) {
                                                     html += `<ul><li><strong>${childOption.OptionName}</strong> - ${childOption.OptionType}`;
                                                     if (data.OptionValues[childOption.JobOptionID]) {
                                                         html += '<ul>';
                                                         data.OptionValues[childOption.JobOptionID].forEach(childValue => {
-                                                            if(childValue.ParentOptionValueID === option.JobOptionID){
+                                                            if(childValue.ParentOptionValueID == option.JobOptionID){
                                                                 html += `<li>${childValue.ValueName}</li>`;
                                                             }
                                                         });

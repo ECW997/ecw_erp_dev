@@ -249,19 +249,23 @@ else if($functionmenu=='JobOptionGroup'){
     $statuscheck=checkprivilege($menuprivilegearray, 62, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 62, 4);
 }
-
+else if($functionmenu=='JobOption'){
+    $addcheck=checkprivilege($menuprivilegearray, 63, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 63, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 63, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 63, 4);
+}
 else if($functionmenu=='JobOptionValue'){
     $addcheck=checkprivilege($menuprivilegearray, 64, 1);
     $editcheck=checkprivilege($menuprivilegearray, 64, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 64, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 64, 4);
 }
-
-else if($functionmenu=='JobOption'){
-    $addcheck=checkprivilege($menuprivilegearray, 63, 1);
-    $editcheck=checkprivilege($menuprivilegearray, 63, 2);
-    $statuscheck=checkprivilege($menuprivilegearray, 63, 3);
-    $deletecheck=checkprivilege($menuprivilegearray, 63, 4);
+else if($functionmenu=='Map'){
+    $addcheck=checkprivilege($menuprivilegearray, 65, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 65, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
 }
 else if($functionmenu=='JobOptionValue'){
     $addcheck=checkprivilege($menuprivilegearray, 64, 1);
@@ -281,6 +285,8 @@ else if($functionmenu=='Media_library'){
     $statuscheck=checkprivilege($menuprivilegearray, 66, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 66, 4);
 }
+
+
 
 
 
@@ -378,7 +384,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             </div>
             <?php } ?>
 
-            <?php if(menucheck($menuprivilegearray, 20)==1 | menucheck($menuprivilegearray, 21)==1 | menucheck($menuprivilegearray, 22)==1 | menucheck($menuprivilegearray, 23)==1 | menucheck($menuprivilegearray, 24 )==1 | menucheck($menuprivilegearray, 25)==1 | menucheck($menuprivilegearray, 26 )==1 | menucheck($menuprivilegearray, 27)==1 | menucheck($menuprivilegearray, 28 | menucheck($menuprivilegearray, 29)==1 | menucheck($menuprivilegearray, 42)==1 | menucheck($menuprivilegearray, 49 )==1 | menucheck($menuprivilegearray, 50 )==1 | menucheck($menuprivilegearray, 51)==1 | menucheck($menuprivilegearray, 52)==1 | menucheck($menuprivilegearray, 62)==1 | menucheck($menuprivilegearray, 63)==1 | menucheck($menuprivilegearray, 64)==1 )==1 ){ ?>
+            <?php if(menucheck($menuprivilegearray, 64)==1 || menucheck($menuprivilegearray, 21)==1 || menucheck($menuprivilegearray, 22)==1 || menucheck($menuprivilegearray, 23)==1 || menucheck($menuprivilegearray, 24 )==1 || menucheck($menuprivilegearray, 25)==1 || menucheck($menuprivilegearray, 26 )==1 || menucheck($menuprivilegearray, 27)==1 || menucheck($menuprivilegearray, 28 || menucheck($menuprivilegearray, 29)==1 || menucheck($menuprivilegearray, 42)==1 || menucheck($menuprivilegearray, 49 )==1 || menucheck($menuprivilegearray, 50 )==1 || menucheck($menuprivilegearray, 51)==1 || menucheck($menuprivilegearray, 52)==1 || menucheck($menuprivilegearray, 62)==1 || menucheck($menuprivilegearray, 63)==1 || menucheck($menuprivilegearray, 64)==1 )==1 ){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseSales_masterfile" aria-expanded="false" aria-controls="collapseSales_masterfile">
                 <div class="nav-link-icon"><i class="fas fa-user-cog"></i></div>Sales Master Files
@@ -494,16 +500,19 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 65)==1){ ?>
+
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Map'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Map
             </a>
             <?php }?>
+
 
             <?php if(menucheck($menuprivilegearray, 66)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Media_library'; ?>">
                 <div class="nav-link-icon"><i data-feather="map"></i></div>Media Library
             </a>
             <?php }?>
+
 
             <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1 | menucheck($menuprivilegearray, 4)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"

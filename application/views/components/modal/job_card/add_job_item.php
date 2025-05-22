@@ -26,11 +26,11 @@
                         		<h6 class="col-form-label me-1 text-nowrap">Discount</h6>
                         	</div>
                         	<select class="form-select form-select-sm w-50 discount_type" id="discount_type" onchange="updateTotalNetPrice();">
-                        		<option value="1">%</option>
+                        		<option value="1">percentage (%)</option>
                         		<option value="2">Amount</option>
                         	</select>
                         </div>
-						<input class="form-control form-control-sm text-end item_discount" type="number" step="any" id="item_discount"
+						<input class="form-control form-control-sm text-end item_discount w-50" type="number" step="any" id="item_discount"
 							name="item_discount">
 					</div>
 					<div class="col-12 col-md-2 d-flex justify-content-md-end align-items-center">
@@ -45,6 +45,7 @@
 				<button type="button" id="addToJobCardBtn" class="btn btn-info" onclick="addToJobCard();">Add to Job Card<i
 						class="fas fa-plus-circle ml-2"></i></i></button>
 			</div>
+            <input type="hidden" id="jobIdLabel" name="jobIdLabel">
 		</div>
 	</div>
 </div>
@@ -160,6 +161,13 @@ function addToJobCard(){
     const validatedGroups = {};
     const jobData = [];
     const structuredJobData = {};
+
+    let idtbl_jobcard = <?= json_encode($job_data['data'][0]['idtbl_jobcard'] ?? '') ?>;
+    
+    if(idtbl_jobcard == ''){
+        error_toastify('Job Card Not Created or Selected!');
+        return;
+    }
  
     editedSubJobs.forEach(function (subJobId) {
         const section = $('#collapse' + subJobId);
@@ -189,9 +197,10 @@ function addToJobCard(){
 
             const priceField = $('#item_price_' + groupKey);
             const qtyField = $('#item_qty_' + groupKey);
-            const netPriceField = $('#item_net_price_' + groupKey);
+            const netPriceField = $('#item_total_price_' + groupKey);
+            const finalNetPriceField = $('#item_net_price_' + groupKey);
 
-            if (!priceField.length && !qtyField.length && !netPriceField.length) {
+            if (!priceField.length && !qtyField.length && !netPriceField.length && !finalNetPriceField.length) {
                 return;
             }
 
@@ -225,28 +234,66 @@ function addToJobCard(){
                 } else {
                     netPriceField.removeClass('is-invalid');
                 }
+
+                if (!finalNetPriceField.val()?.trim() || finalNetPriceField.val().trim() === "0") {
+                    finalNetPriceField.addClass('is-invalid');
+                    allValid = false;
+                } else {
+                    finalNetPriceField.removeClass('is-invalid');
+                }
             } else {
                 priceField.removeClass('is-invalid');
                 qtyField.removeClass('is-invalid');
                 netPriceField.removeClass('is-invalid');
+                finalNetPriceField.removeClass('is-invalid');
             }
 
             validatedGroups[groupKey] = true;
         });
 
         section.find('.job-option-select').each(function () {
-            const selectedVal = $(this).val()?.trim();
+            const $select = $(this);
+            const selectedVal = $select.val()?.trim();
+            const selectedOption = $select.find('option:selected');
+            const selectedText = selectedOption.text().trim();
+            const parentId = selectedOption.data('parent-id');
+
             if (!selectedVal) return;
+
+            const priceCategory = $('#price_category').val();
+            const mainJobID = $('#jobIdLabel').text();
+            const discountType = $('#discount_type').val();
+            const discountAmount = $('#item_discount').val() || 0;
+            const itemTotalNetPrice = $('#item_total_net_price').text() || 0;
 
             const optionType = $(this).data('option-type');
             const subJobCategoryID = $(this).data('sub-job-category');
             const optionGroupID = $(this).data('option-group');
             const optionID = $(this).data('option-id');
+            const subJobName = $(this).data('subjob-name');
+            const optionGroupName = $(this).data('option-group-name');
+            const OptionName = $(this).data('option-name');
             const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
 
             const price = $('#item_price_' + groupKey).val()?.trim();
+            const originalPrice = $('#item_price_' + groupKey).data('original_price');
             const qty = $('#item_qty_' + groupKey).val()?.trim();
-            const netPrice = $('#item_net_price_' + groupKey).val()?.trim();
+            const netPrice = $('#item_total_price_' + groupKey).val()?.trim();
+            const lineDiscountType = $('#line_discount_type_' + groupKey).val()?.trim();
+            const lineInputDiscount = $('#line_discount_' + groupKey).val()?.trim();
+            const finalNetPrice = $('#item_net_price_' + groupKey).val()?.trim();
+
+            const lineDiscount = netPrice - finalNetPrice;
+
+            if (!jobData[mainJobID]){
+                jobData[mainJobID] ={
+                    main_job_id: mainJobID,
+                    discount_type:discountType,
+                    discount:discountAmount,
+                    main_job_total_price:itemTotalNetPrice,
+                    details: {}
+                }
+            }
 
             if (!structuredJobData[subJobCategoryID]) {
                 structuredJobData[subJobCategoryID] = {};
@@ -262,12 +309,26 @@ function addToJobCard(){
 
             if (["Type", "Primary", "Conditional"].includes(optionType)) {
                 structuredJobData[subJobCategoryID][optionGroupID][optionType].push({
+                    price_category:priceCategory,
+                    subjob_name:subJobName,
+                    option_group_name:optionGroupName,
+                    option_name:OptionName,
+                    option_value_name:selectedText,
                     option_id: optionID,
-                    price: price || "0",
+                    option_value_id: selectedVal,
+                    original_price: originalPrice || "0",
+                    input_price: price || "0",
                     qty: qty || "0",
-                    net_price: netPrice || "0"
+                    total_price: netPrice || "0",
+                    line_discount_type: lineDiscountType || "0",
+                    line_input_discount: lineInputDiscount || "0",
+                    line_discount: lineDiscount || "0",
+                    final_net_price: finalNetPrice || "0",
+                    parent_id:parentId
                 });
             }
+
+            jobData[mainJobID].details = structuredJobData;
         });
 
         if (!sectionValid) {
@@ -275,6 +336,7 @@ function addToJobCard(){
             section.collapse('show');
         }
     });
+
 
     if (!allValid) {
         error_toastify('Please fill all required fields in the edited sections.');
@@ -291,7 +353,89 @@ function addToJobCard(){
         return;
     }
 
-    console.log("Prepared Job Data: ", structuredJobData);
+    // arrange data
+    const finalDataArray = [];
+
+    for (const mainJobID in jobData) {
+        const mainJob = jobData[mainJobID];
+        const structuredJobData = mainJob.details;
+
+        const transformedDetails = {};
+
+        for (const subJobCategoryID in structuredJobData) {
+            const subJobData = structuredJobData[subJobCategoryID];
+            transformedDetails[subJobCategoryID] = {};
+
+            for (const optionGroupID in subJobData) {
+                const groupData = subJobData[optionGroupID];
+                const typeOptions = groupData.Type || [];
+                const primaryOptions = groupData.Primary || [];
+                const conditionalOptions = groupData.Conditional || [];
+
+                const conditionalMap = {};
+                conditionalOptions.forEach(cond => {
+                    const parentId = cond.parent_id;
+                    if (!conditionalMap[parentId]) {
+                        conditionalMap[parentId] = [];
+                    }
+                    conditionalMap[parentId].push({
+                        ...cond,
+                        option_type: "Conditional"
+                    });
+                });
+
+                const groupArray = [];
+
+                typeOptions.forEach(type => {
+                    const optionValueId = type.option_value_id;
+                    groupArray.push({
+                        ...type,
+                        option_type: "Type",
+                        conditionals: conditionalMap[optionValueId] || []
+                    });
+                });
+
+                primaryOptions.forEach(primary => {
+                    groupArray.push({
+                        ...primary,
+                        option_type: "Primary"
+                    });
+                });
+
+                transformedDetails[subJobCategoryID][optionGroupID] = groupArray;
+            }
+        }
+
+        finalDataArray.push({
+            job_card_id: idtbl_jobcard,
+            main_job_id: mainJob.main_job_id,
+            discount_type: mainJob.discount_type,
+            discount: mainJob.discount,
+            main_job_total_price: mainJob.main_job_total_price,
+            details: transformedDetails
+        });
+    }
+
+
+
+    // console.log(finalDataArray);
+    // console.log("Prepared Job Data: ", jobData);
+
+    $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data: {
+                jobData: finalDataArray
+            },
+            url: '<?php echo base_url() ?>JobCard/insertJobCardDetail',
+            success: function(result) {
+                if (result.status == true) {
+                    success_toastify(result.message);
+                } else {
+                    falseResponse(result);
+                }
+            }
+    });
 
 }
 

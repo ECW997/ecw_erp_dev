@@ -249,20 +249,26 @@ else if($functionmenu=='JobOptionGroup'){
     $statuscheck=checkprivilege($menuprivilegearray, 62, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 62, 4);
 }
-
-else if($functionmenu=='JobOptionValue'){
-    $addcheck=checkprivilege($menuprivilegearray, 64, 1);
-    $editcheck=checkprivilege($menuprivilegearray, 64, 2);
-    $statuscheck=checkprivilege($menuprivilegearray, 64, 3);
-    $deletecheck=checkprivilege($menuprivilegearray, 64, 4);
-}
-
 else if($functionmenu=='JobOption'){
     $addcheck=checkprivilege($menuprivilegearray, 63, 1);
     $editcheck=checkprivilege($menuprivilegearray, 63, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 63, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 63, 4);
 }
+else if($functionmenu=='JobOptionValue'){
+    $addcheck=checkprivilege($menuprivilegearray, 64, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 64, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 64, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 64, 4);
+}
+else if($functionmenu=='Map'){
+    $addcheck=checkprivilege($menuprivilegearray, 65, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 65, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
+}
+
+
 
 
 function checkprivilege($arraymenu, $menuID, $type){
@@ -359,13 +365,13 @@ function checkprivilege($arraymenu, $menuID, $type){
             </div>
             <?php } ?>
 
-            <?php if(menucheck($menuprivilegearray, 20)==1 | menucheck($menuprivilegearray, 21)==1 | menucheck($menuprivilegearray, 22)==1 | menucheck($menuprivilegearray, 23)==1 | menucheck($menuprivilegearray, 24 )==1 | menucheck($menuprivilegearray, 25)==1 | menucheck($menuprivilegearray, 26 )==1 | menucheck($menuprivilegearray, 27)==1 | menucheck($menuprivilegearray, 28 | menucheck($menuprivilegearray, 29)==1 | menucheck($menuprivilegearray, 42)==1 | menucheck($menuprivilegearray, 49 )==1 | menucheck($menuprivilegearray, 50 )==1 | menucheck($menuprivilegearray, 51)==1 | menucheck($menuprivilegearray, 52)==1 )==1 ){ ?>
+            <?php if(menucheck($menuprivilegearray, 64)==1 || menucheck($menuprivilegearray, 21)==1 || menucheck($menuprivilegearray, 22)==1 || menucheck($menuprivilegearray, 23)==1 || menucheck($menuprivilegearray, 24 )==1 || menucheck($menuprivilegearray, 25)==1 || menucheck($menuprivilegearray, 26 )==1 || menucheck($menuprivilegearray, 27)==1 || menucheck($menuprivilegearray, 28 || menucheck($menuprivilegearray, 29)==1 || menucheck($menuprivilegearray, 42)==1 || menucheck($menuprivilegearray, 49 )==1 || menucheck($menuprivilegearray, 50 )==1 || menucheck($menuprivilegearray, 51)==1 || menucheck($menuprivilegearray, 52)==1 || menucheck($menuprivilegearray, 62)==1 || menucheck($menuprivilegearray, 63)==1 || menucheck($menuprivilegearray, 64)==1 )==1 ){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseSales_masterfile" aria-expanded="false" aria-controls="collapseSales_masterfile">
                 <div class="nav-link-icon"><i class="fas fa-user-cog"></i></div>Sales Master Files
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($functionmenu=="Leather_Type" | $functionmenu=="Hood_Material" | $functionmenu=="Carpet" | $functionmenu=="Stitching_Design" | $functionmenu=="Seat_Type" | $functionmenu=="Logo" | $functionmenu=="Logo_Colour" | $functionmenu=="Thread_Colour" | $functionmenu=="Stitch_Style" | $functionmenu=="Payment_Method" | $functionmenu=="Price_category" | $functionmenu=="Material" | $functionmenu=="MainJobCategory" | $functionmenu=="SubJobCategory" | $functionmenu=="SalesJobsDetails"){echo 'show';} ?>"
+            <div class="collapse <?php if($functionmenu=="Leather_Type" | $functionmenu=="Hood_Material" | $functionmenu=="Carpet" | $functionmenu=="Stitching_Design" | $functionmenu=="Seat_Type" | $functionmenu=="Logo" | $functionmenu=="Logo_Colour" | $functionmenu=="Thread_Colour" | $functionmenu=="Stitch_Style" | $functionmenu=="Payment_Method" | $functionmenu=="Price_category" | $functionmenu=="Material" | $functionmenu=="MainJobCategory" | $functionmenu=="SubJobCategory" | $functionmenu=="SalesJobsDetails" | $functionmenu=="JobOptionGroup" | $functionmenu=="JobOption" | $functionmenu=="JobOptionValue"){echo 'show';} ?>"
                 id="collapseSales_masterfile" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <?php if(menucheck($menuprivilegearray, 49)==1){ ?>
@@ -377,11 +383,11 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <?php }if(menucheck($menuprivilegearray, 62)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionGroup'; ?>">Job Option Group</a>
 
-                    <?php }if(menucheck($menuprivilegearray, 64)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionValue'; ?>">Job Option Value</a>
-
                     <?php }if(menucheck($menuprivilegearray, 63)==1){ ?>
                         <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOption'; ?>">Job Option</a>
+
+                    <?php }if(menucheck($menuprivilegearray, 64)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionValue'; ?>">Job Option Value</a>
 
                     <?php }if(menucheck($menuprivilegearray, 52)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
@@ -471,6 +477,12 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php if(menucheck($menuprivilegearray, 57)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'AssignEmployeeToJob'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Assign Employee To Job
+            </a>
+            <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 65)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Map'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Map
             </a>
             <?php }?>
 
