@@ -267,6 +267,25 @@ else if($functionmenu=='Map'){
     $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
 }
+else if($functionmenu=='JobOptionValue'){
+    $addcheck=checkprivilege($menuprivilegearray, 64, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 64, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 64, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 64, 4);
+}
+else if($functionmenu=='Map'){
+    $addcheck=checkprivilege($menuprivilegearray, 65, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 65, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
+}
+else if($functionmenu=='Media_library'){
+    $addcheck=checkprivilege($menuprivilegearray, 66, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 66, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 66, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 66, 4);
+}
+
 
 
 
@@ -480,11 +499,20 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
             <?php }?>
 
-            <?php if(menucheck($menuprivilegearray, 64)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 65)==1){ ?>
+
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Map'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Map
             </a>
             <?php }?>
+
+
+            <?php if(menucheck($menuprivilegearray, 66)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Media_library'; ?>">
+                <div class="nav-link-icon"><i data-feather="map"></i></div>Media Library
+            </a>
+            <?php }?>
+
 
             <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1 | menucheck($menuprivilegearray, 4)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
