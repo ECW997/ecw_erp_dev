@@ -130,6 +130,28 @@ class JobCard extends CI_Controller {
 		}
     }
 
+	public function insertJobCardDetail() {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+            'jobData' => $this->input->post('jobData'),
+        ];
+		
+		$response = $this->JobCardinfo->insertJobCardDetail($api_token,$form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobCard');
+		}
+    }
+
     public function getSubJob($id) {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
