@@ -51,7 +51,7 @@ include "include/topnavbar.php";
                                 <form action="<?php echo base_url() ?>Media_library/media_libraryInsert" method="post"
                                     autocomplete="off" enctype="multipart/form-data">
                                     <div class="form-group mb-3">
-                                        <label class="small font-weight-bold">Upload Design Image</label>
+                                        <label class="small font-weight-bold">Upload File</label>
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="design_image[]"
                                                 id="design_image[]" multiple required onchange="previewImage(event)">
@@ -159,7 +159,6 @@ function previewImage(event) {
         mediaType = 'pdf';
     }
 
-    // Set media_type field
     mediaTypeInput.value = mediaType;
 
     const reader = new FileReader();
@@ -254,9 +253,9 @@ $(document).ready(function() {
                     falseResponse(errorObj);
                     return [];
                 }
-                // Return the data array from your API response
+              
                 return json.data
-                .data; // First 'data' is your API wrapper, second is Laravel pagination
+                    .data; 
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 401) {
@@ -276,20 +275,31 @@ $(document).ready(function() {
                 "className": "text-center"
             },
             {
-                "data": "file_path",
+                "data": "public_url",
                 "className": "text-center",
                 "render": function(data, type, row) {
                     if (row.media_type === 'image') {
-                        return `<img src="${data}" class="img-thumbnail" style="max-height: 100px; cursor: pointer;" 
-                                 onclick="viewLargeImage('${data}')" alt="${row.file_name}">`;
+                        return `<img src="${data}" 
+                     class="img-thumbnail" 
+                     style="max-height: 100px; cursor: pointer;" 
+                     onclick="viewLargeImage('${data}')" 
+                     alt="${row.file_name}">`;
+                    } else if (row.media_type === 'pdf') {
+                        return `<a href="${data}" 
+                     target="_blank" 
+                     class="btn btn-sm btn-danger">
+                        <i class="fas fa-file-pdf"></i> View PDF
+                    </a>`;
                     } else {
-                        return `<a href="${data}" target="_blank" class="btn btn-sm btn-primary">
-                                <i class="fas fa-download"></i> Download
-                                </a>`;
+                        return `<a href="${data}" 
+                     target="_blank" 
+                     class="btn btn-sm btn-primary">
+                        <i class="fas fa-download"></i> Download
+                    </a>`;
                     }
                 }
             },
-            {
+             {
                 "data": "description",
                 "className": "text-center"
             },
