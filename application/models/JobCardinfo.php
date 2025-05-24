@@ -29,9 +29,9 @@ class JobCardinfo extends CI_Model{
         return call_api('GET', 'job_card_v1', $form_data, $headers);
     }
 
-    public function getSubJob($api_token,$id) {
+    public function getSubJob($api_token,$form_data) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_sub_job_base_main_v1', $id, $headers);
+        return call_api('POST', 'get_sub_job_base_main_v1', $form_data, $headers);
     }
 
     public function getItemParentOptions($api_token,$form_data) {

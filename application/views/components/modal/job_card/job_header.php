@@ -239,7 +239,7 @@ function createNewJobCard() {
 			if (result.status == true) {
 				success_toastify(result.message);
 				setTimeout(function() {
-					window.location.href = '<?= base_url("JobCard/") ?>' + result.data;
+					window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + result.data;
 				}, 1000);
 			} else {
 				falseResponse(result);

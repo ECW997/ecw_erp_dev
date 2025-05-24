@@ -9,7 +9,20 @@ class JobCard extends CI_Controller {
         $this->load->model('JobCardinfo');
     }
 
-    public function index($id = null){
+	public function index(){
+		$api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+		
+		$this->load->model('Commeninfo');
+		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$this->load->view('jobCardList', $result);
+	}
+
+    public function jobCardDetailIndex($id = null){
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
 			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
@@ -25,13 +38,15 @@ class JobCard extends CI_Controller {
         $result['materiallist']=$this->JobCardinfo->Getmaterial();
 
         if ($id !== null) {
-            $result['job_data'] = $this->JobCardinfo->getJobById($api_token,$id);
+            $result['job_main_data'] = $this->JobCardinfo->getJobById($api_token,$id)['data']['main_data'];
+			$result['job_detail_data'] = $this->JobCardinfo->getJobById($api_token,$id)['data']['details_data'];
             $result['is_edit'] = true;
         } else {
-            $result['job_data'] = null;
+            $result['job_main_data'] = null;
+            $result['job_detail_data'] = null;
             $result['is_edit'] = false;
         }
-    
+
 		$this->load->view('jobCard', $result);
 	}
     public function JobCardinsertupdate(){
@@ -152,7 +167,7 @@ class JobCard extends CI_Controller {
 		}
     }
 
-    public function getSubJob($id) {
+    public function getSubJob($id,$idtbl_jobcard) {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
 			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
@@ -160,7 +175,12 @@ class JobCard extends CI_Controller {
 			return;
 		}
 
-        $response = $this->JobCardinfo->getSubJob($api_token,$id);
+		$form_data = [
+            'main_id' => $id,
+			'jobcard_id' => $idtbl_jobcard
+        ];
+
+        $response = $this->JobCardinfo->getSubJob($api_token,$form_data);
         $data['data'] = $response;
 		$html = $this->load->view('components/modal/job_card/job_item_container', $data, true);
         echo ($html);

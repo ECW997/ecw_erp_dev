@@ -20,16 +20,16 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             	<h1 class="page-header-title">Job Card</h1>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_customer_name"><?= $job_data['data'][0]['customer_name'] ?? '' ?>
+                            	<h2 class="job-header-title" id="top_nav_customer_name"><?= $job_main_data[0]['customer_name'] ?? '' ?>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_vehicle_no"><?= $job_data['data'][0]['vehicle_number'] ?? '' ?></h2>
+                            	<h2 class="job-header-title" id="top_nav_vehicle_no"><?= $job_main_data[0]['vehicle_number'] ?? '' ?></h2>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_vehicle"><?= $job_data['data'][0]['brand_name'] ?? '' ?> - <?= $job_data['data'][0]['model_name'] ?? '' ?></h2>
+                            	<h2 class="job-header-title" id="top_nav_vehicle"><?= $job_main_data[0]['brand_name'] ?? '' ?> - <?= $job_main_data[0]['model_name'] ?? '' ?></h2>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title text-primary" id="top_nav_job_card_no"><?= $job_data['data'][0]['job_card_number'] ?? '' ?></h2>
+                            	<h2 class="job-header-title text-primary" id="top_nav_job_card_no"><?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
                             </div>
                         </div>
                     </div>
