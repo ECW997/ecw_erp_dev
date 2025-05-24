@@ -50,19 +50,19 @@
                     </tr>
                     <tr>
                         <td class="text-left" id="content_customer_name">
-                            <?= $job_data['data'][0]['customer_name'] ?? '' ?></td>
-                        <td class="text-left" id="content_inq_no"><?= $job_data['data'][0]['inquiry_number'] ?? '' ?>
+                            <?= $job_main_data[0]['customer_name'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_no"><?= $job_main_data[0]['inquiry_number'] ?? '' ?>
                         </td>
                         <td colspan="2" class="text-left" id="content_schedule_date">
-                            <?= $job_data['data'][0]['job_start_datetime'] ?? '' ?></td>
-                        <td class="text-left" id="p_category"><?= $job_data['data'][0]['price_category_type'] ?? '' ?>
+                            <?= $job_main_data[0]['job_start_datetime'] ?? '' ?></td>
+                        <td class="text-left" id="p_category"><?= $job_main_data[0]['price_category_type'] ?? '' ?>
                         </td>
                         <td colspan="2" class="text-left fw-bold text-danger"><?php echo $is_edit? 'DRAFT' : ''; ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left" id="content_address"><?= $job_data['data'][0]['address'] ?? '' ?>,
-                            <?= $job_data['data'][0]['address_2'] ?? '' ?></td>
-                        <td class="text-left" id="content_inq_date"><?= $job_data['data'][0]['inquery_date'] ?? '' ?>
+                        <td class="text-left" id="content_address"><?= $job_main_data[0]['address'] ?? '' ?>,
+                            <?= $job_main_data[0]['address_2'] ?? '' ?></td>
+                        <td class="text-left" id="content_inq_date"><?= $job_main_data[0]['inquery_date'] ?? '' ?>
                         </td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
@@ -70,12 +70,12 @@
                     </tr>
                     <tr>
                         <td class="text-left" id="content_cus_contact">
-                            <?= $job_data['data'][0]['customer_mobile_num'] ?? '' ?></td>
+                            <?= $job_main_data[0]['customer_mobile_num'] ?? '' ?></td>
                         <td class="text-left"></td>
                         <td class="text-left" id="content_hand_over_date">
-                            <?= $job_data['data'][0]['handover_date'] ?? '' ?></td>
+                            <?= $job_main_data[0]['handover_date'] ?? '' ?></td>
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">
-                            <?= $job_data['data'][0]['total_days'] ?? '' ?></td>
+                            <?= $job_main_data[0]['total_days'] ?? '' ?></td>
                         <td colspan="2" class="text-left"></td>
                         <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit" id="openEditModalBtn"><i
@@ -86,106 +86,67 @@
         </div>
         <div class="row mb-4 mx-auto">
             <h5>Job Details</h5>
-            <div class="details_section mb-2">
-                <table class="w-100">
-                    <thead>
-                        <th colspan="2" style="width:40%">Seat Cover</th>
-                        <th class="text-right" style="width:10%">Price</th>
-                        <th class="text-right" style="width:10%">QTY</th>
-                        <th class="text-right" style="width:10%">Total</th>
-                        <th class="text-right" style="width:10%">O.Charges</th>
-                        <th class="text-right" style="width:10%">Discount</th>
-                        <th class="text-right" style="width:10%">Sub Total</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-left" style="width:20%">Cover Material</td>
-                            <td class="text-left" style="width:20%">PVC, Black</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                        <tr>
-                            <td class="text-left" style="width:20%">Cover Stitch</td>
-                            <td class="text-left" style="width:20%">Double, Grey</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                        <tr>
-                            <td class="text-left" style="width:20%">Special Material Insert</td>
-                            <td class="text-left" style="width:20%">No</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                        <tr>
-                            <td class="text-left" style="width:20%">Stitch Design</td>
-                            <td class="text-left" style="width:20%">Yes, P016</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                        <tr>
-                            <td class="text-left" style="width:20%">Logo</td>
-                            <td class="text-left" style="width:20%">Yes, OEM Toyota - D2</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                        <tr>
-                            <td class="text-left" style="width:20%">Perforation</td>
-                            <td class="text-left" style="width:20%">No</td>
-                            <td class="text-right" style="width:10%">55,000</td>
-                            <td class="text-right" style="width:10%">4</td>
-                            <td class="text-right" style="width:10%">220,000</td>
-                            <td class="text-right" style="width:10%">15,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">235,000</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="details_section mb-2">
-                <table class="w-100">
-                    <thead>
-                        <th colspan="2" style="width:40%">Seat Repair</th>
-                        <th class="text-right" style="width:10%">Price</th>
-                        <th class="text-right" style="width:10%">QTY</th>
-                        <th class="text-right" style="width:10%">Total</th>
-                        <th class="text-right" style="width:10%">O.Charges</th>
-                        <th class="text-right" style="width:10%">Discount</th>
-                        <th class="text-right" style="width:10%">Sub Total</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-left" style="width:20%">Headrest Repair</td>
-                            <td class="text-left" style="width:20%"> Yes, OEM Toyota - D2</td>
-                            <td class="text-right" style="width:10%">3,000</td>
-                            <td class="text-right" style="width:10%">1</td>
-                            <td class="text-right" style="width:10%">3,000</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">0</td>
-                            <td class="text-right" style="width:10%">3,000</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <?php 
+            if($job_detail_data){
+            foreach ($job_detail_data as $group): ?>
+                <div class="details_section mb-2">
+                    <table class="w-100">
+                        <thead>
+                            <tr>
+                                <th colspan="2" style="width:40%"><?php echo $group['job_sub_category_text']; ?></th>
+                                <th class="text-right" style="width:10%">Price</th>
+                                <th class="text-right" style="width:10%">QTY</th>
+                                <th class="text-right" style="width:10%">Total</th>
+                                <th class="text-right" style="width:10%">O.Charges</th>
+                                <th class="text-right" style="width:10%">Discount</th>
+                                <th class="text-right" style="width:10%">Sub Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($group['details'] as $detail): ?>
+                                <tr>
+                                    <td class="text-left" style="width:20%">
+                                        <?php echo $detail['option_group_text']; ?>
+                                    </td>
+                                    <td class="text-left" style="width:20%">
+                                        <?php echo $detail['combined_option']; ?>
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                        <?php echo number_format($detail['list_price'], 0); ?>
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                        <?php echo $detail['qty']; ?>
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                        <?php echo number_format($detail['total'], 0); ?>
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                       
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                        <?php echo number_format($detail['line_discount'], 0); ?>
+                                    </td>
+                                    <td class="text-right" style="width:10%">
+                                        <?php echo number_format($detail['net_amount'], 0); ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endforeach; }else { ?>
+                <div class="details_section mb-2">
+                	<table class="w-100">
+                		<thead>
+                		</thead>
+                		<tbody>
+                            <tr>
+                                  <td colspan="8" class="text-center">Record not found!</td>
+                            </tr>
+                		</tbody>
+                	</table>
+                </div>
+            <?php } ?>
         </div>
 
     </div>
@@ -242,10 +203,12 @@ function showAddJobItemModal(button) {
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
+    let idtbl_jobcard = <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? '') ?>;
+    
     $('#jobCardForm').empty();
     $.ajax({
         type: "GET",
-        url: '<?php echo base_url() ?>JobCard/getSubJob/' + MainJobId,
+        url: '<?php echo base_url() ?>JobCard/getSubJob/' + MainJobId + '/' + idtbl_jobcard,
         success: function(result) {
             if (result) {
                 $('#jobCardForm').append(result);

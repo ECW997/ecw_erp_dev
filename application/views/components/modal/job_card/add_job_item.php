@@ -42,7 +42,7 @@
 				<form action="" id="jobCardForm"></form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="addToJobCardBtn" class="btn btn-info" onclick="addToJobCard();">Add to Job Card<i
+				<button type="button" id="addToJobCardBtn" class="btn btn-info" onclick="addToJobCard(1);">Add to Job Card<i
 						class="fas fa-plus-circle ml-2"></i></i></button>
 			</div>
             <input type="hidden" id="jobIdLabel" name="jobIdLabel">
@@ -128,7 +128,7 @@ $(document).ready(function() {
         }
     });
 });
-
+ 
 function confirmCloseBtn() {
     isUnsaved = false;
     $('#addItemCloseConfirmModal').modal('hide');
@@ -137,6 +137,7 @@ function confirmCloseBtn() {
         $('#addJobItemModal').modal('hide');
         $('.modal-backdrop').remove();
         reSetContent('#jobCardForm');
+        location.reload();
     }, 500);
 }
 
@@ -156,13 +157,13 @@ function reSetContent(target) {
     isUnsaved = false;
 }
 
-function addToJobCard(){
+function addToJobCard(inputMethod){
     let allValid = true;
     const validatedGroups = {};
     const jobData = [];
     const structuredJobData = {};
 
-    let idtbl_jobcard = <?= json_encode($job_data['data'][0]['idtbl_jobcard'] ?? '') ?>;
+    let idtbl_jobcard = <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? '') ?>;
     
     if(idtbl_jobcard == ''){
         error_toastify('Job Card Not Created or Selected!');
@@ -339,7 +340,7 @@ function addToJobCard(){
 
 
     if (!allValid) {
-        error_toastify('Please fill all required fields in the edited sections.');
+        // error_toastify('Please fill all required fields in the edited sections.');
         const $modalBody = $('.modal.show .modal-body');
         const $invalidField = $modalBody.find('.is-invalid:first');
 
@@ -407,6 +408,7 @@ function addToJobCard(){
         }
 
         finalDataArray.push({
+            input_method: inputMethod,
             job_card_id: idtbl_jobcard,
             main_job_id: mainJob.main_job_id,
             discount_type: mainJob.discount_type,
@@ -418,7 +420,7 @@ function addToJobCard(){
 
 
 
-    // console.log(finalDataArray);
+    console.log(finalDataArray);
     // console.log("Prepared Job Data: ", jobData);
 
     $.ajax({
@@ -430,7 +432,14 @@ function addToJobCard(){
             url: '<?php echo base_url() ?>JobCard/insertJobCardDetail',
             success: function(result) {
                 if (result.status == true) {
-                    success_toastify(result.message);
+                    if(inputMethod == 1){
+                        success_toastify(result.message);
+                        $('#addJobItemModal').modal('hide');
+                        reSetContent('#jobCardForm');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    }
                 } else {
                     falseResponse(result);
                 }
@@ -444,4 +453,5 @@ $(document).on('hidden.bs.modal', function () {
         $('body').addClass('modal-open');
     }
 });
+
 </script>

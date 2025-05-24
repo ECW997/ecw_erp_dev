@@ -21,14 +21,28 @@
                                     <?php foreach ($jobOptionGroup['job_options'] as $jobOption): ?>
                                         <?php if ($jobOption['job_option']['OptionType'] == 'Primary' || $jobOption['job_option']['OptionType'] == 'Type'): ?>
                                         <?php
+                                            $optionType = $jobOption['job_option']['OptionType'];
                                             $option = $jobOption['job_option'];
+                                            
                                             $optionId = $option['JobOptionID'];
                                             $optionName = $option['OptionName'];
                                             $groupId = $jobOptionGroup['job_option_group']['id'];
+                                            $GroupName = $jobOptionGroup['job_option_group']['GroupName'];
                                             $subJobId = $subJob['sub_job_category']['idtbl_sub_job_category'];
                                             $uniqueKey = $subJobId . '_' . $groupId . '_' . $optionId;
                                             $isRequired = $option['IsRequired'] == 1 ? 'required' : '';
+                                            $selectedValue = $option['job_details_option_value'] ?? null;
+                                            $price = $option['price'] ?? '';
+                                            $list_price = $option['list_price'] ?? '';
+                                            $qty = $option['qty'] ?? '';
+                                            $total = $option['total'] ?? '';
+                                            $net_amount = $option['net_amount'] ?? '';
+                                            $line_discount = $option['line_discount'] ?? '';
+                                            $line_discount_type = $option['line_discount_type'] ?? null;
+                                            $line_discount_pc = $option['line_discount_pc'] ?? '';
+
                                         ?>
+                                        <?= json_encode($option); ?>
                                         <div class="row align-items-center mb-2 job-option-row" data-level="0">
                                             <div class="col-md-6 d-flex">
                                                 <div class="flex-fill me-2">
@@ -42,11 +56,10 @@
                                                         data-sub-job-category="<?= $subJobId ?>" data-level="0"
                                                         data-subjob-name="<?= $subJob['sub_job_category']['sub_job_category'] ?>"
                                                         data-option-group-name="<?= $jobOptionGroup['job_option_group']['GroupName'] ?>"
-                                                        data-option-name="<?= $optionName ?>"
-                                                        <?= $isRequired ?>>
+                                                        data-option-name="<?= $optionName ?>">
                                                         <option value="">Select an option</option>
                                                         <?php foreach ($jobOption['option_values'] as $optionValue): ?>
-                                                        <option value="<?= $optionValue['id'] ?>"  data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
+                                                        <option <?= ($selectedValue == $optionValue['id']) ? 'selected' : '' ?> value="<?= $optionValue['id'] ?>"  data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
                                                             <?= $optionValue['ValueName'] ?>
                                                         </option>
                                                         <?php endforeach; ?>
@@ -54,7 +67,8 @@
                                                 </div>
 
                                                 <div class="child-options-wrapper flex-fill"
-                                                    data-parent-option-id="<?= $optionId ?>"></div>
+                                                    data-parent-option-id="<?= $optionId ?>">
+                                                </div>
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 <label class="form-label mb-1">Price</label>
@@ -62,8 +76,10 @@
                                                     type="number" step="any"
                                                     id="item_price_<?= $uniqueKey ?>"
                                                     name="item_price_<?= $uniqueKey ?>"
-                                                    data-original_price=""
-                                                    data-uniq-id="<?= $uniqueKey ?>">
+                                                    data-original_price="<?= $price ?>"
+                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                    value="<?= $list_price ?>"
+                                                    onkeyup="addToJobCard(2);">
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 <label class="form-label mb-1">QTY</label>
@@ -71,7 +87,9 @@
                                                     type="number" step="any"
                                                     id="item_qty_<?= $uniqueKey ?>"
                                                     name="item_qty_<?= $uniqueKey ?>"
-                                                    data-uniq-id="<?= $uniqueKey ?>">
+                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                    value="<?= $qty ?>"
+                                                    onkeyup="addToJobCard(2);">
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 <label class="form-label mb-1">Total Price</label>
@@ -79,7 +97,8 @@
                                                     type="number" step="any" readonly
                                                     id="item_total_price_<?= $uniqueKey ?>"
                                                     name="item_total_price_<?= $uniqueKey ?>"
-                                                    data-uniq-id="<?= $uniqueKey ?>">
+                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                    value="<?= $total ?>">
                                             </div>
                                         </div>
                                         <div class="row align-items-center mb-2 ">
@@ -88,9 +107,10 @@
                                                 <select class="form-select form-select-sm w-100 line_discount_type"
                                                  id="line_discount_type_<?= $uniqueKey ?>"
                                                  name="line_discount_type_<?= $uniqueKey ?>" 
-                                                 data-uniq-id="<?= $uniqueKey ?>">
-                                                    <option value="1">percentage (%)</option>
-                                                    <option value="2">Amount</option>
+                                                 data-uniq-id="<?= $uniqueKey ?>"
+                                                 onchange="addToJobCard(2);">
+                                                    <option <?= ($line_discount_type == '1') ? 'selected' : '' ?> value="1">percentage (%)</option>
+                                                    <option <?= ($line_discount_type == '2') ? 'selected' : '' ?> value="2">Amount</option>
                                                 </select>
                                         	</div>
                                         	<div class="col-md-2 text-end">
@@ -98,14 +118,17 @@
                                         		<input class="form-control form-control-sm text-end line_discount" type="number"
                                         			step="any" id="line_discount_<?= $uniqueKey ?>"
                                         			name="line_discount_<?= $uniqueKey ?>"
-                                        			data-uniq-id="<?= $uniqueKey ?>">
+                                        			data-uniq-id="<?= $uniqueKey ?>"
+                                                    value="<?= $line_discount_pc ?>"
+                                                    onkeyup="addToJobCard(2);">
                                         	</div>
                                         	<div class="col-md-2 text-end">
                                         		<label class="form-label mb-1">Net Price</label>
                                         		<input class="form-control form-control-sm text-end item-net-price" type="number"
                                         			step="any" readonly id="item_net_price_<?= $uniqueKey ?>"
                                         			name="item_net_price_<?= $uniqueKey ?>"
-                                        			data-uniq-id="<?= $uniqueKey ?>">
+                                        			data-uniq-id="<?= $uniqueKey ?>"
+                                                    value="<?= $net_amount ?>">
                                         	</div>
                                         </div>
                                         <hr>
@@ -136,6 +159,7 @@
     });
 
     $(document).on('change', '.job-option-select', function () {
+        var selectedOption = $(this);
         var selectedOptionValue = $(this).val();   
         var optionType = $(this).data('option-type'); 
         var subJobCategoryID = $(this).data('sub-job-category'); 
@@ -200,13 +224,14 @@
                             `;
                         }
                     });
-
                         if (html !== '') {
                             $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html(html);
                         }
+                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption);
                     }else {
-                            $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
-                        }
+                        $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
+                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption);
+                    }
             },
             error: function() {
                 console.error("Failed to load conditional options.");
@@ -216,7 +241,6 @@
             $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
         }
 
-        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID);
     });
 
     $(document).on('input change', '.item-price, .item-qty,.line_discount_type, .line_discount, .item_discount', function () {   
@@ -234,7 +258,7 @@
         updateTotalNetPrice();
     });
 
-    function getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID){
+    function getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption){
        var price_category = $('#price_category').val();
        $.ajax({
             type: "POST",
@@ -248,9 +272,13 @@
                     $(priceSelector)
                         .val(result.data.Price)
                         .attr('data-original_price', result.data.Price);
+
+                    addToJobCard(2);
+                }else{
+                    addToJobCard(2);
                 }
             }
-        });
+        });    
     }
 
     function updateTotalNetPrice() {
