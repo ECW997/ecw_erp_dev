@@ -20,6 +20,13 @@ class JobCardinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'job_card_v1', $form_data, $headers);
     }
+
+    public function editJobCard($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'job_card_v1', $form_data, $headers);
+    }
+
+
     public function insertJobCardDetail($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'insertJobCardDetail_v1', $form_data, $headers);

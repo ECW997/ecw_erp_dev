@@ -225,6 +225,25 @@ function confirmCreateJobCard(){
 	createNewJobCard();
 }
 
+function confirmEditJobCard(){
+	customerData.name=$('#cus_name').val();
+	customerData.contact=$('#contact_no').val();
+	customerData.address1=$('#address1').val();
+	customerData.address2=$('#address2').val();
+	customerData.schedule_date=$('#schedule_date').val();
+	customerData.handover_date=$('#handover_date').val();
+	customerData.status='DRAFT';
+	customerData.price_category=$('#pc_category').val();
+
+	$('#createJobCardConfirmModal').modal('hide');
+	$('#jobHeaderModal').modal('hide');
+	$('#jobHeaderModal_edit').modal('hide');
+	$('#main_job_details').modal('hide');
+	$('.modal-backdrop').remove();
+
+	editJobCard();
+}
+
 function createNewJobCard() { 
 	console.log(123);
 	
