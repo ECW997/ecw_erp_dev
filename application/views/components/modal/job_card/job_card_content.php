@@ -1,3 +1,8 @@
+<style>
+    .tooltip-inner {
+        text-align: left;
+    }
+</style>
 <div class="row p-3">
     <div class="col-3">
         <div class="row mb-4 mx-auto">
@@ -23,13 +28,6 @@
                 </table>
             </div>
         </div>
-        <!-- <div class="row mb-4 mx-auto">
-			<div class="col-6">
-				<button type="button" class="btn btn-info rounded-3 w-100 btn-sm" onclick="showAddJobItemModal();"><i class="fas fa-plus-circle me-2"></i>Door Board</button>
-			</div>
-		</div> -->
-
-
         <div class="row mb-4 mx-auto">
             <div class="row" id="buttonsContainer">
 
@@ -126,8 +124,41 @@
                                     <td class="text-right" style="width:10%">
                                         <?php echo number_format($detail['line_discount'], 0); ?>
                                     </td>
+                                    <?php
+                                    $isPriceChanged = $detail['list_price'] != $detail['price'];
+                                    $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
+                                   
+                                    $listPrice = $detail['list_price'];
+                                    $currentPrice = $detail['price'];
+                                    $changeAmount = $listPrice - $currentPrice;
+                                    $changePercentage = $listPrice != 0 ? ($changeAmount / $listPrice) * 100 : 0;
+
+                                    $tooltipText = '
+                                    <div class="text-start" style="background-color: #fff; padding: 6px; border-radius: 4px;">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Standard Price:</span>
+                                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Change Amount:</span>
+                                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Change %:</span>
+                                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Price:</span>
+                                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
+                                        </div>
+                                    </div>';
+                                    ?>
                                     <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['net_amount'], 0); ?>
+                                        <span 
+                                            class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
+                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
+                                            <?= number_format($detail['net_amount'], 0); ?>
+                                        </span>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -163,7 +194,6 @@ $(document).ready(function() {
         var deliveryDate = $('#content_hand_over_date').text().trim();
         var priceCategory = $('#p_category').text().trim();
 
-        // Fill modal fields
         $('#edit_cus_name').val(customerName);
         $('#edit_contact_no').val(contactNo);
         $('#edit_address1').val(address[0] ? address[0].trim() : '');
@@ -171,12 +201,16 @@ $(document).ready(function() {
         $('#edit_schedule_date').val(scheduleDate);
         $('#edit_delivery_date').val(deliveryDate);
 
-        // Set the price category dropdown
         $('#p_category option').each(function() {
             if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
                 $(this).prop('selected', true);
             }
         });
+    });
+
+     $('[data-bs-toggle="tooltip"]').tooltip({
+        container: 'body',
+        html: true
     });
 });
 
@@ -196,9 +230,8 @@ function showAddJobItemModal(button) {
     // Show the modal
     $('#addJobItemModal').modal('show');
 
-    // Pass the jobId and jobName to the modal and display them in the labels
-    $('#jobIdLabel').text(MainJobId); // Display jobId in the modal label
-    $('#jobNameLabel').text(MainjobName); // Display jobName in the modal label
+    $('#jobIdLabel').text(MainJobId); 
+    $('#jobNameLabel').text(MainjobName);
 
 }
 
