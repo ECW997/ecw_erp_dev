@@ -51,15 +51,16 @@ include "include/topnavbar.php";
                                 <form action="<?php echo base_url() ?>Media_library/media_libraryInsert" method="post"
                                     autocomplete="off" enctype="multipart/form-data">
                                     <div class="form-group mb-3">
-                                        <label class="small font-weight-bold">Upload File</label>
+                                        <label class="small font-weight-bold">Upload File (Max 50MB)</label>
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="design_image[]"
-                                                id="design_image[]" multiple required onchange="previewImage(event)">
+                                                id="design_image[]" multiple required onchange="validateFileSize(this)">
                                             <label class="custom-file-label" for="design_image">Choose image...</label>
                                         </div>
                                         <div class="mt-3">
                                             <div id="imagePreview" style="display: none;"></div>
                                         </div>
+                                        <small class="text-muted">Maximum file size: 50MB</small>
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Media Type*</label>
@@ -136,6 +137,28 @@ include "include/topnavbar.php";
 </div>
 
 <?php include "include/footerscripts.php"; ?>
+<script>
+function validateFileSize(input) {
+    const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+    let valid = true;
+
+    if (input.files) {
+        for (let i = 0; i < input.files.length; i++) {
+            if (input.files[i].size > maxSize) {
+                valid = false;
+                alert('File "' + input.files[i].name + '" exceeds the 50MB limit.');
+                input.value = ''; // Clear the file input
+                break;
+            }
+        }
+    }
+
+    if (valid) {
+        previewImage(event); // Call your existing preview function if files are valid
+    }
+}
+</script>
+
 <script>
 function previewImage(event) {
     const input = event.target;
@@ -253,9 +276,9 @@ $(document).ready(function() {
                     falseResponse(errorObj);
                     return [];
                 }
-              
+
                 return json.data
-                    .data; 
+                    .data;
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 401) {
@@ -299,7 +322,7 @@ $(document).ready(function() {
                     }
                 }
             },
-             {
+            {
                 "data": "description",
                 "className": "text-center"
             },

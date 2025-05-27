@@ -21,6 +21,7 @@ class Media_library extends CI_Controller {
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
 		$this->load->view('media_library', $result);
 	}
+
 	public function media_libraryInsert() {
         $api_token = $this->session->userdata('api_token');
 		if (!$api_token) {
@@ -28,6 +29,27 @@ class Media_library extends CI_Controller {
 			redirect('Welcome/Logout');
 			return;
 		}
+
+		// Define maximum allowed file size (50MB in bytes)
+		$maxFileSize = 50 * 1024 * 1024; 
+
+		
+		if (empty($_FILES['design_image']['name'][0])) {
+			$this->session->set_flashdata(['res' => '400', 'msg' => 'No files were selected for upload']);
+			redirect('Media_library');
+			return;
+		}
+
+		// Validate each file's size before processing
+		$files = $_FILES['design_image'];
+		foreach ($files['size'] as $size) {
+			if ($size > $maxFileSize) {
+				$this->session->set_flashdata(['res' => '400', 'msg' => 'One or more files exceed the 50MB limit']);
+				redirect('Media_library');
+				return;
+			}
+		}
+
 
 		$form_data = [
 			'media_type' => $this->input->post('media_type'),
@@ -58,6 +80,7 @@ class Media_library extends CI_Controller {
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Increase timeout for large files
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			"Authorization: Bearer $api_token",
 			'Accept: application/json'
