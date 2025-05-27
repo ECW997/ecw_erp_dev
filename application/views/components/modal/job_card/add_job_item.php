@@ -274,6 +274,7 @@ function addToJobCard(inputMethod){
             const subJobName = $(this).data('subjob-name');
             const optionGroupName = $(this).data('option-group-name');
             const OptionName = $(this).data('option-name');
+            var preValue = $(this).data('pre-value');
             const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
 
             const price = $('#item_price_' + groupKey).val()?.trim();
@@ -285,6 +286,8 @@ function addToJobCard(inputMethod){
             const finalNetPrice = $('#item_net_price_' + groupKey).val()?.trim();
 
             const lineDiscount = netPrice - finalNetPrice;
+
+            preValue = preValue || selectedVal;
 
             if (!jobData[mainJobID]){
                 jobData[mainJobID] ={
@@ -325,7 +328,8 @@ function addToJobCard(inputMethod){
                     line_input_discount: lineInputDiscount || "0",
                     line_discount: lineDiscount || "0",
                     final_net_price: finalNetPrice || "0",
-                    parent_id:parentId
+                    parent_id:parentId,
+                    pre_value:preValue
                 });
             }
 
@@ -417,8 +421,6 @@ function addToJobCard(inputMethod){
             details: transformedDetails
         });
     }
-
-
 
     console.log(finalDataArray);
     // console.log("Prepared Job Data: ", jobData);

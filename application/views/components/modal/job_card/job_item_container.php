@@ -23,7 +23,7 @@
                                         <?php
                                             $optionType = $jobOption['job_option']['OptionType'];
                                             $option = $jobOption['job_option'];
-                                            
+
                                             $optionId = $option['JobOptionID'];
                                             $optionName = $option['OptionName'];
                                             $groupId = $jobOptionGroup['job_option_group']['id'];
@@ -42,7 +42,6 @@
                                             $line_discount_pc = $option['line_discount_pc'] ?? '';
 
                                         ?>
-                                        <?= json_encode($option); ?>
                                         <div class="row align-items-center mb-2 job-option-row" data-level="0">
                                             <div class="col-md-6 d-flex">
                                                 <div class="flex-fill me-2">
@@ -56,7 +55,9 @@
                                                         data-sub-job-category="<?= $subJobId ?>" data-level="0"
                                                         data-subjob-name="<?= $subJob['sub_job_category']['sub_job_category'] ?>"
                                                         data-option-group-name="<?= $jobOptionGroup['job_option_group']['GroupName'] ?>"
-                                                        data-option-name="<?= $optionName ?>">
+                                                        data-option-name="<?= $optionName ?>"
+                                                        data-pre-value="<?= $selectedValue ?>"
+                                                        onchange="loadChildOption(this,null,1);">
                                                         <option value="">Select an option</option>
                                                         <?php foreach ($jobOption['option_values'] as $optionValue): ?>
                                                         <option <?= ($selectedValue == $optionValue['id']) ? 'selected' : '' ?> value="<?= $optionValue['id'] ?>"  data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
@@ -150,7 +151,12 @@
 
 
 <script>
-    let editedSubJobs = new Set();
+    if (typeof editedSubJobs !== 'undefined' && editedSubJobs instanceof Set) {
+        editedSubJobs.clear();
+    } else {
+        var editedSubJobs = new Set();
+    }
+
     $(document).on('change input', '.sub-job-collapse input, .sub-job-collapse select', function () {
         let subJobId = $(this).closest('.sub-job-collapse').data('subjob-id');
         if (subJobId) {
@@ -158,17 +164,75 @@
         }
     });
 
-    $(document).on('change', '.job-option-select', function () {
-        var selectedOption = $(this);
-        var selectedOptionValue = $(this).val();   
-        var optionType = $(this).data('option-type'); 
-        var subJobCategoryID = $(this).data('sub-job-category'); 
-        var optionGroupID = $(this).data('option-group'); 
-        const jobOptionID = $(this).data('option-id');
-        const currentWrapper = $(this).closest('.job-option-wrapper');
-        const subJobName = $(this).data('subjob-name');
-        const optionGroupName = $(this).data('option-group-name');
+    $(document).ready(function() {
+       var jobData = <?php echo json_encode($data); ?>;
 
+    $('.job-option-select').each(function() {
+        const select = $(this);  
+        const el = this;    
+
+        if (select.val() && select.val() !== "") {
+            setTimeout(() => {
+                if (jobData.status && jobData.data) {
+                    if (jobData.data.length > 0) {
+                        jobData.data.forEach(function(item) {
+                            if (item.job_options && item.job_options.length > 0) {
+                                item.job_options.forEach(function(jobOptionObj) {
+                                    const jobOption = jobOptionObj.job_options;
+                                    jobOption.forEach(function(value) {
+                                        if (value && value.job_option.OptionType === "Conditional") {
+                                            value.option_values.forEach(function(valuelist) {
+                                                if (value.job_option.job_details_option_value) {
+                                                    if (value.job_option.job_details_option_value == valuelist.id) {
+                                                        if (select.val() == valuelist.ParentOptionValueID) {
+                                                            loadChildOption(el, valuelist.id, 2); 
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    } else {
+                        console.log("No job data available");
+                    }
+                } else {
+                    console.log("Failed to load job data or invalid response");
+                }
+            }, 100);
+        }
+    });
+
+    });
+
+    $(document).on('input change', '.item-price, .item-qty,.line_discount_type, .line_discount, .item_discount', function () {   
+        const uniqId = $(this).data('uniq-id');
+        const price = parseFloat($('#item_price_'+uniqId).val()) || 0;
+        const qty = parseFloat($('#item_qty_'+uniqId).val()) || 0;
+        const netPrice = price * qty;
+        $('#item_total_price_'+uniqId).val(netPrice.toFixed(2));
+
+        const lineDiscountType = $('#line_discount_type_'+uniqId).val();
+        const lineDiscount = parseFloat($('#line_discount_'+uniqId).val()) || 0;
+
+        let line_final_total = (lineDiscountType == '1' ? (netPrice - (netPrice * lineDiscount / 100)) : (netPrice - lineDiscount)) ;
+        $('#item_net_price_'+uniqId).val(line_final_total.toFixed(2));
+        updateTotalNetPrice();
+    });
+
+    function loadChildOption(selectElement, editId, insertOption) {
+        
+        const selectedOption = $(selectElement);
+        const selectedOptionValue = selectedOption.val();
+        var optionType = selectedOption.data('option-type'); 
+        var subJobCategoryID = selectedOption.data('sub-job-category'); 
+        var optionGroupID = selectedOption.data('option-group'); 
+        const jobOptionID = selectedOption.data('option-id');
+        const currentWrapper = selectedOption.closest('.job-option-wrapper');
+        const subJobName = selectedOption.data('subjob-name');
+        const optionGroupName = selectedOption.data('option-group-name');
 
         if (selectedOptionValue) {
             $.ajax({
@@ -186,9 +250,8 @@
                         res.data.forEach(function(group) {
                         const jobOption = group.job_option;
                         const optionValues = group.option_values;
-
+                        
                         if (optionValues.length > 0) {
-                            // Escape HTML in text content
                             const escapeHtml = (unsafe) => {
                                 return unsafe?.toString()
                                     .replace(/&/g, "&amp;")
@@ -209,13 +272,16 @@
                                         data-subjob-name="${escapeHtml(subJobName)}"
                                         data-option-group-name="${escapeHtml(optionGroupName)}"
                                         data-option-name="${escapeHtml(jobOption.OptionName)}"
-                                        ${jobOption.IsRequired == 1 ? 'required' : ''}>
+                                        data-pre-value="${escapeHtml(editId)}"
+                                        ${jobOption.IsRequired == 1 ? 'required' : ''}
+                                        onchange="loadChildOption(this,null,1)">
                                         <option value="">Select an option</option>`;
-                                        
+                                      
                             optionValues.forEach(function(val) {
-                                html += `<option value="${escapeHtml(val.id)}" data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}">
-                                        ${escapeHtml(val.ValueName)}
-                                    </option>`;
+                                html += `<option value="${escapeHtml(val.id)}" data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}" ${val.id == editId ? 'selected' : ''}>
+                                            ${escapeHtml(val.ValueName)}
+                                        </option>`;
+
                             });
 
                             html += `
@@ -227,10 +293,10 @@
                         if (html !== '') {
                             $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html(html);
                         }
-                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption);
+                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption,insertOption);
                     }else {
                         $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
-                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption);
+                        getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption,insertOption);
                     }
             },
             error: function() {
@@ -240,25 +306,14 @@
         }else{
             $(`.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`).html('');
         }
+    }
 
-    });
+    
+    function getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption,insertOption){
+        if(insertOption == '2'){
+            return false;
+        }
 
-    $(document).on('input change', '.item-price, .item-qty,.line_discount_type, .line_discount, .item_discount', function () {   
-        const uniqId = $(this).data('uniq-id');
-        const price = parseFloat($('#item_price_'+uniqId).val()) || 0;
-        const qty = parseFloat($('#item_qty_'+uniqId).val()) || 0;
-        const netPrice = price * qty;
-        $('#item_total_price_'+uniqId).val(netPrice.toFixed(2));
-
-        const lineDiscountType = $('#line_discount_type_'+uniqId).val();
-        const lineDiscount = parseFloat($('#line_discount_'+uniqId).val()) || 0;
-
-        let line_final_total = (lineDiscountType == '1' ? (netPrice - (netPrice * lineDiscount / 100)) : (netPrice - lineDiscount)) ;
-        $('#item_net_price_'+uniqId).val(line_final_total.toFixed(2));
-        updateTotalNetPrice();
-    });
-
-    function getOptionvaluePrice(subJobCategoryID,optionGroupID,selectedOptionValue,jobOptionID,selectedOption){
        var price_category = $('#price_category').val();
        $.ajax({
             type: "POST",
