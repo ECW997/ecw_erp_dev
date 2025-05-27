@@ -48,7 +48,8 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-3 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                        data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>
                                     </div>
@@ -81,7 +82,8 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
         <?php include "components/modal/job_card/job_header.php"; ?>
         <?php include "components/modal/job_card/add_job_item.php"; ?>
         <?php include "components/modal/job_card/job_card_approval.php"; ?>
-
+        <?php include "components/modal/job_card/job_card_header_discount.php"; ?>
+       
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
