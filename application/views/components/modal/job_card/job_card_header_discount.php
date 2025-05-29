@@ -4,19 +4,20 @@
         <div class="modal-content rounded-4 shadow">
             <div class="modal-header bg-dark">
                 <h5 class="modal-title text-white" id="jobcarddiscountModelLabel">Job Card Header Discount</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container">
-
                     <div class="row mb-3 align-items-center">
                         <div class="col-6">
                             <label class="fw-bold">Standard Price:</label>
                         </div>
                         <div class="col-6 text-end">
-                            <span class="text-primary fw-bold" id="standard_price_display">Rs. 250,000.00</span>
-                            <input type="hidden" id="standard_price" value="250000">
+                            <span class="text-primary fw-bold" id="standard_price_display">
+                                Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+                            </span>
+                            <input type="hidden" id="standard_price" value="<?= $job_main_data[0]['net_total'] ?? 0 ?>">
+                            <input type="hidden" id="jobcard_id"
+                                value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
                         </div>
                     </div>
 
@@ -42,20 +43,22 @@
                             <label class="fw-bold text-muted">Net Price</label>
                             <input type="text" class="form-control form-control-sm" id="net_price" readonly>
                         </div>
-                    </div>
 
+                    </div>
+                    <form action="" id="jobCardForm"></form>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="row w-100">
                     <div class="col-2"> </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-light w-100"
+                        <button type="button" class="btn btn-light w-100 addJobItemCloseBtn" aria-label="Close"
                             style="border-radius: 12px; font-weight:bold;">Close</button>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-success w-100"
-                            style="border-radius: 12px; ">Approve</button>
+                        <button type="button" class="btn btn-success w-100" style="border-radius: 12px;"
+                            onclick="confirmCreateDiscount()">Add
+                            Discount</button>
                     </div>
                     <div class="col-2"> </div>
                 </div>
@@ -63,8 +66,35 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="CloseConfirmModal" tabindex="-1" aria-labelledby="CloseConfirmModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-confirmation">
+            <div class="modal-header delete-header">
+                <h5 class="delete-title" id="CloseConfirmModalLabel">Unsaved Changes</h5>
+                <button type="button" class="btn-close delete-btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-question-circle delete-warning-icon"></i>
+                <p class="mb-0">Are you sure you want to close this modal?<br>Any unsaved data will be lost.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary delete-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary delete-btn-confirm" onclick="confirmCloseBtn()">
+                    <i class="fas fa-arrow-right me-2"></i>Yes, Close Without Saving
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     const standardPrice = parseFloat(document.getElementById('standard_price').value);
 
     const discountPriceInput = document.getElementById('discount_price');
@@ -87,8 +117,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const net = standardPrice - discount;
-        totalDiscountInput.value = `Rs. ${discount.toFixed(2)}`;
-        netPriceInput.value = `Rs. ${net.toFixed(2)}`;
+        totalDiscountInput.value = `${discount.toFixed(2)}`;
+        netPriceInput.value = `${net.toFixed(2)}`;
     }
 
     discountPriceInput.addEventListener('input', () => {
@@ -100,9 +130,67 @@ document.addEventListener('DOMContentLoaded', function () {
         discountPriceInput.value = '';
         updatePrices();
     });
+
+
+});
+
+$(document).on('click', '.addJobItemCloseBtn', function(e) {
+    var net_price = $('#net_price').val().trim();
+
+    if (net_price !== '') {
+        e.preventDefault();
+        $('#CloseConfirmModal').modal('show');
+    } else {
+        $('#jobcarddiscountModel').modal('hide');
+        $('.modal-backdrop').remove();
+        reSetContent('#jobCardForm');
+    }
 });
 
 function submitDiscount() {
     alert("Discount submitted successfully!");
+}
+
+
+function confirmCloseBtn() {
+    $('#CloseConfirmModal').modal('hide');
+
+    setTimeout(() => {
+        $('#jobcarddiscountModel').modal('hide');
+        $('.modal-backdrop').remove();
+        reSetContent('#jobCardForm');
+        location.reload();
+    }, 500);
+}
+
+
+function confirmCreateDiscount() {
+
+    const discountData = {
+        id: $('#jobcard_id').val(),
+        discount: $('#discount_precentage').val(),
+        discount_amount: $('#discount_price').val(),
+        net_total: $('#net_price').val()
+    };
+
+    console.log("Collected Discount Data:", discountData);
+
+    $.ajax({
+        url: '<?php echo base_url() ?>JobCard/updatediscount',
+        type: 'POST',
+        dataType: 'json',
+        data: discountData,
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + discountData.id;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
+
 }
 </script>

@@ -132,7 +132,6 @@ $(document).ready(function() {
 function confirmCloseBtn() {
     isUnsaved = false;
     $('#addItemCloseConfirmModal').modal('hide');
-
     setTimeout(() => {
         $('#addJobItemModal').modal('hide');
         $('.modal-backdrop').remove();
