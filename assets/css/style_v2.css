@@ -1,4 +1,4 @@
-.modal-body {
-    max-height: 50rem; 
+.jobcard-body{
+    max-height: 66vh; 
     overflow-y: auto;
 }

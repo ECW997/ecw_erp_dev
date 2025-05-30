@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['api_base_url'] = 'https://devapi.ecw.lk/api';
 
 $config['api_endpoints'] = [
+    'auth_check' => '/v1/auth_check',
     'login' => '/login',
     'get_users' => '/users',
     'get_profile' => '/profile',

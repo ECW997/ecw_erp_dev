@@ -20,15 +20,15 @@ class Auth extends CI_Controller {
 
         $response = $this->Authinfo->login($form_data);
 
-        if ($response['status'] === true && isset($response['data']['api_token'])) {
+        if ($response['status'] === true) {
             $loginData = $response['data'];
-
+            $loginAuthorisation = $response['authorisation'];
             $user_data = [
                 'userid' => $loginData['id'],
                 'name' => $loginData['name'],
                 'typename'=>$loginData['role'],
                 'email' => $loginData['email'],
-                'api_token' => $loginData['api_token'],
+                'api_token' => $loginAuthorisation['token'],
                 'employee_id' => $loginData['emp_id'],
                 'emp_no' => $loginData['emp_no'],
                 'company_id' => $this->input->post('company_id'),
@@ -55,6 +55,42 @@ class Auth extends CI_Controller {
             redirect();
         }
     }
+
+    public function Logout(){
+        $this->load->helper('api_helper');
+        $auth_info = auth_check();
+		$api_token = $auth_info['api_token'];
+		$auth_user = $auth_info['user'];
+
+        $this->session->unset_userdata('userid');
+        $this->session->unset_userdata('name');
+        $this->session->unset_userdata('typename');
+		$this->session->unset_userdata('email');
+		$this->session->unset_userdata('api_token');
+		$this->session->unset_userdata('employee_id');
+		$this->session->unset_userdata('emp_no');
+		$this->session->unset_userdata('company_id');
+		$this->session->unset_userdata('companyname');
+        $this->session->unset_userdata('branch_id');
+        $this->session->unset_userdata('branchname');
+        $this->session->unset_userdata('api_status');
+        $this->session->unset_userdata('loggedin');
+        $this->cart->destroy();
+
+        $response = $this->Authinfo->Logout($api_token);
+
+        if ($response['status'] === true) {
+            $this->session->set_flashdata('loginmsg', $response['message']);
+            redirect(base_url());
+         }
+    }
+
+	public function Dashboard(){
+		$this->load->model('Commeninfo');
+		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$this->load->view('dashboard', $result);
+	}
+
 }
 
 ?>
