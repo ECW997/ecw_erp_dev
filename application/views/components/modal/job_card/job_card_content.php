@@ -23,7 +23,7 @@
                     foreach ($summary_data as $summlist): 
                         foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
-                        <td class="text-left"><?= $list['job_sub_category_text']; ?> X <?= $list['total_job_cnt']; ?></td>
+                        <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?></td>
                         <td class="text-right"><?= number_format($list['total_price'], 2); ?></td>
                     </tr>
                     <?php endforeach; ?>
