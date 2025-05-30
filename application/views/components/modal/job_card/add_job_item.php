@@ -164,7 +164,7 @@ function addToJobCard(inputMethod){
     
         setTimeout(function () {
             continueAddToJobCard(inputMethod,btn);
-        }, 2000);
+        }, 3000);
     }else{
         continueAddToJobCard(inputMethod,btn);
     }
