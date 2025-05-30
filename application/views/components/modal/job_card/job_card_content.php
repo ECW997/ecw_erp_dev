@@ -1,6 +1,14 @@
 <style>
     .tooltip-inner {
+        max-width: none !important; 
+        padding: 0; 
         text-align: left;
+    }
+
+    .custom-tooltip-box {
+        width: 240px; 
+        padding: 8px;
+        border-radius: 4px;
     }
 </style>
 <div class="row p-3">
@@ -9,22 +17,25 @@
             <div class="border border-1 p-2 section_border_with_shadow">
                 <h6>Job Summary</h6>
                 <table class="w-100">
+                    <?php 
+                    $net_total=0;
+                    if($summary_data){
+                    foreach ($summary_data as $summlist): 
+                        foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
-                        <td class="text-left">Seat Cover x 4</td>
-                        <td class="text-right">235,000</td>
+                        <td class="text-left"><?= $list['job_sub_category_text']; ?> X <?= $list['total_job_cnt']; ?></td>
+                        <td class="text-right"><?= number_format($list['total_price'], 2); ?></td>
                     </tr>
+                    <?php endforeach; ?>
                     <tr>
-                        <td class="text-left">Seat Repai x 1</td>
-                        <td class="text-right">235,000</td>
-                    </tr>
-                    <tr>
-                        <td class="text-left" style="padding-top: 20px;">Discount (10%)</td>
-                        <td class="text-right" style="padding-top: 20px;">-23,800</td>
+                        <td class="text-left" style="padding-top: 20px;">Discount (<?= number_format($summlist['discount'],0) ?>%)</td>
+                        <td class="text-right" style="padding-top: 20px;"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">
                         <td class="text-left fw-bold">Total</td>
-                        <td class="text-right fw-bold">214,200</td>
+                        <td class="text-right fw-bold"><?= number_format($summlist['net_total'],2) ?></td>
                     </tr>
+                    <?php endforeach;  }?>
                 </table>
             </div>
         </div>
@@ -110,19 +121,19 @@
                                         <?php echo $detail['combined_option']; ?>
                                     </td>
                                     <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['list_price'], 0); ?>
+                                        <?php echo number_format($detail['list_price'], 2); ?>
                                     </td>
                                     <td class="text-right" style="width:10%">
                                         <?php echo $detail['qty']; ?>
                                     </td>
                                     <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['total'], 0); ?>
+                                        <?php echo number_format($detail['total'], 2); ?>
                                     </td>
                                     <td class="text-right" style="width:10%">
                                        
                                     </td>
                                     <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['line_discount'], 0); ?>
+                                        <?php echo number_format($detail['line_discount'], 2); ?>
                                     </td>
                                     <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
@@ -134,7 +145,7 @@
                                     $changePercentage = $listPrice != 0 ? ($changeAmount / $listPrice) * 100 : 0;
 
                                     $tooltipText = '
-                                    <div class="text-start" style="background-color: #fff; padding: 6px; border-radius: 4px;">
+                                     <div class="custom-tooltip-box text-start">
                                         <div class="d-flex justify-content-between">
                                             <span>Standard Price:</span>
                                             <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
@@ -153,10 +164,10 @@
                                         </div>
                                     </div>';
                                     ?>
-                                    <td class="text-right" style="width:10%">
+                                    <td class="text-right" style="width:10%;">
                                         <span 
                                             class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
-                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
+                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
                                             <?= number_format($detail['net_amount'], 0); ?>
                                         </span>
                                     </td>

@@ -354,7 +354,7 @@ function userAcoountDetails() {
 document.getElementById("logoutButton").addEventListener("click", function() {
     // Delay for 3 seconds before logging out
     setTimeout(function() {
-        window.location.href = "<?php echo base_url(); ?>Welcome/Logout";
+        window.location.href = "<?php echo base_url(); ?>Auth/Logout";
     }, 2400);
 });
 </script>

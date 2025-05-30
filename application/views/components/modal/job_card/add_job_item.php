@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<hr>
-				<form action="" id="jobCardForm"></form>
+				<form action="" id="jobCardForm" class="jobcard-body"></form>
 			</div>
 			<div class="modal-footer">
 				<button type="button" id="addToJobCardBtn" class="btn btn-info" onclick="addToJobCard(1);">Add to Job Card<i
@@ -145,7 +145,7 @@ function reSetContent(target) {
     $('#item_discount').val(0);
     $('#item_total_net_price').text('0');
 
-    const $el = $(target);
+    var $el = $(target);
     $el.find('input, textarea, select').val('');
     $el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
     $el.find('.collapse.show').collapse('hide');
@@ -157,10 +157,26 @@ function reSetContent(target) {
 }
 
 function addToJobCard(inputMethod){
+    const btn = document.getElementById('addToJobCardBtn');
+    if(inputMethod == 1){
+        if (btn) btn.disabled = true;
+        btn.innerHTML = `Adding <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
+    
+        setTimeout(function () {
+            continueAddToJobCard(inputMethod,btn);
+        }, 2000);
+    }else{
+        continueAddToJobCard(inputMethod,btn);
+    }
+
+}
+
+function continueAddToJobCard(inputMethod,btn){
     let allValid = true;
-    const validatedGroups = {};
-    const jobData = [];
-    const structuredJobData = {};
+    var validatedGroups = {};
+    var jobData = [];
+    var structuredJobData = {};
+    var selectedVal;
 
     let idtbl_jobcard = <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? '') ?>;
     
@@ -170,14 +186,14 @@ function addToJobCard(inputMethod){
     }
  
     editedSubJobs.forEach(function (subJobId) {
-        const section = $('#collapse' + subJobId);
-        const requiredFields = section.find('[required]');
+        var section = $('#collapse' + subJobId);
+        var requiredFields = section.find('[required]');
         let sectionValid = true;
 
 
         requiredFields.each(function () {
-            const $field = $(this);
-            const val = $field.val()?.trim();
+            var $field = $(this);
+            var val = $field.val()?.trim();
 
             if (!val || val == "0" ||  val == "") {
                 $field.addClass('is-invalid');
@@ -188,17 +204,17 @@ function addToJobCard(inputMethod){
         });
 
         section.find('.job-option-select').each(function () {
-            const selectedVal = $(this).val()?.trim();
-            const optionType = $(this).data('option-type');
-            const optionID = $(this).data('option-id');
-            const subJobCategoryID = $(this).data('sub-job-category');
-            const optionGroupID = $(this).data('option-group');
-            const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
+            var selectedVal = $(this).val()?.trim();
+            var optionType = $(this).data('option-type');
+            var optionID = $(this).data('option-id');
+            var subJobCategoryID = $(this).data('sub-job-category');
+            var optionGroupID = $(this).data('option-group');
+            var groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
 
-            const priceField = $('#item_price_' + groupKey);
-            const qtyField = $('#item_qty_' + groupKey);
-            const netPriceField = $('#item_total_price_' + groupKey);
-            const finalNetPriceField = $('#item_net_price_' + groupKey);
+            var priceField = $('#item_price_' + groupKey);
+            var qtyField = $('#item_qty_' + groupKey);
+            var netPriceField = $('#item_total_price_' + groupKey);
+            var finalNetPriceField = $('#item_net_price_' + groupKey);
 
             if (!priceField.length && !qtyField.length && !netPriceField.length && !finalNetPriceField.length) {
                 return;
@@ -208,7 +224,7 @@ function addToJobCard(inputMethod){
                 return; 
             }
 
-            const groupHasSelection = section.find(`.job-option-select[data-sub-job-category="${subJobCategoryID}"][data-option-group="${optionGroupID}"][data-option-id="${optionID}"]`)
+            var groupHasSelection = section.find(`.job-option-select[data-sub-job-category="${subJobCategoryID}"][data-option-group="${optionGroupID}"][data-option-id="${optionID}"]`)
                                         .toArray()
                                         .some(el => $(el).val()?.trim() !== "");
 
@@ -252,41 +268,43 @@ function addToJobCard(inputMethod){
         });
 
         section.find('.job-option-select').each(function () {
-            const $select = $(this);
-            const selectedVal = $select.val()?.trim();
-            const selectedOption = $select.find('option:selected');
-            const selectedText = selectedOption.text().trim();
-            const parentId = selectedOption.data('parent-id');
+            var $select = $(this);
+            selectedVal = $select.val()?.trim();
+            var selectedOption = $select.find('option:selected');
+            var selectedText = selectedOption.text().trim();
+            var parentId = selectedOption.data('parent-id');
 
             if (!selectedVal) return;
 
-            const priceCategory = $('#price_category').val();
-            const mainJobID = $('#jobIdLabel').text();
-            const discountType = $('#discount_type').val();
-            const discountAmount = $('#item_discount').val() || 0;
-            const itemTotalNetPrice = $('#item_total_net_price').text() || 0;
+            var priceCategory = $('#price_category').val();
+            var mainJobID = $('#jobIdLabel').text();
+            var discountType = $('#discount_type').val();
+            var discountAmount = $('#item_discount').val() || 0;
+            var itemTotalNetPrice = $('#item_total_net_price').text() || 0;
 
-            const optionType = $(this).data('option-type');
-            const subJobCategoryID = $(this).data('sub-job-category');
-            const optionGroupID = $(this).data('option-group');
-            const optionID = $(this).data('option-id');
-            const subJobName = $(this).data('subjob-name');
-            const optionGroupName = $(this).data('option-group-name');
-            const OptionName = $(this).data('option-name');
+            var optionType = $(this).data('option-type');
+            var subJobCategoryID = $(this).data('sub-job-category');
+            var optionGroupID = $(this).data('option-group');
+            var optionID = $(this).data('option-id');
+            var subJobName = $(this).data('subjob-name');
+            var optionGroupName = $(this).data('option-group-name');
+            var OptionName = $(this).data('option-name');
             var preValue = $(this).data('pre-value');
-            const groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
+            var groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
 
-            const price = $('#item_price_' + groupKey).val()?.trim();
-            const originalPrice = $('#item_price_' + groupKey).data('original_price');
-            const qty = $('#item_qty_' + groupKey).val()?.trim();
-            const netPrice = $('#item_total_price_' + groupKey).val()?.trim();
-            const lineDiscountType = $('#line_discount_type_' + groupKey).val()?.trim();
-            const lineInputDiscount = $('#line_discount_' + groupKey).val()?.trim();
-            const finalNetPrice = $('#item_net_price_' + groupKey).val()?.trim();
+            var price = parseFloat($('#item_price_' + groupKey).val()?.trim()) || 0;
+            var originalPrice = parseFloat($('#item_price_' + groupKey).data('original_price')) || 0;
 
-            const lineDiscount = netPrice - finalNetPrice;
+            var qty = $('#item_qty_' + groupKey).val()?.trim();
+            var netPrice = $('#item_total_price_' + groupKey).val()?.trim();
+            var lineDiscountType = $('#line_discount_type_' + groupKey).val()?.trim();
+            var lineInputDiscount = $('#line_discount_' + groupKey).val()?.trim();
+            var finalNetPrice = $('#item_net_price_' + groupKey).val()?.trim();
+
+            var lineDiscount = netPrice - finalNetPrice;
 
             preValue = preValue || selectedVal;
+            $(this).data('pre-value', selectedVal);
 
             if (!jobData[mainJobID]){
                 jobData[mainJobID] ={
@@ -344,11 +362,11 @@ function addToJobCard(inputMethod){
 
     if (!allValid) {
         // error_toastify('Please fill all required fields in the edited sections.');
-        const $modalBody = $('.modal.show .modal-body');
-        const $invalidField = $modalBody.find('.is-invalid:first');
+        var $modalBody = $('.modal.show .modal-body');
+        var $invalidField = $modalBody.find('.is-invalid:first');
 
         if ($invalidField.length) {
-            const scrollOffset = $invalidField.offset().top - $modalBody.offset().top + $modalBody.scrollTop() - 100;
+            var scrollOffset = $invalidField.offset().top - $modalBody.offset().top + $modalBody.scrollTop() - 100;
 
             $modalBody.animate({
                 scrollTop: scrollOffset
@@ -358,27 +376,27 @@ function addToJobCard(inputMethod){
     }
 
     // arrange data
-    const finalDataArray = [];
+    var finalDataArray = [];
 
-    for (const mainJobID in jobData) {
-        const mainJob = jobData[mainJobID];
-        const structuredJobData = mainJob.details;
+    for (var mainJobID in jobData) {
+        var mainJob = jobData[mainJobID];
+        var structuredJobData = mainJob.details;
 
-        const transformedDetails = {};
+        var transformedDetails = {};
 
-        for (const subJobCategoryID in structuredJobData) {
-            const subJobData = structuredJobData[subJobCategoryID];
+        for (var subJobCategoryID in structuredJobData) {
+            var subJobData = structuredJobData[subJobCategoryID];
             transformedDetails[subJobCategoryID] = {};
 
-            for (const optionGroupID in subJobData) {
-                const groupData = subJobData[optionGroupID];
-                const typeOptions = groupData.Type || [];
-                const primaryOptions = groupData.Primary || [];
-                const conditionalOptions = groupData.Conditional || [];
+            for (var optionGroupID in subJobData) {
+                var groupData = subJobData[optionGroupID];
+                var typeOptions = groupData.Type || [];
+                var primaryOptions = groupData.Primary || [];
+                var conditionalOptions = groupData.Conditional || [];
 
-                const conditionalMap = {};
+                var conditionalMap = {};
                 conditionalOptions.forEach(cond => {
-                    const parentId = cond.parent_id;
+                    var parentId = cond.parent_id;
                     if (!conditionalMap[parentId]) {
                         conditionalMap[parentId] = [];
                     }
@@ -388,10 +406,10 @@ function addToJobCard(inputMethod){
                     });
                 });
 
-                const groupArray = [];
+                var groupArray = [];
 
                 typeOptions.forEach(type => {
-                    const optionValueId = type.option_value_id;
+                    var optionValueId = type.option_value_id;
                     groupArray.push({
                         ...type,
                         option_type: "Type",
@@ -428,21 +446,26 @@ function addToJobCard(inputMethod){
             type: "POST",
             dataType: 'json',
             data: {
-                jobData: finalDataArray
+                jobData: finalDataArray,
+                inputMethod: inputMethod
             },
             url: '<?php echo base_url() ?>JobCard/insertJobCardDetail',
             success: function(result) {
                 if (result.status == true) {
                     if(inputMethod == 1){
                         success_toastify(result.message);
+                        btn.disabled = false;
+                        btn.innerHTML = `Add to Job Card <i class="fas fa-plus-circle ml-2"></i>`;
                         $('#addJobItemModal').modal('hide');
                         reSetContent('#jobCardForm');
                         setTimeout(function() {
                             location.reload();
-                        }, 500);
+                        }, 200);
                     }
                 } else {
                     falseResponse(result);
+                    btn.disabled = false;
+                    btn.innerHTML = `Add to Job Card <i class="fas fa-plus-circle ml-2"></i>`;
                 }
             }
     });
