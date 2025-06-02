@@ -31,6 +31,11 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'discount_update_v1', $form_data, $headers);
     }
 
+    public function getDiscount($api_token,$id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_discount_v1', $id, $headers);
+    }
+
     public function insertJobCardDetail($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'insertJobCardDetail_v1', $form_data, $headers);
