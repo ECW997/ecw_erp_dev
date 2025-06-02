@@ -129,7 +129,6 @@ class JobCard extends CI_Controller {
     }
 
 
-
 	public function updatediscount() {
         $api_token = $this->session->userdata('api_token');
         if (!$api_token) {
@@ -149,5 +148,19 @@ class JobCard extends CI_Controller {
             redirect('JobCard');
 		}   
     }
+
+	public function getDiscount($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+        $response = $this->JobCardinfo->getDiscount($api_token,$id);
+
+		echo json_encode($response);
+    }
+
 
 }

@@ -110,10 +110,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (discountPrice > 0) {
             discount = discountPrice;
-            discountPercentInput.value = ((discount / standardPrice) * 100).toFixed(2);
+            const calculatedPercent = ((discount / standardPrice) * 100);
+            discountPercentInput.value = calculatedPercent.toFixed(2);
+
+            if (calculatedPercent > 5) {
+            alert("Approval request needed: Discount exceeds 5%");
+        }
+
         } else if (discountPercent > 0) {
             discount = (standardPrice * discountPercent) / 100;
             discountPriceInput.value = discount.toFixed(2);
+
+            if (discountPercent > 5) {
+                alert("Approval request needed: Discount exceeds 5%");
+            }
         }
 
         const net = standardPrice - discount;
@@ -170,7 +180,7 @@ function confirmCreateDiscount() {
         id: $('#jobcard_id').val(),
         discount: $('#discount_precentage').val(),
         discount_amount: $('#discount_price').val(),
-        net_total: $('#net_price').val()
+        // net_total: $('#net_price').val()
     };
 
     console.log("Collected Discount Data:", discountData);
@@ -184,7 +194,8 @@ function confirmCreateDiscount() {
             if (result.status == true) {
                 success_toastify(result.message);
                 setTimeout(function() {
-                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + discountData.id;
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' +
+                        discountData.id;
                 }, 1000);
             } else {
                 falseResponse(result);

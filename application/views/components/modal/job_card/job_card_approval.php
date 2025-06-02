@@ -11,10 +11,15 @@
                 <div class="container">
                     <div class="row mb-3">
                         <div class="col-6">
-                            <h5>Standard Price: </h5>
+                            <h5 >Standard Price: </h5>
                         </div>
                         <div class="col-6 text-end">
-                            <span class="text-primary"><strong>242,500</strong></span>
+                            <span class="text-primary fw-bold" id="standard_price_display">
+                                Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+
+                                <input type="text" id="jobcard_id"
+                                value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
+                            </span>
 
                         </div>
                     </div>
@@ -22,29 +27,65 @@
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <td>Line Change</td>
-                                <td class="text-danger">-0.019%</td>
-                                <td class="text-danger text-end">-4,500</td>
+                                <td><label class="small fw-bold">Line Change</label></td>
+
+                                <td class="text-danger"><span id="standard_price_display">
+                                        <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>%
+                                        <input type="hidden" class="form-control form-control-sm" id="line_discount_precentage"
+                                            placeholder="Enter amount"></td>
+
+                                <td class="text-danger text-end"><span id="standard_price_display">
+                                        Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+                                        <input type="hidden" class="form-control form-control-sm" id="line_discount"
+                                            placeholder="Enter amount"></td>
                             </tr>
+
+
                             <tr>
-                                <td>Header Discount</td>
-                                <td class="text-danger">-10.000%</td>
-                                <td class="text-danger text-end">-23,800</td>
+                                <td><label class="small fw-bold ">Header Discount</label></td>
+
+                                <td class="text-danger"><span id="standard_price_display">
+                                        <?= number_format($job_main_data[0]['discount'] ?? 0, 2) ?>%
+                                        <input type="hidden" class="form-control form-control-sm" id="header_discount_precentage"
+                                            placeholder="Enter amount"></td>
+
+                                <td class="text-danger text-end"><span id="standard_price_display">
+                                        Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
+                                        <input type="hidden" class="form-control form-control-sm" id="header_discount"
+                                            placeholder="Enter amount"></td>
                             </tr>
+
+
+
                             <tr>
-                                <td>Net Discount</td>
-                                <td class="text-danger">-10.000%</td>
-                                <td class="text-danger text-end">-23,800</td>
+                                <td><label class="small fw-bold ">Net Discount </label></td>
+
+                                <td class="text-danger"><span id="standard_price_display">
+                                        <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>%
+                                        <input type="hidden" class="form-control form-control-sm" id="net_discount_precentage"
+                                            placeholder="Enter amount"></td>
+
+                                <td class="text-danger text-end"><span id="standard_price_display">
+                                        Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+                                        <input type="hidden" class="form-control form-control-sm" id="net_discount"
+                                            placeholder="Enter amount"></td>
                             </tr>
+
+
+
+
                         </tbody>
                     </table>
 
                     <div class="row mt-4">
                         <div class="col-6">
-                            <h4>Price: </h4>
+                            <h5>Net Price: </h5>
                         </div>
                         <div class="col-6 text-end">
-                            <span class="text-dark"><strong>214,200</strong></span>
+                        <span class="text-dark fw-bold" id="standard_price_display">
+                                Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+                            </span>
+                           
                         </div>
                     </div>
                 </div>

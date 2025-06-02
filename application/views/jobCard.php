@@ -13,23 +13,28 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
     <div id="layoutSidenav_content">
         <main>
             <div class="page-header page-header-light bg-gray shadow">
-                <div class="container-fluid">  
+                <div class="container-fluid">
                     <div class="page-header-content py-1">
                         <div class="row d-flex align-items-center">
                             <div class="col-4">
-                            	<h1 class="page-header-title">Job Card</h1>
+                                <h1 class="page-header-title">Job Card</h1>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_customer_name"><?= $job_main_data[0]['customer_name'] ?? '' ?>
+                                <h2 class="job-header-title" id="top_nav_customer_name">
+                                    <?= $job_main_data[0]['customer_name'] ?? '' ?>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_vehicle_no"><?= $job_main_data[0]['vehicle_number'] ?? '' ?></h2>
+                                <h2 class="job-header-title" id="top_nav_vehicle_no">
+                                    <?= $job_main_data[0]['vehicle_number'] ?? '' ?></h2>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title" id="top_nav_vehicle"><?= $job_main_data[0]['brand_name'] ?? '' ?> - <?= $job_main_data[0]['model_name'] ?? '' ?></h2>
+                                <h2 class="job-header-title" id="top_nav_vehicle">
+                                    <?= $job_main_data[0]['brand_name'] ?? '' ?> -
+                                    <?= $job_main_data[0]['model_name'] ?? '' ?></h2>
                             </div>
                             <div class="col-2">
-                            	<h2 class="job-header-title text-primary" id="top_nav_job_card_no"><?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
+                                <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
+                                    <?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
                             </div>
                         </div>
                     </div>
@@ -48,14 +53,14 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-3 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                        data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal"
+                                            data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-3 d-grid">
-                                    <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                    data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
                                             <i class="fas fa-check me-2"></i> Approve
                                         </button>
                                     </div>
@@ -83,7 +88,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
         <?php include "components/modal/job_card/add_job_item.php"; ?>
         <?php include "components/modal/job_card/job_card_approval.php"; ?>
         <?php include "components/modal/job_card/job_card_header_discount.php"; ?>
-       
+
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -92,42 +97,42 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 <script>
 const customerData = {
-  name: "",
-  email: "",
-  address1: "",
-  address2: "",
-  city: "",
-  district: "",
-  nic: "",
-  contact: "",
-  contact2: "",
-  dob: "",
-  inquiry_id: "",
-  inquiry_no: "",
-  inquiry_date: "",
-  vehicle_no: "",
-  vehicle_brand: "",
-  vehicle_brand_id: "",
-  vehicle_model: "",
-  vehicle_model_id: "",
-  vehicle_type: "",
-  vehicle_type_id: "",
-  vehicle_gen: "",
-  vehicle_gen_id: "",
-  vehicle_year: "",
-  vehicle_year_id: "",
-  price_category: "",
-  sales_person_name: "",
-  schedule_date: "",
-  handover_date: "",
-  days: "",
-  status: "",
-  company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
-  branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
+    name: "",
+    email: "",
+    address1: "",
+    address2: "",
+    city: "",
+    district: "",
+    nic: "",
+    contact: "",
+    contact2: "",
+    dob: "",
+    inquiry_id: "",
+    inquiry_no: "",
+    inquiry_date: "",
+    vehicle_no: "",
+    vehicle_brand: "",
+    vehicle_brand_id: "",
+    vehicle_model: "",
+    vehicle_model_id: "",
+    vehicle_type: "",
+    vehicle_type_id: "",
+    vehicle_gen: "",
+    vehicle_gen_id: "",
+    vehicle_year: "",
+    vehicle_year_id: "",
+    price_category: "",
+    sales_person_name: "",
+    schedule_date: "",
+    handover_date: "",
+    days: "",
+    status: "",
+    company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
+    branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
 };
 
 $(document).ready(function() {
-    
+
     $.ajax({
         url: apiBaseUrl + '/v1/main_job_category',
         type: "GET",
@@ -164,18 +169,64 @@ $(document).ready(function() {
             alert('Failed to load main job categories.');
         }
     });
+
+
+
+
+    $(document).on('click', '.openJobCardDiscountModal', function() {
+        const jobcard_id = $('#jobcard_id').val();
+
+        if (jobcard_id) {
+            fetchJobCardDiscountDetails(jobcard_id); 
+            $('#jobcarddiscountModel').modal('show');
+        } else {
+            alert('Invalid Job Card ID.');
+        }
+    });
 });
 
+
+
+function fetchJobCardDiscountDetails(jobcard_id) {
+    $.ajax({
+        url: '<?= base_url("JobCard/getDiscount/") ?>' + jobcard_id,
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === true) {
+                const data = response.data;
+
+                $('#discount_precentage').val(data.discount || '');
+                $('#discount_price').val(data.discount_amount || '');
+
+                const standardPrice = parseFloat($('#standard_price').val()) || 0;
+                const discountAmt = parseFloat(data.discount_amount) || 0;
+                const net = standardPrice - discountAmt;
+
+                $('#total_discount').val(discountAmt.toFixed(2));
+                $('#net_price').val(net.toFixed(2));
+            } else {
+                alert('Failed to fetch discount details.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', error);
+            alert('Something went wrong fetching discount data.');
+        }
+    });
+}
+
+
 function deactive_confirm() {
-return confirm("Are you sure you want to deactive this?");
+    return confirm("Are you sure you want to deactive this?");
 }
 
 function active_confirm() {
-return confirm("Are you sure you want to active this?");
+    return confirm("Are you sure you want to active this?");
 }
 
 function delete_confirm() {
-return confirm("Are you sure you want to remove this?");
+    return confirm("Are you sure you want to remove this?");
 }
 </script>
 <?php include "include/v2/footer.php"; ?>

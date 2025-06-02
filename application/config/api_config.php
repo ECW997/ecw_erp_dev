@@ -42,6 +42,7 @@ $config['api_endpoints'] = [
     'get_item_parent_options_v1' => '/v1/get_item_parent_options',
     'get_item_price_v1' => '/v1/get_item_price',
     'discount_update_v1' => '/v1/update_discount',
+    'get_discount_v1' => '/v1/discount_details',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
