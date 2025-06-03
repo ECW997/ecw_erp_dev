@@ -13,7 +13,7 @@
  	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
  	<style>
  		@page {
- 			margin: 5mm 16mm 2mm 20mm;
+ 			margin: 5mm 16mm 5mm 20mm;
  			/* top right bottom left */
  		}
 
@@ -196,27 +196,33 @@
 				<td style="width:4%;text-align:left;border: 0px solid #000;font-size:12px;font-weight:bold;" class="datatable_td">
 					<?= $mainJob_cnt ?>.</td>
 				<td colspan="3" style="width:96%;text-align:left;border: 0px solid #000;font-size:12px;font-weight:bold;" class="datatable_td">
-					<?= $item['job_sub_category_text'] ?? 'N/A' ?>
+					<?= $item['job_sub_category_text'] ?? 'N/A' ?> 
 				</td>
 			</tr>
             
         <?php
         $joblist_cnt = 1;
         foreach ($item['details'] as $joblist): ?>
-            <tr>
+            <tr style="border-bottom: 1px dotted #000;">
                 <td style="width:4%;text-align:left;border:none;font-size:12px;" class="datatable_td">
 				</td>
 				<td style="width:4%;text-align:left;border:none;font-size:12px;" class="datatable_td">
 					<?= $joblist_cnt ?>.</td>
 				<td style="width:42%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					<?= $joblist['option_group_text'] ?? 'N/A' ?>
+					<?= $joblist['option_group_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?>
 				</td>
 				<td style="width:10%;text-align:left;border:none;font-size:12px;" class="datatable_td">
 					X <?= $joblist['qty'] ?? 0 ?>
 				</td>
 				<td style="width:40%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					<?= $joblist['combined_option'] ?? 'N/A' ?>
-				</td>
+                    <?= $joblist['combined_option'] ?? 'N/A' ?> <br>
+                    <?php if($joblist['option_text'] == 'Stitch Design'): ?>
+                        <img 
+                            style="height:165px;"
+                            src="<?php echo base_url() ?>images/Stitching_img/1740395994_NP001.jpg" 
+                        />
+                    <?php endif; ?>
+                </td>
 			</tr>
         <?php $joblist_cnt++; ?>
         <?php endforeach; ?>
@@ -239,16 +245,16 @@
  			</tr>
          
  			<tr>
- 					<td style="width:3%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:7%;text-align:left;" class="datatable_td">ECW001</td>
- 					<td style="width:13%;text-align:center;" class="datatable_td"></td>
- 					<td style="width:17%;text-align:left;" class=" datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 					<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:3%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:7%;text-align:left;" class="datatable_td">ECW001</td>
+ 				<td style="width:13%;text-align:center;" class="datatable_td"></td>
+ 				<td style="width:17%;text-align:left;" class=" datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+ 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
  			</tr>
             
  		</table> 

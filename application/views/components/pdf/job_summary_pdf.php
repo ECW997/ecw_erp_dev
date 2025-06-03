@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="assets/img/ecw2.jpg" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
     <style>@page {
-    	margin: 5mm 15mm 5mm 5mm;
+    	margin: 5mm 5mm 5mm 5mm;
     }
 
     body {
@@ -22,7 +22,7 @@
 
     header {
     	position: fixed;
-    	top: 20px;
+    	top: 10px;
     	left: 0;
     	right: 0;
     	height: 90px;
@@ -43,7 +43,7 @@
     }
 
     .content {
-    	margin-top: 112px;
+    	margin-top: 100px;
     }
 
     .header_th {
@@ -168,7 +168,7 @@
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
-			<td colspan="3;" class="footer_text" style="letter-spacing: 3.53px;">THE PRIME OF VEHICLE INTERIOR &
+			<td colspan="3;" class="footer_text" style="letter-spacing: 4.33px;">THE PRIME OF VEHICLE INTERIOR &
 				EXTERIOR MODIFICATION</td>
 		</tr>
 	</table>
@@ -197,7 +197,7 @@
                     ?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $count ?></td>
-                        <td class="datatable_data_td" style="width:46%; text-align:left;">
+                        <td class="datatable_data_td" style="width:46%; text-align:left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             <?= $item['job_sub_category_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?> - <?= $joblist['combined_option'] ?? 'N/A' ?>
                         </td>
                         <td class="datatable_data_td" style="width:5%; text-align:center;"><?= $joblist['qty'] ?? 0 ?></td>
@@ -214,7 +214,7 @@
                     </tr>
                     <?php
                     
-                    if ($count % 11 == 0) {
+                    if ($count % 13 == 0) {
                         echo '
                             <div style="page-break-after: always; border: none;margin-top: 115px;"></div>
                             <div style="margin-top: 115px;border: none;"></div>
@@ -235,13 +235,6 @@
         </tbody>
     </table>
 
-    <?php if($count % 11 == 0) {
-       echo '
-            <div style="page-break-after: always; border: none;margin-top: 115px;"></div>
-            <div style="margin-top: 115px;border: none;"></div>'; 
-    }
-    ?>
-
  <?php 
     $net_total=0;
     if($summary_data){
@@ -258,7 +251,7 @@
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
     		<td style="width:13%;text-align:left;" class="datatable_data_td">Disc. Total</td>
     		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format($summlist['discount_amount'],2) ?></td>
+    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2) ?></td>
     	</tr>
     	<tr>
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>

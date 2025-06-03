@@ -28,8 +28,12 @@
                     </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <td class="text-left" style="padding-top: 20px;">Discount (<?= number_format($summlist['discount'],0) ?>%)</td>
-                        <td class="text-right" style="padding-top: 20px;"><?= number_format($summlist['discount_amount'],2) ?></td>
+                        <td class="text-left" style="padding-top: 20px;">Line Discount</td>
+                        <td class="text-right" style="padding-top: 20px;"><?= number_format($summlist['total_line_discount'],2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%)</td>
+                        <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">
                         <td class="text-left fw-bold">Total</td>
@@ -94,50 +98,51 @@
             </div>
         </div>
         <div class="row mb-4 mx-auto">
-            <h5>Job Details</h5>
-            <?php 
+        	<h5>Job Details</h5>
+        	<div style="overflow-x: auto; white-space: nowrap; max-height: 42vh;">
+        		<?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
-                <div class="details_section mb-2">
-                    <table class="w-100">
-                        <thead>
-                            <tr>
-                                <th colspan="2" style="width:40%"><?php echo $group['job_sub_category_text']; ?></th>
-                                <th class="text-right" style="width:10%">Price</th>
-                                <th class="text-right" style="width:10%">QTY</th>
-                                <th class="text-right" style="width:10%">Total</th>
-                                <th class="text-right" style="width:10%">O.Charges</th>
-                                <th class="text-right" style="width:10%">Discount</th>
-                                <th class="text-right" style="width:10%">Sub Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($group['details'] as $detail): ?>
-                                <tr>
-                                    <td class="text-left" style="width:20%">
-                                        <?php echo $detail['option_group_text']; ?>
-                                        -
-                                        <?php echo $detail['option_text']; ?>
-                                    </td>
-                                    <td class="text-left" style="width:20%">
-                                        <?php echo $detail['combined_option']; ?>
-                                    </td>
-                                    <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['list_price'], 2); ?>
-                                    </td>
-                                    <td class="text-right" style="width:10%">
-                                        <?php echo $detail['qty']; ?>
-                                    </td>
-                                    <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['total'], 2); ?>
-                                    </td>
-                                    <td class="text-right" style="width:10%">
-                                       
-                                    </td>
-                                    <td class="text-right" style="width:10%">
-                                        <?php echo number_format($detail['line_discount'], 2); ?>
-                                    </td>
-                                    <?php
+        		<div class="details_section mb-2">
+        			<table class="w-100">
+        				<thead>
+        					<tr>
+        						<th colspan="2" style="width:40%"><?php echo $group['job_sub_category_text']; ?></th>
+        						<th class="text-right" style="width:10%">Price</th>
+        						<th class="text-right" style="width:10%">QTY</th>
+        						<th class="text-right" style="width:10%">Total</th>
+        						<th class="text-right" style="width:10%">O.Charges</th>
+        						<th class="text-right" style="width:10%">Discount</th>
+        						<th class="text-right" style="width:10%">Sub Total</th>
+        					</tr>
+        				</thead>
+        				<tbody>
+        					<?php foreach ($group['details'] as $detail): ?>
+        					<tr>
+        						<td class="text-left" style="width:20%">
+        							<?php echo $detail['option_group_text']; ?>
+        							-
+        							<?php echo $detail['option_text']; ?>
+        						</td>
+        						<td class="text-left" style="width:20%">
+        							<?php echo $detail['combined_option']; ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo number_format($detail['list_price'], 2); ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo $detail['qty']; ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo number_format($detail['total'], 2); ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo number_format($detail['line_discount'], 2); ?>
+        						</td>
+        						<?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
                                     $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
                                    
@@ -166,31 +171,31 @@
                                         </div>
                                     </div>';
                                     ?>
-                                    <td class="text-right" style="width:10%;">
-                                        <span 
-                                            class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
-                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
-                                            <?= number_format($detail['net_amount'], 0); ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endforeach; }else { ?>
-                <div class="details_section mb-2">
-                	<table class="w-100">
-                		<thead>
-                		</thead>
-                		<tbody>
-                            <tr>
-                                  <td colspan="8" class="text-center">Record not found!</td>
-                            </tr>
-                		</tbody>
-                	</table>
-                </div>
-            <?php } ?>
+        						<td class="text-right" style="width:10%;">
+        							<span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
+        								<?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
+        								<?= number_format($detail['net_amount'], 0); ?>
+        							</span>
+        						</td>
+        					</tr>
+        					<?php endforeach; ?>
+        				</tbody>
+        			</table>
+        		</div>
+        		<?php endforeach; }else { ?>
+        		<div class="details_section mb-2">
+        			<table class="w-100">
+        				<thead>
+        				</thead>
+        				<tbody>
+        					<tr>
+        						<td colspan="8" class="text-center">Record not found!</td>
+        					</tr>
+        				</tbody>
+        			</table>
+        		</div>
+        		<?php } ?>
+        	</div>
         </div>
 
     </div>
