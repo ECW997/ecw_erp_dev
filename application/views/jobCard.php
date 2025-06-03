@@ -65,7 +65,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-3 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i> Print
                                         </button>
                                     </div>
@@ -186,6 +186,18 @@ $(document).ready(function() {
 });
 
 
+function exportJobCardPDF(jobcard_id) {
+    const baseUrl = "<?php echo base_url(); ?>JobCard/jobCardPDF";
+    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
+    window.open(url, '_blank');
+}
+
+function exportJobCardSummary(jobcard_id) {
+    const baseUrl = "<?php echo base_url(); ?>JobCard/jobSummaryPDF";
+    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
+    window.open(url, '_blank');
+}
+
 
 function fetchJobCardDiscountDetails(jobcard_id) {
     $.ajax({
@@ -215,7 +227,6 @@ function fetchJobCardDiscountDetails(jobcard_id) {
         }
     });
 }
-
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");

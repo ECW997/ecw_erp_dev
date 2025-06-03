@@ -1,6 +1,6 @@
 {
     "roboto": {
-        "normal": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_744a525d3dfcb8e50d148956703b6b68",
+        "normal": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_a5fc1441144adab7ff7fd3a2b9c8ceea",
         "500": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_41ea8fd5770bc278dbd15851922ff806",
         "100_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_italic_fc13b8f8feee89c41c95bf27309dcb8b",
         "300_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_italic_d54a1bf1f9b064b835ac1d6bec9ebec1",
@@ -9,8 +9,8 @@
         "bold_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_italic_fc1d968bd454a4f0ad1ea1fa2c6fb96d",
         "900_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_italic_8edcce9844866f9d8e9b3db832880d0e",
         "100": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_c639033bf7f18123515bf2c8d5f6e5f6",
-        "300": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_7f0f040993bb35f67d8431439cbf7385",
-        "bold": "roboto_bold_8c645f7f06cc7058298670914de0e599",
+        "300": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_67dc12b3f1f113305ec431e641e8a57d",
+        "bold": "roboto_bold_33a1d3e1e3260160834fe00ba212e515",
         "900": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_8c2f973c7818bcf66c70e9cce4eda0d4"
     },
     "font awesome 5 brands": {
