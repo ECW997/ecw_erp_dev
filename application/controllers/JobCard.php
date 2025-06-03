@@ -43,8 +43,64 @@ class JobCard extends CI_Controller {
 	}
  
     public function jobCardPDF(){
-		$this->load->model('JobCardinfo');
-        $result=$this->JobCardinfo->jobCardPDF();
+		$id=$this->input->get('jobcard_id');
+        $response=$this->JobCardinfo->jobCardPDF($this->api_token,$id);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch job card data');
+		}
+
+		$pdf_data = [
+			'main_data'    => $response['data']['main_data'][0],     
+			'details_data' => $response['data']['details_data'],     
+			'summary_data' => $response['data']['summary_data']     
+		];
+
+		$this->load->library('Pdf');
+
+		$this->pdf->setPaper('A4', 'portrait');                      
+		$this->pdf->set_option('defaultFont', 'Helvetica');           
+		$this->pdf->set_option('isRemoteEnabled', true); 
+
+		$html = $this->load->view('components/pdf/jobcard_pdf', $pdf_data, TRUE);
+
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+		$this->pdf->stream(
+			$pdf_data['main_data']['job_card_number'] . '.pdf', 
+			['Attachment' => 0]  
+		);
+	}
+
+	public function jobSummaryPDF(){
+		$id=$this->input->get('jobcard_id');
+        $response=$this->JobCardinfo->jobSummaryPDF($this->api_token,$id);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch job card data');
+		}
+
+		$pdf_data = [
+			'main_data'    => $response['data']['main_data'][0],     
+			'details_data' => $response['data']['details_data'],     
+			'summary_data' => $response['data']['summary_data']     
+		];
+
+		$this->load->library('Pdf');
+
+	   	$customPaper = array(0, 0, 396.9, 396.9);
+        $this->pdf->setPaper($customPaper);    
+		$this->pdf->set_option('defaultFont', 'Helvetica');           
+		$this->pdf->set_option('isRemoteEnabled', true); 
+
+		$html = $this->load->view('components/pdf/job_summary_pdf', $pdf_data, TRUE);
+
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+		$this->pdf->stream(
+			$pdf_data['main_data']['job_card_number'] . '.pdf', 
+			['Attachment' => 0]  
+		);
 	}
 
     public function getCustomerDetails($id) {
@@ -127,8 +183,6 @@ class JobCard extends CI_Controller {
             echo json_encode($response);
 		}
     }
-
-
 
 	public function updatediscount() {
         $api_token = $this->session->userdata('api_token');

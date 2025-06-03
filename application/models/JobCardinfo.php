@@ -55,12 +55,15 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'get_item_price_v1', $form_data, $headers);
     }
 
+    public function jobCardPDF($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'job_card_v1', $form_data, $headers);
+    }
 
-
-
-
-
-
+    public function jobSummaryPDF($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'job_card_v1', $form_data, $headers);
+    }
 
     public function Getvehicletype(){
         $this->db->select('idtbl_vehicle_type , vehicle_type');
@@ -616,7 +619,6 @@ class JobCardinfo extends CI_Model{
 
     }
 
-
     private function formatDayWithSuffix($date) {
         $timestamp = strtotime($date);
         $day = date('j', $timestamp);
@@ -632,7 +634,7 @@ class JobCardinfo extends CI_Model{
         return date('M. j', $timestamp) . $suffix . ', ' . date('Y', $timestamp);
     }
 
-    public function jobCardPDF(){
+    public function jobCardPDF1(){
 
         $branchID = $_SESSION['branch_id'];
 
@@ -957,6 +959,7 @@ class JobCardinfo extends CI_Model{
         </body>
 
         </html>';
+
 
         $this->load->library('Pdf');
         $this->pdf->set_option('isRemoteEnabled', true);

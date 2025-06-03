@@ -116,6 +116,8 @@
                                 <tr>
                                     <td class="text-left" style="width:20%">
                                         <?php echo $detail['option_group_text']; ?>
+                                        -
+                                        <?php echo $detail['option_text']; ?>
                                     </td>
                                     <td class="text-left" style="width:20%">
                                         <?php echo $detail['combined_option']; ?>

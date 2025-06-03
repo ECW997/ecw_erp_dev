@@ -363,7 +363,7 @@
                         addToJobCard(2);
                     }
                 }
-            });    
+        });    
     }
 
     function updateTotalNetPrice() {
