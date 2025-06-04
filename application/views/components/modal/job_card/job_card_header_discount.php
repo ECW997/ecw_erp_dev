@@ -13,9 +13,9 @@
                         </div>
                         <div class="col-6 text-end">
                             <span class="text-primary fw-bold" id="standard_price_display">
-                                Rs. <?= number_format($job_main_data[0]['net_total'] ?? 0, 2) ?>
+                                Rs. <?= number_format($summary_data[0]['sub_total'] ?? 0, 2) ?>
                             </span>
-                            <input type="hidden" id="standard_price" value="<?= $job_main_data[0]['net_total'] ?? 0 ?>">
+                            <input type="hidden" id="standard_price" value="<?= $summary_data[0]['sub_total'] ?? 0 ?>">
                             <input type="hidden" id="jobcard_id"
                                 value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
                         </div>
