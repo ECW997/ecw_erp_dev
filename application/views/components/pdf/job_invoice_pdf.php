@@ -112,20 +112,14 @@
      		<th rowspan="7" style="text-align:left;width:17%;"><img style="height:65px;collapse;margin-left:5px"
      				src="<?php echo base_url() ?>assets/img/logo-icon.png" /></th>
      		<th colspan="4" style="width:83%;font-size:14px;font-weight:500;text-align:center;" class="header_th"><span
-     				style="margin-left:-55">JOB SUMMARY</span></th>
+     				style="margin-left:-55">INVOICE(R)</span></th>
      	</tr>
         <div></div>
         <tr>
-        	<th style="width:10%;" class="header_th">Cus. Code</th>
-        	<th style="width:25%;" class="header_th"><span> : </span>3634</th>
-        	<th style="width:10%;" class="header_th">Job No.</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['job_card_number'] ?></th>
-        </tr>
-        <tr>
         	<th style="width:10%;" class="header_th">Cus. Name</th>
         	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_name'] ?? 'N/A' ?></th>
-        	<th style="width:10%;" class="header_th">PO No.</th>
-        	<th style="width:10%;" class="header_th"><span> : </span>None</th>
+        	<th style="width:10%;" class="header_th">Inv.No.</th>
+        	<th style="width:10%;" class="header_th"><span> : </span>EC24IN1472</th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Address</th>
@@ -133,21 +127,26 @@
                         (!empty($main_data['address_2']) ? ', ' . $main_data['address_2'] : '') . 
                         (!empty($main_data['city']) ? ', ' . $main_data['city'] : '') . 
                         (!empty($main_data['district']) ? ', ' . $main_data['district'] : '') ?></th>
-        	<th style="width:10%;" class="header_th">S.P.Code</th>
-        	<th style="width:10%;" class="header_th"><span> : </span>02</th>
+        	<th style="width:10%;" class="header_th">In.Date</th>
+        	<th style="width:10%;" class="header_th"><span> : </span>02/11/2024</th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Vehicle No.</th>
         	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_vehicle_number'] ?? 'N/A' ?></th>
-        	<th style="width:10%;" class="header_th">Created Date</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= date('d/m/Y') ?></th>
+        	<th style="width:10%;" class="header_th">Cus. Po</th>
+        	<th style="width:10%;" class="header_th"><span> : </span>N/A</th>
         </tr>
         <tr>
-        	<th style="width:10%;" class="header_th">Vehicle Type.</th>
-        	<th style="width:25%;" class="header_th"><span> : </span><?= ($main_data['brand_name'] ?? '') . 
-                        (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?></th>
-        	<th style="width:10%;" class="header_th">NIC No</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['nic_number'] ?? 'N/A' ?></th>
+        	<th style="width:10%;" class="header_th">VAT Reg No.</th>
+        	<th style="width:25%;" class="header_th"><span> : </span>N/A</th>
+        	<th style="width:10%;" class="header_th">Our VAt No.</th>
+        	<th style="width:10%;" class="header_th"><span> : </span>N/A</th>
+        </tr>
+        <tr>
+        	<th style="width:10%;" class="header_th">SVAT No.</th>
+        	<th style="width:25%;" class="header_th"><span> : </span>N/A</th>
+        	<th style="width:10%;" class="header_th">S.P.Code</th>
+        	<th style="width:10%;" class="header_th"><span> : </span>08</th>
         </tr>
         </table>
 </header>
