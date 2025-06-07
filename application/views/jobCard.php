@@ -70,6 +70,11 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                            <i class="fas fa-print me-2"></i>Invoice Print
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>JobCard Print
                                         </button>
@@ -202,6 +207,11 @@ function exportJobCardSummary(jobcard_id) {
     window.open(url, '_blank');
 }
 
+function exportJobCardInvoice(jobcard_id) {
+    const baseUrl = "<?php echo base_url(); ?>JobCard/jobInvoicePDF";
+    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
+    window.open(url, '_blank');
+}
 
 function fetchJobCardDiscountDetails(jobcard_id) {
     $.ajax({
