@@ -245,8 +245,6 @@ function confirmEditJobCard(){
 }
 
 function createNewJobCard() { 
-	console.log(123);
-	
 	$.ajax({
 		type: "POST",
 		dataType: 'json',
