@@ -20,7 +20,7 @@
  		body {
  			margin: 0;
  			font-family: "Roboto", sans-serif;
- 			font-size: 10px;
+ 			font-size: 12px;
  			line-height: 1.5;
  			text-align: left;
  		}
@@ -63,7 +63,7 @@
  		.sub_header_text_th {
  			text-align: left;
  			height: 4px;
- 			line-height: 0.7rem;
+ 			line-height: 0.8rem;
  			padding: 0;
  			font-weight: 700;
  		}
@@ -71,7 +71,7 @@
  		.sub_header_text_td {
  			text-align: left;
  			height: 4px;
- 			line-height: 0.7rem;
+ 			line-height: 0.8rem;
  			padding: 0;
  			font-weight: 400;
  		}
@@ -110,9 +110,9 @@
  		<table
  			style="table-layout: fixed;padding:3px;padding-left:0px;padding-right:0px;width:100%;border-collapse: collapse;border-bottom: 1.5px solid #000">
  			<tr>
- 				<th style="width:10%;" class="sub_header_text_th">Customer</th>
- 				<th style="width:55%;" class="sub_header_text_td"><?= $main_data['customer_name'] ?? 'N/A' ?></th>
- 				<th style="width:15%;" class="sub_header_text_th">Job Card No</th>
+ 				<th style="width:15%;" class="sub_header_text_th">Customer</th>
+ 				<th style="width:45%;" class="sub_header_text_td"><?= $main_data['customer_name'] ?? 'N/A' ?></th>
+ 				<th style="width:20%;" class="sub_header_text_th">Job Card No</th>
  				<th style="width:20%;" class="sub_header_text_td"><?= $main_data['job_card_number'] ?></th>
  			</tr>
  			<tr>

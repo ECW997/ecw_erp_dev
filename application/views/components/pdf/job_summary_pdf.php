@@ -9,7 +9,8 @@
     <link rel="icon" type="image/x-icon" href="assets/img/ecw2.jpg" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
     <style>@page {
-    	margin: 5mm 5mm 5mm 5mm;
+    	margin: 5mm 15mm 3mm 5mm;
+        /* top right bottom left */
     }
 
     body {
@@ -168,7 +169,7 @@
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
-			<td colspan="3;" class="footer_text" style="letter-spacing: 4.33px;">THE PRIME OF VEHICLE INTERIOR &
+			<td colspan="3;" class="footer_text" style="letter-spacing: 3.0px;">THE PRIME OF VEHICLE INTERIOR &
 				EXTERIOR MODIFICATION</td>
 		</tr>
 	</table>
@@ -214,7 +215,7 @@
                     </tr>
                     <?php
                     
-                    if ($count % 13 == 0) {
+                    if ($count % 12 == 0) {
                         echo '
                             <div style="page-break-after: always; border: none;margin-top: 115px;"></div>
                             <div style="margin-top: 115px;border: none;"></div>

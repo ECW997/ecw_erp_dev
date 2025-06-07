@@ -44,33 +44,37 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                 <div class="card">
                     <div class="card-body p-0 p-2">
                         <div class="row mb-3">
-                            <div class="col-5">
-                                <div class="row g-2 justify-content-center">
-                                    <div class="col-12 col-sm-6 col-md-3 d-grid">
+                            <div class="col-8">
+                                <div class="row g-2 p-3">
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
                                             data-bs-toggle="modal" data-bs-target="#selectCustomerInquiryModal">
                                             <i class="fas fa-plus me-2"></i> New Job Card
                                         </button>
                                     </div>
-                                    <div class="col-12 col-sm-6 col-md-3 d-grid">
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal"
                                             data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>
                                     </div>
-                                    <div class="col-12 col-sm-6 col-md-3 d-grid">
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
                                             data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
                                             <i class="fas fa-check me-2"></i> Approve
                                         </button>
                                     </div>
-                                    <div class="col-12 col-sm-6 col-md-3 d-grid">
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
-                                            <i class="fas fa-print me-2"></i> Print
+                                            <i class="fas fa-print me-2"></i>Job Summary Print
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                            <i class="fas fa-print me-2"></i>JobCard Print
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="row mb-3">
