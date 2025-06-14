@@ -15,7 +15,7 @@
                             <span class="text-primary fw-bold" id="standard_price_display">
                                 Rs. <?= number_format($summary_data[0]['sub_total'] ?? 0, 2) ?>
                             </span>
-                            <input type="hidden" id="standard_price" value="<?= $summary_data[0]['sub_total'] ?? 0 ?>">
+                            <input type="hidden" id="standard_price" value="<?= $job_main_data[0]['sub_total'] ?? 0 ?>">
                             <input type="hidden" id="jobcard_id"
                                 value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
                         </div>
@@ -24,12 +24,12 @@
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
                             <label class="small fw-bold text-dark">Discount as Price (Rs)</label>
-                            <input type="number" class="form-control form-control-sm" id="discount_price"
+                            <input type="number" class="form-control form-control-sm" id="discount_price"  step="any"
                                 placeholder="Enter amount">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="small fw-bold text-dark">Discount as Percentage (%)</label>
-                            <input type="number" class="form-control form-control-sm" id="discount_precentage"
+                            <input type="number" class="form-control form-control-sm" id="discount_precentage"  step="any"
                                 placeholder="Enter %">
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="fw-bold text-muted">Net Price</label>
-                            <input type="text" class="form-control form-control-sm" id="net_price" readonly>
+                            <input type="text" class="form-control form-control-sm" id="net_price" >
                         </div>
 
                     </div>
@@ -94,19 +94,22 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const standardPrice = parseFloat(document.getElementById('standard_price').value);
-
+document.addEventListener('DOMContentLoaded', function () {
+    const standardPrice = parseFloat(document.getElementById('standard_price').value) || 0;
     const discountPriceInput = document.getElementById('discount_price');
     const discountPercentInput = document.getElementById('discount_precentage');
     const totalDiscountInput = document.getElementById('total_discount');
     const netPriceInput = document.getElementById('net_price');
 
+    console.log("Standard Price loaded:", standardPrice);
+
     function updatePrices() {
         let discount = 0;
-
         const discountPrice = parseFloat(discountPriceInput.value) || 0;
         const discountPercent = parseFloat(discountPercentInput.value) || 0;
+
+        console.log("Input Discount Price:", discountPrice);
+        console.log("Input Discount Percent:", discountPercent);
 
         if (discountPrice > 0) {
             discount = discountPrice;
@@ -114,9 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
             discountPercentInput.value = calculatedPercent.toFixed(2);
 
             if (calculatedPercent > 5) {
-            alert("Approval request needed: Discount exceeds 5%");
-        }
-
+                alert("Approval request needed: Discount exceeds 5%");
+            }
         } else if (discountPercent > 0) {
             discount = (standardPrice * discountPercent) / 100;
             discountPriceInput.value = discount.toFixed(2);
@@ -127,8 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const net = standardPrice - discount;
-        totalDiscountInput.value = `${discount.toFixed(2)}`;
-        netPriceInput.value = `${net.toFixed(2)}`;
+        totalDiscountInput.value = discount.toFixed(2);
+        netPriceInput.value = net.toFixed(2);
+
+        console.log("Total Discount:", discount.toFixed(2));
+        console.log("Net Price:", net.toFixed(2));
     }
 
     discountPriceInput.addEventListener('input', () => {
@@ -140,8 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
         discountPriceInput.value = '';
         updatePrices();
     });
-
-
 });
 
 $(document).on('click', '.addJobItemCloseBtn', function(e) {

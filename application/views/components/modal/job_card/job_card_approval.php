@@ -92,9 +92,10 @@
                             <h5>Net Price: </h5>
                         </div>
                         <div class="col-6 text-end">
-                            <span class="text-dark fw-bold" id="standard_price_display">
-                                Rs. <?= number_format($summary_data[0]['net_total'] ?? 0, 2) ?>
+                            <span class="text-dark fw-bold" id="net_price_show">
                             </span>
+                            <input type="text" class="form-control form-control-sm" id="net_price"
+                                placeholder="Enter amount">
 
                         </div>
                     </div>
@@ -109,10 +110,10 @@
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-success w-100"
-                            style="border-radius: 12px; ">Approve</button>
+                            style="border-radius: 12px;" onclick="approveJobcard()">Approve</button>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-danger w-100" style="border-radius: 12px;">Denied</button>
+                        <button type="button" class="btn btn-danger w-100" style="border-radius: 12px;" onclick="deJobcard()">Denied</button>
                     </div>
                 </div>
             </div>
@@ -126,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.addEventListener('shown.bs.modal', function() {
         calculateLineDiscountPercentage();
         calculateNetDiscount();
+        calculateNetPrice();
     });
 
 });
@@ -172,5 +174,46 @@ function calculateNetDiscount() {
     if (spanAmount) {
         spanAmount.textContent = 'Rs. ' + netDiscount.toFixed(2);
     }
+}
+
+function calculateNetPrice() {
+    let standardPrice = parseFloat(document.getElementById('standard_price')?.value) || 0;
+    let netDiscount = parseFloat(document.getElementById('net_discount')?.value) || 0;
+
+    let netPrice = standardPrice - netDiscount;
+    netPrice = netPrice < 0 ? 0 : netPrice;
+
+    document.getElementById('net_price').value = netPrice.toFixed(2);
+    document.getElementById('net_price_show').textContent = 'Rs. ' + netPrice.toFixed(2);
+}
+
+
+function approveJobcard() {
+
+    const approveData = {
+        id: $('#jobcard_id').val(),
+        net_total: $('#net_price').val()
+    };
+
+    console.log("Collected Approve Data:", approveData);
+
+    $.ajax({
+        url: '<?php echo base_url() ?>JobCard/approveJobcard',
+        type: 'POST',
+        dataType: 'json',
+        data: approveData,
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' +
+                        approveData.id;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
+
 }
 </script>
