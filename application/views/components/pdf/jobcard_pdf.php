@@ -181,10 +181,10 @@
  					class="sub_header_text_th datatable_td datatable_total_td">No</th>
  				<th style="width:46%;text-align:left;font-size:12px;"
  					class="sub_header_text_th datatable_td datatable_total_td">Job</th>
- 				<th style="width:10%;text-align:left;font-size:12px;"
- 					class="sub_header_text_th datatable_td datatable_total_td">Quantity</th>
  				<th style="width:40%;text-align:left;font-size:12px;"
  					class="sub_header_text_th datatable_td datatable_total_td">Remark</th>
+				<th style="width:10%;text-align:left;font-size:12px;"
+ 					class="sub_header_text_th datatable_td datatable_total_td">Quantity</th>
  			</tr>
  		</table>
 
@@ -211,9 +211,6 @@
 				<td style="width:42%;text-align:left;border:none;font-size:12px;" class="datatable_td">
 					<?= $joblist['option_group_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?>
 				</td>
-				<td style="width:10%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					X <?= $joblist['qty'] ?? 0 ?>
-				</td>
 				<td style="width:40%;text-align:left;border:none;font-size:12px;" class="datatable_td">
                     <?= $joblist['combined_option'] ?? 'N/A' ?> <br>
                     <?php if($joblist['option_text'] == 'Stitch Design'): ?>
@@ -223,43 +220,43 @@
                         />
                     <?php endif; ?>
                 </td>
+				<td style="width:10%;text-align:left;border:none;font-size:12px;" class="datatable_td">
+					X <?= $joblist['qty'] ?? 0 ?>
+				</td>
 			</tr>
         <?php $joblist_cnt++; ?>
         <?php endforeach; ?>
  		</table>
 
        
- 		<table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
- 			<tr>
- 				<th style="width:3%;text-align:left;" class="sub_header_text_th datatable_td">#</th>
- 				<th style="width:7%;text-align:left;" class="sub_header_text_th datatable_td">EMP CODE</th>
- 				<th style="width:13%;text-align:center;" class="sub_header_text_th datatable_td">RATE</th>
- 				<th style="width:17%;text-align:left;" class="sub_header_text_th datatable_td">EMP.</th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">E-R OFFICER </th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">PRODUCTION SUPERVISOR
- 				</th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">QUALITY SUPERVISOR </th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">UPDATED HR DEPT.</th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED HR DEPT.</th>
- 				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED ACC DEPT.</th>
- 			</tr>
-         
- 			<tr>
- 				<td style="width:3%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:7%;text-align:left;" class="datatable_td">ECW001</td>
- 				<td style="width:13%;text-align:center;" class="datatable_td"></td>
- 				<td style="width:17%;text-align:left;" class=" datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 				<td style="width:10%;text-align:left;" class="datatable_td"></td>
- 			</tr>
-            
- 		</table> 
+ 		<table style="table-layout: fixed; padding: 3px; width: 100%; border-collapse: collapse; page-break-inside: avoid;">
+			<tr>
+				<th style="width:3%;text-align:left;" class="sub_header_text_th datatable_td">#</th>
+				<th style="width:7%;text-align:left;" class="sub_header_text_th datatable_td">EMP CODE</th>
+				<th style="width:13%;text-align:center;" class="sub_header_text_th datatable_td">RATE</th>
+				<th style="width:17%;text-align:left;" class="sub_header_text_th datatable_td">EMP.</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">E-R OFFICER</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">PRODUCTION SUPERVISOR</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">QUALITY SUPERVISOR</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">UPDATED HR DEPT.</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED HR DEPT.</th>
+				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED ACC DEPT.</th>
+			</tr>
+			<tr>
+				<td style="width:3%;text-align:left;" class="datatable_td"></td>
+				<td style="width:7%;text-align:left;" class="datatable_td">ECW001</td>
+				<td style="width:13%;text-align:center;" class="datatable_td"></td>
+				<td style="width:17%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+				<td style="width:10%;text-align:left;" class="datatable_td"></td>
+			</tr>
+		</table>
 	
- 		<div style="border-bottom: 2px dashed #000;margin-top:10px;"></div>';
+ 		<div style="border-bottom: 2px dashed #000;margin-top:10px;"></div>
  		<?php $mainJob_cnt++; ?>
 		<?php endforeach; ?>
 

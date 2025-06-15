@@ -4,37 +4,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class Media_library extends CI_Controller {
+	protected $api_token;
+    protected $auth_user;
+
 	public function __construct() {
         parent::__construct();
+		$this->load->helper('api_helper');
         $this->load->model('Media_libraryinfo');
+		
+		$auth_info = auth_check();
+		$this->api_token = $auth_info['api_token'];
+		$this->auth_user = $auth_info['user'];
     }
 
     public function index(){
-		$api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-		
 		$this->load->model('Commeninfo');
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
 		$this->load->view('media_library', $result);
 	}
 
 	public function media_libraryInsert() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		// Define maximum allowed file size (50MB in bytes)
 		$maxFileSize = 50 * 1024 * 1024; 
-
+		$recordOption = $this->input->post('recordOption');
 		
-		if (empty($_FILES['design_image']['name'][0])) {
+		if (empty($_FILES['design_image']['name'][0]) && $recordOption == '1') {
 			$this->session->set_flashdata(['res' => '400', 'msg' => 'No files were selected for upload']);
 			redirect('Media_library');
 			return;
@@ -55,8 +49,7 @@ class Media_library extends CI_Controller {
 			'media_type' => $this->input->post('media_type'),
 			'description' => $this->input->post('description'),
 			'category' => $this->input->post('category'),
-			'uploaded_by' => $this->session->userdata('user_id'),
-			'is_active' => true, 
+			'is_active' => $this->input->post('is_active'),
 			'recordID' => $this->input->post('recordID')
 		];
 	
@@ -65,49 +58,72 @@ class Media_library extends CI_Controller {
 		
 		for ($i = 0; $i < count($files['name']); $i++) {
 			if ($files['error'][$i] === UPLOAD_ERR_OK) {
-				$curlFiles["files[$i]"] = new CURLFile( // Changed to 'files' to match Laravel expectation
+				$curlFiles["files[$i]"] = new CURLFile( 
 					$files['tmp_name'][$i],
 					$files['type'][$i],
 					$files['name'][$i]
 				);
 			}
 		}
+	
 		
-		$postData = array_merge($form_data, $curlFiles);
-	
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://devapi.ecw.lk/api/v1/media_upload');
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Increase timeout for large files
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			"Authorization: Bearer $api_token",
-			'Accept: application/json'
-		]);
-	
-		$response = curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$curlError = curl_error($ch);
-		curl_close($ch);
-	
-		if ($curlError) {
-			$this->session->set_flashdata(['res' => '500', 'msg' => 'CURL Error: ' . $curlError]);
-			redirect('Media_library');
+		$all_form_data = array_merge($form_data, $curlFiles);
+
+		$response='';
+		if($recordOption == '1'){
+			$response = $this->Media_libraryinfo->media_libraryInsert($this->api_token,$all_form_data);
+		}else{
+			$response = $this->Media_libraryinfo->media_libraryUpdate($this->api_token,$form_data);
+		}
+
+		if ($response) {
+			echo json_encode($response);
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+        	redirect('Media_library');   
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Media_library');
+		}
+    }
+
+	public function Media_libraryEdit($id) {
+        $response = $this->Media_libraryinfo->Media_libraryEdit($this->api_token,$id);
+		echo json_encode($response);
+    }
+
+	public function Media_librarystatus($id, $status) {
+        $form_data = [
+            'recordID' => $id,
+			'status' => $status,
+        ];
+
+        $response = $this->Media_libraryinfo->Media_librarystatus($this->api_token,$form_data);
+
+        if ($response) {
+			echo json_encode($response);
+        } else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Media_library');
+        }
+    }
+
+
+    public function jobOptionDelete($id) {
+        $api_token = $this->session->userdata('api_token');
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
 			return;
 		}
-	
-		$responseData = json_decode($response, true);
-		
-		if ($httpCode >= 200 && $httpCode < 300) {
-			$this->session->set_flashdata(['res' => '200', 'msg' => 'Media uploaded successfully']);
-		} else {
-			$errorMsg = $responseData['message'] ?? 'Failed to upload media';
-			$this->session->set_flashdata(['res' => $httpCode, 'msg' => $errorMsg]);
-		}
-	
-		redirect('Media_library');
 
+        $response = $this->JobOptioninfo->jobOptionDelete($api_token,$id);
+
+        if ($response) {
+			echo json_encode($response);
+        } else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobOption');
+        }
     }
     
 }

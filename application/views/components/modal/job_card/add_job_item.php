@@ -460,7 +460,7 @@ function continueAddToJobCard(inputMethod,btn){
                         reSetContent('#jobCardForm');
                         setTimeout(function() {
                             location.reload();
-                        }, 200);
+                        }, 200)
                     }
                 } else {
                     falseResponse(result);
