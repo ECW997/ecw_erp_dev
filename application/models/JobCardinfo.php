@@ -35,6 +35,11 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'approve_job_card_v1', $form_data, $headers);
     }
 
+    public function deniedJobcard($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'denied_job_card_v1', $form_data, $headers);
+    }
+
     public function getDiscount($api_token,$id) {
         $headers = get_api_headers($api_token);
         return call_api('GET', 'get_discount_v1', $id, $headers);

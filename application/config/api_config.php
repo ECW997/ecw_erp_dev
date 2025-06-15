@@ -44,6 +44,7 @@ $config['api_endpoints'] = [
     'discount_update_v1' => '/v1/update_discount',
     'get_discount_v1' => '/v1/discount_details',
     'approve_job_card_v1' => '/v1/approveDiscount',
+    'denied_job_card_v1' => '/v1/deniedDiscount',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',

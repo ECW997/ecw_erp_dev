@@ -113,7 +113,7 @@
                             style="border-radius: 12px;" onclick="approveJobcard()">Approve</button>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-danger w-100" style="border-radius: 12px;" onclick="deJobcard()">Denied</button>
+                        <button type="button" class="btn btn-danger w-100" style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
                     </div>
                 </div>
             </div>
@@ -199,6 +199,36 @@ function approveJobcard() {
 
     $.ajax({
         url: '<?php echo base_url() ?>JobCard/approveJobcard',
+        type: 'POST',
+        dataType: 'json',
+        data: approveData,
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' +
+                        approveData.id;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
+
+}
+
+
+function deniedJobcard() {
+
+    const approveData = {
+        id: $('#jobcard_id').val(),
+        // net_total: $('#net_price').val()
+    };
+
+    console.log("Collected Approve Data:", approveData);
+
+    $.ajax({
+        url: '<?php echo base_url() ?>JobCard/deniedJobcard',
         type: 'POST',
         dataType: 'json',
         data: approveData,
