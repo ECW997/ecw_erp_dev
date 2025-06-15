@@ -50,7 +50,8 @@ $config['api_endpoints'] = [
 
     'get_map_pdf_v1' => '/v1/get_map_pdf',
 
-    'media_library_v1' => '/v1/media/upload',
+    'media_library_v1' => '/v1/media_library',
+    'media_library_status_v1' => '/v1/media_library_status',
     
  
 

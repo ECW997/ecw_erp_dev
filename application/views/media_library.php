@@ -18,18 +18,14 @@ include "include/topnavbar.php";
             max-width: 100%;
             height: auto;
             border: 3px solid #007bff;
-            /* Blue border */
             border-radius: 8px;
             padding: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Soft shadow for better aesthetics */
         }
 
         #addPriceModalCenter .modal-content {
             border: 4px solid #0982e6;
-            /* Light blue color */
             border-radius: 25px;
-            /* Optional: Add rounded corners */
         }
         </style>
         <main>
@@ -54,7 +50,7 @@ include "include/topnavbar.php";
                                         <label class="small font-weight-bold">Upload File (Max 50MB)</label>
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" name="design_image[]"
-                                                id="design_image[]" multiple required onchange="validateFileSize(this)">
+                                                id="design_image" multiple required onchange="validateFileSize(this)">
                                             <label class="custom-file-label" for="design_image">Choose image...</label>
                                         </div>
                                         <div class="mt-3">
@@ -84,7 +80,14 @@ include "include/topnavbar.php";
 
                                         </select>
                                     </div>
-
+                                    <div class="form-group mb-1">
+                                    	<label class="small font-weight-bold">Is Active*</label>
+                                    	<select class="form-control form-control-sm selecter2 px-0" name="is_active"
+                                    		id="is_active" required>
+                                    		<option value="1">Yes</option>
+                                    		<option value="2">No</option>
+                                    	</select>
+                                    </div>
                                     <div class="form-group mt-2 text-right">
                                         <button type="submit" id="submitBtn" class="btn btn-primary btn-sm px-4"
                                             <?php if($addcheck==0){echo 'disabled';} ?>><i
@@ -106,7 +109,7 @@ include "include/topnavbar.php";
                                                 <th>Description</th>
                                                 <th>Category</th>
                                                 <th>Upload At</th>
-                                                <!-- <th class="text-right">Actions</th> -->
+                                                <th class="text-right">Actions</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -139,7 +142,7 @@ include "include/topnavbar.php";
 <?php include "include/footerscripts.php"; ?>
 <script>
 function validateFileSize(input) {
-    const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+    const maxSize = 50 * 1024 * 1024; 
     let valid = true;
 
     if (input.files) {
@@ -147,14 +150,14 @@ function validateFileSize(input) {
             if (input.files[i].size > maxSize) {
                 valid = false;
                 alert('File "' + input.files[i].name + '" exceeds the 50MB limit.');
-                input.value = ''; // Clear the file input
+                input.value = ''; 
                 break;
             }
         }
     }
 
     if (valid) {
-        previewImage(event); // Call your existing preview function if files are valid
+        previewImage(event); 
     }
 }
 </script>
@@ -263,7 +266,7 @@ $(document).ready(function() {
             }
         ],
         ajax: {
-            url: apiBaseUrl + '/v1/media',
+            url: apiBaseUrl + '/v1/media_library',
             type: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -271,14 +274,12 @@ $(document).ready(function() {
                 'Authorization': 'Bearer ' + api_token
             },
             dataSrc: function(json) {
-                console.log("API Response:", json);
                 if (json.success === false && json.code === 401) {
                     falseResponse(errorObj);
                     return [];
                 }
 
-                return json.data
-                    .data;
+                return json.data;
             },
             error: function(xhr, status, error) {
                 if (xhr.status === 401) {
@@ -301,13 +302,13 @@ $(document).ready(function() {
                 "data": "public_url",
                 "className": "text-center",
                 "render": function(data, type, row) {
-                    if (row.media_type === 'image') {
+                    if (row.media_type == 'Image') {
                         return `<img src="${data}" 
                      class="img-thumbnail" 
                      style="max-height: 100px; cursor: pointer;" 
                      onclick="viewLargeImage('${data}')" 
                      alt="${row.file_name}">`;
-                    } else if (row.media_type === 'pdf') {
+                    } else if (row.media_type == 'Pdf') {
                         return `<a href="${data}" 
                      target="_blank" 
                      class="btn btn-sm btn-danger">
@@ -336,6 +337,23 @@ $(document).ready(function() {
                 "render": function(data) {
                     return new Date(data).toLocaleString();
                 }
+            },
+            {
+                "targets": -1,
+                "className": 'text-right',
+                "data": null,
+                "render": function(data, type, full) {
+                    var button='';
+                    button+='<button title="Edit" onclick="edit('+full['media_id']+');" class="btn btn-primary btn-sm btnEdit mr-1 ';if(editcheck!=1){button+='d-none';}button+='" id="'+full['media_id']+'"><i class="fas fa-pen"></i></button>';
+                    if(full['is_active']==1){
+                        button+='<button title="Deactive" onclick="statusUpdate('+full['media_id']+',2);" class="btn btn-success btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-check"></i></button>';
+                    }else{
+                        button+='<button title="Active" onclick="statusUpdate('+full['media_id']+',1);" class="btn btn-warning btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-times"></i></button>';
+                    }
+                    button+='<button title="Delete" onclick="statusUpdate('+full['media_id']+',3);" class="btn btn-danger btn-sm ';if(deletecheck!=1){button+='d-none';}button+='"><i class="fas fa-trash-alt"></i></button>';
+                    
+                    return button;
+                }
             }
         ],
         drawCallback: function(settings) {
@@ -343,6 +361,66 @@ $(document).ready(function() {
         }
     });
 });
+
+
+function edit(id){
+    if(edit_confirm() == true){
+        $.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: '<?php echo base_url() ?>Media_library/Media_libraryEdit/' + id,
+                success: function(result) {
+                    if (result.status) {
+                        $('#media_type').val(result.data.media_type);
+                        $('#description').val(result.data.description);
+                        $('#category').val(result.data.category);
+                        $('#is_active').val(result.data.is_active);
+                        $('#recordID').val(result.data.id);
+
+                        $('#design_image').prop('required', false);
+                        $('#recordOption').val('2');
+                        $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                    } else {
+                        falseResponse(result);
+                    }
+                }
+        });
+    }
+}    
+
+function statusUpdate(id,status){
+    var r = '';
+    if(status == '1'){
+        r = active_confirm();
+    }else if(status == '2'){
+        r = deactive_confirm();
+    }else{
+        r = delete_confirm();
+    }
+
+    if (r == true) {
+        $.ajax({
+                type: "PUT",
+                dataType: 'json',
+                url: '<?php echo base_url() ?>Media_library/Media_librarystatus/' + id + '/' + status,
+                success: function(result) {
+                    if (result.status) {
+                        success_toastify(result.message);
+                          setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        falseResponse(result);
+                    }
+                }
+        });
+    }   
+
+}
+
+function edit_confirm() {
+    return confirm("Are you sure, You want to Edit this ?");
+}
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");
@@ -355,5 +433,6 @@ function active_confirm() {
 function delete_confirm() {
     return confirm("Are you sure you want to remove this?");
 }
+
 </script>
 <?php include "include/footer.php"; ?>
