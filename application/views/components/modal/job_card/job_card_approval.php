@@ -20,8 +20,8 @@
                             <input type="text" id="standard_price" value="<?= $summary_data[0]['sub_total'] ?? 0 ?>">
                             <input type="text" id="jobcard_id"
                                 value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
-
-
+                            <input type="text" id="jobcard_approve_status"
+                                value="<?= $job_main_data[0]['approve_request_status'] ?? '' ?>">
                         </div>
                     </div>
 
@@ -109,11 +109,12 @@
                             style="border-radius: 12px; font-weight:bold;">Close</button>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-success w-100"
+                        <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
                             style="border-radius: 12px;" onclick="approveJobcard()">Approve</button>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-danger w-100" style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
+                        <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                            style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
                     </div>
                 </div>
             </div>
@@ -128,7 +129,41 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateLineDiscountPercentage();
         calculateNetDiscount();
         calculateNetPrice();
+
+        const status = document.getElementById('jobcard_approve_status').value;
+        const discount = document.getElementById('net_discount').value;
+        const approveBtn = document.getElementById('approveJobcardBtn');
+        const deniedBtn = document.getElementById('deniedJobcardBtn');
+
+        console.log("Job Card discount:", discount);
+        console.log("Job Card status:", status);
+
+        approveBtn.style.display = "block";
+        deniedBtn.style.display = "block";
+        approveBtn.disabled = false;
+        deniedBtn.disabled = false;
+
+        if (parseFloat(discount) === 0) {
+            approveBtn.disabled = true;
+            deniedBtn.disabled = true;
+            return;
+        }
+
+        if (status === '0' || status === '1') {} else if (status === '2') {
+            approveBtn.disabled = true;
+        } else if (status === '3') {
+            deniedBtn.disabled = true;
+        } else {
+            approveBtn.style.display = "none";
+            deniedBtn.style.display = "none";
+        }
     });
+
+
+
+
+
+
 
 });
 </script>
