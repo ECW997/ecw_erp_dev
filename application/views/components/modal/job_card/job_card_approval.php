@@ -32,7 +32,7 @@
                                 <td class="text-danger">
                                     <span id="line_discount_precentage_show">
                                     </span>
-                                    <input type="text" class="form-control form-control-sm"
+                                    <input type="hidden" class="form-control form-control-sm"
                                         id="line_discount_precentage" placeholder="Enter amount">
                                 </td>
 
@@ -40,7 +40,7 @@
                                     <span id="line_discount_show">
                                         Rs. <?= number_format($summary_data[0]['total_line_discount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="text" class="form-control form-control-sm" id="line_discount"
+                                    <input type="hidden" class="form-control form-control-sm" id="line_discount"
                                         value="<?= $summary_data[0]['total_line_discount'] ?? $jobcard_id ?? '' ?>">
                                 </td>
                             </tr>
@@ -51,13 +51,13 @@
 
                                 <td class="text-danger"><span id="header_discount_precentage_show">
                                         <?= number_format($job_main_data[0]['discount'] ?? 0, 2) ?>%
-                                        <input type="text" class="form-control form-control-sm"
+                                        <input type="hidden" class="form-control form-control-sm"
                                             id="header_discount_precentage"
                                             value="<?= $job_main_data[0]['discount'] ?? 0 ?>"></td>
 
                                 <td class="text-danger text-end"><span id="header_discount_show">
                                         Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
-                                        <input type="text" class="form-control form-control-sm" id="header_discount"
+                                        <input type="hidden" class="form-control form-control-sm" id="header_discount"
                                             value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>"></td>
                             </tr>
 
@@ -70,7 +70,7 @@
                                     <span id="net_discount_precentage_show">
 
                                     </span>
-                                    <input type="text" class="form-control form-control-sm" id="net_discount_precentage"
+                                    <input type="hidden" class="form-control form-control-sm" id="net_discount_precentage"
                                         placeholder="Enter amount">
                                 </td>
 
@@ -78,7 +78,7 @@
                                     <span id="net_discount_show">
 
                                     </span>
-                                    <input type="text" class="form-control form-control-sm" id="net_discount"
+                                    <input type="hidden" class="form-control form-control-sm" id="net_discount"
                                         placeholder="Enter amount">
                                 </td>
                             </tr>
@@ -93,9 +93,47 @@
                         <div class="col-6 text-end">
                             <span class="text-dark fw-bold" id="net_price_show">
                             </span>
-                            <input type="text" class="form-control form-control-sm" id="net_price"
+                            <input type="hidden" class="form-control form-control-sm" id="net_price"
                                 placeholder="Enter amount">
 
+                        </div>
+                    </div>
+
+
+                        <?php
+                                    $currentPrice = $summary_data[0]['sub_total'] ?? 0;
+                                    $changeAmount = $summary_data[0]['total_line_discount'] ?? 0;
+                                    $changePercentage = $job_main_data[0]['discount'] ?? 0;
+                                    $listPrice = $job_main_data[0]['sub_total'] ?? 0;
+
+                                    $tooltipText = '
+                                     <div class="custom-tooltip-box text-start">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Standard :</span>
+                                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Change Amount:</span>
+                                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Change %:</span>
+                                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Price:</span>
+                                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
+                                        </div>
+                                    </div>';
+                                    ?>
+
+                    <div class="row mt-4">
+                        <div class="col-2">
+                            <button type="button" class="btn btn-primary btn-sm" id="logsBtn"
+                                style="border-radius: 12px;" data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-html="true" title="<?= htmlspecialchars($tooltipText, ENT_QUOTES); ?>">
+                                <i class="fa-solid fa-file me-1"></i> Logs
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -106,10 +144,6 @@
                     <div class="col-4">
                         <button type="button" class="btn btn-light w-100" data-bs-dismiss="modal"
                             style="border-radius: 12px; font-weight:bold;">Close</button>
-
-
-                            <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button> -->
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
@@ -125,6 +159,18 @@
     </div>
 </div>
 
+
+<!-- <div class="modal fade" id="hoverModal" tabindex="-1" aria-labelledby="hoverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                Are you sure you want to approve this job card?
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('jobcardApproveModel');
@@ -165,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+
 <script>
 function showJobCardStatusMessage() {
     const status = document.getElementById('jobcard_approve_status').value;
@@ -184,7 +231,6 @@ function showJobCardStatusMessage() {
     }
 }
 
-// Call on page load
 showJobCardStatusMessage();
 </script>
 
@@ -247,7 +293,10 @@ function approveJobcard() {
 
     const approveData = {
         id: $('#jobcard_id').val(),
-        net_total: $('#net_price').val()
+        net_total: $('#net_price').val(),
+        header_discount_price: $('#header_discount').val(),
+        line_discount_price: $('#line_discount').val()
+
     };
 
     console.log("Collected Approve Data:", approveData);
@@ -278,6 +327,8 @@ function deniedJobcard() {
     const approveData = {
         id: $('#jobcard_id').val(),
         // net_total: $('#net_price').val()
+        header_discount_price: $('#header_discount').val(),
+        line_discount_price: $('#line_discount').val()
     };
 
     console.log("Collected Approve Data:", approveData);
