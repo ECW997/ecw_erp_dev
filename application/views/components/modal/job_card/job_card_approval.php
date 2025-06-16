@@ -4,8 +4,8 @@
         <div class="modal-content rounded-4">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title text-black" id="jobcardApproveModelLabel">Job Card Approval</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+                <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -17,19 +17,18 @@
                             <span class="text-primary fw-bold" id="standard_price_display">
                                 Rs. <?= number_format($summary_data[0]['sub_total'] ?? 0, 2) ?>
                             </span>
-                            <input type="text" id="standard_price" value="<?= $summary_data[0]['sub_total'] ?? 0 ?>">
-                            <input type="text" id="jobcard_id"
+                            <input type="hidden" id="standard_price" value="<?= $summary_data[0]['sub_total'] ?? 0 ?>">
+                            <input type="hidden" id="jobcard_id"
                                 value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
-                            <input type="text" id="jobcard_approve_status"
+                            <input type="hidden" id="jobcard_approve_status"
                                 value="<?= $job_main_data[0]['approve_request_status'] ?? '' ?>">
                         </div>
                     </div>
-
+                    <div id="jobcard_status_message" class="mt-2 fw-bold" style="margin-bottom: 50px;"></div>
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
                                 <td><label class="small fw-bold">Line Change</label></td>
-
                                 <td class="text-danger">
                                     <span id="line_discount_precentage_show">
                                     </span>
@@ -105,8 +104,12 @@
             <div class="modal-footer">
                 <div class="row w-100">
                     <div class="col-4">
-                        <button type="button" class="btn btn-light w-100"
+                        <button type="button" class="btn btn-light w-100" data-bs-dismiss="modal"
                             style="border-radius: 12px; font-weight:bold;">Close</button>
+
+
+                            <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button> -->
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
@@ -159,13 +162,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-
-
-
-
-
 });
+</script>
+
+<script>
+function showJobCardStatusMessage() {
+    const status = document.getElementById('jobcard_approve_status').value;
+    const messageDiv = document.getElementById('jobcard_status_message');
+
+    if (status === '2') {
+        messageDiv.textContent = "This Job Card is already Approved";
+        messageDiv.classList.remove('text-danger');
+        messageDiv.classList.add('text-success');
+    } else if (status === '3') {
+        messageDiv.textContent = "This Job Card is already Rejected";
+        messageDiv.classList.remove('text-success');
+        messageDiv.classList.add('text-danger');
+    } else {
+        messageDiv.textContent = "";
+        messageDiv.classList.remove('text-success', 'text-danger');
+    }
+}
+
+// Call on page load
+showJobCardStatusMessage();
 </script>
 
 <script>
