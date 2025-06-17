@@ -304,7 +304,7 @@ function continueAddToJobCard(inputMethod,btn){
             var lineDiscount = netPrice - finalNetPrice;
 
             preValue = preValue || selectedVal;
-            $(this).data('pre-value', selectedVal);
+            // $(this).data('pre-value', selectedVal);
 
             if (!jobData[mainJobID]){
                 jobData[mainJobID] ={
@@ -408,19 +408,45 @@ function continueAddToJobCard(inputMethod,btn){
 
                 var groupArray = [];
 
+                // Process Type options and attach their conditionals
                 typeOptions.forEach(type => {
                     var optionValueId = type.option_value_id;
+                    var conditionals = conditionalMap[optionValueId] || [];
+                    
+                    // For each conditional, check if it has its own nested conditionals
+                    var nestedConditionals = conditionals.map(cond => {
+                        var nested = conditionalMap[cond.option_value_id] || [];
+                        return {
+                            ...cond,
+                            conditionals: nested
+                        };
+                    });
+                    
                     groupArray.push({
                         ...type,
                         option_type: "Type",
-                        conditionals: conditionalMap[optionValueId] || []
+                        conditionals: nestedConditionals
                     });
                 });
 
+                // Process Primary options and attach their conditionals
                 primaryOptions.forEach(primary => {
+                    var optionValueId = primary.option_value_id;
+                    var conditionals = conditionalMap[optionValueId] || [];
+                    
+                    // For each conditional, check if it has its own nested conditionals
+                    var nestedConditionals = conditionals.map(cond => {
+                        var nested = conditionalMap[cond.option_value_id] || [];
+                        return {
+                            ...cond,
+                            conditionals: nested
+                        };
+                    });
+                    
                     groupArray.push({
                         ...primary,
-                        option_type: "Primary"
+                        option_type: "Primary",
+                        conditionals: nestedConditionals
                     });
                 });
 
@@ -440,7 +466,7 @@ function continueAddToJobCard(inputMethod,btn){
     }
 
     console.log(finalDataArray);
-    // console.log("Prepared Job Data: ", jobData);
+    console.log("Prepared Job Data: ", jobData);
 
     $.ajax({
             type: "POST",

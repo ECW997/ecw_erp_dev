@@ -193,6 +193,7 @@ class JobCard extends CI_Controller {
 
     public function getItemParentOptions() {
         $form_data = [
+			'jobcard_id' => $this->input->post('jobcard_id'),
             'sub_id' => $this->input->post('subJobCategoryID'),
 			'id' => $this->input->post('selectedOptionValue')
         ];

@@ -45,14 +45,14 @@
                         </div>
 
                     </div>
-                    <form action="" id="jobCardForm"></form>
+                    <!-- <form action="" id="jobCardForm"></form> -->
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="row w-100">
                     <div class="col-2"> </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-light w-100 addJobItemCloseBtn" aria-label="Close"
+                        <button type="button" class="btn btn-light w-100 discountCloseBtn" aria-label="Close"
                             style="border-radius: 12px; font-weight:bold;">Close</button>
                     </div>
                     <div class="col-4">
@@ -84,7 +84,7 @@
                 <button type="button" class="btn btn-secondary delete-btn-cancel" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>Cancel
                 </button>
-                <button type="button" class="btn btn-primary delete-btn-confirm" onclick="confirmCloseBtn()">
+                <button type="button" class="btn btn-primary delete-btn-confirm" onclick="discountconfirmCloseBtn()">
                     <i class="fas fa-arrow-right me-2"></i>Yes, Close Without Saving
                 </button>
             </div>
@@ -148,8 +148,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-$(document).on('click', '.addJobItemCloseBtn', function(e) {
-    var net_price = $('#net_amount').val().trim();
+
+$(document).on('click', '.discountCloseBtn', function(e) {
+    var net_price = $('#net_price').val().trim();
+
 
     if (net_price !== '') {
         e.preventDefault();
@@ -157,7 +159,7 @@ $(document).on('click', '.addJobItemCloseBtn', function(e) {
     } else {
         $('#jobcarddiscountModel').modal('hide');
         $('.modal-backdrop').remove();
-        reSetContent('#jobCardForm');
+        // reSetContent('#jobCardForm');
     }
 });
 
@@ -166,13 +168,13 @@ function submitDiscount() {
 }
 
 
-function confirmCloseBtn() {
+function discountconfirmCloseBtn() {
     $('#CloseConfirmModal').modal('hide');
 
     setTimeout(() => {
         $('#jobcarddiscountModel').modal('hide');
         $('.modal-backdrop').remove();
-        reSetContent('#jobCardForm');
+        // reSetContent('#jobCardForm');
         location.reload();
     }, 500);
 }
