@@ -24,13 +24,13 @@
                     <div class="row mb-3">
                         <div class="col-md-6 mb-3">
                             <label class="small fw-bold text-dark">Discount as Price (Rs)</label>
-                            <input type="number" class="form-control form-control-sm" id="discount_price"  step="any"
+                            <input type="number" class="form-control form-control-sm" id="discount_price" step="any"
                                 placeholder="Enter amount">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="small fw-bold text-dark">Discount as Percentage (%)</label>
-                            <input type="number" class="form-control form-control-sm" id="discount_precentage"  step="any"
-                                placeholder="Enter %">
+                            <input type="number" class="form-control form-control-sm" id="discount_precentage"
+                                step="any" placeholder="Enter %">
                         </div>
                     </div>
 
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="fw-bold text-muted">Net Price</label>
-                            <input type="text" class="form-control form-control-sm" id="net_price" >
+                            <input type="number" class="form-control form-control-sm" id="net_amount" readonly>
                         </div>
 
                     </div>
@@ -94,22 +94,23 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     const standardPrice = parseFloat(document.getElementById('standard_price').value) || 0;
     const discountPriceInput = document.getElementById('discount_price');
     const discountPercentInput = document.getElementById('discount_precentage');
     const totalDiscountInput = document.getElementById('total_discount');
-    const netPriceInput = document.getElementById('net_price');
+    const netPriceInput = document.getElementById('net_amount');
+    
 
-    console.log("Standard Price loaded:", standardPrice);
+    // console.log("Standard Price loaded:", discountPriceInput);
 
     function updatePrices() {
         let discount = 0;
         const discountPrice = parseFloat(discountPriceInput.value) || 0;
         const discountPercent = parseFloat(discountPercentInput.value) || 0;
 
-        console.log("Input Discount Price:", discountPrice);
-        console.log("Input Discount Percent:", discountPercent);
+        // console.log("Input Discount Price:", discountPrice);
+        // console.log("Input Discount Percent:", discountPercent);
 
         if (discountPrice > 0) {
             discount = discountPrice;
@@ -147,8 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
 $(document).on('click', '.discountCloseBtn', function(e) {
     var net_price = $('#net_price').val().trim();
+
 
     if (net_price !== '') {
         e.preventDefault();

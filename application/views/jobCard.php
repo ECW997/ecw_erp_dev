@@ -228,9 +228,16 @@ function fetchJobCardDiscountDetails(jobcard_id) {
                 const standardPrice = parseFloat($('#standard_price').val()) || 0;
                 const discountAmt = parseFloat(data.discount_amount) || 0;
                 const net = standardPrice - discountAmt;
+                
 
+
+                // console.log("Standard Price:", standardPrice);
+                // console.log("Discount Amount:", discountAmt);
+                // console.log("Net Price:", net);
+
+                $('#net_amount').val(net.toFixed(2));
                 $('#total_discount').val(discountAmt.toFixed(2));
-                $('#net_price').val(net.toFixed(2));
+               
             } else {
                 alert('Failed to fetch discount details.');
             }
