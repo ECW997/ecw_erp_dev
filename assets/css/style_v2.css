@@ -76,3 +76,91 @@
     max-height: 66vh; 
     overflow-y: auto;
 }
+
+.job-card-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.category-header button {
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.category-header button:hover {
+    background-color: #f1f1f1;
+}
+
+.category-header button[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+.option-group-card {
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+}
+
+.option-group-header {
+    background-color: #f8f9fa;
+}
+
+.option-item {
+    padding: 12px;
+    background-color: #fafafa;
+    border-radius: 4px;
+}
+
+.pricing-section {
+    background-color: #f8fafc;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+.empty-state {
+    padding: 40px;
+    background-color: #f8f9fa;
+}
+
+.child-options-wrapper {
+    border-left: 2px solid #e0e0e0;
+    padding-left: 15px;
+    margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+    .option-row {
+        flex-direction: column;
+    }
+    
+    .col-md-6 {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .pricing-section .col-md-4,
+    .pricing-section .col-md-3,
+    .pricing-section .col-md-5 {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

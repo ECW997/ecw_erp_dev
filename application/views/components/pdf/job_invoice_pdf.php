@@ -191,15 +191,32 @@
             $currentHeight = 0;
             $maxPageHeight = 220;
             $totalRows = count($details_data); 
+			$groupedData = [];
 
-            foreach ($details_data as $item):
-                foreach ($item['details'] as $joblist):
-                    ?>
+			foreach ($details_data as $item) {
+				$category = $item['job_sub_category_text'] ?? 'N/A';
+				if (!isset($groupedData[$category])) {
+					$groupedData[$category] = [];
+				}
+				foreach ($item['details'] as $joblist) {
+					$groupedData[$category][] = $joblist;
+				}
+			}
+			?>
+
+            <?php foreach ($groupedData as $category => $jobs): ?>
+				<tr class="table-group-header">
+					<td colspan="7" class="fw-bold text-dark" style="font-weight: 700;">
+						<i class="fas fa-tags text-secondary me-2"></i> <?= $category ?>
+					</td>
+				</tr>
+
+				<?php foreach ($jobs as $joblist): ?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $count ?></td>
                         <td class="datatable_data_td" style="width:46%; text-align:left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <?= $item['job_sub_category_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?> - <?= $joblist['combined_option'] ?? 'N/A' ?>
-                        </td>
+							<?= $joblist['option_text'] ?? 'N/A' ?> - <?= $joblist['combined_option'] ?? 'N/A' ?>
+						</td>
                         <td class="datatable_data_td" style="width:5%; text-align:center;"><?= $joblist['qty'] ?? 0 ?></td>
                         <td class="datatable_data_td" style="width:8%; text-align:center;">EA</td>
                         <td class="datatable_data_td" style="width:13%; text-align:right;">
@@ -214,7 +231,7 @@
                     </tr>
                     <?php
                     
-                    if ($count % 12 == 0) {
+                    if ($count % 9 == 0) {
                         echo '
                             <div style="page-break-after: always; border: none;margin-top: 115px;"></div>
                             <div style="margin-top: 115px;border: none;"></div>
