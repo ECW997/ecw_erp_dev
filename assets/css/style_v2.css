@@ -1,3 +1,77 @@
+    :root {
+        --erp-primary: #2563eb;
+        --erp-primary-light: #3b82f6;
+        --erp-primary-dark: #1d4ed8;
+        --erp-bg-light: #f8fafc;
+    }
+    
+    .erp-spinner {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto;
+    }
+    
+    .spinner-sector {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 5px solid transparent;
+    }
+    
+    .spinner-sector-blue {
+        border-top-color: var(--erp-primary);
+        animation: erp-spin 1.2s linear infinite;
+    }
+    
+    .spinner-sector-light-blue {
+        border-bottom-color: var(--erp-primary-light);
+        animation: erp-spin-reverse 0.8s linear infinite;
+    }
+    
+    .erp-loading-text {
+        color: var(--erp-primary-dark);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    
+    .erp-loading-subtext {
+        color: var(--erp-primary);
+        font-size: 0.9rem;
+    }
+    
+    .erp-status small {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .erp-status small::after {
+        content: "...";
+        position: absolute;
+        animation: ellipsis 1.5s infinite;
+    }
+    
+    .erp-logo svg {
+        filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.2));
+    }
+    
+    @keyframes erp-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes erp-spin-reverse {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
+    }
+    
+    @keyframes ellipsis {
+        0% { content: "."; }
+        33% { content: ".."; }
+        66% { content: "..."; }
+    }
+    
 .jobcard-body{
     max-height: 66vh; 
     overflow-y: auto;

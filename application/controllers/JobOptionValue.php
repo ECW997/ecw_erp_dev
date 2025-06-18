@@ -177,4 +177,22 @@ class JobOptionValue extends CI_Controller {
             redirect('JobOptionValue');
         }
     }
+
+	public function getImagesByCategory(){
+		$api_token = $this->session->userdata('api_token');
+
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+			'category_id' => $this->input->post('category_id'),
+			'btn_type' => $this->input->post('btn_type'),
+		];
+
+		$response = $this->JobOptionValueinfo->getImagesByCategory($api_token,$form_data);
+		echo json_encode($response);
+	}
 }

@@ -213,10 +213,10 @@
 				</td>
 				<td style="width:40%;text-align:left;border:none;font-size:12px;" class="datatable_td">
                     <?= $joblist['combined_option'] ?? 'N/A' ?> <br>
-                    <?php if($joblist['option_text'] == 'Stitch Design'): ?>
+                    <?php if($joblist['description'] == 'image'): ?>
                         <img 
                             style="height:165px;"
-                            src="<?php echo base_url() ?>images/Stitching_img/1740395994_NP001.jpg" 
+                            src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" 
                         />
                     <?php endif; ?>
                 </td>
