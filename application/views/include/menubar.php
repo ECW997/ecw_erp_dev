@@ -285,6 +285,12 @@ else if($functionmenu=='Media_library'){
     $statuscheck=checkprivilege($menuprivilegearray, 66, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 66, 4);
 }
+else if($functionmenu=='Invoice'){
+    $addcheck=checkprivilege($menuprivilegearray, 67, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 67, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
+}
 
 
 
@@ -471,6 +477,12 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php if(menucheck($menuprivilegearray, 53)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'JobCard'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-id-card-alt"></i></div>Job Card
+            </a>
+            <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 67)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Invoice'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-cash-register"></i></div>Invoice
             </a>
             <?php }?>
 
