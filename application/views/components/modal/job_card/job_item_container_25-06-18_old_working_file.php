@@ -171,10 +171,10 @@
         if (!$modal.hasClass('show') || $modal.css('display') !== 'block') {
             $modal.modal('show');
             $modal.one('shown.bs.modal', function() {
-                console.log('Spinner fully shown and visible');
+                // console.log('Spinner fully shown and visible');
             });
             
-            console.log('Showing spinner...');
+            // console.log('Showing spinner...');
         }
     }
 
@@ -182,11 +182,11 @@
         const $modal = $('#loadingModal');
         if ($modal.hasClass('show')) {
             $modal.one('hidden.bs.modal', function() {
-                console.log('Spinner fully hidden');
+                // console.log('Spinner fully hidden');
                 addMoreOptionsAfterLoad();
             }).modal('hide');
             
-            console.log('Hiding spinner...');
+            // console.log('Hiding spinner...');
         } else {
             addMoreOptionsAfterLoad();
         }
@@ -195,14 +195,14 @@
     function trackAjaxCall() {
         activeAjaxCalls++;
         showLoadingModal();
-        console.log('AJAX started, active calls:', activeAjaxCalls);
+        // console.log('AJAX started, active calls:', activeAjaxCalls);
     }
 
     function completeAjaxCall() {
         if (activeAjaxCalls > 0) {
             activeAjaxCalls--;
         }
-        console.log('AJAX call completed, active calls:', activeAjaxCalls);
+        // console.log('AJAX call completed, active calls:', activeAjaxCalls);
         if (activeAjaxCalls === 0 && isInitialLoadComplete) {
             setTimeout(hideLoadingModal, 100); 
         }
@@ -212,20 +212,18 @@
         $('#loadingModal').removeAttr('style').css('display', '');
         $('.modal-backdrop').remove();
         
-        console.log('Adding additional options now that initial load is complete');
+        // console.log('Adding additional options now that initial load is complete');
     }
 
     function init() {
-        const jobData = <?php echo json_encode($data); ?>;
-        hasEditedData = jobData.data?.some(item =>
-        item.job_options?.some(jitem =>
-            jitem.job_options?.some(option =>
-                option.job_option?.edited && option.job_option?.conditional 
+         const jobData = <?php echo json_encode($data); ?>;
+        hasEditedData = jobData.data?.some(item => 
+            item.job_options?.some(jitem => 
+                jitem.job_options?.some(option => option.job_option?.edited)
             )
-        )
-    ) || false;
+        ) || false;
         
-        console.log('Edited data exists:', hasEditedData);
+        // console.log('Edited data exists:', hasEditedData);
         
         setupEditedSubJobs();
         setupPriceCategory();
@@ -234,10 +232,10 @@
         processInitialData().then(() => {
             return setupOptionSelects();
         }).then(() => {
-            console.log('Initial load complete');
+            // console.log('Initial load complete');
             isInitialLoadComplete = true;
             if (hasEditedData) {
-                console.log('Initialization started');
+                // console.log('Initialization started');
                 showLoadingModal();
             }
         }).catch(error => {
@@ -280,7 +278,7 @@
             const $subJobCollapses = $('.sub-job-collapse');
             
             if (!jobData.status || !jobData.data || jobData.data.length === 0) {
-                console.log('No data available - empty state');
+                // console.log('No data available - empty state');
                 resolve();
                 return;
             }
@@ -292,7 +290,7 @@
                 )
             );
             
-            console.log('Edited data exists:', hasEditedData);
+            // console.log('Edited data exists:', hasEditedData);
             
             // Process all items
             const subJobPromises = jobData.data.map(item => {
@@ -390,7 +388,6 @@
                             }
                         });
                     }
-                    
                 });
             });
         });
@@ -645,7 +642,7 @@
     }
 
      $(document).ready(function() {
-        console.log('Document ready - starting initialization');
+        // console.log('Document ready - starting initialization');
         init();
     });
 
