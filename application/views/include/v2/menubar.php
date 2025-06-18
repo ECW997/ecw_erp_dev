@@ -267,6 +267,12 @@ else if($functionmenu=='Map'){
     $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
 }
+else if($functionmenu=='Invoice'){
+    $addcheck=checkprivilege($menuprivilegearray, 67, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 67, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
+}
 
 
 
@@ -455,6 +461,12 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
             <?php }?>
 
+           <?php if(menucheck($menuprivilegearray, 67)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Invoice'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-cash-register"></i></div>Invoice
+            </a>
+            <?php }?>
+
             <?php if(menucheck($menuprivilegearray, 58)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'JobCard_information'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Job Card Information
@@ -485,6 +497,13 @@ function checkprivilege($arraymenu, $menuID, $type){
                 <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Map
             </a>
             <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 66)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Media_library'; ?>">
+                <div class="nav-link-icon"><i data-feather="map"></i></div>Media Library
+            </a>
+            <?php }?>
+
 
             <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1 | menucheck($menuprivilegearray, 4)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
