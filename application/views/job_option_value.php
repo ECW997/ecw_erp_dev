@@ -97,6 +97,20 @@ include "include/topnavbar.php";
                                             <option value="">Select</option>
                                         </select>
                                     </div>
+                                    <div class="form-group mb-1 d-flex justify-content-end gap-2">
+                                        <button title="Select Image" type="button" id="addImageBtn"
+                                            class="btn btn-warning btn-sm px-2 p-2 mr-2" data-btn-type="image">
+                                            <i class="fas fa-images"></i>
+                                        </button>
+                                        <button title="Select File" type="button" id="addFileBtn"
+                                            class="btn btn-primary btn-sm px-2 p-2 mr-2" data-btn-type="file">
+                                            <i class="fas fa-file-alt"></i>
+                                        </button>
+                                        <button title="Select PDF" type="button" id="addPdfBtn"
+                                            class="btn btn-danger btn-sm px-2 p-2" data-btn-type="pdf">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </button>
+                                    </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Value Name*</label>
                                         <input type="text" class="form-control form-control-sm" name="value_name"
@@ -175,6 +189,37 @@ include "include/topnavbar.php";
             </div>
         </div>
 
+        <div class="modal fade" id="fileLoadModal" tabindex="-1" role="dialog" aria-labelledby="fileLoadModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="fileLoadModalLabel">View Option Value</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                     <div class="modal-body">
+                        <div class="form-group">
+                            <label class="small font-weight-bold" for="category">Category<span class="text-danger">*</span></label>
+                            <select class="form-control form-control-sm selecter2" name="category" id="category" required>
+                                <option value="">Select</option>
+                                <option value="1">Stitching Design</option>
+                                <option value="2">Marketing</option>
+                                <option value="3">Production</option>
+                            </select>
+                            <div id="imagePreview" class="mt-3 row"></div>
+                            <input type="hidden" id="btn_type" name="btn_type" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" class="btn btn-primary btn-sm" id="selectFileBtn" data-dismiss="modal"><i class="fas fa-check-circle mr-2"></i>Select</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-2"></i>Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?php include "include/footerbar.php"; ?>
     </div>
 </div>
@@ -189,6 +234,83 @@ var deletecheck = '<?php echo $deletecheck; ?>';
 $(document).ready(function() {
     let main_job_category = $('#main_job_category');
     let sub_job_category = $('#sub_job_category');
+
+    $('[data-btn-type]').on('click', function () {
+            var btnType = $(this).data('btn-type');
+            var title = '';
+
+            switch (btnType) {
+                case 'image':
+                    title = 'Select Image';
+                    break;
+                case 'file':
+                    title = 'Select File';
+                    break;
+                case 'pdf':
+                    title = 'Select PDF';
+                    break;
+                default:
+                    title = 'View Option Value';
+            }
+
+            $('#fileLoadModalLabel').text(title);
+            $('#btn_type').val(btnType);
+
+            $('#fileLoadModal').modal('show');
+    });
+
+     $('#category').on('change', function () {
+            var categoryId = $(this).val();
+            var btn_type = $('#btn_type').val();
+
+            if (categoryId) {
+                $.ajax({
+                    url: '<?= base_url("JobOptionValue/getImagesByCategory") ?>',
+                    type: 'POST',
+                    data: { 
+                        category_id: categoryId,
+                        btn_type:btn_type },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('#imagePreview').html('<div class="col-12 text-center text-secondary">Loading...</div>');
+                    },
+                    success: function (response) {
+                        var html = '';
+                        if (response.status && response.data.length > 0) {
+                            $.each(response.data, function (index, image) {
+                                html += `
+                                    <div class="col-md-3 mb-2">
+                                       <img src="${image.public_url}" class="img-fluid rounded border selectable-image" data-filename="${image.file_name}" data-filepath="${image.file_path}" alt="Image">
+                                    </div>`;
+                            });
+                        } else {
+                            html = '<div class="col-12 text-muted">No images found for this category.</div>';
+                        }
+                        $('#imagePreview').html(html);
+                    },
+                    error: function () {
+                        $('#imagePreview').html('<div class="col-12 text-danger">Error loading images.</div>');
+                    }
+                });
+            } else {
+                $('#imagePreview').html('');
+            }
+    });
+
+    let selectedFilePath = '';
+    $(document).on('click', '.selectable-image', function () {
+        $('.selectable-image').removeClass('border-primary').addClass('border');
+        $(this).addClass('border-primary');
+        selectedFilePath = $(this).data('filepath');
+    });
+
+    $('#selectFileBtn').on('click', function () {
+        if (selectedFilePath !== '') {
+            $('#value_name').val(selectedFilePath);
+        } else {
+            alert('Please select an image first.');
+        }
+    });
 
     main_job_category.select2({
         placeholder: 'Select...',

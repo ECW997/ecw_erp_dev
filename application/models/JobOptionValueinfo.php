@@ -46,4 +46,9 @@ class JobOptionValueinfo extends CI_Model{
         return call_api('DELETE', 'job_option_value_v1', $id, $headers);
     }
 
+    public function getImagesByCategory($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_images_by_category_v1', $form_data, $headers);
+    }
+
 }

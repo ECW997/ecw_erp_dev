@@ -56,6 +56,7 @@
                                                         data-subjob-name="<?= $subJob['sub_job_category']['sub_job_category'] ?>"
                                                         data-option-group-name="<?= $jobOptionGroup['job_option_group']['GroupName'] ?>"
                                                         data-option-name="<?= $optionName ?>"
+                                                        data-option-description="<?= $option['Description']; ?>"
                                                         data-pre-value="<?= $selectedValue ?>"
                                                         onchange="loadChildOption(this,null,1);"
                                                         <?= ($selectedValue != '') ? '' : '' ?>>
@@ -159,14 +160,91 @@
 
     window.pendingRequests = window.pendingRequests || {};
     window.lastRequestedOptionValueId = window.lastRequestedOptionValueId || null;
+    window.loadingPromises = [];
+    window.isInitialLoadComplete = false;
+    window.activeAjaxCalls = 0;
+    window.hasEditedData = false;
+    window.initialLoadStarted = false;
+
+    function showLoadingModal() {
+        const $modal = $('#loadingModal');
+        if (!$modal.hasClass('show') || $modal.css('display') !== 'block') {
+            $modal.modal('show');
+            $modal.one('shown.bs.modal', function() {
+                // console.log('Spinner fully shown and visible');
+            });
+            
+            // console.log('Showing spinner...');
+        }
+    }
+
+    function hideLoadingModal() {
+        const $modal = $('#loadingModal');
+        if ($modal.hasClass('show')) {
+            $modal.one('hidden.bs.modal', function() {
+                // console.log('Spinner fully hidden');
+                addMoreOptionsAfterLoad();
+            }).modal('hide');
+            
+            // console.log('Hiding spinner...');
+        } else {
+            addMoreOptionsAfterLoad();
+        }
+    }
+
+    function trackAjaxCall() {
+        activeAjaxCalls++;
+        showLoadingModal();
+        // console.log('AJAX started, active calls:', activeAjaxCalls);
+    }
+
+    function completeAjaxCall() {
+        if (activeAjaxCalls > 0) {
+            activeAjaxCalls--;
+        }
+        // console.log('AJAX call completed, active calls:', activeAjaxCalls);
+        if (activeAjaxCalls === 0 && isInitialLoadComplete) {
+            setTimeout(hideLoadingModal, 100); 
+        }
+    }
+
+    function addMoreOptionsAfterLoad() {
+        $('#loadingModal').removeAttr('style').css('display', '');
+        $('.modal-backdrop').remove();
+        
+        // console.log('Adding additional options now that initial load is complete');
+    }
 
     function init() {
+         const jobData = <?php echo json_encode($data); ?>;
+        hasEditedData = jobData.data?.some(item => 
+            item.job_options?.some(jitem => 
+                jitem.job_options?.some(option => option.job_option?.edited)
+            )
+        ) || false;
+        
+        // console.log('Edited data exists:', hasEditedData);
+        
         setupEditedSubJobs();
         setupPriceCategory();
         setupEventListeners();
-        processInitialData();
-        setupOptionSelects();
+        
+        processInitialData().then(() => {
+            return setupOptionSelects();
+        }).then(() => {
+            // console.log('Initial load complete');
+            isInitialLoadComplete = true;
+            if (hasEditedData) {
+                // console.log('Initialization started');
+                showLoadingModal();
+            }
+        }).catch(error => {
+            console.error('Initialization error:', error);
+            isInitialLoadComplete = true;
+            hideLoadingModal();
+        });
     }
+    
     
     function setupEditedSubJobs() {
         $(document).on('change input', '.sub-job-collapse input, .sub-job-collapse select', function() {
@@ -195,24 +273,80 @@
     }
 
     function processInitialData() {
-        const jobData = <?php echo json_encode($data); ?>;
-        const $subJobCollapses = $('.sub-job-collapse');
-        
-        if (jobData.status && jobData.data) {
-            jobData.data.forEach(item => {
+        return new Promise((resolve) => {
+            const jobData = <?php echo json_encode($data); ?>;
+            const $subJobCollapses = $('.sub-job-collapse');
+            
+            if (!jobData.status || !jobData.data || jobData.data.length === 0) {
+                // console.log('No data available - empty state');
+                resolve();
+                return;
+            }
+            
+            // Check for edited data
+            const hasEditedData = jobData.data.some(item => 
+                item.job_options?.some(jitem => 
+                    jitem.job_options?.some(option => option.job_option?.edited)
+                )
+            );
+            
+            // console.log('Edited data exists:', hasEditedData);
+            
+            // Process all items
+            const subJobPromises = jobData.data.map(item => {
                 const subJobId = item.sub_job_category.idtbl_sub_job_category;
                 const $collapse = $subJobCollapses.filter(`[data-subjob-id="${subJobId}"]`);
                 
-                if (item.job_options.some(jitem => 
-                    jitem.job_options.some(option => option.job_option.edited)
-                )) {
+                // Show if has edited data or if we want to show all initially
+                if (hasEditedData) {
                     $collapse.addClass('show');
                 }
+                
+                return Promise.resolve();
             });
             
-            $('#item_total_net_price').text(jobData.meta.full_total);
-        }
+            Promise.all(subJobPromises).then(() => {
+                if (jobData.meta?.full_total) {
+                    $('#item_total_net_price').text(jobData.meta.full_total);
+                }
+                resolve();
+            });
+        });
     }
+
+    function loadEditedOption(option) {
+        return new Promise((resolve) => {
+            if (!option.edited) {
+                resolve();
+                return;
+            }
+            
+            // console.log(`Loading edited option ${option.JobOptionID}`);
+            
+            // Find the corresponding select element
+            const $select = $(`select[data-option-id="${option.JobOptionID}"]`);
+            
+            if ($select.length === 0) {
+                console.warn(`Select element not found for option ${option.JobOptionID}`);
+                resolve();
+                return;
+            }
+            
+            // If we have a selected value, load it
+            if (option.job_details_option_value) {
+                trackAjaxCall();
+                $select.val(option.job_details_option_value);
+                loadChildOption($select[0], option.job_details_option_value, 2)
+                    .finally(() => {
+                        completeAjaxCall();
+                        resolve();
+                    });
+            } else {
+                resolve();
+            }
+        });
+    }
+    
     
     function setupOptionSelects() {
         const jobData = <?php echo json_encode($data); ?>;
@@ -220,6 +354,11 @@
         setTimeout(() => {
             $('.job-option-select').each(function() {
                 const $select = $(this);
+                const description = $select.data('option-description');
+                if ($select.val() && description === 'image') {
+                     loadChildOption($select, null, 2);
+                }
+
                 if ($select.val()) {
                     processSelectedOption($select, jobData);
                 }
@@ -312,6 +451,8 @@
     }
     
     function loadChildOption(selectElement, editId, insertOption) {
+        trackAjaxCall();
+
         const $selectedOption = $(selectElement);
         const selectedOptionValue = $selectedOption.val();
         const jobcard_id = $('#jobcard_id').val();
@@ -322,17 +463,17 @@
         const subJobName = $selectedOption.data('subjob-name');
         const optionGroupName = $selectedOption.data('option-group-name');
         const childWrapperSelector = `.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`;
-        
+
         if (!selectedOptionValue) {
-            $(childWrapperSelector).html('');
-            return;
+            completeAjaxCall();
+            return Promise.resolve();
         }
-        
-        // Cancel previous request if any
+
         if (pendingRequests[selectedOptionValue]) {
             pendingRequests[selectedOptionValue].abort();
+            delete pendingRequests[selectedOptionValue];
         }
-        
+
         const xhr = $.ajax({
             type: "POST",
             url: '<?php echo base_url() ?>JobCard/getItemParentOptions',
@@ -344,80 +485,128 @@
             },
             success: function(res) {
                 if (!res.status || !res.data || res.data.length === 0) {
-                    
                     $(childWrapperSelector).html('');
-                    getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption);
+                    Promise.resolve(
+                        getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption)
+                    ).finally(completeAjaxCall);
                     return;
                 }
-                
+
                 let html = res.data.map(group => {
                     const jobOption = group.job_option;
                     const optionValues = group.option_values;
-                    
+
                     if (!optionValues || optionValues.length === 0) return '';
-                    
-                    return `
-                        <div class="ms-2 flex-fill">
-                            <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
-                            <select class="form-select form-select-sm job-option-select job_parent_option_f"
-                                data-option-type="${escapeHtml(jobOption.OptionType)}"
-                                data-option-id="${escapeHtml(jobOption.JobOptionID)}"
-                                data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
-                                data-sub-job-category="${escapeHtml(jobOption.JobSubcategoryID)}"
-                                data-subjob-name="${escapeHtml(subJobName)}"
-                                data-option-group-name="${escapeHtml(optionGroupName)}"
-                                data-option-name="${escapeHtml(jobOption.OptionName)}"
-                                data-pre-value="${escapeHtml(jobOption.option_value_id)}"
-                                ${jobOption.IsRequired == 1 ? 'required' : ''}
-                                onchange="loadChildOption(this, null, 1)">
-                                <option value="">Select an option</option>
-                                ${optionValues.map(val => `
-                                    <option value="${escapeHtml(val.id)}" 
-                                            data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}" 
-                                            ${val.id == jobOption.option_value_id ? 'selected' : ''}>
-                                        ${escapeHtml(val.ValueName)}
-                                    </option>
-                                `).join('')}
-                            </select>
-                        </div>
-                        <div class="row align-items-center mb-2 job-option-row" data-level="1">
-                            <div class="child-options-wrapper flex-fill" data-parent-option-id="${jobOption.JobOptionID}"></div>
-                        </div>
-                    `;
+
+                    const isMediaType = ['image', 'pdf', 'file'].includes(jobOption.Description);
+
+                    if (isMediaType) {
+                        return `
+                            <div class="ms-2 flex-fill">
+                                <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
+                                <img src="https://devapi.ecw.lk/storage/${optionValues[0].ValueName ? escapeHtml(optionValues[0].ValueName) : 'https://via.placeholder.com/50'}"
+                                    id="preview_image_${jobOption.JobOptionID}"
+                                    data-option-type="${escapeHtml(jobOption.OptionType)}"
+                                    data-option-id="${escapeHtml(jobOption.JobOptionID)}"
+                                    data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
+                                    data-sub-job-category="${escapeHtml(jobOption.JobSubcategoryID)}"
+                                    data-subjob-name="${escapeHtml(subJobName)}"
+                                    data-option-group-name="${escapeHtml(optionGroupName)}"
+                                    data-option-name="${escapeHtml(jobOption.OptionName)}"
+                                    data-pre-value="${escapeHtml(jobOption.option_value_id)}"
+                                    alt="Preview"
+                                    class="rounded border"
+                                    style="width: 50px; height: auto;">
+                            </div>
+                            <div class="row align-items-center mb-2 job-option-row" data-level="1">
+                                <div class="child-options-wrapper flex-fill" data-parent-option-id="${jobOption.JobOptionID}"></div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="ms-2 flex-fill">
+                                <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
+                                <select class="form-select form-select-sm job-option-select job_parent_option_f"
+                                        data-option-type="${escapeHtml(jobOption.OptionType)}"
+                                        data-option-id="${escapeHtml(jobOption.JobOptionID)}"
+                                        data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
+                                        data-sub-job-category="${escapeHtml(jobOption.JobSubcategoryID)}"
+                                        data-subjob-name="${escapeHtml(subJobName)}"
+                                        data-option-group-name="${escapeHtml(optionGroupName)}"
+                                        data-option-name="${escapeHtml(jobOption.OptionName)}"
+                                        data-option-description="${escapeHtml(jobOption.Description)}"
+                                        data-pre-value="${escapeHtml(jobOption.option_value_id)}"
+                                        ${jobOption.IsRequired == 1 ? 'required' : ''}
+                                        onchange="loadChildOption(this, null, 1)">
+                                    <option value="">Select an option</option>
+                                    ${optionValues.map(val => `
+                                        <option value="${escapeHtml(val.id)}"
+                                                data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}"
+                                                ${val.id == jobOption.option_value_id ? 'selected' : ''}>
+                                            ${escapeHtml(val.ValueName)}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                            <div class="row align-items-center mb-2 job-option-row" data-level="1">
+                                <div class="child-options-wrapper flex-fill" data-parent-option-id="${jobOption.JobOptionID}"></div>
+                            </div>
+                        `;
+                    }
                 }).join('');
-                
+
                 $(childWrapperSelector).html(html);
 
-                res.data.forEach(group => {
-                    const jobOption = group.job_option;
-                    if (jobOption.option_value_id) {
-                        const childSelect = $(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
-                        if (childSelect) loadChildOption(childSelect, jobOption.option_value_id, 2);
-                    }
-                });
-                
-                getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption);
+                const childOptionPromises = res.data
+                    .filter(group => {
+                        const desc = group.job_option.Description;
+                        return !['image', 'pdf', 'file'].includes(desc);
+                    })
+                    .map(group => {
+                        const jobOption = group.job_option;
+                        if (jobOption.option_value_id) {
+                            const childSelect = $(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
+                            if (childSelect) {
+                                return loadChildOption(childSelect, jobOption.option_value_id, 2);
+                            }
+                        }
+                        return Promise.resolve();
+                    });
+
+                Promise.all(childOptionPromises)
+                    .then(() => {
+                        return Promise.resolve(
+                            getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption)
+                        );
+                    })
+                    .finally(completeAjaxCall);
             },
             error: function(xhr, status, error) {
                 if (status !== 'abort') {
                     console.error("Failed to load conditional options:", error);
                     $(childWrapperSelector).html('<div class="text-danger">Error loading options</div>');
                 }
+                completeAjaxCall();
+            },
+            complete: function() {
+                delete pendingRequests[selectedOptionValue];
             }
         });
-        
+
         pendingRequests[selectedOptionValue] = xhr;
-        xhr.always(() => delete pendingRequests[selectedOptionValue]);
     }
     
 
     function getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption) {
-        if (insertOption == '2') return;
+        if (insertOption == '2') {
+            return Promise.resolve();
+        }
         
+        trackAjaxCall();
         lastRequestedOptionValueId = selectedOptionValue;
         const price_category = $('#price_category').val();
         
-        $.ajax({
+        const xhr = $.ajax({
             type: "POST",
             dataType: 'json',
             url: '<?php echo base_url() ?>JobCard/getOptionvaluePrice',
@@ -436,8 +625,11 @@
                 } else {
                     schedulePriceUpdate();
                 }
-            }
-        });    
+            },
+            complete: completeAjaxCall
+        });
+        
+        return xhr;
     }
 
     function escapeHtml(unsafe) {
@@ -448,6 +640,10 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;") || '';
     }
-    init();
+
+     $(document).ready(function() {
+        // console.log('Document ready - starting initialization');
+        init();
+    });
 
 </script>

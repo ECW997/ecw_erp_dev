@@ -75,6 +75,35 @@
     </div>
 </div>
 
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 bg-transparent">
+            <div class="modal-body text-center">
+                <div class="erp-logo mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                
+                <div class="erp-spinner mb-4">
+                    <div class="spinner-sector spinner-sector-blue"></div>
+                    <div class="spinner-sector spinner-sector-light-blue"></div>
+                </div>
+                
+                <h5 class="erp-loading-text mb-3">Processing Request</h5>
+                <!-- <p class="erp-loading-subtext">Please wait while we prepare your data</p> -->
+                
+                <div class="erp-status mt-3">
+                    <small class="text-primary">Initializing modules...</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
 let isUnsaved = false;
 
@@ -304,7 +333,7 @@ function continueAddToJobCard(inputMethod,btn){
             var lineDiscount = netPrice - finalNetPrice;
 
             preValue = preValue || selectedVal;
-            // $(this).data('pre-value', selectedVal);
+            $(this).data('pre-value', selectedVal);
 
             if (!jobData[mainJobID]){
                 jobData[mainJobID] ={
