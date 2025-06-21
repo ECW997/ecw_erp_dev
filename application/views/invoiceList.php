@@ -24,7 +24,7 @@ include "include/topnavbar.php";
                     <div class="card-header d-flex justify-content-end">
                         <div class="row">
                             <div class="col">
-                                <a href="<?= base_url('JobCard/jobCardDetailIndex') ?>" 
+                                <a href="<?= base_url('Invoice/jobCardDetailIndex') ?>" 
                                 class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
                                 <i class="fas fa-plus mr-3"></i>Create New Invoice
                                 </a>
