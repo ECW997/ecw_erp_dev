@@ -21,18 +21,19 @@
                     $net_total=0;
                     if($summary_data){
                     foreach ($summary_data as $summlist): 
+                        $is_discount_approved = $summlist['is_discount_approved'] ? '<span style="font-size:smaller;color: blue;">(Approved)</span>' : '<span style="font-size:smaller;color: red;">(Not Approved)</span>';
                         foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
                         <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?></td>
-                        <td class="text-right"><?= number_format($list['total_price'], 2); ?></td>
+                        <td class="text-right"><?= number_format($list['sub_total'], 2); ?></td>
                     </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <td class="text-left" style="padding-top: 20px;">Line Discount</td>
+                        <td class="text-left" style="padding-top: 20px;">Line Discount <?= $is_discount_approved ?></td>
                         <td class="text-right" style="padding-top: 20px;"><?= number_format($summlist['total_line_discount'],2) ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%)</td>
+                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%) <?= $is_discount_approved ?></td>
                         <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">

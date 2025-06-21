@@ -193,6 +193,7 @@
             $maxPageHeight = 220;
             $totalRows = count($details_data); 
 			$groupedData = [];
+			$is_discount_approved = ($is_discount_approved);
 
 			foreach ($details_data as $item) {
 				$category = $item['job_sub_category_text'] ?? 'N/A';
@@ -203,6 +204,8 @@
 					$groupedData[$category][] = $joblist;
 				}
 			}
+
+			
 			?>
 
             <?php foreach ($groupedData as $category => $jobs): ?>
@@ -212,7 +215,9 @@
 					</td>
 				</tr>
 
-				<?php foreach ($jobs as $joblist): ?>
+				<?php foreach ($jobs as $joblist): 
+					$line_net_total = $is_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
+					?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $count ?></td>
                         <td class="datatable_data_td" style="width:46%; text-align:left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -227,7 +232,7 @@
                             <?= number_format($joblist['line_discount'] ?? 0, 2) ?>
                         </td>
                         <td class="datatable_data_td" style="width:15%; text-align:right;">
-                            <?= number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) ?>
+                            <?= $line_net_total ?>
                         </td>
                     </tr>
                     <?php
