@@ -217,6 +217,7 @@
 
 				<?php foreach ($jobs as $joblist): 
 					$line_net_total = $is_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
+					$line_discount = $is_discount_approved ? number_format(($joblist['line_discount'] ?? 0), 2) : number_format((0), 2);
 					?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $count ?></td>
@@ -229,7 +230,7 @@
                             <?= number_format($joblist['list_price'] ?? 0, 2) ?>
                         </td>
                         <td class="datatable_data_td" style="width:10%; text-align:right;">
-                            <?= number_format($joblist['line_discount'] ?? 0, 2) ?>
+                            <?= $line_discount ?>
                         </td>
                         <td class="datatable_data_td" style="width:15%; text-align:right;">
                             <?= $line_net_total ?>
@@ -274,7 +275,7 @@
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
     		<td style="width:13%;text-align:left;" class="datatable_data_td">Disc. Total</td>
     		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2) ?></td>
+    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= $is_discount_approved ? (number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2)) : number_format((0), 2) ?></td>
     	</tr>
     	<tr>
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>

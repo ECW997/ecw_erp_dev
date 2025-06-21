@@ -505,7 +505,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php }?>
 
 
-            <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1 | menucheck($menuprivilegearray, 4)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 1)==1 | menucheck($menuprivilegearray, 2)==1 | menucheck($menuprivilegearray, 3)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
                 <div class="nav-link-icon"><i class="fas fa-user"></i></div>
