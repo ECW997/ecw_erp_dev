@@ -83,7 +83,8 @@ class JobCard extends CI_Controller {
 		$pdf_data = [
 			'main_data'    => $response['data']['main_data'][0],     
 			'details_data' => $response['data']['details_data'],     
-			'summary_data' => $response['data']['summary_data']     
+			'summary_data' => $response['data']['summary_data'],     
+			'is_discount_approved' => $response['data']['is_discount_approved']     
 		];
 
 		$this->load->library('Pdf');
@@ -114,7 +115,8 @@ class JobCard extends CI_Controller {
 		$pdf_data = [
 			'main_data'    => $response['data']['main_data'][0],     
 			'details_data' => $response['data']['details_data'],     
-			'summary_data' => $response['data']['summary_data']     
+			'summary_data' => $response['data']['summary_data'],
+			'is_discount_approved' => $response['data']['is_discount_approved']       
 		];
 
 		$this->load->library('Pdf');
