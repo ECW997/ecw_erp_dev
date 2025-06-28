@@ -45,69 +45,33 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     <div class="card-body p-0 p-2">
                         <div class="row mb-3">
                             <div class="col-8">
-                                <div class="flex space-x-4 mb-4">
-      <button class="bg-gray-300 text-black rounded px-3 py-1 text-sm font-normal">New</button>
-      <button class="bg-gray-300 text-black rounded px-3 py-1 text-sm font-normal">Approve</button>
-      <button class="bg-gray-300 text-black rounded px-3 py-1 text-sm font-normal">Print</button>
-    </div>
-    <hr class="border-gray-300 mb-6" />
-    <form>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 mb-8">
-        <div>
-          <div class="flex items-center space-x-2 mb-3">
-            <label for="jobCardNumber" class="w-36 text-sm">Job Card Number</label>
-            <input id="jobCardNumber" type="text" value="JC-01204" readonly class="border border-gray-300 rounded px-2 py-1 text-sm font-semibold w-40" />
-            <button type="button" class="bg-gray-300 rounded px-2 py-1 text-sm font-normal">...</button>
-          </div>
-          <div class="flex items-center space-x-2 mb-3">
-            <label for="customer" class="w-36 text-sm">Customer:</label>
-            <input id="customer" type="text" class="border border-gray-300 rounded px-2 py-1 text-sm w-full" />
-          </div>
-          <div>
-            <label for="address" class="w-36 text-sm inline-block mb-1">Address:</label>
-            <input id="address" type="text" class="border border-gray-300 rounded px-2 py-1 text-sm w-full mb-1" />
-            <input type="text" class="border border-gray-300 rounded px-2 py-1 text-sm w-full" />
-          </div>
-        </div>
-        <div>
-          <div class="flex items-center space-x-2 mb-3">
-            <label for="vehicleDetails" class="w-36 text-sm">Vehicle Details:</label>
-            <input id="vehicleDetails" type="text" class="border border-gray-300 rounded px-2 py-1 text-sm w-full" />
-          </div>
-          <div class="flex items-center space-x-2">
-            <label for="jobDetails" class="w-36 text-sm">Job Details:</label>
-            <input id="jobDetails" type="text" class="border border-gray-300 rounded px-2 py-1 text-sm w-full" />
-          </div>
-        </div>
-      </div>
-      <table class="w-full border-collapse border border-gray-300 text-sm">
-        <thead>
-          <tr>
-            <th class="border-r border-gray-300 text-left px-2 py-1">Description</th>
-            <th class="border-r border-gray-300 text-left px-2 py-1 w-16">Qty</th>
-            <th class="border-r border-gray-300 text-left px-2 py-1 w-20">Price</th>
-            <th class="border-r border-gray-300 text-left px-2 py-1 w-20">Discount</th>
-            <th class="border-r border-gray-300 text-left px-2 py-1 w-20">Tax</th>
-            <th class="text-left px-2 py-1 w-24">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="h-48">
-            <td class="border-r border-gray-300 align-top px-2 py-1"></td>
-            <td class="border-r border-gray-300 align-top px-2 py-1"></td>
-            <td class="border-r border-gray-300 align-top px-2 py-1"></td>
-            <td class="border-r border-gray-300 align-top px-2 py-1"></td>
-            <td class="border-r border-gray-300 align-top px-2 py-1"></td>
-            <td class="align-top px-2 py-1"></td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
+                                <div class="row g-2 p-3">
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            data-bs-toggle="modal" data-bs-target="#selectCustomerInquiryModal">
+                                            <i class="fas fa-plus me-2"></i> New Invoice
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
+                                            <i class="fas fa-check me-2"></i> Approve
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                            <i class="fas fa-print me-2"></i>Invoice Print
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div id="jobCardContent">
-                                <?php include "components/modal/job_card/job_card_content.php"; ?>
+                                
+                                <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
+                                <?php include "components/modal/invoice/invoice_content.php"; ?>
                             </div>
                         </div>
                     </div>
@@ -115,11 +79,29 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
             </div>
 
         </main>
-        <?php include "components/modal/job_card/select_customer_inquiry.php"; ?>
-        <?php include "components/modal/job_card/job_header.php"; ?>
-        <?php include "components/modal/job_card/add_job_item.php"; ?>
-        <?php include "components/modal/job_card/job_card_approval.php"; ?>
-        <?php include "components/modal/job_card/job_card_header_discount.php"; ?>
+
+        <!-- Invoice Type Modal -->
+        <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header py-2">
+                        <h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="btnDirectInvoice">
+                            Direct Invoice
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm w-100" id="btnJobCardInvoice">
+                            Job Card Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <?php include "include/v2/footerbar.php"; ?>
     </div>
@@ -209,7 +191,7 @@ $(document).ready(function() {
         const jobcard_id = $('#jobcard_id').val();
 
         if (jobcard_id) {
-            fetchJobCardDiscountDetails(jobcard_id); 
+            fetchJobCardDiscountDetails(jobcard_id);
             $('#jobcarddiscountModel').modal('show');
         } else {
             alert('Invalid Job Card ID.');
@@ -251,7 +233,7 @@ function fetchJobCardDiscountDetails(jobcard_id) {
                 const standardPrice = parseFloat($('#standard_price').val()) || 0;
                 const discountAmt = parseFloat(data.discount_amount) || 0;
                 const net = standardPrice - discountAmt;
-                
+
 
 
                 // console.log("Standard Price:", standardPrice);
@@ -260,7 +242,7 @@ function fetchJobCardDiscountDetails(jobcard_id) {
 
                 $('#net_amount').val(net.toFixed(2));
                 $('#total_discount').val(discountAmt.toFixed(2));
-               
+
             } else {
                 alert('Failed to fetch discount details.');
             }
