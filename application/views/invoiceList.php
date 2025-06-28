@@ -24,7 +24,7 @@ include "include/topnavbar.php";
                     <div class="card-header d-flex justify-content-end">
                         <div class="row">
                             <div class="col">
-                                <a href="<?= base_url('Invoice/jobCardDetailIndex') ?>" 
+                                <a href="<?= base_url('Invoice/invoiceDetailIndex') ?>" 
                                 class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
                                 <i class="fas fa-plus mr-3"></i>Create New Invoice
                                 </a>
@@ -95,7 +95,7 @@ include "include/topnavbar.php";
                 },
             ],
             ajax: {
-                url: apiBaseUrl+'/v1/job_card', 
+                url: apiBaseUrl+'/v1/invoice', 
                 type: "GET",
                 headers: {
                     'Accept': 'application/json',
@@ -118,22 +118,22 @@ include "include/topnavbar.php";
             "order": [[ 0, "desc" ]],
             "columns": [
                 {
-                    "data": "idtbl_jobcard"
+                    "data": "id"
                 },
                 {
-                    "data": "job_card_number"
+                    "data": "invoice_number"
                 },
                  {
-                    "data": "job_progress_status_text"
+                    "data": "customer_name"
                 },
                  {
-                    "data": "job_start_date"
+                    "data": "invoice_date"
                 },
                  {
-                    "data": "complete_date"
+                    "data": "inv_status_text"
                 },
                  {
-                    "data": "handover_date"
+                    "data": "inv_grand_total"
                 },
                 {
                     "targets": -1,

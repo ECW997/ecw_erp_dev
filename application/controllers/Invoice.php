@@ -22,7 +22,25 @@ class Invoice extends CI_Controller {
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
 		$this->load->view('invoiceList', $result);
 	}
+	
+	public function invoiceDetailIndex($id = null){
+		$this->load->model('Commeninfo');
+		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
 
+        if ($id !== null) {
+            $result['job_main_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['main_data'];
+			$result['job_detail_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['details_data'];
+			$result['summary_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['summary_data'];
+            $result['is_edit'] = true;
+        } else {
+            $result['job_main_data'] = null;
+            $result['job_detail_data'] = null;
+			$result['summary_data'] = null;
+            $result['is_edit'] = false;
+        }
 
+		$this->load->view('invoice', $result);
+		// $this->load->view('invoice_type', $result);
+	}
 
 }
