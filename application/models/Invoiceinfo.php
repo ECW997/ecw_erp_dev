@@ -5,6 +5,16 @@ class Invoiceinfo extends CI_Model{
         parent::__construct();
         $this->load->helper('api_helper'); 
     }
+
+    public function getJobcardNumbers($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_sel2_jobcard_number_v1', $form_data, $headers);
+    }
+    
+   public function fetchJobCardDetails($api_token, $id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'job_card_v1', $id, $headers);
+    }
     public function getDirectSalesItem($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'get_direct_sales_item_v1', $form_data, $headers);

@@ -50,7 +50,7 @@
                                 <th class="text-right">Total Amount</th>
                             </tr>
                         </thead>
-                       <tbody>
+                       <tbody id="tableorderBody">
                         <?php if (!empty($invoice_detail_data)): ?>
                             <?php foreach ($invoice_detail_data as $item): ?>
                                 <tr>
