@@ -43,4 +43,38 @@ class Invoice extends CI_Controller {
 		// $this->load->view('invoice_type', $result);
 	}
 
+
+	public function getJobcardNumbers(){
+		$api_token = $this->session->userdata('api_token');
+
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->Invoiceinfo->getJobcardNumbers($api_token,$form_data);
+		echo json_encode($response);
+	}
+	
+
+
+	public function getJobCardDetails() {
+        $api_token = $this->session->userdata('api_token');
+        $id = $this->input->post('job_card_id');
+
+        if (!$api_token || !$id) {
+            echo json_encode(['status' => false, 'msg' => 'Missing job card ID or token']);
+            return;
+        }
+
+        $response = $this->Invoiceinfo->fetchJobCardDetails($api_token, $id);
+        echo json_encode($response);
+    }
+
 }

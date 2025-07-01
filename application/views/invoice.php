@@ -69,9 +69,11 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                         </div>
                         <div class="row mb-3">
                             <div id="jobCardContent">
-                                
-                                <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
-                                <?php include "components/modal/invoice/invoice_content.php"; ?>
+                            <?php
+                                // include "components/modal/invoice/direct_invoice_content_header.php";
+                                include "components/modal/invoice/jobcard_invoice_content_header.php";
+                                include "components/modal/invoice/invoice_content.php";
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -147,56 +149,7 @@ const customerData = {
 
 $(document).ready(function() {
 
-    $.ajax({
-        url: apiBaseUrl + '/v1/main_job_category',
-        type: "GET",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + api_token
-        },
-        success: function(json) {
-            if (json.status === false && json.code === 401) {
-                falseResponse(errorObj);
-                return;
-            }
-            let data = json.data;
-            $('#buttonsContainer').empty();
 
-            data.forEach(function(job) {
-                var buttonHtml = `
-                    <div class="col-6 mb-3">
-                        <button type="button"
-                            class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
-                            style="padding-left: 20px;"
-                            data-id="${job.id}"
-                            data-name="${job.name}" onclick="showAddJobItemModal(this);">
-                            <i class="fas fa-plus-circle me-2"></i>${job.name}
-                        </button>
-                    </div>
-                `;
-                $('#buttonsContainer').append(buttonHtml);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX Error:", error);
-            alert('Failed to load main job categories.');
-        }
-    });
-
-
-
-
-    $(document).on('click', '.openJobCardDiscountModal', function() {
-        const jobcard_id = $('#jobcard_id').val();
-
-        if (jobcard_id) {
-            fetchJobCardDiscountDetails(jobcard_id);
-            $('#jobcarddiscountModel').modal('show');
-        } else {
-            alert('Invalid Job Card ID.');
-        }
-    });
 });
 
 
@@ -218,41 +171,7 @@ function exportJobCardInvoice(jobcard_id) {
     window.open(url, '_blank');
 }
 
-function fetchJobCardDiscountDetails(jobcard_id) {
-    $.ajax({
-        url: '<?= base_url("JobCard/getDiscount/") ?>' + jobcard_id,
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.status === true) {
-                const data = response.data;
 
-                $('#discount_precentage').val(data.discount || '');
-                $('#discount_price').val(data.discount_amount || '');
-
-                const standardPrice = parseFloat($('#standard_price').val()) || 0;
-                const discountAmt = parseFloat(data.discount_amount) || 0;
-                const net = standardPrice - discountAmt;
-
-
-
-                // console.log("Standard Price:", standardPrice);
-                // console.log("Discount Amount:", discountAmt);
-                // console.log("Net Price:", net);
-
-                $('#net_amount').val(net.toFixed(2));
-                $('#total_discount').val(discountAmt.toFixed(2));
-
-            } else {
-                alert('Failed to fetch discount details.');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', error);
-            alert('Something went wrong fetching discount data.');
-        }
-    });
-}
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");

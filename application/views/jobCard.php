@@ -230,11 +230,6 @@ function fetchJobCardDiscountDetails(jobcard_id) {
                 const net = standardPrice - discountAmt;
                 
 
-
-                // console.log("Standard Price:", standardPrice);
-                // console.log("Discount Amount:", discountAmt);
-                // console.log("Net Price:", net);
-
                 $('#net_amount').val(net.toFixed(2));
                 $('#total_discount').val(discountAmt.toFixed(2));
                

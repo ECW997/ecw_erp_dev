@@ -55,6 +55,9 @@ $config['api_endpoints'] = [
 
     'media_library_v1' => '/v1/media_library',
     'media_library_status_v1' => '/v1/media_library_status',
+
+    'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
+    // 'job_card_all_details_v1' => '/v1/job_card',
     
  
 

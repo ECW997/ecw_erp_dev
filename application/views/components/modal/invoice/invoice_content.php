@@ -50,7 +50,8 @@
                                 <th class="text-right">Total Amount</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody id="tableorderBody">
+                        </tbody>
                     </table>
                 </div>
 
@@ -143,7 +144,12 @@
                     <input type="number" id="vatamount" name="vatamount" class="form-control form-control-sm" value="0"
                         required readonly>
                 </div>
-                <div class="col-4">
+                <div class="col-2">
+                    <label class="small font-weight-bold text-dark">Discount Amount*</label>
+                    <input type="number" id="discountamount" name="discountamount" class="form-control form-control-sm" value="0"
+                        required readonly>
+                </div>
+                <div class="col-2">
                     <label class="small font-weight-bold text-dark"><b>Total
                             Payment</b></label>
                     <input type="number" step="any" name="modeltotalpayment"
