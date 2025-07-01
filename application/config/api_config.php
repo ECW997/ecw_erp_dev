@@ -56,6 +56,7 @@ $config['api_endpoints'] = [
     'media_library_v1' => '/v1/media_library',
     'media_library_status_v1' => '/v1/media_library_status',
     
- 
-
+    'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
+    'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
+    'invoice_v1' => '/v1/invoice',
 ];

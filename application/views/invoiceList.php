@@ -24,10 +24,13 @@ include "include/topnavbar.php";
                     <div class="card-header d-flex justify-content-end">
                         <div class="row">
                             <div class="col">
-                                <a href="<?= base_url('Invoice/invoiceDetailIndex') ?>" 
+                                <button class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>" data-toggle="modal" data-target="#invoiceTypeModal">
+                                    <i class="fas fa-plus mr-3"></i>Create New Invoice
+                                </button>
+                                <!-- <a href="<?= base_url('Invoice/invoiceDetailIndex') ?>" 
                                 class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
                                 <i class="fas fa-plus mr-3"></i>Create New Invoice
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                     </div>
@@ -55,6 +58,30 @@ include "include/topnavbar.php";
                 </div>
             </div>
         </main>
+
+        
+        <!-- Invoice Type Modal -->
+        <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header py-2">
+                        <h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="direct" onclick="selectInvoiceType('direct');">
+                            Direct Invoice
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm w-100" id="indirect" onclick="selectInvoiceType('indirect');">
+                            Job Card Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -152,181 +179,13 @@ include "include/topnavbar.php";
             }
         });
 
-        $(document).on('click', '#addtolistBtn', function(){
-           var sub_job_category = $('#sub_job_category').val();
-           var group_name = $('#group_name').val();
-           var sort_order = $('#sort_order').val();
-           var description = $('#description').val();
-           var recordID = $('#recordID').val();
-           var recordOption = $('#recordOption').val();
-
-           $.ajax({
-                type: "POST",
-                dataType: 'json',
-                data: {
-                    sub_job_category: sub_job_category,
-                    group_name: group_name,
-                    sort_order: sort_order,
-                    description: description,
-                    recordOption: recordOption,
-                    recordID: recordID
-                },
-                url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupInsertUpdate',
-                success: function(result) { 
-                    if (result.status == true) {
-                        cancelBtn();
-                        success_toastify(result.message);
-                        showGroupDetailsList(sub_job_category,1);
-                    } else {
-                        falseResponse(result);
-                    }
-                }
-            });
-        })
-        
-        $(document).on('click', '.detailEditBtn', function() {
-            var r = confirm("Are you sure, You want to Edit this ? ");
-            if (r == true) {
-                var id = $(this).attr('id');
-                $.ajax({
-                    type: "GET",
-                    dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupEdit/'+id,
-                    success: function(result) { 
-                        if(result.status){
-                            $('#recordID').val(result.data.id);
-                            $('#group_name').val(result.data.group_name);
-                            $('#sort_order').val(result.data.sort_order);
-                            $('#description').val(result.data.description);
-
-                            $('#recordOption').val('2');
-                            $('#addtolistBtn').html('<i class="far fa-save"></i>&nbsp;Update');
-                            $('#cancellistBtn').removeClass('d-none');
-                        }else{
-                            falseResponse(result);
-                        }
-                    }
-                });
-            }
-        });
-
-        $(document).on('click', '.detailStatusBtn', function() {
-            var status = $(this).attr('status');
-            var r = (status == '1'? confirm("Are you sure, You want to Active this ? ") : confirm("Are you sure, You want to Deactive this ? "));
-            if (r == true) {
-                var id = $(this).attr('id');
-                var sub_id = $(this).attr('sub_id');
-                $.ajax({
-                    type: "PUT",
-                    dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupStatus/'+id+'/'+status,
-                    success: function(result) { 
-                        if(result.status){
-                            showGroupDetailsList(sub_id,1);
-                            success_toastify(result.message);
-                        }else{
-                            falseResponse(result);
-                        }
-                    }
-                });
-            }
-        });
-
-        $(document).on('click', '.detailDeleteBtn', function() {
-            var r = confirm("Are you sure, You want to Delete this ? ");
-            if (r == true) {
-                var id = $(this).attr('id');
-                var sub_id = $(this).attr('sub_id');
-                $.ajax({
-                    type: "DELETE",
-                    dataType: 'json',
-                    url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupDelete/'+id,
-                    success: function(result) { 
-                        if(result.status){
-                            showGroupDetailsList(sub_id,1);
-                            success_toastify(result.message);
-                        }else{
-                            falseResponse(result);
-                        }
-                    }
-                });
-            }
-        });
     });
 
-    function showInsertModal() {
-        $('#main_job_category').val('').trigger('change');
-        $('#sub_job_category').val('').trigger('change');
-        $("#crudTable").html('');
-        $('#addModal').modal('show');
-        cancelBtn();
+    function selectInvoiceType(type) {
+        const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
+        window.location.href = baseUrl + type;
     }
 
-    function showViewModal(sub_id) {
-        showGroupDetailsList(sub_id,2);
-        $('#viewModal').modal('show');
-    }
-
-    function showGroupDetailsList(sub_id,modalOption){  
-        if(sub_id == ''){
-            return false;
-        }
-
-        var tableOption = (modalOption == '2') ? 'viewTable' : 'crudTable';
-        $("#"+tableOption+"").html('');
-        $.ajax({
-            type: "GET",
-            url: '<?php echo base_url() ?>JobOptionGroup/jobOptionGroupDetailsList',
-            data: { sub_id: sub_id, 
-                    modalOption: modalOption,
-                    editcheck: editcheck,
-                    statuscheck: statuscheck,
-                    deletecheck: deletecheck },
-            success: function (result) {
-                if(result){
-                    $("#"+tableOption+"").html(result);
-                }  
-            },
-            error: function () {
-                $("#" + tableOption).html('<p class="text-center text-danger">Error fetching data!</p>');
-            }
-        });
-    }
-
-    function cancelBtn(){
-        $('#group_name').val('');
-        $('#sort_order').val('');
-        $('#description').val('');
-        $('#recordID').val('');
-        $('#recordOption').val('1');
-        $('#cancellistBtn').addClass('d-none');
-        $('#addtolistBtn').html('<i class="fas fa-plus mr-2"></i>Add to list')
-    }
-
-    function checkedDublicate(input) {
-        var inputValue = input.value;
-        var table_name = 'job_optiongroups';
-        var columnName = input.getAttribute('data-field');
-
-        $.ajax({
-            url: '<?php echo base_url() ?>CheckDublicate/check_duplicate',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                input_value: inputValue,
-                table_name: table_name,
-                column_name: columnName
-            },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'error') {
-                    $('#' + columnName + '_errorMsg').text(response.message).show();
-                } else {
-                    $('#' + columnName + '_errorMsg').hide();
-                }
-            }
-        });
-    }
 
     function deactive_confirm() {
         return confirm("Are you sure you want to deactive this?");

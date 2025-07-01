@@ -21,20 +21,25 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             </div>
                             <div class="col-2">
                                 <h2 class="job-header-title" id="top_nav_customer_name">
-                                    <?= $job_main_data[0]['customer_name'] ?? '' ?>
+                                    <?= isset($invoice_main_data[0]['customer_id']) && $invoice_main_data[0]['customer_id'] 
+                                        ? ($invoice_main_data[0]['jobcard_customer'] ?? '') 
+                                        : ($invoice_main_data[0]['customer_name'] ?? '') ?>
+                                </h2>
                             </div>
                             <div class="col-2">
                                 <h2 class="job-header-title" id="top_nav_vehicle_no">
-                                    <?= $job_main_data[0]['vehicle_number'] ?? '' ?></h2>
+                                    <?= $invoice_main_data[0]['vehicle_number'] ?? '' ?>
+                                </h2>
                             </div>
                             <div class="col-2">
                                 <h2 class="job-header-title" id="top_nav_vehicle">
-                                    <?= $job_main_data[0]['brand_name'] ?? '' ?> -
-                                    <?= $job_main_data[0]['model_name'] ?? '' ?></h2>
+                                    <?= $invoice_main_data[0]['brand_name'] ?? '' ?> - <?= $invoice_main_data[0]['model_name'] ?? '' ?>
+                                </h2>
                             </div>
                             <div class="col-2">
                                 <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
-                                    <?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
+                                    <?= $invoice_main_data[0]['invoice_number'] ?? '' ?>
+                                </h2>
                             </div>
                         </div>
                     </div>
@@ -69,8 +74,11 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                         </div>
                         <div class="row mb-3">
                             <div id="jobCardContent">
-                                
-                                <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
+                                 <?php if ($invoice_type == 'direct'): ?>
+                                    <?php include "components/modal/invoice/direct_invoice_content_header.php"; ?>
+                                <?php elseif ($invoice_type == 'indirect'): ?>
+                                    <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
+                                <?php endif; ?>
                                 <?php include "components/modal/invoice/invoice_content.php"; ?>
                             </div>
                         </div>
@@ -80,29 +88,6 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
         </main>
 
-        <!-- Invoice Type Modal -->
-        <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header py-2">
-                        <h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="btnDirectInvoice">
-                            Direct Invoice
-                        </button>
-                        <button type="button" class="btn btn-secondary btn-sm w-100" id="btnJobCardInvoice">
-                            Job Card Invoice
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -110,148 +95,114 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 
 <script>
-const customerData = {
-    name: "",
-    email: "",
-    address1: "",
-    address2: "",
-    city: "",
-    district: "",
-    nic: "",
-    contact: "",
-    contact2: "",
-    dob: "",
-    inquiry_id: "",
-    inquiry_no: "",
-    inquiry_date: "",
-    vehicle_no: "",
-    vehicle_brand: "",
-    vehicle_brand_id: "",
-    vehicle_model: "",
-    vehicle_model_id: "",
-    vehicle_type: "",
-    vehicle_type_id: "",
-    vehicle_gen: "",
-    vehicle_gen_id: "",
-    vehicle_year: "",
-    vehicle_year_id: "",
-    price_category: "",
-    sales_person_name: "",
-    schedule_date: "",
-    handover_date: "",
-    days: "",
-    status: "",
-    company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
-    branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
-};
 
-$(document).ready(function() {
+function createInvoice() {
+    let jobtable_data = [];
+    let charge_details = [];
+
+    let invoice_record_id = $('#invoice_record_id').val();
+    let main_insert_status = "<?php echo $is_edit? 'edit' : 'insert';?>";
+
+    $('#tableorder tbody tr').each(function () {
+        jobtable_data.push({
+            item_id: $(this).find('.item_id').text().trim(),
+            item_name: $(this).find('td:eq(0)').text().trim(),
+            qty: parseFloat($(this).find('td:eq(1)').text()) || 0,
+            unit: $(this).find('td:eq(2)').text().trim(),
+            price: parseFloat($(this).find('td:eq(3)').text()) || 0,
+            sub_total: parseFloat($(this).find('.sub_total').text()) || 0,
+            discount_percent: parseFloat($(this).find('td:eq(5)').text().replace('%', '')) || 0,
+            discount_amount: parseFloat($(this).find('.discount_amount').text().replace('%', '')) || 0,
+            total_after_discount: parseFloat($(this).find('.total_after_discount').text()) || 0,
+            tax: parseFloat($(this).find('td:eq(8)').text()) || 0,
+            total_after_tax: parseFloat($(this).find('.total_after_tax').text()) || 0,
+            insert_status: $(this).find('.insert_status').text().trim(),
+        });
+    });
+
+    $('#chargetableorder tbody tr').each(function () {
+        charge_details.push({
+            charge_type: $(this).find('td[name="chargetype"]').text().trim(),
+            charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0
+        });
+    });
+
+    let invoiceMeta = {
+        invoice_record_id: invoice_record_id,
+        main_insert_status: main_insert_status,
+        date: $('#date').val(),
+        invoice_type: <?= json_encode($invoice_type); ?>,
+        customer_name: $('#customer_name').val(),
+        customer_address: $('#customer_address').val(),
+        contact_no: $('#customer_contact').val(),
+        payment_type: $('#payment_type').val(),
+        sub_total: parseFloat($('#hiddenfulltotal').val()) || 0,
+        discount_pc: 0,
+        discount_amount: 0,
+        vat: parseFloat($('#vat').val()) || 0,
+        vat_amount: parseFloat($('#vatamount').val()) || 0,
+        total_payment: parseFloat($('#modeltotalpayment').val()) || 0,
+        remark: $('#remark').val(),
+        company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
+        branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
+    };
+
+    let invoiceData = {
+        invoice_meta: invoiceMeta,
+        items: jobtable_data,
+        items_total: $('#hidetotalorder').val(),
+        charges: charge_details,
+        charges_total: $('#hidechargestotal').val()
+    };
+
+    console.log(invoiceData); 
+
+    if (!jobtable_data || Object.keys(jobtable_data).length === 0) {
+        alert('❌ Invoice data is missing.');
+        return false;
+    }
+
+    let payment_type = $('#payment_type').val();
+    if(payment_type ==''){
+         alert('⚠️ Payment Type Not Selected!');
+        $('#payment_type').focus();
+        return false;
+    }
+
+    const btn = document.getElementById('btncreateorder');
+    btn.disabled = true;
+    btn.innerHTML = `Creating <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
 
     $.ajax({
-        url: apiBaseUrl + '/v1/main_job_category',
-        type: "GET",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + api_token
-        },
-        success: function(json) {
-            if (json.status === false && json.code === 401) {
-                falseResponse(errorObj);
-                return;
+            type: "POST",
+            dataType: 'json',
+            data: {
+                main_insert_status:main_insert_status,
+                invoiceData: invoiceData
+            },
+            url: '<?php echo base_url() ?>Invoice/insertORUpdateInvoice',
+            success: function(result) {
+                if (result.status == true) {
+                        success_toastify(result.message);
+                        btn.disabled = false;
+                        btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                        setTimeout(function() {
+                            window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data;
+                        }, 500)
+                } else {
+                    falseResponse(result);
+                    btn.disabled = false;
+                    btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                }
             }
-            let data = json.data;
-            $('#buttonsContainer').empty();
-
-            data.forEach(function(job) {
-                var buttonHtml = `
-                    <div class="col-6 mb-3">
-                        <button type="button"
-                            class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
-                            style="padding-left: 20px;"
-                            data-id="${job.id}"
-                            data-name="${job.name}" onclick="showAddJobItemModal(this);">
-                            <i class="fas fa-plus-circle me-2"></i>${job.name}
-                        </button>
-                    </div>
-                `;
-                $('#buttonsContainer').append(buttonHtml);
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX Error:", error);
-            alert('Failed to load main job categories.');
-        }
     });
-
-
-
-
-    $(document).on('click', '.openJobCardDiscountModal', function() {
-        const jobcard_id = $('#jobcard_id').val();
-
-        if (jobcard_id) {
-            fetchJobCardDiscountDetails(jobcard_id);
-            $('#jobcarddiscountModel').modal('show');
-        } else {
-            alert('Invalid Job Card ID.');
-        }
-    });
-});
-
-
-function exportJobCardPDF(jobcard_id) {
-    const baseUrl = "<?php echo base_url(); ?>JobCard/jobCardPDF";
-    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
-    window.open(url, '_blank');
 }
 
-function exportJobCardSummary(jobcard_id) {
-    const baseUrl = "<?php echo base_url(); ?>JobCard/jobSummaryPDF";
-    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
-    window.open(url, '_blank');
-}
 
 function exportJobCardInvoice(jobcard_id) {
     const baseUrl = "<?php echo base_url(); ?>JobCard/jobInvoicePDF";
     const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
     window.open(url, '_blank');
-}
-
-function fetchJobCardDiscountDetails(jobcard_id) {
-    $.ajax({
-        url: '<?= base_url("JobCard/getDiscount/") ?>' + jobcard_id,
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.status === true) {
-                const data = response.data;
-
-                $('#discount_precentage').val(data.discount || '');
-                $('#discount_price').val(data.discount_amount || '');
-
-                const standardPrice = parseFloat($('#standard_price').val()) || 0;
-                const discountAmt = parseFloat(data.discount_amount) || 0;
-                const net = standardPrice - discountAmt;
-
-
-
-                // console.log("Standard Price:", standardPrice);
-                // console.log("Discount Amount:", discountAmt);
-                // console.log("Net Price:", net);
-
-                $('#net_amount').val(net.toFixed(2));
-                $('#total_discount').val(discountAmt.toFixed(2));
-
-            } else {
-                alert('Failed to fetch discount details.');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', error);
-            alert('Something went wrong fetching discount data.');
-        }
-    });
 }
 
 function deactive_confirm() {
