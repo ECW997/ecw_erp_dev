@@ -74,12 +74,20 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                         </div>
                         <div class="row mb-3">
                             <div id="jobCardContent">
+
+                            <?php
+                                // include "components/modal/invoice/direct_invoice_content_header.php";
+                                include "components/modal/invoice/jobcard_invoice_content_header.php";
+                                include "components/modal/invoice/invoice_content.php";
+                                ?>
+
                                  <?php if ($invoice_type == 'direct'): ?>
                                     <?php include "components/modal/invoice/direct_invoice_content_header.php"; ?>
                                 <?php elseif ($invoice_type == 'indirect'): ?>
                                     <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
                                 <?php endif; ?>
                                 <?php include "components/modal/invoice/invoice_content.php"; ?>
+
                             </div>
                         </div>
                     </div>
@@ -95,6 +103,47 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 
 <script>
+
+const customerData = {
+    name: "",
+    email: "",
+    address1: "",
+    address2: "",
+    city: "",
+    district: "",
+    nic: "",
+    contact: "",
+    contact2: "",
+    dob: "",
+    inquiry_id: "",
+    inquiry_no: "",
+    inquiry_date: "",
+    vehicle_no: "",
+    vehicle_brand: "",
+    vehicle_brand_id: "",
+    vehicle_model: "",
+    vehicle_model_id: "",
+    vehicle_type: "",
+    vehicle_type_id: "",
+    vehicle_gen: "",
+    vehicle_gen_id: "",
+    vehicle_year: "",
+    vehicle_year_id: "",
+    price_category: "",
+    sales_person_name: "",
+    schedule_date: "",
+    handover_date: "",
+    days: "",
+    status: "",
+    company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
+    branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
+};
+
+$(document).ready(function() {
+
+
+});
+
 
 function createInvoice() {
     let jobtable_data = [];
@@ -126,6 +175,7 @@ function createInvoice() {
             charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0
         });
     });
+
 
     let invoiceMeta = {
         invoice_record_id: invoice_record_id,
@@ -204,6 +254,8 @@ function exportJobCardInvoice(jobcard_id) {
     const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
     window.open(url, '_blank');
 }
+
+
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");
