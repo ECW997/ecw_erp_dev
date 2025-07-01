@@ -17,6 +17,16 @@ class Invoice extends CI_Controller {
 		$this->auth_user = $auth_info['user'];
     }
 
+	public function getDirectSalesItem(){
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->Invoiceinfo->getDirectSalesItem($this->api_token,$form_data);
+		echo json_encode($response);
+	}
+
 	public function index(){
 		$this->load->model('Commeninfo');
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
@@ -28,19 +38,56 @@ class Invoice extends CI_Controller {
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
 
         if ($id !== null) {
-            $result['job_main_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['main_data'];
-			$result['job_detail_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['details_data'];
-			$result['summary_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['summary_data'];
-            $result['is_edit'] = true;
-        } else {
-            $result['job_main_data'] = null;
-            $result['job_detail_data'] = null;
-			$result['summary_data'] = null;
-            $result['is_edit'] = false;
+			
+			if($id=='direct'){
+				$result['invoice_type'] = 'direct';
+				$result['invoice_main_data'] = null;
+				$result['invoice_detail_data'] = null;
+				$result['extra_charge_data'] = null;
+				$result['is_edit'] = false;
+			}else if($id=='indirect'){
+				$result['invoice_type'] = 'indirect';
+				$result['invoice_main_data'] = null;
+				$result['invoice_detail_data'] = null;
+				$result['extra_charge_data'] = null;
+				$result['is_edit'] = false;
+			}else{
+				$result['invoice_main_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['main_data'];
+				$result['invoice_detail_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['details_data'];
+				$result['extra_charge_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['extra_charge_data'];
+				$result['invoice_type'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['main_data'][0]['invoice_type'];
+				$result['is_edit'] = true;
+			}
+          
         }
 
 		$this->load->view('invoice', $result);
 		// $this->load->view('invoice_type', $result);
 	}
+
+	public function getDirectSalesItemDetails($id) {
+        $response = $this->Invoiceinfo->getDirectSalesItemDetails($this->api_token,$id);
+		echo json_encode($response);
+    }
+
+	public function insertORUpdateInvoice() {
+		$createOption = $this->input->post('main_insert_status');
+		$form_data = [
+            'invoiceData' => $this->input->post('invoiceData')
+        ];
+		
+		if($createOption == 'insert'){
+			$response = $this->Invoiceinfo->insertInvoice($this->api_token,$form_data);
+		}else{
+			$response = $this->Invoiceinfo->updateInvoice($this->api_token,$form_data);
+		}
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Invoice');
+		}
+    }
 
 }
