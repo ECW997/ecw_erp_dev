@@ -75,7 +75,6 @@
                     </div>
 
 
-
                     <div class="row">
 
                         <div class="col-3">
@@ -100,6 +99,15 @@
                         </div>
                     </div>
 
+
+
+                    <!-- <div class="form-group mt-2 text-right">
+                        <button type="button" id="formsubmit" class="btn btn-primary btn-sm px-4"><i
+                                class="fas fa-plus"></i>&nbsp;Add
+                            to
+                            list</button>
+                        <input name="submitBtn" type="submit" value="Save" id="submitBtn" class="d-none">
+                    </div> -->
                     <input type="hidden" name="refillprice" id="refillprice" value="">
                     <input type="hidden" name="recordOption" id="recordOption" value="1">
                 </form>

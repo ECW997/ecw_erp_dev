@@ -45,13 +45,52 @@
                                 <th class="text-center">Qty</th>
                                 <th class="text-center">Unit</th>
                                 <th class="text-center">Price</th>
-                                <th class="text-center">Discount</th>
+                                <th class="text-center">Discount(%)</th>
                                 <th class="text-center">Tax</th>
                                 <th class="text-right">Total Amount</th>
                             </tr>
                         </thead>
+
                         <tbody id="tableorderBody">
                         </tbody>
+
+                       <tbody>
+                        <?php if (!empty($invoice_detail_data)): ?>
+                            <?php foreach ($invoice_detail_data as $item): ?>
+                                <tr>
+                                    <td><?php echo $item['description']; ?></td>
+                                    <td><?php echo $item['quantity']; ?></td>
+                                    <td><?php echo $item['unit']; ?></td>
+                                    <td class="text-end"><?php echo ($item['unit_price']); ?></td>
+                                    <td class="text-end d-none sub_total"><?php echo ($item['sub_total']); ?></td>
+                                    <td class="text-end"><?php echo $item['line_discount_pc']; ?></td>
+                                    <td class="text-end d-none discount_amount"><?php echo ($item['line_discount_amount']); ?></td>
+                                    <td class="text-end d-none total_after_discount"><?php echo ($item['line_total_after_discount']); ?></td>
+                                    <td class="text-end"><?php echo ($item['line_tax_amount']); ?></td>
+                                    <td class="text-end total_after_tax"><?php echo ($item['line_total_after_tax']); ?></td>
+                                    <td class="text-end d-none insert_status">existing</td>
+                                    <td class="text-end d-none item_id"><?php echo $item['item_id']; ?></td>
+                                    <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-primary btn-sm" id="<?php echo $item['id']; ?>" onclick="editRow(this)">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" id="<?php echo $item['id']; ?>" onclick="deleteRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php if (!empty($invoice_detail_data)) : ?>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    allItemsTotalCalculation();
+                                });
+                            </script>
+                        <?php endif; ?>
+                    </tbody>
+
                     </table>
                 </div>
 
@@ -81,8 +120,10 @@
                                 id="chargeamount" required>
                         </div>
                         <div class="col-2 d-flex align-items-end">
-                            <button type="button" id="secondformsubmit" class="btn btn-secondary btn-sm"><i
+                            <button type="button" id="secondformsubmit" class="btn btn-primary btn-sm add-extra-charge-btn" onclick="insertExtraCharge();"><i
                                     class="fas fa-plus"></i>&nbsp;Add</button>
+                            <button type="button" id="secondupdateformsubmit" class="btn btn-secondary btn-sm d-none update-extra-charge-btn" onclick="updateExtraCharge();"><i
+                                    class="fas fa-plus"></i>&nbsp;Update</button>
                         </div>
                     </div>
                 </form>
@@ -97,7 +138,33 @@
                                 <th class="text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            <?php if (!empty($extra_charge_data)): ?>
+                            <?php foreach ($extra_charge_data as $item): ?>
+                                <tr>
+                                    <td name="chargetype"><?php echo $item['charge_type']; ?></td>
+                                    <td class="text-end chargesamount" name="chargeamount"><?php echo ($item['charge_amount']); ?></td>
+                                    <td class="text-end d-none insert_status">existing</td>
+                                    <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-primary btn-sm" id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php if (!empty($extra_charge_data)) : ?>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    allExtraChargeCalculation();
+                                });
+                            </script>
+                        <?php endif; ?>
+                        </tbody>
                     </table>
 
                     <div class="row">
@@ -111,9 +178,6 @@
 
         </div>
     </div>
-
-
-
 
     <div class="card-body p-0 p-2">
         <div class="container-fluid mt-2 p-0 p-2">
@@ -163,11 +227,12 @@
                 <textarea name="remark" id="remark" class="form-control form-control-sm"></textarea>
             </div>
 
+            <input name="invoice_record_id" type="number" id="invoice_record_id" value="<?= $invoice_main_data[0]['id'] ?? '' ?>" class="">
             <div class="row">
                 <div class="col-12">
                     <div class="form-group mt-2">
                         <button type="button" id="btncreateorder"
-                            class="btn btn-outline-primary btn-sm fa-pull-right"><i class="fas fa-save"></i>&nbsp;Create
+                            class="btn btn-outline-primary btn-sm fa-pull-right" onclick="createInvoice();"><i class="fas fa-save me-2"></i><?php echo $is_edit? 'Update' : 'Create'; ?>
                             Invoice</button>
                     </div>
                 </div>
@@ -210,7 +275,6 @@ $(document).ready(function() {
     });
 });
 
-
 function showAddJobItemModal(button) {
     var MainJobId = $(button).data('id');
     var MainjobName = $(button).data('name');
@@ -249,55 +313,148 @@ function getSubCategoryListBaseOnMain(MainJobId) {
     });
 }
 
-
-
-
-
-
-
-
 $("#secondformsubmit").click(function() {
-    if (!$("#expensesform")[0].checkValidity()) {
-
-        $("#chargesubmitBtn").click();
-    } else {
-        var chargetype = $('#chargetype').val();
-        var chargeamount = $('#chargeamount').val();
-        // var chargetype = $("#chargetype option:selected").text();
-
-
-
-        $('#chargetableorder > tbody:last').append('<tr class="pointer"><td name="chargetype">' +
-            chargetype + '</td><td name="chargeamount" class="text-right chargesamount">' +
-            chargeamount +
-            '</td><td><button type="button" onclick= "productDelete(this);" id="btnDeleterow" class=" btn btn-danger btn-sm float-right"><i class="fas fa-trash-alt"></i></button></td> </tr>'
-        );
-
-
-        $('#chargetype').val('');
-        $('#chargeamount').val('0');
-
-        /////////////////////////////////////////////////Final Total/////////////////////////////////////////////////
-        var sum = 0;
-        $(".chargesamount").each(function() {
-            sum += parseFloat($(this).text());
-        });
-
-        var showsum = addCommas(parseFloat(sum).toFixed(2));
-
-        $('#divchargestotal').html('<strong style="background-color: yellow;"> Rs. <strong>' +
-            showsum);
-
-        // html('<strong style="background-color: yellow;">Final Price</strong> &nbsp; &nbsp;<strong>Rs.<strong> <strong>' +
-        // 		showgrosstot);
-        $('#hidechargestotal').val(sum);
-        $('#job').focus();
-
-    }
-
-    finaltotalcalculate();
-
 });
+
+function insertExtraCharge() {
+	if (!$("#expensesform")[0].checkValidity()) {
+
+		$("#chargesubmitBtn").click();
+	} else {
+		var chargetype = $('#chargetype').val();
+		var chargeamount = $('#chargeamount').val();
+		// var chargetype = $("#chargetype option:selected").text();
+
+		$('#chargetableorder > tbody:last').append('<tr class="pointer"><td name="chargetype">' +
+			chargetype + '</td><td name="chargeamount" class="text-right chargesamount">' +
+			chargeamount +
+			'</td><td class="text-end d-none insert_status">new</td><td class="text-end d-none row_id">0</td><td><button type="button" onclick= "productDelete(this);" id="btnDeleterow" class=" btn btn-danger btn-sm float-right"><i class="fas fa-trash"></i></button></td> </tr>'
+		);
+
+
+		$('#chargetype').val('');
+		$('#chargeamount').val('0');
+
+		allExtraChargeCalculation();
+		$('#job').focus();
+
+	}
+
+	finaltotalcalculate();
+}
+
+function updateExtraCharge() {
+	if (!$("#expensesform")[0].checkValidity()) {
+
+		$("#chargesubmitBtn").click();
+	} else {
+		var chargetype = $('#chargetype').val();
+		var chargeamount = $('#chargeamount').val();
+		const rowId = $('#extra_charge_row_id').val();
+
+		$('#chargetableorder > tbody:last').append('<tr class="pointer"><td name="chargetype">' +
+			chargetype + '</td><td name="chargeamount" class="text-right chargesamount">' +
+			chargeamount +
+			'</td><td class="text-end d-none insert_status">updated</td><td class="text-end d-none row_id">'+rowId+'</td>'+
+            '<td class="text-end"> <button type="button" class="btn btn-primary btn-sm" id="'+rowId+'" onclick="editExtraChargeRow(this)"><i class="fas fa-pen"></i></button>'+
+            '<button type="button" class="btn btn-danger btn-sm ml-1" id="'+rowId+'" onclick="deleteExtraChargeRow(this)"><i class="fas fa-trash"></i></button></td></tr>'
+		);
+
+		$('#chargetype').val('');
+		$('#chargeamount').val('0');
+        $('#extra_charge_row_id').val(0);
+        deletedUpdatedExtraChargeRow(rowId);
+
+        $('.update-extra-charge-btn').addClass('d-none');
+        $('.add-extra-charge-btn').removeClass('d-none');
+		$('#job').focus();
+
+		allExtraChargeCalculation();
+	}
+
+	finaltotalcalculate();
+}
+
+function editExtraChargeRow(button) {
+    if (confirm("Are you sure you want to edit this row?")) {
+        const row = $(button).closest('tr');
+
+        const chargeName = row.find('td:eq(0)').text();
+        const price = parseFloat(row.find('td:eq(1)').text());
+        const rowId = row.find('.row_id').text();
+
+        $('#chargetype').val(chargeName);
+        $('#chargeamount').val(price);
+        $('#extra_charge_row_id').val(rowId);
+
+        $('.update-extra-charge-btn').removeClass('d-none');
+        $('.add-extra-charge-btn').addClass('d-none');
+        // row.remove();
+    }
+}
+
+function deletedUpdatedExtraChargeRow(rowId){
+    $('#chargetableorder tbody tr').each(function () {
+        const insertStatus = $(this).find('.insert_status').text().trim();
+        const rowIdFromTable = $(this).find('.row_id').text().trim();
+
+        if ((insertStatus === 'existing' || insertStatus === 'updated') && rowIdFromTable == rowId) {
+            $(this).remove(); 
+            return false; 
+        }
+    });
+}
+
+function deleteExtraChargeRow(button) {
+     if (confirm("Are you sure you want to delete this row?")) {
+        const row = $(button).closest('tr');
+        row.remove();
+        // Optionally: show a toast or alert
+        // alert("Row deleted");
+    }
+}
+
+function allItemsTotalCalculation(){
+    let totalSum = 0;
+
+    $('#tableorder tbody tr').each(function () {
+        const value = parseFloat($(this).find('.total_after_tax').text()) || 0;
+        totalSum += value;
+    });
+    var showsum = addCommas(parseFloat(totalSum).toFixed(2));
+    $('#divtotal').text('Rs. '+ showsum)
+    $('#hidetotalorder').val(totalSum.toFixed(2))
+    finaltotalcalculate();
+}
+
+function allExtraChargeCalculation(){
+    var sum = 0;
+    $('#chargetableorder tbody tr').each(function () {
+        const value = parseFloat($(this).find('.chargesamount').text()) || 0;
+        sum += value;
+    });
+    var showsum = addCommas(parseFloat(sum).toFixed(2));
+
+    $('#divchargestotal').html('<strong style="background-color: yellow;"> Rs. <strong>' + showsum);
+
+    $('#hidechargestotal').val(sum);
+}
+
+function finaltotalcalculate(){
+    let tableTotal = parseFloat($('#hidetotalorder').val()) || 0;
+    let extrachargeTotal = parseFloat($('#hidechargestotal').val()) || 0;
+
+    let subTotal = tableTotal + extrachargeTotal;
+    $('#hiddenfulltotal').val(subTotal.toFixed(2)); 
+
+    let vatPercent = parseFloat($('#vat').val()) || 0;
+    let vatamount = (subTotal * vatPercent) / 100;
+    $('#vatamount').val(vatamount.toFixed(2)); 
+
+    let totalPayment = subTotal + vatamount;
+    $('#modeltotalpayment').val(totalPayment.toFixed(2)); 
+    
+}
 
 function addCommas(nStr) {
     nStr += '';

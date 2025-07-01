@@ -192,6 +192,7 @@
             $maxPageHeight = 220;
             $totalRows = count($details_data); 
 			$groupedData = [];
+			$is_discount_approved = ($is_discount_approved);
 
 			foreach ($details_data as $item) {
 				$category = $item['job_sub_category_text'] ?? 'N/A';
@@ -204,7 +205,10 @@
 			}
 			?>
 
-            <?php foreach ($groupedData as $category => $jobs): ?>
+            <?php foreach ($groupedData as $category => $jobs): 
+				$line_net_total = $is_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
+				$line_discount = $is_discount_approved ? number_format(($joblist['line_discount'] ?? 0), 2) : number_format((0), 2);
+				?>
 				<tr class="table-group-header">
 					<td colspan="7" class="fw-bold text-dark" style="font-weight: 700;">
 						<i class="fas fa-tags text-secondary me-2"></i> <?= $category ?>
@@ -223,10 +227,10 @@
                             <?= number_format($joblist['list_price'] ?? 0, 2) ?>
                         </td>
                         <td class="datatable_data_td" style="width:10%; text-align:right;">
-                            <?= number_format($joblist['line_discount'] ?? 0, 2) ?>
+                            <?= $line_discount ?>
                         </td>
                         <td class="datatable_data_td" style="width:15%; text-align:right;">
-                            <?= number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) ?>
+                            <?= $line_net_total ?>
                         </td>
                     </tr>
                     <?php
@@ -268,7 +272,7 @@
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
     		<td style="width:13%;text-align:left;" class="datatable_data_td">Disc. Total</td>
     		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2) ?></td>
+    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= $is_discount_approved ? (number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2)) : number_format((0), 2) ?></td>
     	</tr>
     	<tr>
     		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
