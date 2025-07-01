@@ -50,10 +50,6 @@
                                 <th class="text-right">Total Amount</th>
                             </tr>
                         </thead>
-
-                        <tbody id="tableorderBody">
-                        </tbody>
-
                        <tbody>
                         <?php if (!empty($invoice_detail_data)): ?>
                             <?php foreach ($invoice_detail_data as $item): ?>
@@ -90,7 +86,6 @@
                             </script>
                         <?php endif; ?>
                     </tbody>
-
                     </table>
                 </div>
 
@@ -208,12 +203,7 @@
                     <input type="number" id="vatamount" name="vatamount" class="form-control form-control-sm" value="0"
                         required readonly>
                 </div>
-                <div class="col-2">
-                    <label class="small font-weight-bold text-dark">Discount Amount*</label>
-                    <input type="number" id="discountamount" name="discountamount" class="form-control form-control-sm" value="0"
-                        required readonly>
-                </div>
-                <div class="col-2">
+                <div class="col-4">
                     <label class="small font-weight-bold text-dark"><b>Total
                             Payment</b></label>
                     <input type="number" step="any" name="modeltotalpayment"
