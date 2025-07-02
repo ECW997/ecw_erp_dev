@@ -13,6 +13,55 @@ include "include/topnavbar.php";
             text-align: right !important;
         }
         </style>
+            <style>
+        .modal-content {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .btn-option {
+            transition: all 0.2s ease;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef !important;
+        }
+
+        .btn-option:hover {
+            background-color: #f1f3f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .btn-option:active {
+            transform: translateY(0);
+        }
+
+        .bg-light-blue {
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .bg-light-orange {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .rounded-circle {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .position-absolute {
+            position: absolute;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+        .btn-option:focus {
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+    </style>
         <main>
             <div class="page-header page-header-light bg-white shadow">
                 <div class="container-fluid">
@@ -69,25 +118,48 @@ include "include/topnavbar.php";
 
 
         <!-- Invoice Type Modal -->
-        <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header py-2">
-                        <h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+       <div class="modal fade" id="invoiceTypeModal" tabindex="-1" role="dialog" aria-labelledby="invoiceTypeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content border-0">
+                    <div class="modal-header bg-primary text-white p-3">
+                        <div class="w-100 text-center">
+                            <i class="fas fa-file-invoice fa-2x mb-2"></i>
+                            <h5 class="modal-title font-weight-bold mb-0" id="invoiceTypeModalLabel">
+                                SELECT INVOICE TYPE
+                            </h5>
+                        </div>
+                        <button type="button" class="close position-absolute" style="right: 1rem; top: 1rem;" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body text-center">
-                        <button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="direct"
-                            onclick="selectInvoiceType('direct');">
-                            Direct Invoice
-                        </button>
-                        <button type="button" class="btn btn-secondary btn-sm w-100" id="indirect"
-                            onclick="selectInvoiceType('indirect');">
-                            Job Card Invoice
-                        </button>
+                    <div class="modal-body p-4">
+                        <div class="d-flex flex-column" style="gap: 1rem;">
+                            <button type="button" class="btn btn-option btn-light p-3 rounded text-left border" id="direct" onclick="selectInvoiceType('direct')">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-light-blue p-2 mr-3">
+                                        <i class="fas fa-file-invoice text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold">Direct Invoice</div>
+                                        <small class="text-muted d-block">For direct product sales</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="btn btn-option btn-light p-3 rounded text-left border" id="indirect" onclick="selectInvoiceType('indirect')">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-light-orange p-2 mr-3">
+                                        <i class="fas fa-car text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-weight-bold">Job Card Invoice</div>
+                                        <small class="text-muted d-block">For service jobs</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light justify-content-center py-2 border-top">
+                        <small class="text-muted">Choose an invoice type to continue</small>
                     </div>
                 </div>
             </div>
@@ -207,8 +279,8 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, full) {
                     var button = '';
-                    button += '<a href="' + base_url + 'JobCard/jobCardDetailIndex/' + full[
-                            'idtbl_jobcard'] +
+                    button += '<a href="' + base_url + 'Invoice/invoiceDetailIndex/' + full[
+                            'id'] +
                         '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                         '<i class="fas fa-external-link-alt"></i></a>';
                     return button;

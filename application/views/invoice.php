@@ -6,6 +6,10 @@ include "include/v2/topnavbar.php";
 // Retrieve the customer_id from the URL
 $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 ?>
+<style>
+
+</style>
+
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
         <?php include "include/v2/menubar.php"; ?>
@@ -19,7 +23,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             <div class="col-4">
                                 <h1 class="page-header-title">Invoice</h1>
                             </div>
-                            <div class="col-2">
+                            <!-- <div class="col-2">
                                 <h2 class="job-header-title" id="top_nav_customer_name">
                                     <?= isset($invoice_main_data[0]['customer_id']) && $invoice_main_data[0]['customer_id'] 
                                         ? ($invoice_main_data[0]['jobcard_customer'] ?? '') 
@@ -40,41 +44,42 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
                                     <?= $invoice_main_data[0]['invoice_number'] ?? '' ?>
                                 </h2>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-2 p-0 p-2">
-                <div class="card">
-                    <div class="card-body p-0 p-2">
-                        <div class="row mb-3">
-                            <div class="col-8">
-                                <div class="row g-2 p-3">
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                            <i class="fas fa-plus me-2"></i> New Invoice
-                                        </button>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
-                                            <i class="fas fa-check me-2"></i> Approve
-                                        </button>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
-                                            <i class="fas fa-print me-2"></i>Invoice Print
-                                        </button>
-                                    </div>
-                                </div>
+            <div class="container-fluid mt-2 p-0">
+                <div class="card invoice-actions-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn" 
+                                        data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
+                                    <i class="fas fa-plus me-1"></i> New Invoice
+                                </button>
+                                
+                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn" 
+                                        data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
+                                    <i class="fas fa-check me-1"></i> Approve
+                                </button>
+                                
+                                <button type="button" class="btn btn-info btn-sm rounded-2 action-btn" 
+                                        onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                    <i class="fas fa-print me-1"></i> Print Invoice
+                                </button>
+                            </div>
+                            
+                            <div class="invoice-status-badge">
+                                <span class="badge bg-secondary">
+                                    <?= strtoupper($invoice_type == 'direct' ? 'Direct' : 'Job Card') ?> INVOICE
+                                </span>
                             </div>
                         </div>
-                        <div class="row mb-3">
+
+                        <div class="invoice-content-section">
                             <div id="jobCardContent">
-                                 <?php if ($invoice_type == 'direct'): ?>
+                                <?php if ($invoice_type == 'direct'): ?>
                                     <?php include "components/modal/invoice/direct_invoice_content_header.php"; ?>
                                 <?php elseif ($invoice_type == 'indirect'): ?>
                                     <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
@@ -85,30 +90,57 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     </div>
                 </div>
             </div>
-
         </main>
 
         <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
-        	aria-hidden="true">
+        	aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         	<div class="modal-dialog modal-sm modal-dialog-centered">
-        		<div class="modal-content">
-        			<div class="modal-header">
-        				<h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
-        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        		<div class="modal-content border-0" style="box-shadow: 0 5px 20px rgba(0,0,0,0.15);">
+        			<div class="modal-header bg-primary text-white p-3">
+        				<div class="w-100 text-center">
+        					<i class="fas fa-file-invoice fa-2x mb-2"></i>
+        					<h5 class="modal-title fs-5 fw-bold mb-0" id="invoiceTypeModalLabel">
+        						SELECT INVOICE TYPE
+        					</h5>
+        				</div>
+        				<button type="button" class="btn-close btn-close-white position-absolute end-0 me-2"
+        					data-bs-dismiss="modal" aria-label="Close"></button>
         			</div>
-        			<div class="modal-body text-center">
-        				<button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="direct"
-        					onclick="selectInvoiceType('direct');">
-        					Direct Invoice
-        				</button>
-        				<button type="button" class="btn btn-secondary btn-sm w-100" id="indirect"
-        					onclick="selectInvoiceType('indirect');">
-        					Job Card Invoice
-        				</button>
+        			<div class="modal-body p-4">
+        				<div class="d-grid gap-3">
+        					<button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="direct"
+        						onclick="selectInvoiceType('direct')">
+        						<div class="d-flex align-items-center">
+        							<div class="icon-circle bg-blue-soft me-3">
+        								<i class="fas fa-file-invoice text-primary"></i>
+        							</div>
+        							<div>
+        								<div class="fw-bold">Direct Invoice</div>
+        								<small class="text-muted d-block">For direct product sales</small>
+        							</div>
+        						</div>
+        					</button>
+        					<button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="indirect"
+        						onclick="selectInvoiceType('indirect')">
+        						<div class="d-flex align-items-center">
+        							<div class="icon-circle bg-orange-soft me-3">
+        								<i class="fas fa-car text-warning"></i>
+        							</div>
+        							<div>
+        								<div class="fw-bold">Job Card Invoice</div>
+        								<small class="text-muted d-block">For service jobs</small>
+        							</div>
+        						</div>
+        					</button>
+        				</div>
+        			</div>
+        			<div class="modal-footer bg-light justify-content-center py-2 border-top">
+        				<small class="text-muted">Choose an invoice type to continue</small>
         			</div>
         		</div>
         	</div>
         </div>
+
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
