@@ -67,7 +67,7 @@
                                     <td class="text-end d-none insert_status">existing</td>
                                     <td class="text-end d-none item_id"><?php echo $item['item_id']; ?></td>
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
-                                    <td class="text-end">
+                                    <td class="text-end <?= (isset($invoice_main_data[0]['invoice_type']) && $invoice_main_data[0]['invoice_type'] == 'direct') ? '' : 'd-none' ?>">
                                         <button type="button" class="btn btn-primary btn-sm" id="<?php echo $item['id']; ?>" onclick="editRow(this)">
                                             <i class="fas fa-pen"></i>
                                         </button>
@@ -161,7 +161,7 @@
                         <?php endif; ?>
                         </tbody>
                     </table>
-
+                    <input name="extra_charge_row_id" type="number" id="extra_charge_row_id" value="0" class="d-none">
                     <div class="row">
                         <div class="col text-right">
                             <h4 class="font-weight-600" id="divchargestotal">Rs. 0.00</h4>
@@ -194,7 +194,7 @@
                 </div>
                 <div class="col-2">
                     <label class="small font-weight-bold text-dark">Vat (%)*</label>
-                    <input type="number" id="vat" name="vat" class="form-control form-control-sm" value="18"
+                    <input type="number" id="vat" name="vat" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>"
                         onkeyup="finaltotalcalculate();" required>
                 </div>
 
@@ -214,7 +214,7 @@
 
             <div class="form-group">
                 <label class="small font-weight-bold text-dark">Remark</label>
-                <textarea name="remark" id="remark" class="form-control form-control-sm"></textarea>
+                <textarea name="remark" id="remark" class="form-control form-control-sm"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
             </div>
 
             <input name="invoice_record_id" type="number" id="invoice_record_id" value="<?= $invoice_main_data[0]['id'] ?? '' ?>" class="d-none">
