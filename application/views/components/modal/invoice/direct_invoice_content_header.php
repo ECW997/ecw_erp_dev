@@ -80,8 +80,7 @@
                 </div>
             </div>
             <input name="available_qty" type="number" id="available_qty" class="d-none">
-            <input name="row_id" type="number" id="row_id" value="0" class="">
-            <input name="extra_charge_row_id" type="number" id="extra_charge_row_id" value="0" class="">
+            <input name="row_id" type="number" id="row_id" value="0" class="d-none">
             <div class="form-group mt-3 text-right">
                 <button type="button" id="formsubmit" class="btn btn-primary btn-sm px-4 add-to-list-btn" onclick="addToList();">
                     <i class="fas fa-plus"></i>&nbsp;Add to list
@@ -174,7 +173,7 @@ function addToList(){
     const total = subtotal - discountAmount;
 
     const tax = 0;
-    const totalAfterTax = total - tax;
+    const totalAfterTax = total + tax;
 
     const newRow = `
         <tr>
@@ -268,13 +267,13 @@ function checkQtyValidation(){
     const qty = parseFloat($('#qty').val()) || 0;
 
     if (qty > availableQty) {
-        alert('❌ Requested quantity exceeds available quantity.');
+        alert('Requested quantity exceeds available quantity.');
         $('#qty').val('');
         $('#qty').focus();
         return false;
     }
     else if(qty <= 0){
-        alert('⚠️ Quantity must be greater than 0.');
+        alert('Quantity must be greater than 0.');
         $('#qty').val('');
         $('#qty').focus();
         return false;
@@ -327,10 +326,11 @@ function deletedUpdatedRow(rowId){
 function deleteRow(button) {
      if (confirm("Are you sure you want to delete this row?")) {
         const row = $(button).closest('tr');
-        row.remove();
-        // Optionally: show a toast or alert
-        // alert("Row deleted");
+        row.find('.insert_status').text('deleted');
+        row.addClass('d-none');
+        allItemsTotalCalculation();
     }
+    
 }
 
 function clearItemFields(){

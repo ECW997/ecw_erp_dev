@@ -49,7 +49,7 @@
                             <label class="small font-weight-bold text-dark">Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm" placeholder="" name="date" id="date"
-                                value="<?php echo date('Y-m-d') ?>" required readonly>
+                                value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
 
                         </div>
                         <div class="col-3">
@@ -58,20 +58,34 @@
                             <select class="form-control form-control-sm  px-0" name="job_card_number"
                                 id="job_card_number" required readonly>
                                 <option value="">Select</option>
+                                 <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
+                                    <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
+                                        <?= $invoice_main_data[0]['job_card_no'] ?>
+                                    </option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Customer <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_name" class="form-control form-control-sm"
-                                id="customer_name" required readonly>
+
+ 
+
+                                id="customer_name" value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
+
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Address <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_address" class="form-control form-control-sm"
-                                id="customer_address" required readonly>
+
+                          
+
+                                id="customer_address" value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
+
                         </div>
+                        <input type="hidden" name="customer_id" id="customer_id" value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                     </div>
 
                    <div class="row mt-2">
@@ -93,7 +107,7 @@
                                 name="vehicle_in_date" id="vehicle_in_date" required readonly>
                         </div>
                         <div class="col-3">
-                            <input type="text" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
+                            <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
                         </div>
                     </div>
 
@@ -304,6 +318,7 @@ $(document).ready(function() {
                         $('#jobHeaderModalLabel').text(data.job_card_number +
                             ' - Job Card Details');
 
+                        $('#customer_id').val(data.customer_id);
                         $('#modal_customer_name').val(data.customer_name);
                         $('#modal_customer_number').val(data.customer_mobile_num);
                         $('#modal_customer_address').val(data.address);
@@ -327,11 +342,15 @@ $(document).ready(function() {
                                         <td class="text-center">${index++}</td>
                                         <td class="text-left">${section.job_sub_category_text} - ${detail.option_group_text} (${detail.combined_option})</td>
                                         <td class="text-center">${detail.qty}</td>
-                                        <td class="text-right">${addCommas(parseFloat(detail.list_price).toFixed(2))}</td>
-                                        <td class="text-right">${addCommas(parseFloat(detail.total).toFixed(2))}</td>
-                                        <td class="text-right">${addCommas(parseFloat(detail.line_discount).toFixed(2))}</td>
-                                        <td class="text-right">${addCommas(parseFloat(0).toFixed(2))}</td>
-                                        <td class="text-right">${addCommas(parseFloat(detail.net_amount).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(detail.list_price).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(detail.total).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(detail.line_discount).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(detail.net_amount).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount_type">${(parseFloat(detail.line_discount_type).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount_pc">${(parseFloat(detail.line_discount_pc).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount">${(parseFloat(detail.line_discount).toFixed(2))}</td>
+
                                     </tr>
                                 `;
                                 $('#jobCardDetailsBody').append(row);
@@ -393,9 +412,6 @@ $(document).ready(function() {
     });
 
 
-
-
-
     $('#readyToInvoiceBtn').click(function() {
         $('#customer_name').val($('#modal_customer_name').val());
         $('#customer_address').val($('#modal_customer_address').val());
@@ -409,20 +425,45 @@ $(document).ready(function() {
         let $tableBodyMain = $('#tableorderBody'); 
         $tableBodyMain.empty();
 
-        $('#jobCardDetailsBody tr').each(function() {
+        $('#jobCardDetailsBody tr').each(function () {
             const tds = $(this).find('td');
-            let newRow = `
-            <tr>
-                <td class="text-left">${tds.eq(1).text()}</td>
-                <td class="text-center">${tds.eq(2).text()}</td>
-                <td class="text-right">EA</td>
-                <td class="text-right">${tds.eq(3).text()}</td>
-                <td class="text-right">${tds.eq(5).text()}</td>
-                <td class="text-right">${tds.eq(6).text()}</td>
-                <td class="text-right">${tds.eq(7).text()}</td>
-            </tr>
-        `;
+
+            const item = tds.eq(1).text().trim();  
+            const itemId = 0;                 
+            const qty = parseFloat(tds.eq(2).text()) || 0;      
+            const unit = "EA";                                
+            const price = parseFloat(tds.eq(3).text()) || 0;   
+
+            const line_discount_type = tds.eq(8).text().trim();  
+            const line_discount_pc = parseFloat(tds.eq(9).text()) || 0;  
+            const discountAmount = parseFloat(tds.eq(10).text()) || 0;  
+
+            const subtotal = price * qty;
+            const total = subtotal - discountAmount;
+
+            const tax = 0;
+            const totalAfterTax = total + tax;                  
+
+            const newRow = `
+                <tr>
+                    <td>${item}</td>
+                    <td>${qty}</td>
+                    <td>${unit}</td>
+                    <td class="text-end">${price.toFixed(2)}</td>
+                    <td class="text-end d-none sub_total">${subtotal.toFixed(2)}</td>
+                    <td class="text-end">${line_discount_pc.toFixed(2)}</td>
+                    <td class="text-end d-none discount_amount">${discountAmount.toFixed(2)}</td>
+                    <td class="text-end d-none total_after_discount">${total.toFixed(2)}</td>
+                    <td class="text-end">${tax.toFixed(2)}</td>
+                    <td class="text-end total_after_tax">${totalAfterTax.toFixed(2)}</td>
+                    <td class="text-end d-none insert_status">new</td>
+                    <td class="text-end d-none item_id">${itemId}</td>
+                    <td class="text-end d-none row_id">0</td>
+                </tr>
+            `;
+
             $tableBodyMain.append(newRow);
+            allItemsTotalCalculation();
         });
     });
 

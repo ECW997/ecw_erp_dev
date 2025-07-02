@@ -53,7 +53,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 <div class="row g-2 p-3">
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            data-bs-toggle="modal" data-bs-target="#selectCustomerInquiryModal">
+                                            data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
                                             <i class="fas fa-plus me-2"></i> New Invoice
                                         </button>
                                     </div>
@@ -88,6 +88,27 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
         </main>
 
+        <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
+        	aria-hidden="true">
+        	<div class="modal-dialog modal-sm modal-dialog-centered">
+        		<div class="modal-content">
+        			<div class="modal-header">
+        				<h5 class="modal-title" id="invoiceTypeModalLabel">Invoice Type</h5>
+        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        			</div>
+        			<div class="modal-body text-center">
+        				<button type="button" class="btn btn-primary btn-sm mb-2 w-100" id="direct"
+        					onclick="selectInvoiceType('direct');">
+        					Direct Invoice
+        				</button>
+        				<button type="button" class="btn btn-secondary btn-sm w-100" id="indirect"
+        					onclick="selectInvoiceType('indirect');">
+        					Job Card Invoice
+        				</button>
+        			</div>
+        		</div>
+        	</div>
+        </div>
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -117,13 +138,16 @@ function createInvoice() {
             tax: parseFloat($(this).find('td:eq(8)').text()) || 0,
             total_after_tax: parseFloat($(this).find('.total_after_tax').text()) || 0,
             insert_status: $(this).find('.insert_status').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
         });
     });
 
     $('#chargetableorder tbody tr').each(function () {
         charge_details.push({
             charge_type: $(this).find('td[name="chargetype"]').text().trim(),
-            charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0
+            charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0,
+            insert_status: $(this).find('.insert_status').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
         });
     });
 
@@ -132,7 +156,13 @@ function createInvoice() {
         main_insert_status: main_insert_status,
         date: $('#date').val(),
         invoice_type: <?= json_encode($invoice_type); ?>,
+        job_card_id: $('#job_card_number').val(),
+        job_card_no: $('#job_card_number option:selected').text(),
+        customer_id: $('#customer_id').val(),
         customer_name: $('#customer_name').val(),
+        vehicle_no: $('#vehicle_no').val(),
+        vat_reg_no: $('#vat_reg_no').val(),
+        vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
         contact_no: $('#customer_contact').val(),
         payment_type: $('#payment_type').val(),
@@ -158,13 +188,13 @@ function createInvoice() {
     console.log(invoiceData); 
 
     if (!jobtable_data || Object.keys(jobtable_data).length === 0) {
-        alert('❌ Invoice data is missing.');
+        alert('Invoice data is missing.');
         return false;
     }
 
     let payment_type = $('#payment_type').val();
     if(payment_type ==''){
-         alert('⚠️ Payment Type Not Selected!');
+         alert('Payment Type Not Selected!');
         $('#payment_type').focus();
         return false;
     }
@@ -177,6 +207,7 @@ function createInvoice() {
             type: "POST",
             dataType: 'json',
             data: {
+                recordID:invoice_record_id,
                 main_insert_status:main_insert_status,
                 invoiceData: invoiceData
             },
@@ -185,14 +216,14 @@ function createInvoice() {
                 if (result.status == true) {
                         success_toastify(result.message);
                         btn.disabled = false;
-                        btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                        btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                         setTimeout(function() {
                             window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data;
                         }, 500)
                 } else {
                     falseResponse(result);
                     btn.disabled = false;
-                    btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                    btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                 }
             }
     });
@@ -203,6 +234,11 @@ function exportJobCardInvoice(jobcard_id) {
     const baseUrl = "<?php echo base_url(); ?>JobCard/jobInvoicePDF";
     const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
     window.open(url, '_blank');
+}
+
+function selectInvoiceType(type) {
+ 	const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
+ 	window.location.href = baseUrl + type;
 }
 
 function deactive_confirm() {
