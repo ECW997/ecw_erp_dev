@@ -318,7 +318,7 @@ function insertExtraCharge() {
 		$('#chargetableorder > tbody:last').append('<tr class="pointer"><td name="chargetype">' +
 			chargetype + '</td><td name="chargeamount" class="text-right chargesamount">' +
 			chargeamount +
-			'</td><td class="text-end d-none insert_status">new</td><td class="text-end d-none row_id">0</td><td><button type="button" onclick= "productDelete(this);" id="btnDeleterow" class=" btn btn-danger btn-sm float-right"><i class="fas fa-trash"></i></button></td> </tr>'
+			'</td><td class="text-end d-none insert_status">new</td><td class="text-end d-none row_id">0</td><td><button type="button" onclick= "extraChageSoftDelete(this);" id="btnDeleterow" class=" btn btn-danger btn-sm float-right"><i class="fas fa-trash"></i></button></td> </tr>'
 		);
 
 
@@ -448,6 +448,22 @@ function finaltotalcalculate(){
     
 }
 
+
+// Soft Delete Functions
+function ItemSoftDelete(button) {
+    if (confirm("Are you sure you want to delete this charge?")) {
+        const row = $(button).closest('tr');
+        row.remove();
+        allItemsTotalCalculation();
+    }
+}
+function extraChageSoftDelete(button) {
+    if (confirm("Are you sure you want to delete this charge?")) {
+        const row = $(button).closest('tr');
+        row.remove();
+        allExtraChargeCalculation();
+    }
+}
 function addCommas(nStr) {
     nStr += '';
     x = nStr.split('.');

@@ -191,8 +191,8 @@ function addToList(){
             <td class="text-end d-none item_id">${itemId}</td>
             <td class="text-end d-none row_id">0</td>
             <td class="text-end">
-                <button type="button" class="btn btn-primary btn-sm" id="0" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
-                <button type="button" class="btn btn-danger btn-sm" id="0" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                <button type="button" class="btn btn-primary btn-sm d-none" id="0" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
+                <button type="button" class="btn btn-danger btn-sm" id="0" onclick="ItemSoftDelete(this)"><i class="fas fa-trash"></i></button>
             </td>
         </tr>
     `;
