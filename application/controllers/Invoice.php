@@ -73,7 +73,8 @@ class Invoice extends CI_Controller {
 	public function insertORUpdateInvoice() {
 		$createOption = $this->input->post('main_insert_status');
 		$form_data = [
-            'invoiceData' => $this->input->post('invoiceData')
+            'invoiceData' => $this->input->post('invoiceData'),
+			'recordID' => $this->input->post('recordID'),
         ];
 		
 		if($createOption == 'insert'){

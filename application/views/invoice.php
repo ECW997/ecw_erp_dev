@@ -117,13 +117,16 @@ function createInvoice() {
             tax: parseFloat($(this).find('td:eq(8)').text()) || 0,
             total_after_tax: parseFloat($(this).find('.total_after_tax').text()) || 0,
             insert_status: $(this).find('.insert_status').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
         });
     });
 
     $('#chargetableorder tbody tr').each(function () {
         charge_details.push({
             charge_type: $(this).find('td[name="chargetype"]').text().trim(),
-            charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0
+            charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0,
+            insert_status: $(this).find('.insert_status').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
         });
     });
 
@@ -177,6 +180,7 @@ function createInvoice() {
             type: "POST",
             dataType: 'json',
             data: {
+                recordID:invoice_record_id,
                 main_insert_status:main_insert_status,
                 invoiceData: invoiceData
             },
@@ -185,14 +189,14 @@ function createInvoice() {
                 if (result.status == true) {
                         success_toastify(result.message);
                         btn.disabled = false;
-                        btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                        btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                         setTimeout(function() {
                             window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data;
                         }, 500)
                 } else {
                     falseResponse(result);
                     btn.disabled = false;
-                    btn.innerHTML = `Create Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                    btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                 }
             }
     });
