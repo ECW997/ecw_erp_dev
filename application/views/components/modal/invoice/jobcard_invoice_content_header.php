@@ -56,8 +56,7 @@
                             <label class="small font-weight-bold text-dark">Job Card Number <span
                                     class="text-danger">*</span></label>
                             <select class="form-control form-control-sm  px-0" name="job_card_number"
-                                id="job_card_number" required readonly>
-                                id="job_card_number" required readonly>
+                                id="job_card_number" required>
                                 <option value="">Select</option>
                                  <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
                                     <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
@@ -70,52 +69,37 @@
                             <label class="small font-weight-bold text-dark">Customer <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_name" class="form-control form-control-sm"
-
- 
-
-
                                 id="customer_name" value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
-
-
-
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Address <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_address" class="form-control form-control-sm"
-
-                          
-
-
                                 id="customer_address" value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
-
-
-
                         </div>
                         <input type="hidden" name="customer_id" id="customer_id" value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                     </div>
 
-                   <div class="row mt-2">
-                   <div class="row mt-2">
+
+
+                    <div class="row">
+
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Vehicle No <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="vehicle_no" class="form-control form-control-sm"
-                                id="vehicle_no" required readonly>
-                                id="vehicle_no" required readonly>
+                                id="vehicle_no" required>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">VAT Reg No </label>
                             <input type="text" step="any" name="vat_reg_no" class="form-control form-control-sm"
-                                id="vat_reg_no" required readonly>
-                                id="vat_reg_no" required readonly>
+                                id="vat_reg_no" required>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Vehicle In Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm" placeholder=""
-                                name="vehicle_in_date" id="vehicle_in_date" required readonly>
-                                name="vehicle_in_date" id="vehicle_in_date" required readonly>
+                                name="vehicle_in_date" id="vehicle_in_date" required>
                         </div>
                         <div class="col-3">
                             <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
