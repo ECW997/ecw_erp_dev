@@ -56,7 +56,7 @@
                             <label class="small font-weight-bold text-dark">Job Card Number <span
                                     class="text-danger">*</span></label>
                             <select class="form-control form-control-sm  px-0" name="job_card_number"
-                                id="job_card_number" required>
+                                id="job_card_number" required readonly>
                                 <option value="">Select</option>
                             </select>
                         </div>
@@ -64,36 +64,33 @@
                             <label class="small font-weight-bold text-dark">Customer <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_name" class="form-control form-control-sm"
-                                id="customer_name" required>
+                                id="customer_name" required readonly>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Address <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="customer_address" class="form-control form-control-sm"
-                                id="customer_address" required>
+                                id="customer_address" required readonly>
                         </div>
                     </div>
 
-
-
-                    <div class="row">
-
+                   <div class="row mt-2">
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Vehicle No <span
                                     class="text-danger">*</span></label>
                             <input type="text" step="any" name="vehicle_no" class="form-control form-control-sm"
-                                id="vehicle_no" required>
+                                id="vehicle_no" required readonly>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">VAT Reg No </label>
                             <input type="text" step="any" name="vat_reg_no" class="form-control form-control-sm"
-                                id="vat_reg_no" required>
+                                id="vat_reg_no" required readonly>
                         </div>
                         <div class="col-3">
                             <label class="small font-weight-bold text-dark">Vehicle In Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm" placeholder=""
-                                name="vehicle_in_date" id="vehicle_in_date" required>
+                                name="vehicle_in_date" id="vehicle_in_date" required readonly>
                         </div>
                         <div class="col-3">
                             <input type="text" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
