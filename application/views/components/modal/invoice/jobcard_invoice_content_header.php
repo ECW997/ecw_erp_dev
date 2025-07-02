@@ -1,117 +1,83 @@
-<style>
-#jobcarddetailsModal input::placeholder,
-#jobcarddetailsModal select::placeholder,
-#jobcarddetailsModal textarea::placeholder {
-    color: orange !important;
-}
+<div class="card invoice-card">
+    <div class="card-body p-3">
+        <form id="createorderform" autocomplete="off">
+            <!-- Header Section -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label small fw-bold">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-sm input-field" name="date" id="date"
+                            value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label small fw-bold">Job Card No <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm input-field" name="job_card_number" id="job_card_number" required>
+                            <option value="">Select</option>
+                            <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
+                                <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
+                                    <?= $invoice_main_data[0]['job_card_no'] ?>
+                                </option>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="invoice-number mt-1">
+                        <span class="small fw-bold text-dark">Invoice #</span>
+                       <span class="badge bg-primary"><?= isset($invoice_main_data[0]['invoice_number']) ? $invoice_main_data[0]['invoice_number'] : 'New' ?></span>
+                    </div>
+                </div>
+            </div>
 
-.tooltip-inner {
-    max-width: none !important;
-    padding: 0;
-    text-align: left;
-}
-
-.custom-tooltip-box {
-    width: 240px;
-    padding: 8px;
-    border-radius: 4px;
-}
-
-.disabled-pointer-events {
-    pointer-events: none;
-}
-
-.vl {
-    border-left: 4px solid rgb(60, 90, 180);
-    height: 100px;
-}
-
-.font-weight-600 {
-    font-weight: 600;
-}
-
-#modal_net_total {
-    background-color: #fff3cd;
-    border: 2px solid #ffc107;
-    font-weight: bold;
-    color: #000;
-}
-</style>
-
-
-<div class="card">
-    <div class="card-body p-0 p-2">
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <form id="createorderform" autocomplete="off">
-                    <div class="row">
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Date <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm" placeholder="" name="date" id="date"
-                                value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
-
-                        </div>
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Job Card Number <span
-                                    class="text-danger">*</span></label>
-                            <select class="form-control form-control-sm  px-0" name="job_card_number"
-                                id="job_card_number" required>
-                                <option value="">Select</option>
-                                 <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
-                                    <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
-                                        <?= $invoice_main_data[0]['job_card_no'] ?>
-                                    </option>
-                                <?php endif; ?>
-                            </select>
-                        </div>
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Customer <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" step="any" name="customer_name" class="form-control form-control-sm"
+            <div class="customer-details mb-4 p-3 border rounded">
+                <h6 class="section-title p-2 mb-3 rounded">Customer & Vehicle Information</h6>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold">Customer Name <span class="text-danger">*</span></label>
+                            <input type="text" name="customer_name" class="form-control form-control-sm input-field"
                                 id="customer_name" value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
+                            <input type="hidden" name="customer_id" id="customer_id" value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                         </div>
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Address <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" step="any" name="customer_address" class="form-control form-control-sm"
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold">Address <span class="text-danger">*</span></label>
+                            <input type="text" name="customer_address" class="form-control form-control-sm input-field"
                                 id="customer_address" value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
                         </div>
-                        <input type="hidden" name="customer_id" id="customer_id" value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                     </div>
-
-
-
-                    <div class="row">
-
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Vehicle No <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" step="any" name="vehicle_no" class="form-control form-control-sm"
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold">Vehicle No <span class="text-danger">*</span></label>
+                            <input type="text" name="vehicle_no" class="form-control form-control-sm input-field"
                                 id="vehicle_no" required>
                         </div>
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">VAT Reg No </label>
-                            <input type="text" step="any" name="vat_reg_no" class="form-control form-control-sm"
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold">VAT Reg No</label>
+                            <input type="text" name="vat_reg_no" class="form-control form-control-sm input-field"
                                 id="vat_reg_no" required>
                         </div>
-                        <div class="col-3">
-                            <label class="small font-weight-bold text-dark">Vehicle In Date <span
-                                    class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm" placeholder=""
-                                name="vehicle_in_date" id="vehicle_in_date" required>
-                        </div>
-                        <div class="col-3">
-                            <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold">Vehicle In Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date" id="vehicle_in_date" required>
                         </div>
                     </div>
-
-                    <input type="hidden" name="refillprice" id="refillprice" value="">
-                    <input type="hidden" name="recordOption" id="recordOption" value="1">
-                </form>
-
+                    <div class="col-md-3">
+                        <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <input type="hidden" name="refillprice" id="refillprice" value="">
+            <input type="hidden" name="recordOption" id="recordOption" value="1">
+        </form>
     </div>
 </div>
 

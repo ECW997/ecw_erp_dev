@@ -1,99 +1,104 @@
-<style>
-.tooltip-inner {
-    max-width: none !important;
-    padding: 0;
-    text-align: left;
-}
 
-.custom-tooltip-box {
-    width: 240px;
-    padding: 8px;
-    border-radius: 4px;
-}
-
-.disabled-pointer-events {
-    pointer-events: none;
-}
-
-.vl {
-    border-left: 4px solid rgb(60, 90, 180);
-    height: 100px;
-}
-
-.font-weight-600 {
-    font-weight: 600;
-}
-</style>
-
-
-<div class="card">
-    <div class="card-body p-0 p-2">
+<div class="card invoice-card">
+    <div class="card-body p-3">
         <form id="createorderform" autocomplete="off">
-            <div class="row">
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Date <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control form-control-sm" name="date" id="date"
-                        value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
+            <!-- Header Section -->
+            <div class="row invoice-header mb-4">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="form-label small fw-bold text-dark">Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control form-control-sm input-highlight" name="date" id="date"
+                            value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
+                    </div>
                 </div>
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Customer Name <span class="text-danger">*</span></label>
-                    <input type="text" name="customer_name" class="form-control form-control-sm" id="customer_name"
-                        value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
-                </div>
-
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Customer Address <span class="text-danger">*</span></label>
-                    <input type="text" name="customer_address" class="form-control form-control-sm" id="customer_address"
-                        value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
-                </div>
-
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Customer Contact No <span class="text-danger">*</span></label>
-                    <input type="text" name="customer_contact" class="form-control form-control-sm" id="customer_contact"
-                        value="<?= isset($invoice_main_data[0]['contact_no']) ? $invoice_main_data[0]['contact_no'] : '' ?>" required>
+                <div class="col-md-6 text-md-end">
+                    <div class="invoice-number">
+                        <span class="small fw-bold text-dark">Invoice #</span>
+                        <span class="badge bg-primary"><?= isset($invoice_main_data[0]['invoice_number']) ? $invoice_main_data[0]['invoice_number'] : 'New' ?></span>
+                    </div>
                 </div>
             </div>
 
-            <div class="row mt-2">
-                 <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Item <span class="text-danger">*</span></label>
-                    <select class="form-control form-control-sm" name="item" id="item" onchange="getDirectSalesItemDetails(this.value)" required>
-                        <option value="">Select Item</option>
-
-                    </select>
-                </div>
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Unit <span class="text-danger">*</span></label>
-                    <input type="text" step="any" name="unit" class="form-control form-control-sm" id="unit" required>
-                </div>
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Price <span class="text-danger"><span id="original_price_show"></span>*</span></label>
-                    <input type="number" step="any" name="price" class="form-control form-control-sm" id="price" required>
-                </div>
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Quantity <span class="text-danger"><span id="available_qty_show"></span>*</span></label>
-                    <input type="number" step="any" name="qty" class="form-control form-control-sm" id="qty" onkeyup="checkQtyValidation();" required>
-                </div>
-                <div class="col-3">
-                    <label class="small font-weight-bold text-dark">Discount(%)</label>
-                    <input type="number" step="any" name="discount" class="form-control form-control-sm" id="discount" value="0">
+            <!-- Customer Information Section -->
+            <div class="customer-details mb-4 p-3 border rounded ">
+                <h6 class="section-title p-2 mb-3 rounded">Customer Information</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Customer Name <span class="text-danger">*</span></label>
+                            <input type="text" name="customer_name" class="form-control form-control-sm input-highlight" id="customer_name"
+                                value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Customer Address <span class="text-danger">*</span></label>
+                            <input type="text" name="customer_address" class="form-control form-control-sm input-highlight" id="customer_address"
+                                value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Contact No <span class="text-danger">*</span></label>
+                            <input type="text" name="customer_contact" class="form-control form-control-sm input-highlight" id="customer_contact"
+                                value="<?= isset($invoice_main_data[0]['contact_no']) ? $invoice_main_data[0]['contact_no'] : '' ?>" required>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <input name="available_qty" type="number" id="available_qty" class="d-none">
-            <input name="row_id" type="number" id="row_id" value="0" class="d-none">
-            <div class="form-group mt-3 text-right">
-                <button type="button" id="formsubmit" class="btn btn-primary btn-sm px-4 add-to-list-btn" onclick="addToList();">
-                    <i class="fas fa-plus"></i>&nbsp;Add to list
-                </button>
-                <button type="button" id="formsubmit" class="btn btn-secondary btn-sm px-4 d-none update-to-list-btn" onclick="updateToList();">
-                    <i class="fas fa-plus"></i>&nbsp;Update to list
-                </button>
-                <input name="submitBtn" type="submit" value="Save" id="submitBtn" class="d-none">
+
+            <!-- Item Details Section -->
+            <div class="invoice-items mb-4 p-3 border rounded ">
+                <h6 class="section-title p-2 mb-3 rounded">Item Details</h6>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Item <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm input-highlight" name="item" id="item" onchange="getDirectSalesItemDetails(this.value)" required>
+                                <option value="">Select Item</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Unit <span class="text-danger">*</span></label>
+                            <input type="text" step="any" name="unit" class="form-control form-control-sm input-highlight" id="unit" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Price <span class="text-danger"><span id="original_price_show"></span>*</span></label>
+                            <input type="number" step="any" name="price" class="form-control form-control-sm text-end input-highlight" id="price" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Qty <span class="text-danger"><span id="available_qty_show"></span>*</span></label>
+                            <input type="number" step="any" name="qty" class="form-control form-control-sm text-end input-highlight" id="qty" onkeyup="checkQtyValidation();" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Discount(%)</label>
+                            <input type="number" step="any" name="discount" class="form-control form-control-sm text-end input-highlight" id="discount" value="0">
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" id="formsubmit" title="Insert" class="btn btn-success btn-sm w-100 add-to-list-btn" onclick="addToList();">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button type="button" id="formsubmit" title="Update" class="btn btn-warning btn-sm w-100 d-none update-to-list-btn" onclick="updateToList();">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <input name="available_qty" type="number" id="available_qty" class="d-none">
+                <input name="row_id" type="number" id="row_id" value="0" class="d-none">
             </div>
         </form>
     </div>
 </div>
-
 
 <script>
 $(document).ready(function() {
@@ -190,9 +195,9 @@ function addToList(){
             <td class="text-end d-none insert_status">new</td>
             <td class="text-end d-none item_id">${itemId}</td>
             <td class="text-end d-none row_id">0</td>
-            <td class="text-end">
-                <button type="button" class="btn btn-primary btn-sm d-none" id="0" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
-                <button type="button" class="btn btn-danger btn-sm" id="0" onclick="ItemSoftDelete(this)"><i class="fas fa-trash"></i></button>
+            <td class="text-center">
+                <button type="button" title="Edit" class="btn btn-primary btn-sm d-none" id="0" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
+                <button type="button" title="Delete" class="btn btn-danger btn-sm" id="0" onclick="ItemSoftDelete(this)"><i class="fas fa-trash"></i></button>
             </td>
         </tr>
     `;
@@ -232,7 +237,7 @@ function updateToList(){
     const rowId = $('#row_id').val();
 
     const newRow = `
-        <tr>
+        <tr class="recently-edited-row">
             <td>${item}</td>
             <td>${qty}</td>
             <td>${unit}</td>
@@ -246,14 +251,18 @@ function updateToList(){
             <td class="text-end d-none insert_status">updated</td>
             <td class="text-end d-none item_id">${itemId}</td>
             <td class="text-end d-none row_id">${rowId}</td>
-            <td class="text-end">
-                <button type="button" class="btn btn-primary btn-sm" id="${rowId}" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
-                <button type="button" class="btn btn-danger btn-sm" id="${rowId}" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+            <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" title="Edit" class="btn btn-primary btn-sm" id="${rowId}" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
+                    <button type="button" title="Delete" class="btn btn-danger btn-sm" id="${rowId}" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+                </div>
             </td>
         </tr>
     `;
 
     $('#tableorder tbody').append(newRow);
+    // let $editedRow = $('#tableorder > tbody:last tr:last');
+    // highlightEditedRow($editedRow);
     deletedUpdatedRow(rowId);
     $('#row_id').val(0);
     $('.update-to-list-btn').addClass('d-none');

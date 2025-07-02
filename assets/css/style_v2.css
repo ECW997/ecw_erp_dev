@@ -164,3 +164,397 @@
         margin-bottom: 0.5rem;
     }
 }
+
+
+/* Invoice */
+.modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.btn-option {
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef !important;
+}
+
+.btn-option:hover {
+    background-color: #f1f3f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.btn-option:active {
+    transform: translateY(0);
+}
+
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.bg-blue-soft {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-orange-soft {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.modal-title {
+    letter-spacing: 0.5px;
+}
+
+.btn-option:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.5rem auto;
+    }
+}
+
+/* ===== Base Styles ===== */
+.invoice-card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+/* ===== Form Elements ===== */
+.form-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.input-field {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    color: #212529;
+    transition: all 0.15s ease-in-out;
+}
+
+.input-field:focus {
+    background-color: #fff;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: 0;
+}
+
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+
+.customer-details {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+/* ===== Badge & Status ===== */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 0.35em 0.65em;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+    .text-md-end {
+        text-align: left !important;
+        margin-top: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ===== Focus States ===== */
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* ===== Spacing & Layout ===== */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+}
+
+/* ===== Input Field Enhancements ===== */
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    color: transparent;
+    background: transparent;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+    z-index: 1;
+}
+
+input[type="date"]::-webkit-clear-button {
+    z-index: 1;
+}
+
+
+
+	#invoiceTypeModal .modal-content {
+		border-radius: 1rem;
+		overflow: hidden;
+	}
+
+	#invoiceTypeModal .btn {
+		transition: all 0.2s ease;
+		border: none;
+	}
+
+	#invoiceTypeModal .btn:hover {
+		transform: translateY(-2px);
+	}
+
+	#invoiceTypeModal .btn-outline-primary {
+		border: 1px solid #0d6efd;
+	}
+    .tooltip-inner {
+    max-width: none !important;
+    padding: 0;
+    text-align: left;
+}
+
+.custom-tooltip-box {
+    width: 240px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.disabled-pointer-events {
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 4px solid rgb(60, 90, 180);
+    height: 100px;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.custom-blue-hr {
+    height: 5px;
+    border: none;
+    background-color: rgb(2, 4, 133);
+}
+.invoice-card {
+    border: 1px solid #e0e2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.invoice-table th {
+    font-size: 0.75rem;
+    /* text-transform: uppercase; */
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.extra-charges-card {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #000000;
+    background-color: #cfe2ff;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.5rem;
+}
+
+.total-display {
+    background-color: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.total-label {
+    font-weight: 600;
+    margin-right: 1rem;
+}
+
+.total-amount {
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.payment-summary {
+    background-color: #f8fafc;
+    border-radius: 6px;
+    padding: 1.25rem;
+    border: 1px solid #e9ecef;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 992px) {
+    .vr {
+        display: none;
+    }
+}
+
+
+.recently-edited-row {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.recently-edited-row.highlight-active {
+    background-color: rgba(255, 241, 118, 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 196, 0, 0.3);
+    border-left: 3px solid #ffc107;
+}
+
+.recently-edited-row.highlight-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,241,118,0.4) 50%, 
+                rgba(255,255,255,0) 100%);
+    animation: sweep 1.5s ease-out;
+    pointer-events: none;
+}
+
+@keyframes sweep {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.recently-edited-row {
+    border-left: 2px solid rgb(255, 193, 7);
+    background-color: rgba(255, 241, 118, 0.31);
+}
+#jobcarddetailsModal input::placeholder,
+#jobcarddetailsModal select::placeholder,
+#jobcarddetailsModal textarea::placeholder {
+    color: orange !important;
+}
+
+.tooltip-inner {
+    max-width: none !important;
+    padding: 0;
+    text-align: left;
+}
+
+.custom-tooltip-box {
+    width: 240px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.disabled-pointer-events {
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 4px solid rgb(60, 90, 180);
+    height: 100px;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+#modal_net_total {
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    font-weight: bold;
+    color: #000;
+}
+.invoice-card {
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.invoice-number {
+    margin-top: 8px;
+}
+.form-group {
+    margin-bottom: 0.5rem;
+}
+.tooltip-inner {
+    max-width: none !important;
+    padding: 0;
+    text-align: left;
+}
+
+.custom-tooltip-box {
+    width: 240px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.disabled-pointer-events {
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 4px solid rgb(60, 90, 180);
+    height: 100px;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+.invoice-card {
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.invoice-number {
+    margin-top: 8px;
+}
