@@ -267,6 +267,12 @@ else if($functionmenu=='Map'){
     $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
 }
+else if($functionmenu=='Media_library'){
+    $addcheck=checkprivilege($menuprivilegearray, 66, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 66, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 66, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 66, 4);
+}
 else if($functionmenu=='Invoice'){
     $addcheck=checkprivilege($menuprivilegearray, 67, 1);
     $editcheck=checkprivilege($menuprivilegearray, 67, 2);
