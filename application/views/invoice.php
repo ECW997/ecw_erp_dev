@@ -339,25 +339,30 @@ function createInvoice() {
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
         contact_no: $('#customer_contact').val(),
-        payment_type: $('#payment_type').val(),
-        sub_total: parseFloat($('#hiddenfulltotal').val()) || 0,
+        // payment_type: $('#payment_type').val(),
+        sub_total: parseFloat($('#total_sub_amount').val()) || 0,
         discount_pc: 0,
-        discount_amount: 0,
+        discount_amount: parseFloat($('#total_discount').val()) || 0,
         vat: parseFloat($('#vat').val()) || 0,
         vat_amount: parseFloat($('#vatamount').val()) || 0,
-        total_payment: parseFloat($('#modeltotalpayment').val()) || 0,
+        total_payment: parseFloat($('#payment_total_grand_amount').val()) || 0,
         remark: $('#remark').val(),
         company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
         branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
     };
+
+    let payment_row_data = $('#payment_data').val();
+    let payment_parsed_data = JSON.parse(payment_row_data);
 
     let invoiceData = {
         invoice_meta: invoiceMeta,
         items: jobtable_data,
         items_total: $('#hidetotalorder').val(),
         charges: charge_details,
-        charges_total: $('#hidechargestotal').val()
+        charges_total: $('#hidechargestotal').val(),
+        payment_data:payment_parsed_data,
     };
+
 
     console.log(invoiceData);
 
@@ -366,12 +371,7 @@ function createInvoice() {
         return false;
     }
 
-    let payment_type = $('#payment_type').val();
-    if (payment_type == '') {
-        alert('Payment Type Not Selected!');
-        $('#payment_type').focus();
-        return false;
-    }
+
 
     const btn = document.getElementById('btncreateorder');
     btn.disabled = true;
