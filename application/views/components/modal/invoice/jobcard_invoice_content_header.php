@@ -71,6 +71,7 @@
                     </div>
                     <div class="col-md-3">
                         <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
+                        <input type="hidden" id="header_discount_total" name="header_discount_total" class="form-control form-control-sm" value="0" />
                     </div>
                 </div>
             </div>
@@ -380,6 +381,7 @@ $(document).ready(function() {
         $('#vehicle_no').val($('#modal_Vehicle_number').val());
         $('#vehicle_in_date').val($('#modal_Vehicle_indate').val());
         $('#jobcardid').val($('#job_card_number').val());
+        $('#header_discount_total').val($('#modal_header_discount').val());
 
          $('#jobcarddetailsModal').modal('hide');
 

@@ -15,7 +15,7 @@
                                 <th class="text-center">Discount(%)</th>
                                 <th class="text-center">Tax</th>
                                 <th class="text-end">Total Amount</th>
-                                <th class="text-center <?= (isset($invoice_main_data[0]['invoice_type'])) && $invoice_main_data[0]['invoice_type'] == 'direct' ? '' : 'd-none' ?>">Action</th>
+                                <th class="text-center <?= $invoice_type == 'direct' ? '' : 'd-none' ?>">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableorderBody" class="table-group-divider">
@@ -53,12 +53,30 @@
                 </div>
 
                 <div class="row mt-3">
-                    <div class="col text-end">
-                        <div class="total-display">
+                    <div class="col-md-6 offset-md-6">
+                        <div class="total-display d-flex justify-content-between">
                             <span class="total-label text-dark">Sub Total:</span>
                             <span class="total-amount" id="divtotal">Rs. 0.00</span>
                             <input type="hidden" id="hidetotalorder" value="0">
                         </div>
+                        
+                        <div class="total-display d-flex justify-content-between mt-2">
+                            <span class="total-label text-dark">Line Discount:</span>
+                            <span class="total-amount text-danger" id="div_line_discount_total">- Rs. 0.00</span>
+                            <input type="hidden" id="hide_line_discount_totalorder" value="0">
+                        </div>
+                        
+                        <div class="total-display d-flex justify-content-between mt-2">
+                            <span class="total-label text-dark">Header Discount:</span>
+                            <span class="total-amount text-danger" id="div_header_discount_total">- Rs. 0.00</span>
+                            <input type="hidden" id="hide_header_discount_totalorder" value="0">
+                        </div>
+                        
+                        <!-- <div class="total-display d-flex justify-content-between mt-2 border-top pt-2">
+                            <span class="total-label fw-bold text-dark">Grand Total:</span>
+                            <span class="total-amount fw-bold" id="div_grand_total">Rs. 0.00</span>
+                            <input type="hidden" id="hide_grand_total" value="0">
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -94,7 +112,7 @@
                         </div>
                     </form>
 
-                    <div class="table-responsive" id="chargetable-wrapper">
+                    <div class="" id="chargetable-wrapper">
                         <table class="table table-sm small" id="chargetableorder">
                             <thead class="table-light">
                                 <tr>
@@ -142,9 +160,10 @@
             </div>
         </div>
 
-        <div class="payment-summary mt-4">
+        <?php $selected_payment = isset($invoice_main_data[0]['payment_term_id']) ? $invoice_main_data[0]['payment_term_id'] : ''; ?>
+        <!-- <div class="payment-summary mt-4">
             <div class="row g-3">
-                <div class="col-md-2">
+                <div class="col-md-2 d-none">
                     <label class="small form-label text-dark">Payment Type</label>
                     <select class="form-select form-select-sm" name="payment_type" id="payment_type" required>
                         <option value="">Select Payment Type</option>
@@ -153,8 +172,17 @@
                         <option value="3" <?= ($selected_payment == '3') ? 'selected' : '' ?>>Bank Transfer</option>
                     </select>
                 </div>
+
                 <div class="col-md-2">
                     <label class="small form-label text-dark">Sub Total</label>
+                    <input type="number" step="any" id="total_sub_amount" name="total_sub_amount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
+                </div>
+                <div class="col-md-2">
+                    <label class="small form-label text-dark">Total Discount</label>
+                    <input type="number" step="any" id="total_discount" name="total_discount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
+                </div>
+                <div class="col-md-2">
+                    <label class="small form-label text-dark">Grand Total</label>
                     <input type="number" step="any" name="hiddenfulltotal" class="form-control form-control-sm" id="hiddenfulltotal" readonly>
                 </div>
                 <div class="col-md-2">
@@ -165,7 +193,7 @@
                     <label class="small form-label text-dark">VAT Amount</label>
                     <input type="number" id="vatamount" name="vatamount" class="form-control form-control-sm" value="0" required readonly>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <label class="small form-label text-dark fw-bold">Total Payment</label>
                     <input type="number" step="any" name="modeltotalpayment" class="form-control form-control-sm fw-bold" id="modeltotalpayment" readonly>
                 </div>
@@ -181,10 +209,247 @@
                     </button>
                 </div>
             </div>
+        </div> -->
+        
+        <div class="payment-summary mt-4">
+            <div class="row g-3">
+                <!-- Invoice Summary Card -->
+                <div class="col-md-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <label class="small form-label text-dark mb-1">Sub Total + Extra Charges</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-light">Rs.</span>
+                                                <input type="number" step="any" id="total_sub_amount" name="total_sub_amount" 
+                                                    class="form-control text-end bg-light" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="small form-label text-dark mb-1">Total Discount</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-light">Rs.</span>
+                                                <input type="number" step="any" id="total_discount" name="total_discount" 
+                                                    class="form-control text-end bg-light" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 d-none">
+                                            <label class="small form-label text-dark mb-1">Grand Total</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-light">Rs.</span>
+                                                <input type="number" step="any" id="hiddenfulltotal" name="hiddenfulltotal" 
+                                                    class="form-control text-end bg-light" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="small form-label text-dark mb-1">VAT (%)</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="number" id="vat" name="vat" 
+                                                    class="form-control text-end" 
+                                                    value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" 
+                                                    onkeyup="finaltotalcalculate();" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="small form-label text-dark mb-1">VAT Amount</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-light">Rs.</span>
+                                                <input type="number" id="vatamount" name="vatamount" 
+                                                    class="form-control text-end bg-light" value="0" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="payment-section mb-4 mt-4">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <h6 class="mb-3">Payment Methods</h6>
+                                    <!-- Payment Methods Row -->
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-4">
+                                                <div class="payment-method-card" id="cash-card">
+                                                    <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="cash_toggle" value="1">
+                                                    <label class="form-check-label" for="cash_toggle">Cash Payment</label>
+                                                    </div>
+                                                    <div class="input-group input-group-sm amount-input" style="display:none;">
+                                                    <span class="input-group-text">Rs.</span>
+                                                    <input type="number" class="form-control cash-amount" placeholder="Amount">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="payment-method-card" id="cheque-card">
+                                                    <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="cheque_toggle" value="2">
+                                                    <label class="form-check-label" for="cheque_toggle">Cheque Payment</label>
+                                                    </div>
+                                                    <div class="input-group input-group-sm amount-input" style="display:none;">
+                                                    <span class="input-group-text">Rs.</span>
+                                                    <input type="number" class="form-control cheque-amount" placeholder="Amount">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="payment-method-card" id="bank-card">
+                                                    <div class="form-check form-switch mb-2">
+                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="bank_toggle" value="3">
+                                                    <label class="form-check-label" for="bank_toggle">Bank Transfer</label>
+                                                    </div>
+                                                    <div class="payment-details" style="display:none;">
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <span class="input-group-text">Rs.</span>
+                                                        <input type="number" class="form-control bank-amount" placeholder="Amount">
+                                                    </div>
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text">Ref#</span>
+                                                        <input type="text" class="form-control bank-reference" placeholder="Reference Number">
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Summary -->
+                                        <div class="payment-summary-section mt-4">
+                                            <div class="card border-0 shadow-sm">
+                                                <!-- <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0">Payment Summary</h6>
+                                                <span class="badge bg-primary">Invoice Total: <span id="invoice-total-amount">Rs. 0.00</span></span>
+                                                </div> -->
+                                                <div class="card-body">
+                                                     <h5 class="mb-3">Payment Summary</h5>
+                                                <!-- Grand Total -->
+                                                <div class="row mb-3">
+                                                    <div class="col-md-12">
+                                                    <div class="d-flex justify-content-between align-items-center p-3 bg-white rounded border">
+                                                        <div>
+                                                        <span class="fw-bold text-dark">Grand Total:</span>
+                                                        <p class="small text-muted mb-0">Including all taxes, charges and discounts</p>
+                                                        </div>
+                                                        <span class="fw-bold text-dark fs-4" id="grand-total-amount">Rs. 0.00</span>
+                                                        <input type="number" step="any" class="d-none" id="payment_total_grand_amount" name="payment_total_grand_amount">
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Payment Breakdown -->
+                                                <div class="row g-3">
+                                                    <!-- Advance Payment -->
+                                                    <div class="col-md-6">
+                                                    <div class="payment-summary-card bg-advance">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="fw-bold text-dark">Advance Payment</span>
+                                                            <p class="small text-muted mb-0">Amount paid in advance</p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-success fs-5" id="total-advance-amount">Rs. 0.00</span>
+                                                            <input type="number" step="any" class="d-none" id="payment_total_advance_amount" name="payment_total_advance_amount" value="1000">
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    
+                                                    <!-- Total Paid -->
+                                                    <div class="col-md-6">
+                                                    <div class="payment-summary-card bg-paid">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="fw-bold text-dark">Total Paid</span>
+                                                            <p class="small text-muted mb-0">Sum of all payments</p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-primary fs-5" id="total-paid-amount">Rs. 0.00</span>
+                                                            <input type="number" step="any" class="d-none" id="payment_total_paid_amount" name="payment_total_paid_amount">
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    
+                                                    <!-- Current Balance -->
+                                                    <div class="col-md-6">
+                                                    <div class="payment-summary-card bg-balance">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="fw-bold text-dark">Current Balance</span>
+                                                            <p class="small text-muted mb-0">Remaining for this invoice (balance for customer to pay)</p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="fw-bold text-warning fs-5" id="total-balance-amount">Rs. 0.00</span>
+                                                            <input type="number" step="any" class="d-none" id="payment_total_balance_amount" name="payment_total_balance_amount">
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    
+                                                    <!-- Arrears -->
+                                                    <div class="col-md-6">
+                                                        <div class="payment-summary-card bg-arrears">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <span class="fw-bold text-dark">Total Arrears</span>
+                                                                <p class="small text-muted mb-0">Pending payment on this invoice</p>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <span class="fw-bold text-danger fs-5" id="total-arrears-amount">Rs. 0.00</span>
+                                                                <input type="number" step="any" class="d-none" id="payment_total_arrears_amount" name="payment_total_arrears_amount">
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <!-- Hidden field for form submission -->
+                                <input type="hidden" id="payment_data" name="payment_data">
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-9">
+                                    <label class="small form-label text-dark">Remarks</label>
+                                    <textarea name="remark" id="remark" class="form-control form-control-sm" rows="2"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="button" id="btncreateorder" class="btn btn-primary w-100" onclick="createInvoice();">
+                                        <i class="fas fa-save me-2"></i><?php echo $is_edit ? 'Update' : 'Create'; ?> Invoice
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Hidden Fields -->
+                <input name="invoice_record_id" type="number" id="invoice_record_id" value="<?= $invoice_main_data[0]['id'] ?? '' ?>" class="d-none">
+            </div>
         </div>
     </div>
 </div>
-
+<style>
+.payment-method-card {
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+.payment-method-card.active {
+  border-color: #0d6efd;
+  background-color: #f8f9fa;
+}
+</style>
 
 <?php if (!empty($invoice_detail_data)) : ?>
     <script>
@@ -232,7 +497,30 @@ $(document).ready(function() {
         container: 'body',
         html: true
     });
+
+    $('.payment-toggle').change(function() {
+    const card = $(this).closest('.payment-method-card');
+    const details = card.find('.amount-input, .payment-details');
+    
+    if($(this).is(':checked')) {
+      card.addClass('active');
+      details.slideDown();
+    } else {
+      card.removeClass('active');
+      details.slideUp();
+      card.find('input').val('');
+    }
+    finaltotalcalculate();
+  });
+
+  // Update payment data when amounts change
+  $('.payment-method-card').on('input', 'input', function() {
+    finaltotalcalculate();
+  });
+
 });
+
+
 
 function showAddJobItemModal(button) {
     var MainJobId = $(button).data('id');
@@ -376,16 +664,56 @@ function deleteExtraChargeRow(button) {
 
 function allItemsTotalCalculation(){
     let totalSum = 0;
+    let totalLineDiscount = 0;
+
     $('#tableorder tbody tr').each(function () {
         const insertStatus = $(this).find('.insert_status').text().trim();
         if (insertStatus !== 'deleted') {
-            const value = parseFloat($(this).find('.total_after_tax').text()) || 0;
+            const value = parseFloat($(this).find('.sub_total').text()) || 0;
             totalSum += value;
+
+            const discount_value = parseFloat($(this).find('.discount_amount').text()) || 0;
+            totalLineDiscount += discount_value;
         }
     });
+    
     var showsum = addCommas(parseFloat(totalSum).toFixed(2));
-    $('#divtotal').text('Rs. '+ showsum)
-    $('#hidetotalorder').val(totalSum.toFixed(2))
+    $('#divtotal').text('Rs. '+ showsum);
+    $('#hidetotalorder').val(totalSum.toFixed(2));
+
+    var showLineDiscountsum = addCommas(parseFloat(totalLineDiscount).toFixed(2));
+    $('#div_line_discount_total').text('Rs. '+ showLineDiscountsum);
+    $('#hide_line_discount_totalorder').val(totalLineDiscount.toFixed(2));
+
+    var header_discount;
+    <?php if ($is_edit): ?>
+        header_discount = <?php 
+            $inv_discount = isset($invoice_main_data[0]['inv_discount_amount']) ? $invoice_main_data[0]['inv_discount_amount'] : 0;
+            echo number_format($inv_discount, 2, '.', ''); 
+        ?>;
+        if(header_discount > 0){
+            header_discount = parseFloat(header_discount) - totalLineDiscount;
+        }else{
+            header_discount = 0;
+        }
+
+    <?php else: ?>
+        header_discount = parseFloat($('#header_discount_total').val()) || 0;
+    <?php endif; ?>
+
+    var showHeaderDiscountsum = addCommas(parseFloat(header_discount).toFixed(2));
+    $('#div_header_discount_total').text('Rs. '+ showHeaderDiscountsum);
+    $('#hide_header_discount_totalorder').val(header_discount.toFixed(2));
+
+    var totalDiscount = totalLineDiscount+header_discount;
+
+    // var grandTotal=totalSum-totalDiscount;
+    // var showGrandsum = addCommas(parseFloat(grandTotal).toFixed(2));
+    // $('#div_grand_total').text('Rs. '+ showGrandsum);
+    // $('#hide_grand_total').val(grandTotal.toFixed(2));
+
+    $('#total_discount').val(totalDiscount.toFixed(2));
+
     finaltotalcalculate();
 }
 
@@ -410,15 +738,58 @@ function finaltotalcalculate(){
     let tableTotal = parseFloat($('#hidetotalorder').val()) || 0;
     let extrachargeTotal = parseFloat($('#hidechargestotal').val()) || 0;
 
-    let subTotal = tableTotal + extrachargeTotal;
-    $('#hiddenfulltotal').val(subTotal.toFixed(2)); 
+    let subTotal = parseFloat($('#hidetotalorder').val()) + extrachargeTotal;
+    $('#total_sub_amount').val(subTotal.toFixed(2));
+
+    let totalDiscount = parseFloat($('#total_discount').val()) || 0;
+    
+    let lastTotal = (tableTotal + extrachargeTotal)-totalDiscount;
+    $('#hiddenfulltotal').val(lastTotal.toFixed(2)); 
 
     let vatPercent = parseFloat($('#vat').val()) || 0;
-    let vatamount = (subTotal * vatPercent) / 100;
+    let vatamount = (lastTotal * vatPercent) / 100;
     $('#vatamount').val(vatamount.toFixed(2)); 
 
-    let totalPayment = subTotal + vatamount;
-    $('#modeltotalpayment').val(totalPayment.toFixed(2)); 
+    let totalPayment = lastTotal + vatamount;
+    var showsum = addCommas(parseFloat(totalPayment).toFixed(2));
+    $('#grand-total-amount').text('Rs. '+ showsum);
+    $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
+
+    let advancePayment = parseFloat($('#payment_total_advance_amount').val()) || 0;
+
+    const payments = [];
+    let totalPaid = 0;
+    
+    $('.payment-toggle:checked').each(function() {
+      const type = $(this).val();
+      const card = $(this).closest('.payment-method-card');
+      const amount = parseFloat(card.find('.amount-input input,.bank-amount').val()) || 0;
+      
+      const payment = { type, amount };
+      if(type === '3') {
+        payment.reference = card.find('.bank-reference').val() || '';
+      }
+      
+      payments.push(payment);
+      totalPaid += amount;
+    });
+    
+    $('#payment_data').val(JSON.stringify(payments));
+    
+    totalPaid = totalPaid + advancePayment;
+    $('#total-paid-amount').text('Rs. ' + addCommas(totalPaid.toFixed(2)));
+    $('#payment_total_paid_amount').val(totalPaid.toFixed(2));
+
+    var balancePayment = totalPayment - totalPaid;
+    balancePayment = balancePayment < 0 ? Math.abs(balancePayment) : 0;
+    $('#total-balance-amount').text('Rs. ' + addCommas(balancePayment.toFixed(2)));
+    $('#payment_total_balance_amount').val(balancePayment.toFixed(2));
+
+
+    var arrearsPayment = totalPayment - totalPaid;
+    arrearsPayment = arrearsPayment > 0 ? Math.abs(arrearsPayment) : 0;
+    $('#total-arrears-amount').text('Rs. ' + addCommas(arrearsPayment.toFixed(2)));
+    $('#payment_total_arrears_amount').val(arrearsPayment.toFixed(2));
     
 }
 
@@ -431,6 +802,7 @@ function ItemSoftDelete(button) {
         allItemsTotalCalculation();
     }
 }
+
 function extraChageSoftDelete(button) {
     if (confirm("Are you sure you want to delete this charge?")) {
         const row = $(button).closest('tr');
