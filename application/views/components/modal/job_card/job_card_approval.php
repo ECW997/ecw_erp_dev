@@ -155,6 +155,9 @@
                     </div>
                 </div>
             </div>
+            <div class="modal-footer bg-light justify-content-center py-2 border-top">
+                <small class="text-muted"></small>
+            </div>
         </div>
     </div>
 </div>

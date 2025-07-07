@@ -86,6 +86,28 @@ class Invoice extends CI_Controller {
 	
 
 
+	public function approveInvoice() {
+        $api_token = $this->session->userdata('api_token');
+        if (!$api_token) {
+            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+            redirect('Welcome/Logout');
+            return;
+        }
+
+        $form_data = $this->input->post();
+
+		$response = $this->Invoiceinfo->approveInvoice($api_token, $form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('invoice');
+		}   
+    }
+
+	
+
 	public function getJobCardDetails() {
         $api_token = $this->session->userdata('api_token');
         $id = $this->input->post('job_card_id');
