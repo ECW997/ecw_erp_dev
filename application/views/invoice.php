@@ -81,7 +81,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
-                              
+
 
                                 <button type="button" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
                                     onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
@@ -206,7 +206,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <input type="text" name="approve_id"
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>">
-                                    <input type="hidden" name="jobcard_id"
+                                    <input type="text" name="jobcard_id"
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
                                 </div>
@@ -236,9 +236,12 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <h6 class="fw-bold">Total Payment Amount: </h6>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <span class="text-dark fw-bold" id="net_price">
+                                    <span class="text-dark fw-bold" id="grand_price">
                                         Rs. <?= number_format($invoice_main_data[0]['inv_grand_total'] ?? 0, 2) ?>
                                     </span>
+
+                                    <input type="text" class="form-control form-control-sm" id="grand_price_input"
+                                        value="<?= $invoice_main_data[0]['inv_grand_total'] ?? 0 ?>">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -246,9 +249,12 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <h6 class="fw-bold">Advance Payment Amount: </h6>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <span class="text-danger fw-bold" id="net_price">
+                                    <span class="text-danger fw-bold" id="advance_price">
                                         Rs. <?= number_format($invoice_main_data[0]['payment'] ?? 0, 2) ?>
                                     </span>
+
+                                    <input type="text" class="form-control form-control-sm" id="advance_price_input"
+                                        value="<?= $invoice_main_data[0]['payment'] ?? 0 ?>">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -256,9 +262,10 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <h4 class="fw-bold">Total Payble Amount: </h4>
                                 </div>
                                 <div class="col-6 text-end">
-                                    <span class="text-primary fw-bold" id="net_price">
-                                        Rs. 9620.00
+                                    <span class="text-primary fw-bold" id="total_payble_price_show">
                                     </span>
+
+                                    <input type="text" class="form-control form-control-sm" id="total_payble_price">
                                 </div>
                             </div>
                         </div>
@@ -279,13 +286,20 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 <?php endif; ?>
                             </div>
                             <div class="col-4">
+                                <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '0'): ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
+                                    style="border-radius: 12px;" onclick="deleteInvoice()">Delete</button>
+                                <?php else: ?>
+                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                                    style="border-radius: 12px;" disabled>Delete</button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer bg-light justify-content-center py-2 border-top">
-                        <small class="text-muted"></small>
+                        <small class="text-muted">
+                            <div id="jobcard_status_message" class="mt-2 fw-bold"></div>
+                        </small>
                     </div>
                 </div>
             </div>
@@ -296,7 +310,45 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 </div>
 <?php include "include/v2/footerscripts.php"; ?>
 
+<script>
+function calculateTotalPayable() {
+    const grandPrice = parseFloat(document.getElementById('grand_price_input').value) || 0;
+    const advancePrice = parseFloat(document.getElementById('advance_price_input').value) || 0;
 
+    const totalPayable = grandPrice - advancePrice;
+    document.getElementById('total_payble_price').value = totalPayable.toFixed(2);
+
+    const formatted = new Intl.NumberFormat('en-LK', {
+        style: 'currency',
+        currency: 'LKR',
+        minimumFractionDigits: 2
+    }).format(totalPayable).replace("LKR", "Rs.");
+
+    document.getElementById('total_payble_price_show').textContent = formatted;
+}
+calculateTotalPayable();
+
+document.getElementById('grand_price_input').addEventListener('input', calculateTotalPayable);
+document.getElementById('advance_price_input').addEventListener('input', calculateTotalPayable);
+</script>
+
+<script>
+function showJobCardStatusMessage() {
+    const status = document.getElementById('approve_id').value;
+    const messageDiv = document.getElementById('jobcard_status_message');
+
+    if (status === '1') {
+        messageDiv.textContent = "This Invoice is already Approved";
+        messageDiv.classList.remove('text-danger');
+        messageDiv.classList.add('text-success');
+    } else {
+        messageDiv.textContent = "";
+        messageDiv.classList.remove('text-success', 'text-danger');
+    }
+}
+
+showJobCardStatusMessage();
+</script>
 <script>
 function createInvoice() {
     let jobtable_data = [];
@@ -411,6 +463,8 @@ function createInvoice() {
     });
 }
 
+// Approve invoice
+
 function approveInvoice() {
 
     const approveData = {
@@ -437,6 +491,34 @@ function approveInvoice() {
         }
     });
 
+}
+
+// Delete invoice
+
+function deleteInvoice() {
+
+    const approveData = {
+        id: $('#invoice_id').val()
+    };
+
+    console.log("Collected Delete Data:", approveData);
+
+    $.ajax({
+        url: '<?php echo base_url() ?>Invoice/deleteInvoice',
+        type: 'POST',
+        dataType: 'json',
+        data: approveData,
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url('Invoice') ?>';
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
 }
 
 

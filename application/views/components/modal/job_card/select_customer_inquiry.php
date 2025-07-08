@@ -174,6 +174,8 @@ function getCustomerDetails() {
 				$('#contact_no').val(customerData.contact);
 				$('#address1').val(customerData.address1);
 				$('#address2').val(customerData.address2);
+				$('#nic_number').val(customerData.nic);
+				$('#email').val(customerData.email);
 
 				$('#inqSelectConfirmModal').modal('hide');
 				$('#selectCustomerInquiryModal').modal('hide');

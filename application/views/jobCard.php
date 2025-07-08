@@ -16,25 +16,33 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                 <div class="container-fluid">
                     <div class="page-header-content py-1">
                         <div class="row d-flex align-items-center">
-                            <div class="col-4">
+                            <div class="col-2">
                                 <h1 class="page-header-title">Job Card</h1>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 text-end">
                                 <h2 class="job-header-title" id="top_nav_customer_name">
                                     <?= $job_main_data[0]['customer_name'] ?? '' ?>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 text-end">
                                 <h2 class="job-header-title" id="top_nav_vehicle_no">
                                     <?= $job_main_data[0]['vehicle_number'] ?? '' ?></h2>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 text-end">
                                 <h2 class="job-header-title" id="top_nav_vehicle">
                                     <?= $job_main_data[0]['brand_name'] ?? '' ?> -
                                     <?= $job_main_data[0]['model_name'] ?? '' ?></h2>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2 text-end">
                                 <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
                                     <?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
+                            </div>
+                            <div class="col-2 text-end">
+                                <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
+                                    onclick="window.location.href='<?= base_url('JobCard') ?>'">
+                                    <i class="fas fa-arrow-left me-1 text-dark"></i>
+                                    <i class="fas fa-file-invoice me-1 text-dark"></i>
+                                    <span class="text-dark fw-bold">Job Card List</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -53,7 +61,8 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal"
+                                        <button type="button"
+                                            class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal"
                                             data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>
@@ -65,17 +74,20 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>Job Summary Print
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>Invoice Print
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                            onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>JobCard Print
                                         </button>
                                     </div>
@@ -186,7 +198,7 @@ $(document).ready(function() {
         const jobcard_id = $('#jobcard_id').val();
 
         if (jobcard_id) {
-            fetchJobCardDiscountDetails(jobcard_id); 
+            fetchJobCardDiscountDetails(jobcard_id);
             $('#jobcarddiscountModel').modal('show');
         } else {
             alert('Invalid Job Card ID.');
@@ -228,7 +240,7 @@ function fetchJobCardDiscountDetails(jobcard_id) {
                 const standardPrice = parseFloat($('#standard_price').val()) || 0;
                 const discountAmt = parseFloat(data.discount_amount) || 0;
                 const net = standardPrice - discountAmt;
-                
+
 
 
                 // console.log("Standard Price:", standardPrice);
@@ -237,7 +249,7 @@ function fetchJobCardDiscountDetails(jobcard_id) {
 
                 $('#net_amount').val(net.toFixed(2));
                 $('#total_discount').val(discountAmt.toFixed(2));
-               
+
             } else {
                 alert('Failed to fetch discount details.');
             }
