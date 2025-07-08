@@ -66,4 +66,7 @@ $config['api_endpoints'] = [
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
     'get_allocated_payments_v1' => '/v1/get_allocated_payments',
     'payment_v1' => '/v1/payment',
+
+    'approve_invoice_v1' => '/v1/approveInvoice',
+    'delete_invoice_v1' => '/v1/delete_invoice',
 ];

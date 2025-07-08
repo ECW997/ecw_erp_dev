@@ -70,8 +70,8 @@
                                     <span id="net_discount_precentage_show">
 
                                     </span>
-                                    <input type="hidden" class="form-control form-control-sm" id="net_discount_precentage"
-                                        placeholder="Enter amount">
+                                    <input type="hidden" class="form-control form-control-sm"
+                                        id="net_discount_precentage" placeholder="Enter amount">
                                 </td>
 
                                 <td class="text-danger text-end">
@@ -100,7 +100,7 @@
                     </div>
 
 
-                        <?php
+                    <?php
                                     $currentPrice = $summary_data[0]['sub_total'] ?? 0;
                                     $changeAmount = $summary_data[0]['total_line_discount'] ?? 0;
                                     $changePercentage = $job_main_data[0]['discount'] ?? 0;
@@ -154,6 +154,9 @@
                             style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer bg-light justify-content-center py-2 border-top">
+                <small class="text-muted"></small>
             </div>
         </div>
     </div>
