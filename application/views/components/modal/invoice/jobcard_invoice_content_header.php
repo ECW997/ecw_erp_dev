@@ -230,7 +230,6 @@ $(document).ready(function() {
 
     let jobCardNumber = $('#job_card_number');
 
-
     jobCardNumber.select2({
         placeholder: 'Select...',
         width: '100%',

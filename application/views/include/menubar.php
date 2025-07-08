@@ -291,6 +291,12 @@ else if($functionmenu=='Invoice'){
     $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
 }
+else if($functionmenu=='Payment'){
+    $addcheck=checkprivilege($menuprivilegearray, 67, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 67, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
+}
 
 
 
@@ -483,6 +489,12 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php if(menucheck($menuprivilegearray, 67)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Invoice'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-cash-register"></i></div>Invoice
+            </a>
+            <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 67)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Payment'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-cash-register"></i></div>Payments
             </a>
             <?php }?>
 

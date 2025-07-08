@@ -65,7 +65,6 @@ class Invoice extends CI_Controller {
 		// $this->load->view('invoice_type', $result);
 	}
 
-
 	public function getJobcardNumbers(){
 		$api_token = $this->session->userdata('api_token');
 
@@ -83,7 +82,6 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->getJobcardNumbers($api_token,$form_data);
 		echo json_encode($response);
 	}
-	
 
 
 	public function approveInvoice() {
@@ -107,7 +105,6 @@ class Invoice extends CI_Controller {
     }
 
 	
-
 	public function getJobCardDetails() {
         $api_token = $this->session->userdata('api_token');
         $id = $this->input->post('job_card_id');
@@ -120,8 +117,6 @@ class Invoice extends CI_Controller {
         $response = $this->Invoiceinfo->fetchJobCardDetails($api_token, $id);
         echo json_encode($response);
     }
-
-	
 
 	public function getDirectSalesItemDetails($id) {
         $response = $this->Invoiceinfo->getDirectSalesItemDetails($this->api_token,$id);
@@ -149,4 +144,25 @@ class Invoice extends CI_Controller {
 		}
     }
 
+	public function getInvoiceNo(){
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->Invoiceinfo->getInvoiceNo($this->api_token,$form_data);
+		echo json_encode($response);
+	}
+
+	public function getInvoiceDetails($id) {
+        $api_token = $this->session->userdata('api_token');
+
+        if (!$api_token || !$id) {
+            echo json_encode(['status' => false, 'msg' => 'Missing job card ID or token']);
+            return;
+        }
+
+        $response = $this->Invoiceinfo->getInvoiceById($api_token, $id);
+        echo json_encode($response);
+    }
 }

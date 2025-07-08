@@ -39,8 +39,15 @@ class Invoiceinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('PUT', 'invoice_v1', $form_data, $headers);
     }
+
+    public function getInvoiceNo($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_sel2_invoice_number_v1', $form_data, $headers);
+    }
+    
     public function approveInvoice($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'approve_invoice_v1', $form_data, $headers);
     }
+
 }
