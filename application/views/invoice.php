@@ -68,6 +68,11 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
+
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn open-payment-modal" 
+                                        data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-type="invoice" data-parent-id="<?= $invoice_main_data[0]['id'] ?? '' ?>" data-parent-no="<?= $invoice_main_data[0]['invoice_number'] ?? '' ?>">
+                                    <i class="fas fa-cash-register me-1"></i> Payment
+                                </button>
                             </div>
                             
                             <div class="invoice-status-badge">
@@ -140,7 +145,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
         		</div>
         	</div>
         </div>
-
+        <?php include "components/modal/payment/payment_content.php"; ?>
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -203,22 +208,18 @@ function createInvoice() {
         discount_amount: parseFloat($('#total_discount').val()) || 0,
         vat: parseFloat($('#vat').val()) || 0,
         vat_amount: parseFloat($('#vatamount').val()) || 0,
-        total_payment: parseFloat($('#payment_total_grand_amount').val()) || 0,
+        total_payment: parseFloat($('#modeltotalpayment').val()) || 0,
         remark: $('#remark').val(),
         company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
         branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
     };
-
-    let payment_row_data = $('#payment_data').val();
-    let payment_parsed_data = JSON.parse(payment_row_data);
 
     let invoiceData = {
         invoice_meta: invoiceMeta,
         items: jobtable_data,
         items_total: $('#hidetotalorder').val(),
         charges: charge_details,
-        charges_total: $('#hidechargestotal').val(),
-        payment_data:payment_parsed_data,
+        charges_total: $('#hidechargestotal').val()
     };
 
     if (!jobtable_data || Object.keys(jobtable_data).length === 0) {

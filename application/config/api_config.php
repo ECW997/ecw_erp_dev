@@ -60,4 +60,10 @@ $config['api_endpoints'] = [
     'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
     'invoice_v1' => '/v1/invoice',
+    'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
+
+    'get_sel2_customer_v1' => '/v1/get_sel2_customer',
+    'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
+    'get_allocated_payments_v1' => '/v1/get_allocated_payments',
+    'payment_v1' => '/v1/payment',
 ];

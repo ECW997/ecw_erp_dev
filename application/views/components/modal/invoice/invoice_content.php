@@ -220,7 +220,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="row g-2">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="small form-label text-dark mb-1">Sub Total + Extra Charges</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
@@ -228,7 +228,7 @@
                                                     class="form-control text-end bg-light" readonly>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="small form-label text-dark mb-1">Total Discount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
@@ -236,7 +236,7 @@
                                                     class="form-control text-end bg-light" readonly>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 d-none">
+                                        <div class="col-md-2 d-none">
                                             <label class="small form-label text-dark mb-1">Grand Total</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
@@ -244,7 +244,7 @@
                                                     class="form-control text-end bg-light" readonly>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="small form-label text-dark mb-1">VAT (%)</label>
                                             <div class="input-group input-group-sm">
                                                 <input type="number" id="vat" name="vat" 
@@ -254,7 +254,7 @@
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="small form-label text-dark mb-1">VAT Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
@@ -262,159 +262,16 @@
                                                     class="form-control text-end bg-light" value="0" readonly>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                             <div class="payment-section mb-4 mt-4">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-body">
-                                        <h6 class="mb-3">Payment Methods</h6>
-                                    <!-- Payment Methods Row -->
-                                        <div class="row g-3 align-items-center">
-                                            <div class="col-md-4">
-                                                <div class="payment-method-card" id="cash-card">
-                                                    <div class="form-check form-switch mb-2">
-                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="cash_toggle" value="1">
-                                                    <label class="form-check-label" for="cash_toggle">Cash Payment</label>
-                                                    </div>
-                                                    <div class="input-group input-group-sm amount-input" style="display:none;">
-                                                    <span class="input-group-text">Rs.</span>
-                                                    <input type="number" class="form-control cash-amount" placeholder="Amount">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="payment-method-card" id="cheque-card">
-                                                    <div class="form-check form-switch mb-2">
-                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="cheque_toggle" value="2">
-                                                    <label class="form-check-label" for="cheque_toggle">Cheque Payment</label>
-                                                    </div>
-                                                    <div class="input-group input-group-sm amount-input" style="display:none;">
-                                                    <span class="input-group-text">Rs.</span>
-                                                    <input type="number" class="form-control cheque-amount" placeholder="Amount">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="payment-method-card" id="bank-card">
-                                                    <div class="form-check form-switch mb-2">
-                                                    <input class="form-check-input payment-toggle" style="margin-left: -2.8em;" type="checkbox" id="bank_toggle" value="3">
-                                                    <label class="form-check-label" for="bank_toggle">Bank Transfer</label>
-                                                    </div>
-                                                    <div class="payment-details" style="display:none;">
-                                                    <div class="input-group input-group-sm mb-2">
-                                                        <span class="input-group-text">Rs.</span>
-                                                        <input type="number" class="form-control bank-amount" placeholder="Amount">
-                                                    </div>
-                                                    <div class="input-group input-group-sm">
-                                                        <span class="input-group-text">Ref#</span>
-                                                        <input type="text" class="form-control bank-reference" placeholder="Reference Number">
-                                                    </div>
-                                                    </div>
-                                                </div>
+                                         <div class="col-md-2">
+                                            <label class="small form-label text-dark mb-1">Total Payment</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-primary text-white">Rs.</span>
+                                                <input type="number" step="any" id="modeltotalpayment" name="modeltotalpayment" 
+                                                    class="form-control text-end bg-primary text-white fw-bold" readonly>
                                             </div>
                                         </div>
-
-                                        <!-- Payment Summary -->
-                                        <div class="payment-summary-section mt-4">
-                                            <div class="card border-0 shadow-sm">
-                                                <!-- <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
-                                                <h6 class="mb-0">Payment Summary</h6>
-                                                <span class="badge bg-primary">Invoice Total: <span id="invoice-total-amount">Rs. 0.00</span></span>
-                                                </div> -->
-                                                <div class="card-body">
-                                                     <h5 class="mb-3">Payment Summary</h5>
-                                                <!-- Grand Total -->
-                                                <div class="row mb-3">
-                                                    <div class="col-md-12">
-                                                    <div class="d-flex justify-content-between align-items-center p-3 bg-white rounded border">
-                                                        <div>
-                                                        <span class="fw-bold text-dark">Grand Total:</span>
-                                                        <p class="small text-muted mb-0">Including all taxes, charges and discounts</p>
-                                                        </div>
-                                                        <span class="fw-bold text-dark fs-4" id="grand-total-amount">Rs. 0.00</span>
-                                                        <input type="number" step="any" class="d-none" id="payment_total_grand_amount" name="payment_total_grand_amount">
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Payment Breakdown -->
-                                                <div class="row g-3">
-                                                    <!-- Advance Payment -->
-                                                    <div class="col-md-6">
-                                                    <div class="payment-summary-card bg-advance">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <span class="fw-bold text-dark">Advance Payment</span>
-                                                            <p class="small text-muted mb-0">Amount paid in advance</p>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <span class="fw-bold text-success fs-5" id="total-advance-amount">Rs. 0.00</span>
-                                                            <input type="number" step="any" class="d-none" id="payment_total_advance_amount" name="payment_total_advance_amount" value="1000">
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                                    
-                                                    <!-- Total Paid -->
-                                                    <div class="col-md-6">
-                                                    <div class="payment-summary-card bg-paid">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <span class="fw-bold text-dark">Total Paid</span>
-                                                            <p class="small text-muted mb-0">Sum of all payments</p>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <span class="fw-bold text-primary fs-5" id="total-paid-amount">Rs. 0.00</span>
-                                                            <input type="number" step="any" class="d-none" id="payment_total_paid_amount" name="payment_total_paid_amount">
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                                    
-                                                    <!-- Current Balance -->
-                                                    <div class="col-md-6">
-                                                    <div class="payment-summary-card bg-balance">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <span class="fw-bold text-dark">Current Balance</span>
-                                                            <p class="small text-muted mb-0">Remaining for this invoice (balance for customer to pay)</p>
-                                                        </div>
-                                                        <div class="text-end">
-                                                            <span class="fw-bold text-warning fs-5" id="total-balance-amount">Rs. 0.00</span>
-                                                            <input type="number" step="any" class="d-none" id="payment_total_balance_amount" name="payment_total_balance_amount">
-                                                        </div>
-                                                        </div>
-                                                    </div>
-                                                    </div>
-                                                    
-                                                    <!-- Arrears -->
-                                                    <div class="col-md-6">
-                                                        <div class="payment-summary-card bg-arrears">
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <span class="fw-bold text-dark">Total Arrears</span>
-                                                                <p class="small text-muted mb-0">Pending payment on this invoice</p>
-                                                            </div>
-                                                            <div class="text-end">
-                                                                <span class="fw-bold text-danger fs-5" id="total-arrears-amount">Rs. 0.00</span>
-                                                                <input type="number" step="any" class="d-none" id="payment_total_arrears_amount" name="payment_total_arrears_amount">
-                                                            </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            
-                                                </div>
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                 </div>
-                                <!-- Hidden field for form submission -->
-                                <input type="hidden" id="payment_data" name="payment_data">
                             </div>
 
                             <div class="row mt-3">
@@ -754,42 +611,43 @@ function finaltotalcalculate(){
     var showsum = addCommas(parseFloat(totalPayment).toFixed(2));
     $('#grand-total-amount').text('Rs. '+ showsum);
     $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
+    $('#modeltotalpayment').val(totalPayment.toFixed(2));
 
     let advancePayment = parseFloat($('#payment_total_advance_amount').val()) || 0;
 
-    const payments = [];
-    let totalPaid = 0;
+    // const payments = [];
+    // let totalPaid = 0;
     
-    $('.payment-toggle:checked').each(function() {
-      const type = $(this).val();
-      const card = $(this).closest('.payment-method-card');
-      const amount = parseFloat(card.find('.amount-input input,.bank-amount').val()) || 0;
+    // $('.payment-toggle:checked').each(function() {
+    //   const type = $(this).val();
+    //   const card = $(this).closest('.payment-method-card');
+    //   const amount = parseFloat(card.find('.amount-input input,.bank-amount').val()) || 0;
       
-      const payment = { type, amount };
-      if(type === '3') {
-        payment.reference = card.find('.bank-reference').val() || '';
-      }
+    //   const payment = { type, amount };
+    //   if(type === '3') {
+    //     payment.reference = card.find('.bank-reference').val() || '';
+    //   }
       
-      payments.push(payment);
-      totalPaid += amount;
-    });
+    //   payments.push(payment);
+    //   totalPaid += amount;
+    // });
     
-    $('#payment_data').val(JSON.stringify(payments));
+    // $('#payment_data').val(JSON.stringify(payments));
     
-    totalPaid = totalPaid + advancePayment;
-    $('#total-paid-amount').text('Rs. ' + addCommas(totalPaid.toFixed(2)));
-    $('#payment_total_paid_amount').val(totalPaid.toFixed(2));
+    // totalPaid = totalPaid + advancePayment;
+    // $('#total-paid-amount').text('Rs. ' + addCommas(totalPaid.toFixed(2)));
+    // $('#payment_total_paid_amount').val(totalPaid.toFixed(2));
 
-    var balancePayment = totalPayment - totalPaid;
-    balancePayment = balancePayment < 0 ? Math.abs(balancePayment) : 0;
-    $('#total-balance-amount').text('Rs. ' + addCommas(balancePayment.toFixed(2)));
-    $('#payment_total_balance_amount').val(balancePayment.toFixed(2));
+    // var balancePayment = totalPayment - totalPaid;
+    // balancePayment = balancePayment < 0 ? Math.abs(balancePayment) : 0;
+    // $('#total-balance-amount').text('Rs. ' + addCommas(balancePayment.toFixed(2)));
+    // $('#payment_total_balance_amount').val(balancePayment.toFixed(2));
 
 
-    var arrearsPayment = totalPayment - totalPaid;
-    arrearsPayment = arrearsPayment > 0 ? Math.abs(arrearsPayment) : 0;
-    $('#total-arrears-amount').text('Rs. ' + addCommas(arrearsPayment.toFixed(2)));
-    $('#payment_total_arrears_amount').val(arrearsPayment.toFixed(2));
+    // var arrearsPayment = totalPayment - totalPaid;
+    // arrearsPayment = arrearsPayment > 0 ? Math.abs(arrearsPayment) : 0;
+    // $('#total-arrears-amount').text('Rs. ' + addCommas(arrearsPayment.toFixed(2)));
+    // $('#payment_total_arrears_amount').val(arrearsPayment.toFixed(2));
     
 }
 
