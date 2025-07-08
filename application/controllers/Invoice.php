@@ -84,7 +84,7 @@ class Invoice extends CI_Controller {
 		echo json_encode($response);
 	}
 	
-
+	//Approve Invoice
 
 	public function approveInvoice() {
         $api_token = $this->session->userdata('api_token');
@@ -97,6 +97,28 @@ class Invoice extends CI_Controller {
         $form_data = $this->input->post();
 
 		$response = $this->Invoiceinfo->approveInvoice($api_token, $form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('invoice');
+		}   
+    }
+
+	//Delete Invoice
+
+	public function deleteInvoice() {
+        $api_token = $this->session->userdata('api_token');
+        if (!$api_token) {
+            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+            redirect('Welcome/Logout');
+            return;
+        }
+
+        $form_data = $this->input->post();
+
+		$response = $this->Invoiceinfo->deleteInvoice($api_token, $form_data);
  
 		if ($response) {
             echo json_encode($response);
