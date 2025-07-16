@@ -15,6 +15,16 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
         <?php include "include/v2/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
+        <style>
+        .action-btn-fixed {
+            min-width: 140px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+        </style>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -22,6 +32,14 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                         <div class="row d-flex align-items-center">
                             <div class="col-4">
                                 <h1 class="page-header-title">Invoice</h1>
+                            </div>
+                            <div class="col-md-8 text-md-end">
+                                <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
+                                    onclick="window.location.href='<?= base_url('Invoice') ?>'">
+                                    <i class="fas fa-arrow-left me-1 text-dark"></i>
+                                    <i class="fas fa-file-invoice me-1 text-dark"></i>
+                                    <span class="text-dark fw-bold">Invoice List</span>
+                                </button>
                             </div>
                             <!-- <div class="col-2">
                                 <h2 class="job-header-title" id="top_nav_customer_name">
@@ -54,27 +72,39 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn" 
-                                        data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
+                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn-fixed"
+                                    data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
                                     <i class="fas fa-plus me-1"></i> New Invoice
                                 </button>
-                                
-                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn" 
-                                        data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
+
+                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed"
+                                    data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
-                                
-                                <button type="button" class="btn btn-info btn-sm rounded-2 action-btn" 
-                                        onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                              
+
+                                <button type="button" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
+                                    onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
+
 
                                 <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn open-payment-modal" 
                                         data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-type="invoice" data-parent-id="<?= $invoice_main_data[0]['id'] ?? '' ?>" data-parent-no="<?= $invoice_main_data[0]['invoice_number'] ?? '' ?>">
                                     <i class="fas fa-cash-register me-1"></i> Payment
                                 </button>
+
+                                <input type="text" name="invoice_id"
+                                    class="form-control form-control-sm input-highlight" id="invoice_id"
+                                    value="<?= isset($invoice_main_data[0]['id']) ? $invoice_main_data[0]['id'] : '' ?>"
+                                    required>
+                                <input type="text" name="approve_id"
+                                    class="form-control form-control-sm input-highlight" id="approve_id"
+                                    value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
+                                    required>
+
                             </div>
-                            
+
                             <div class="invoice-status-badge">
                                 <span class="badge bg-secondary">
                                     <?= strtoupper($invoice_type == 'direct' ? 'Direct' : 'Job Card') ?> INVOICE
@@ -85,9 +115,9 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                         <div class="invoice-content-section">
                             <div id="jobCardContent">
                                 <?php if ($invoice_type == 'direct'): ?>
-                                    <?php include "components/modal/invoice/direct_invoice_content_header.php"; ?>
+                                <?php include "components/modal/invoice/direct_invoice_content_header.php"; ?>
                                 <?php elseif ($invoice_type == 'indirect'): ?>
-                                    <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
+                                <?php include "components/modal/invoice/jobcard_invoice_content_header.php"; ?>
                                 <?php endif; ?>
                                 <?php include "components/modal/invoice/invoice_content.php"; ?>
                             </div>
@@ -96,54 +126,169 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                 </div>
             </div>
         </main>
+        <!-- Invoice Type Modal -->
 
         <div class="modal fade" id="invoiceTypeModal" tabindex="-1" aria-labelledby="invoiceTypeModalLabel"
-        	aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        	<div class="modal-dialog modal-sm modal-dialog-centered">
-        		<div class="modal-content border-0" style="box-shadow: 0 5px 20px rgba(0,0,0,0.15);">
-        			<div class="modal-header bg-primary text-white p-3">
-        				<div class="w-100 text-center">
-        					<i class="fas fa-file-invoice fa-2x mb-2"></i>
-        					<h5 class="modal-title fs-5 fw-bold mb-0" id="invoiceTypeModalLabel">
-        						SELECT INVOICE TYPE
-        					</h5>
-        				</div>
-        				<button type="button" class="btn-close btn-close-white position-absolute end-0 me-2"
-        					data-bs-dismiss="modal" aria-label="Close"></button>
-        			</div>
-        			<div class="modal-body p-4">
-        				<div class="d-grid gap-3">
-        					<button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="direct"
-        						onclick="selectInvoiceType('direct')">
-        						<div class="d-flex align-items-center">
-        							<div class="icon-circle bg-blue-soft me-3">
-        								<i class="fas fa-file-invoice text-primary"></i>
-        							</div>
-        							<div>
-        								<div class="fw-bold">Direct Invoice</div>
-        								<small class="text-muted d-block">For direct product sales</small>
-        							</div>
-        						</div>
-        					</button>
-        					<button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="indirect"
-        						onclick="selectInvoiceType('indirect')">
-        						<div class="d-flex align-items-center">
-        							<div class="icon-circle bg-orange-soft me-3">
-        								<i class="fas fa-car text-warning"></i>
-        							</div>
-        							<div>
-        								<div class="fw-bold">Job Card Invoice</div>
-        								<small class="text-muted d-block">For service jobs</small>
-        							</div>
-        						</div>
-        					</button>
-        				</div>
-        			</div>
-        			<div class="modal-footer bg-light justify-content-center py-2 border-top">
-        				<small class="text-muted">Choose an invoice type to continue</small>
-        			</div>
-        		</div>
-        	</div>
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content border-0" style="box-shadow: 0 5px 20px rgba(0,0,0,0.15);">
+                    <div class="modal-header bg-primary text-white p-3">
+                        <div class="w-100 text-center">
+                            <i class="fas fa-file-invoice fa-2x mb-2"></i>
+                            <h5 class="modal-title font-weight-bold text-white mb-0" id="invoiceTypeModalLabel">
+                                SELECT INVOICE TYPE
+                            </h5>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white position-absolute end-0 me-2"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="d-grid gap-3">
+                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="direct"
+                                onclick="selectInvoiceType('direct')">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-blue-soft me-3">
+                                        <i class="fas fa-file-invoice text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">Direct Invoice</div>
+                                        <small class="text-muted d-block">For direct product sales</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="indirect"
+                                onclick="selectInvoiceType('indirect')">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-orange-soft me-3">
+                                        <i class="fas fa-car text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">Job Card Invoice</div>
+                                        <small class="text-muted d-block">For service jobs</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light justify-content-center py-2 border-top">
+                        <small class="text-muted">Choose an invoice type to continue</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Approve Modal -->
+
+        <div class="modal fade" id="invoiceApproveModal" tabindex="-1" aria-labelledby="invoiceApproveModalLabel"
+            aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0" style="box-shadow: 0 5px 20px rgba(0,0,0,0.15);">
+                    <div class="modal-header bg-warning text-white p-3">
+                        <div class="w-100 text-left">
+                            <h5 class="modal-title text-dark fw-bold" id="jobcardApproveModelLabel">Invoice Approval
+                            </h5>
+                        </div>
+
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="d-grid gap-3">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h6 class="text-dark fw-bold">Sub total + Extra charges: </h6>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-dark fw-bold" id="subtotal_with_extra_price">
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_gross_total'] ?? 0, 2) ?>
+                                    </span>
+                                    <input type="text" name="invoice_id"
+                                        class="form-control form-control-sm input-highlight" id="invoice_id"
+                                        value="<?= isset($invoice_main_data[0]['id']) ? $invoice_main_data[0]['id'] : '' ?>">
+                                    <input type="text" name="approve_id"
+                                        class="form-control form-control-sm input-highlight" id="approve_id"
+                                        value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>">
+                                    <input type="hidden" name="jobcard_id"
+                                        class="form-control form-control-sm input-highlight" id="approve_id"
+                                        value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Total Discount Amount: </h6>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-danger fw-bold" id="discount_price">
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_discount_amount'] ?? 0, 2) ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Total Vat Amount: </h6>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-success fw-bold" id="vat_price">
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_total_tax'] ?? 0, 2) ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Total Payment Amount: </h6>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-dark fw-bold" id="net_price">
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_grand_total'] ?? 0, 2) ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h6 class="fw-bold">Advance Payment Amount: </h6>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-danger fw-bold" id="net_price">
+                                        Rs. <?= number_format($invoice_main_data[0]['payment'] ?? 0, 2) ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <h4 class="fw-bold">Total Payble Amount: </h4>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-primary fw-bold" id="net_price">
+                                        Rs. 9620.00
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row w-100">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-light w-100" data-bs-dismiss="modal"
+                                    style="border-radius: 12px; font-weight:bold;">Close</button>
+                            </div>
+                            <div class="col-4">
+                                <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '0'): ?>
+                                <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
+                                    style="border-radius: 12px;" onclick="approveInvoice()">Approve</button>
+                                <?php else: ?>
+                                <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
+                                    style="border-radius: 12px;" disabled>Approve</button>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                                    style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light justify-content-center py-2 border-top">
+                        <small class="text-muted"></small>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php include "components/modal/payment/payment_content.php"; ?>
         <?php include "include/v2/footerbar.php"; ?>
@@ -153,7 +298,6 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 
 <script>
-
 function createInvoice() {
     let jobtable_data = [];
     let charge_details = [];
@@ -161,7 +305,7 @@ function createInvoice() {
     let invoice_record_id = $('#invoice_record_id').val();
     let main_insert_status = "<?php echo $is_edit? 'edit' : 'insert';?>";
 
-    $('#tableorder tbody tr').each(function () {
+    $('#tableorder tbody tr').each(function() {
         jobtable_data.push({
             item_id: $(this).find('.item_id').text().trim(),
             item_name: $(this).find('td:eq(0)').text().trim(),
@@ -179,7 +323,7 @@ function createInvoice() {
         });
     });
 
-    $('#chargetableorder tbody tr').each(function () {
+    $('#chargetableorder tbody tr').each(function() {
         charge_details.push({
             charge_type: $(this).find('td[name="chargetype"]').text().trim(),
             charge_amount: parseFloat($(this).find('td[name="chargeamount"]').text()) || 0,
@@ -219,49 +363,80 @@ function createInvoice() {
         items: jobtable_data,
         items_total: $('#hidetotalorder').val(),
         charges: charge_details,
+
         charges_total: $('#hidechargestotal').val()
+        payment_data: payment_parsed_data,
+
     };
+
+
+    console.log(invoiceData);
 
     if (!jobtable_data || Object.keys(jobtable_data).length === 0) {
         alert('Invoice data is missing.');
         return false;
     }
 
-    // let payment_type = $('#payment_type').val();
-    // if(payment_type ==''){
-    //      alert('Payment Type Not Selected!');
-    //     $('#payment_type').focus();
-    //     return false;
-    // }
+
 
     const btn = document.getElementById('btncreateorder');
     btn.disabled = true;
-    btn.innerHTML = `Creating <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
+    btn.innerHTML =
+        `Creating <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
 
     $.ajax({
-            type: "POST",
-            dataType: 'json',
-            data: {
-                recordID:invoice_record_id,
-                main_insert_status:main_insert_status,
-                invoiceData: invoiceData
-            },
-            url: '<?php echo base_url() ?>Invoice/insertORUpdateInvoice',
-            success: function(result) {
-                if (result.status == true) {
-                        success_toastify(result.message);
-                        btn.disabled = false;
-                        btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
-                        setTimeout(function() {
-                            window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data;
-                        }, 500)
-                } else {
-                    falseResponse(result);
-                    btn.disabled = false;
-                    btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
-                }
+        type: "POST",
+        dataType: 'json',
+        data: {
+            recordID: invoice_record_id,
+            main_insert_status: main_insert_status,
+            invoiceData: invoiceData
+        },
+        url: '<?php echo base_url() ?>Invoice/insertORUpdateInvoice',
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                btn.disabled = false;
+                btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result
+                        .data;
+                }, 500)
+            } else {
+                falseResponse(result);
+                btn.disabled = false;
+                btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
             }
+        }
     });
+}
+
+function approveInvoice() {
+
+    const approveData = {
+        id: $('#invoice_id').val()
+    };
+
+    console.log("Collected Approve Data:", approveData);
+
+    $.ajax({
+        url: '<?php echo base_url() ?>Invoice/approveInvoice',
+        type: 'POST',
+        dataType: 'json',
+        data: approveData,
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' +
+                        approveData.id;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
+
 }
 
 
@@ -272,8 +447,8 @@ function exportJobCardInvoice(jobcard_id) {
 }
 
 function selectInvoiceType(type) {
- 	const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
- 	window.location.href = baseUrl + type;
+    const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
+    window.location.href = baseUrl + type;
 }
 
 function deactive_confirm() {

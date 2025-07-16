@@ -63,11 +63,7 @@ $config['api_endpoints'] = [
     'invoice_v1' => '/v1/invoice',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
 
-   
-    'get_allocated_payments_v1' => '/v1/get_allocated_payments',
-    'get_allocated_jbc_payments_v1' => '/v1/get_allocated_jbc_payments',
     'confirm_payment_v1' => '/v1/confirm_payment',
-    
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
@@ -77,4 +73,8 @@ $config['api_endpoints'] = [
     'get_payment_allocation_details_v1' => '/v1/get_payment_allocation_details',
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
+
+    'approve_invoice_v1' => '/v1/approveInvoice',
+    'delete_invoice_v1' => '/v1/delete_invoice',
+
 ];
