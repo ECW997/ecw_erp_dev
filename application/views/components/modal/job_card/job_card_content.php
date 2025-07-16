@@ -21,7 +21,7 @@
                     $net_total=0;
                     if($summary_data){
                     foreach ($summary_data as $summlist): 
-                        $is_discount_approved = $summlist['is_discount_approved'] ? '<span style="font-size:smaller;color: blue;">(Approved)</span>' : '<span style="font-size:smaller;color: red;">(Not Approved)</span>';
+                        $is_discount_approved = $summlist['is_discount_approved'] ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
                         foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
                         <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?></td>
@@ -71,7 +71,32 @@
                             <?= $job_main_data[0]['job_start_datetime'] ?? '' ?></td>
                         <td class="text-left" id="p_category"><?= $job_main_data[0]['price_category_type'] ?? '' ?>
                         </td>
-                        <td colspan="2" class="text-left fw-bold text-danger"><?php echo $is_edit? 'DRAFT' : ''; ?></td>
+
+                        <?php
+                        $statusText = $job_main_data[0]['approve_request_status_text'] ?? '';
+                        $style = '';
+
+                        switch ($statusText) {
+                            case 'DRAFT':
+                                $style = 'color: #374151;';
+                                break;
+                            case 'PENDING':
+                                $style = 'color: #FB923C;';
+                                break;
+                            case 'APPROVED':
+                                $style = 'color: #16A34A;';
+                                break;
+                            case 'CANCELLED':
+                                $style = 'color: #F87171;';
+                                break;
+                            default:
+                                $style = 'color: #1F2937;';
+                                break;
+                        }
+                        ?>
+                        <td colspan="2" class="text-left fw-bold" style="<?= $style ?>">
+                            <?= $statusText ?>
+                        </td>
                     </tr>
                     <tr>
                         <td class="text-left" id="content_address"><?= $job_main_data[0]['address'] ?? '' ?>,
@@ -255,7 +280,12 @@ function showAddJobItemModal(button) {
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
-    let idtbl_jobcard = <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? '') ?>;
+    let idtbl_jobcard = <?= isset($job_main_data[0]['idtbl_jobcard']) ? json_encode($job_main_data[0]['idtbl_jobcard']) : 0 ?>;
+
+    if (idtbl_jobcard === 0) {
+         error_toastify('Job Card Not Created or Selected!');
+         return false;
+    }
     
     $('#jobCardForm').empty();
     $.ajax({

@@ -3,6 +3,59 @@ include "include/header.php";
 
 include "include/topnavbar.php"; 
 ?>
+  <style>
+    .card-header {
+      background-color: white;
+      border-bottom: 1px solid #6c757d;
+      padding: 1rem 2rem;
+    }
+    label {
+      color: #6c757d;
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+    .form-control-sm, .custom-select-sm {
+      font-size: 0.85rem;
+      padding: 0.25rem 0.5rem;
+      height: 1.9rem;
+    }
+    #filterBtn {
+      min-width: 100px;
+      height: 1.9rem;
+      font-size: 0.85rem;
+      padding: 0 0.75rem;
+    }
+    .input-group-text {
+      background-color: #e9ecef;
+      border-right: 0;
+      font-weight: 700;
+      color: #6c757d;
+      white-space: nowrap;
+      height: 1.9rem;
+      padding: 0 0.5rem;
+      line-height: 1.9rem;
+    }
+    .input-group > .form-control:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .input-group > .form-control:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 0;
+    }
+    @media (max-width: 575.98px) {
+      .card-header .row > div {
+        margin-bottom: 0.5rem;
+      }
+      .card-header .row > div:last-child {
+        margin-bottom: 0;
+      }
+    }
+  </style>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
         <?php include "include/menubar.php"; ?>
@@ -11,26 +64,73 @@ include "include/topnavbar.php";
         <main>
         <div class="page-header page-header-light bg-white shadow">
         		<div class="container-fluid">
-        			<div class="page-header-content py-3">
+        			<div class="page-header-content py-3 d-flex justify-content-between align-items-center">
         				<h1 class="page-header-title">
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Job Card List</span>
         				</h1>
+                        <a href="<?= base_url('JobCard/jobCardDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
+                            <i class="fas fa-plus mr-2"></i>Create New JobCard
+                        </a>
         			</div>
         		</div>
         	</div>
             <div class="container-fluid mt-2 p-0 p-2">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-end">
-                        <div class="row">
-                            <div class="col">
-                                <a href="<?= base_url('JobCard/jobCardDetailIndex') ?>" 
-                                class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
-                                <i class="fas fa-plus mr-3"></i>Create New JobCard
-                                </a>
+                    <div class="p-2">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-start">
+                                <label for="date_from" class="mb-0 mr-2">Date Filter</label>
+                                <div class="input-group" style="max-width: 220px;">
+                                    <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
+                                    <div class="input-group-append">
+                                    <span class="input-group-text">to</span>
+                                    </div>
+                                    <input type="date" id="date_to" class="form-control form-control-sm" aria-label="Date To" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="sales_agent" class="mb-0 mr-2">Sales Agent</label>
+                                    <select id="sales_agent" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All</option>
+                                       <?php if (!empty($sales_agents)) : ?>
+                                            <?php foreach ($sales_agents as $agent) : ?>
+                                                <option value="<?= $agent['idtbl_sales_person']; ?>">
+                                                    <?= htmlspecialchars($agent['sales_person_name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="job_status" class="mb-0 mr-2">Job Status</label>
+                                    <select id="job_status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All</option>
+                                    <option value="0">Not Started</option>
+                                    <option value="1">Started</option>
+                                    <option value="2">Job Done</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="status" class="mb-0 mr-2">Status</label>
+                                    <select id="status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All Status</option>
+                                    <option value="0">Draft</option>
+                                    <option value="1">Pending</option>
+                                    <option value="2">Approved</option>
+                                    <option value="3">Cancelled</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
+                                    <i class="fas fa-filter mr-1"></i> Filter
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm ml-2" id="clearFilterBtn">Clear</button>
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-12">
@@ -39,11 +139,16 @@ include "include/topnavbar.php";
         								<thead>
         									<tr>
                                                 <th>#</th>
+                                                <th>Date</th>
                                                 <th>Job Card No</th>
-                                                <th>Progress Status</th>
-                                                <th>Start Date</th>
-                                                <th>Complete Date</th>
-                                                <th>Handover Date</th>
+                                                <th>Customer</th>
+                                                <th>Vehicle</th>
+                                                <th>Scheduled</th>
+                                                <th>Completed</th>
+                                                <th>Handover</th>
+                                                <th>Sales Agent</th>
+                                                <th>Job Status</th>
+                                                <th>Status</th>
         										<th class="text-right">Actions</th>
         									</tr>
         								</thead>
@@ -73,7 +178,7 @@ include "include/topnavbar.php";
             "destroy": true,
             "processing": true,
             "serverSide": true,
-            dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            dom: "<'row'<'col-sm-5'l><'col-sm-2'><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             responsive: true,
             lengthMenu: [
                 [10, 25, 50, -1],
@@ -102,6 +207,13 @@ include "include/topnavbar.php";
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + api_token 
                 }, 
+                 data: function(d) {
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.sales_agent = $('#sales_agent').val();
+                    d.job_status = $('#job_status').val();
+                    d.status = $('#status').val();
+                },
                 dataSrc: function (json) {
                     if (json.status === false && json.code === 401) {
                         falseResponse(errorObj);
@@ -121,19 +233,91 @@ include "include/topnavbar.php";
                     "data": "idtbl_jobcard"
                 },
                 {
+                    "data": "jobcard_date"
+                },
+                {
                     "data": "job_card_number"
                 },
-                 {
-                    "data": "job_progress_status_text"
+                {
+                    "data": "customer_name"
                 },
-                 {
+                {
+                    "data": "vehicle_number"
+                },
+                {
                     "data": "job_start_date"
                 },
-                 {
-                    "data": "complete_date"
+                {
+                    data: "complete_date",
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        if (row.job_progress_status_text !== "Completed") {
+                            return `<i class="fas fa-hourglass-half text-muted" title="In Progress"></i>`;
+                        }
+
+                        return `<span class="text-success">${data}</span>`;
+                    }
                 },
-                 {
+                {
                     "data": "handover_date"
+                },
+                {
+                    "data": "sales_person_name"
+                },
+                {
+                    data: "job_progress_status_text",
+                    render: function (data, type, row) {
+                        let baseClasses = "rounded px-3 py-1 text-xs font-semibold inline-block select-none";
+                        let style = "";
+
+                        switch (data) {
+                        case "Not Started":
+                            style = "background-color: #D9D9D9; color: #6B7280;";
+                            break;
+                        case "In Progress":
+                            style = "background-color: #BBF7D0; color: #15803D;";
+                            break;
+                        case "Completed":
+                            style = "background-color: #22C55E; color: #D1FAE5;"; 
+                            break;
+                        case "On Hold":
+                            style = "background-color: #DC2626; color: #FEE2E2;"; 
+                            break;
+                        case "Pending RM":
+                            style = "background-color: #FB923C; color: #FFEDD5;"; 
+                            break;
+                        default:
+                            style = "background-color: #1F2937; color: #F3F4F6;"; 
+                        }
+
+                        return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                    }
+                },
+                {
+                    data: "status",
+                    render: function (data, type, row) {
+                        let baseClasses = "rounded px-3 py-1 text-xs font-semibold inline-block select-none";
+                        let style = "";
+
+                        switch (data) {
+                        case "Draft":
+                            style = "background-color: #374151; color: #E5E7EB;"; 
+                            break;
+                        case "Pending":
+                            style = "background-color: #FB923C; color: #FFEDD5;"; 
+                            break;
+                        case "Approved":
+                            style = "background-color: #16A34A; color: #D1FAE5;"; 
+                            break;
+                        case "Cancelled":
+                            style = "background-color: #F87171; color: #FEE2E2;"; 
+                            break;
+                        default:
+                            style = "background-color: #1F2937; color: #F3F4F6;"; 
+                        }
+
+                        return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                    }
                 },
                 {
                     "targets": -1,
@@ -251,6 +435,15 @@ include "include/topnavbar.php";
                     }
                 });
             }
+        });
+
+        $('#filterBtn').on('click', function() {
+            $('#dataTable').DataTable().ajax.reload();
+        });
+
+        $('#clearFilterBtn').on('click', function() {
+            $('#date_from, #date_to, #sales_agent, #job_status, #status').val('');
+            $('#dataTable').DataTable().ajax.reload();
         });
     });
 

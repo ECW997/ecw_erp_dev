@@ -6,6 +6,14 @@ class Paymentinfo extends CI_Model{
         $this->load->helper('api_helper'); 
     }
 
+    public function getPaymentById($api_token,$id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'payment_v1', $id, $headers);
+    }
+    public function getDraftReceiptNO($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_draft_receiptno_v1', $form_data, $headers);
+    }
     public function getCustomer($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'get_sel2_customer_v1', $form_data, $headers);
@@ -15,17 +23,37 @@ class Paymentinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('GET', 'get_outstanding_invoices_v1', $form_data, $headers);
     }
+    public function getJobCardsByCustomer($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_jobcards_by_customer_v1', $form_data, $headers);
+    }
+    public function createReceipt($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'payment_v1', $form_data, $headers);
+    }
+    public function getPayDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_payment_details_v1', $form_data, $headers);
+    }
+    public function getPayAllocationDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_payment_allocation_details_v1', $form_data, $headers);
+    }
     public function insertORUpdatePayment($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'payment_v1', $form_data, $headers);
     }
-    public function updatePayment($api_token,$form_data) {
+    public function verifyPayment($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('PUT', 'payment_v1', $form_data, $headers);
     }
-    public function getAllocatedPayments($api_token,$form_data) {
+
+    public function deletePayment($api_token,$form_data) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_allocated_payments_v1', $form_data, $headers);
+        return call_api('POST', 'delete_payment_v1', $form_data, $headers);
     }
-    
+    public function getReceiptPdfDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_Receipt_pdf_v1', $form_data, $headers);
+    }
 }

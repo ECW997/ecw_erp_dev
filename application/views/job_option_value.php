@@ -87,7 +87,7 @@ include "include/topnavbar.php";
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <form action="<?php echo base_url() ?>JobOptionGroup/jobOptionGroupInsertUpdate"
                                     method="post" autocomplete="off">
                                     <div class="form-group mb-1">
@@ -147,7 +147,7 @@ include "include/topnavbar.php";
                                     <input type="hidden" name="recordOption" id="recordOption" value="1">
                                 </form>
                             </div>
-                            <div class="col-8">
+                            <div class="col-9">
                                 <div class="scrollbar pb-3" id="style-2">
                                     <div id="crudTable"></div>
                                 </div>
@@ -164,7 +164,7 @@ include "include/topnavbar.php";
 
         <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="viewModalLabel">View Option Value</h5>

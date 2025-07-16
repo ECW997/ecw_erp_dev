@@ -198,6 +198,7 @@ function addToJobCard(inputMethod){
         continueAddToJobCard(inputMethod,btn);
     }
 
+
 }
 
 function continueAddToJobCard(inputMethod,btn){
@@ -393,7 +394,7 @@ function continueAddToJobCard(inputMethod,btn){
         // error_toastify('Please fill all required fields in the edited sections.');
         var $modalBody = $('.modal.show .modal-body');
         var $invalidField = $modalBody.find('.is-invalid:first');
-
+      
         if ($invalidField.length) {
             var scrollOffset = $invalidField.offset().top - $modalBody.offset().top + $modalBody.scrollTop() - 100;
 
@@ -401,7 +402,11 @@ function continueAddToJobCard(inputMethod,btn){
                 scrollTop: scrollOffset
             }, 500);
         }
+
+        btn.disabled = true;
         return;
+    }else{
+        btn.disabled = false;  
     }
 
     // arrange data
@@ -494,8 +499,8 @@ function continueAddToJobCard(inputMethod,btn){
         });
     }
 
-    console.log(finalDataArray);
-    console.log("Prepared Job Data: ", jobData);
+    // console.log(finalDataArray);
+    // console.log("Prepared Job Data: ", jobData);
 
     $.ajax({
             type: "POST",
