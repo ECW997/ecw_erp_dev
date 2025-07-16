@@ -24,7 +24,6 @@
                                 value="<?= $job_main_data[0]['approve_request_status'] ?? '' ?>">
                         </div>
                     </div>
-                    <div id="jobcard_status_message" class="mt-2 fw-bold" style="margin-bottom: 50px;"></div>
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
@@ -156,7 +155,7 @@
                 </div>
             </div>
             <div class="modal-footer bg-light justify-content-center py-2 border-top">
-                <small class="text-muted"></small>
+                <small class="text-muted"><div id="jobcard_status_message" class="mt-2 fw-bold"></div></small>
             </div>
         </div>
     </div>

@@ -1,55 +1,78 @@
-
-<div class="modal fade" id="jobHeaderModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true" data-bs-backdrop="static">
-	<div class="modal-dialog modal-dialog-centered modal-lg">
-		<div class="modal-content rounded-4">
-			<div class="modal-header bg-primary">
-				<h5 class="modal-title text-white" id="jobHeaderModalLabel">New Job Card - Job Header Details</h5>
-				<button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
-					aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="mb-3 row">
-					<div class="col">
-						<h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
-						<input type="text" class="form-control mb-2 required-field" id="cus_name" name="cus_name"
-							placeholder="Customer Name">
-						<input type="text" class="form-control" id="contact_no" name="contact_no"
-							placeholder="Contact No">
-					</div>
-					<div class="col">
-						<h6 class="col-form-label me-2 text-nowrap">Address</h6>
-						<input type="text" class="form-control mb-2 required-field" id="address1" name="address1"
-							placeholder="Address 1">
-						<input type="text" class="form-control" id="address2" name="address2" placeholder="Address 2">
-					</div>
-				</div>
-				<div class="mb-3 row">
-					<div class="col-6">
-						<h6 class="col-form-label me-2 text-nowrap">Schedule Date</h6>
-						<input type="date" class="form-control required-field" id="schedule_date" name="schedule_date"
-								placeholder="Schedule Date">
-					</div>
-					<div class="col-6">
-						<h6 class="col-form-label me-2 text-nowrap">Handover_date</h6>
-						<input type="date" class="form-control required-field" id="handover_date" name="handover_date"
-								placeholder="Delivery Date">
-					</div>
-				</div>
-				<div class="mb-3 row">
+<div class="modal fade" id="jobHeaderModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true"
+    data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="jobHeaderModalLabel">New Job Card - Job Header Details</h5>
+                <button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 row">
+                    <div class="col">
+                        <h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
+                        <input type="text" class="form-control mb-2 required-field" id="cus_name" name="cus_name"
+                            placeholder="Customer Name">
+                        <input type="text" class="form-control mb-2" id="contact_no" name="contact_no"
+                            placeholder="Contact No">
+                        <input type="text" class="form-control" id="nic_number"
+                            name="nic_number" placeholder="NIC No">
+                    </div>
+                    <div class="col">
+                        <h6 class="col-form-label me-2 text-nowrap">Address</h6>
+                        <input type="text" class="form-control mb-2 required-field" id="address1" name="address1"
+                            placeholder="Address 1">
+                        <input type="text" class="form-control mb-2" id="address2" name="address2" placeholder="Address 2">
+                        <input type="text" class="form-control" id="email"
+                            name="email" placeholder="E-mail">
+                    </div>
+                </div>
+                <div class="mb-3 row">
                     <div class="col-6">
-                        <label class="col-form-label">Price Category</label>
-                        <select class="form-control form-control-sm required-field" id="pc_category" name="pc_category" required>
+                        <h6 class="col-form-label me-2 text-nowrap">Schedule Date</h6>
+                        <input type="date" class="form-control required-field" id="schedule_date" name="schedule_date"
+                            placeholder="Schedule Date">
+                    </div>
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">Handover_date</h6>
+                        <input type="date" class="form-control required-field" id="handover_date" name="handover_date"
+                            placeholder="Delivery Date">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
+                        <select class="form-control form-control-sm required-field" id="vat_reg_type"
+                            name="vat_reg_type" required>
+                            <option value="">Select VAT Type</option>
+                            <option value="1">Non VAT</option>
+                            <option value="2">VAT</option>
+                            <option value="3">SVAT</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Registration No <span
+                                class="text-danger">*</span></h6>
+                        <input type="text" class="form-control required-field" id="vat_number" name="vat_number"
+                            placeholder="VAT Registration No">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
+                        <select class="form-control form-control-sm required-field" id="pc_category" name="pc_category"
+                            required>
                             <option value="">Select</option>
                         </select>
                     </div>
                 </div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" id="createJobCardBtn" class="btn btn-primary">Create Job Card<i
-						class="fas fa-plus-circle ml-2"></i></i></button>
-			</div>
-		</div>
-	</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="createJobCardBtn" class="btn btn-primary">Create Job Card<i
+                        class="fas fa-plus-circle ml-2"></i></i></button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="createJobCardConfirmModal" tabindex="-1" aria-labelledby="createJobCardConfirmModalLabel"
@@ -99,14 +122,15 @@
                         <label class="form-label">Address</label>
                         <input type="text" class="form-control mb-2" id="edit_address1" name="edit_address1"
                             placeholder="Address 1">
-                        <input type="text" class="form-control" id="edit_address2" name="edit_address2" placeholder="Address 2">
+                        <input type="text" class="form-control" id="edit_address2" name="edit_address2"
+                            placeholder="Address 2">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Schedule Date</label>
-                        <input type="datetime-local" class="form-control" id="edit_schedule_date" name="edit_schedule_date"
-                            placeholder="Schedule Date">
+                        <input type="datetime-local" class="form-control" id="edit_schedule_date"
+                            name="edit_schedule_date" placeholder="Schedule Date">
                     </div>
                     <div class="col-6">
                         <label class="col-form-label">Delivery Date</label>
@@ -154,22 +178,21 @@
 </div>
 
 <script>
+$(document).on('click', '#createJobCardBtn', function() {
+    let isValid = true;
+    $('.required-field').each(function() {
+        let value = $(this).val();
 
-$(document).on('click','#createJobCardBtn', function(){
-	let isValid = true;
-	$('.required-field').each(function () {
-		let value = $(this).val();
-
-		if (!value || value === "") {
-			$(this).addClass('is-invalid');
-			isValid = false;
-		} else {
-			$(this).removeClass('is-invalid');
-		}
-	});	
-	if (isValid) {
-		$('#createJobCardConfirmModal').modal('show');
-	}
+        if (!value || value === "") {
+            $(this).addClass('is-invalid');
+            isValid = false;
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    if (isValid) {
+        $('#createJobCardConfirmModal').modal('show');
+    }
 })
 
 $(document).ready(function() {
@@ -206,63 +229,69 @@ $(document).ready(function() {
     });
 });
 
-function confirmCreateJobCard(){
-	customerData.name=$('#cus_name').val();
-	customerData.contact=$('#contact_no').val();
-	customerData.address1=$('#address1').val();
-	customerData.address2=$('#address2').val();
-	customerData.schedule_date=$('#schedule_date').val();
-	customerData.handover_date=$('#handover_date').val();
-	customerData.status='DRAFT';
-	customerData.price_category=$('#pc_category').val();
+function confirmCreateJobCard() {
+    customerData.name = $('#cus_name').val();
+    customerData.contact = $('#contact_no').val();
+    customerData.address1 = $('#address1').val();
+    customerData.address2 = $('#address2').val();
+    customerData.schedule_date = $('#schedule_date').val();
+    customerData.handover_date = $('#handover_date').val();
+    customerData.status = 'DRAFT';
+    customerData.price_category = $('#pc_category').val();
+    customerData.vat_reg_type = $('#vat_reg_type').val();
+    customerData.vat_number = $('#vat_number').val();
+    customerData.nic = $('#nic_number').val();
+    customerData.email = $('#email').val();
+    customerData.vat_type = $('#vat_reg_type').val();
+    customerData.vat_number = $('#vat_number').val();
 
-	$('#createJobCardConfirmModal').modal('hide');
-	$('#jobHeaderModal').modal('hide');
-	$('#jobHeaderModal_edit').modal('hide');
-	$('#main_job_details').modal('hide');
-	$('.modal-backdrop').remove();
+    $('#createJobCardConfirmModal').modal('hide');
+    $('#jobHeaderModal').modal('hide');
+    $('#jobHeaderModal_edit').modal('hide');
+    $('#main_job_details').modal('hide');
+    $('.modal-backdrop').remove();
 
-	createNewJobCard();
+    createNewJobCard();
 }
 
-function confirmEditJobCard(){
-	customerData.name=$('#cus_name').val();
-	customerData.contact=$('#contact_no').val();
-	customerData.address1=$('#address1').val();
-	customerData.address2=$('#address2').val();
-	customerData.schedule_date=$('#schedule_date').val();
-	customerData.handover_date=$('#handover_date').val();
-	customerData.status='DRAFT';
-	customerData.price_category=$('#pc_category').val();
+function confirmEditJobCard() {
+    customerData.name = $('#cus_name').val();
+    customerData.contact = $('#contact_no').val();
+    customerData.address1 = $('#address1').val();
+    customerData.address2 = $('#address2').val();
+    customerData.schedule_date = $('#schedule_date').val();
+    customerData.handover_date = $('#handover_date').val();
+    customerData.status = 'DRAFT';
+    customerData.price_category = $('#pc_category').val();
 
-	$('#createJobCardConfirmModal').modal('hide');
-	$('#jobHeaderModal').modal('hide');
-	$('#jobHeaderModal_edit').modal('hide');
-	$('#main_job_details').modal('hide');
-	$('.modal-backdrop').remove();
+    $('#createJobCardConfirmModal').modal('hide');
+    $('#jobHeaderModal').modal('hide');
+    $('#jobHeaderModal_edit').modal('hide');
+    $('#main_job_details').modal('hide');
+    $('.modal-backdrop').remove();
 
-	editJobCard();
+    editJobCard();
 }
 
-function createNewJobCard() { 
-	$.ajax({
-		type: "POST",
-		dataType: 'json',
-		data: {
-			data: customerData
-		},
-		url: '<?php echo base_url() ?>JobCard/createJobCard',
-		success: function (result) {
-			if (result.status == true) {
-				success_toastify(result.message);
-				setTimeout(function() {
-					window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + result.data;
-				}, 1000);
-			} else {
-				falseResponse(result);
-			}
-		}
-	});
+function createNewJobCard() {
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+            data: customerData
+        },
+        url: '<?php echo base_url() ?>JobCard/createJobCard',
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + result
+                        .data;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
 }
-
 </script>
