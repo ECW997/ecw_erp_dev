@@ -1,9 +1,11 @@
-<table id="detailDataTable" class="table table-bordered table-striped table-sm nowrap w-100">
-    <thead>
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+<table id="detailDataTable" class="table table-bordered table-striped table-sm nowrap w-100" style="white-space: nowrap;">
+    <thead class="sticky-top bg-white">
         <tr>
             <th>ID</th>
             <th>Value Name</th>
             <th>Parent Option Value</th>
+            <th>Full Hierarchy</th>
             <th class="text-center">IsActive</th>
             <th class="text-right <?php echo ($modalOption == '2') ? 'd-none' : '' ?>">Actions</th>
             <th class="text-center <?php echo ($modalOption == '1') ? 'd-none' : '' ?>">Status</th>
@@ -17,6 +19,7 @@
                         <td><?php echo  $list['id'] ?></td>
                         <td><?php echo  $list['ValueName'] ?></td>
                         <td><?php echo  $list['parent_value_name'] ?></td>
+                        <td><?php echo  $list['full_hierarchy'] ?></td>
                         <td class="text-center"><?php echo  ($list['IsActive'] == '1'?'<span class="badge badge-pill badge-success"><i class="fas fa-check"></i>':'<span class="badge badge-pill badge-warning"><i class="fas fa-times"></i>') ?></td>
                         <td class="text-right <?php echo ($modalOption == '2') ? 'd-none' : '' ?>">
                         <button title="Edit" class="btn btn-sm btn-primary mr-2 detailEditBtn <?php echo ($editcheck!=1? 'd-none' : '')?>" id="<?php echo  $list['id'] ?>"><i class="fas fa-pen"></i></button>
@@ -48,3 +51,4 @@
         <?php endif; ?>
     </tbody>
 </table>
+</div>

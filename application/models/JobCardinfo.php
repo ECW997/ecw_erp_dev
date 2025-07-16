@@ -5,7 +5,11 @@ class JobCardinfo extends CI_Model{
         parent::__construct();
         $this->load->helper('api_helper'); 
     }
-    
+
+    public function getSalesAgent($api_token,$id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_sales_agents_v1', $id, $headers);
+    }
     public function getCustomerDetails($api_token,$id) {
         $headers = get_api_headers($api_token);
         return call_api('GET', 'customer_details_v1', $id, $headers);
@@ -68,6 +72,10 @@ class JobCardinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'get_item_price_v1', $form_data, $headers);
     }
+
+
+
+
 
     public function Getvehicletype(){
         $this->db->select('idtbl_vehicle_type , vehicle_type');
