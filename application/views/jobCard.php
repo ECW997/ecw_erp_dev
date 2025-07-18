@@ -143,6 +143,7 @@ const customerData = {
     vehicle_year: "",
     vehicle_year_id: "",
     price_category: "",
+    price_category_name: "",
     sales_person_name: "",
     schedule_date: "",
     handover_date: "",

@@ -77,22 +77,45 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <i class="fas fa-plus me-1"></i> New Invoice
                                 </button>
 
+                                <?php 
+                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? null;
+                                if (!is_null($is_confirmed)): ?>
                                 <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed"
                                     data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
+                                <?php else: ?>
+                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed"
+                                    disabled>
+                                    <i class="fas fa-check me-1"></i> Approve
+                                </button>
+                                <?php endif; ?>
 
 
-                                <button type="button" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
+                                <?php 
+                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? '0';
+                                if ($is_confirmed === '1'): ?>
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
                                     onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
-
-
-                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn open-payment-modal" 
-                                        data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-type="invoice" data-parent-id="<?= $invoice_main_data[0]['id'] ?? '' ?>" data-parent-no="<?= $invoice_main_data[0]['invoice_number'] ?? '' ?>">
-                                    <i class="fas fa-cash-register me-1"></i> Payment
+                                <?php else: ?>
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                    disabled>
+                                    <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
+                                <?php endif; ?>
+
+
+
+
+                                <!-- <button type="button"
+                                    class="btn btn-secondary btn-sm rounded-2 action-btn-fixed open-payment-modal"
+                                    data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-type="invoice"
+                                    data-parent-id="<?= $invoice_main_data[0]['id'] ?? '' ?>"
+                                    data-parent-no="<?= $invoice_main_data[0]['invoice_number'] ?? '' ?>">
+                                    <i class="fas fa-cash-register me-1"></i> Payment
+                                </button> -->
 
                                 <input type="text" name="invoice_id"
                                     class="form-control form-control-sm input-highlight" id="invoice_id"
@@ -207,8 +230,11 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>">
                                     <input type="text" name="jobcard_id"
-                                        class="form-control form-control-sm input-highlight" id="approve_id"
+                                        class="form-control form-control-sm input-highlight" id="jobcard_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
+                                    <input type="text" name="series_type_id"
+                                        class="form-control form-control-sm input-highlight" id="series_type_id"
+                                        value="<?= isset($invoice_main_data[0]['series_type']) ? $invoice_main_data[0]['series_type'] : '' ?>">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -233,14 +259,13 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             </div>
                             <div class="row mb-3">
                                 <div class="col-6">
-                                    <h6 class="fw-bold">Total Payment Amount: </h6>
+                                    <h6 class="fw-bold">Total Invoice Amount: </h6>
                                 </div>
                                 <div class="col-6 text-end">
                                     <span class="text-dark fw-bold" id="grand_price">
                                         Rs. <?= number_format($invoice_main_data[0]['inv_grand_total'] ?? 0, 2) ?>
                                     </span>
-
-                                    <input type="text" class="form-control form-control-sm" id="grand_price_input"
+                                    <input type="hidden" class="form-control form-control-sm" id="grand_price_input"
                                         value="<?= $invoice_main_data[0]['inv_grand_total'] ?? 0 ?>">
                                 </div>
                             </div>
@@ -250,11 +275,10 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 </div>
                                 <div class="col-6 text-end">
                                     <span class="text-danger fw-bold" id="advance_price">
-                                        Rs. <?= number_format($invoice_main_data[0]['payment'] ?? 0, 2) ?>
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_advance_total'] ?? 0, 2) ?>
                                     </span>
-
-                                    <input type="text" class="form-control form-control-sm" id="advance_price_input"
-                                        value="<?= $invoice_main_data[0]['payment'] ?? 0 ?>">
+                                    <input type="hidden" class="form-control form-control-sm" id="advance_price_input"
+                                        value="<?= $invoice_main_data[0]['inv_advance_total'] ?? 0 ?>">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -263,9 +287,10 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 </div>
                                 <div class="col-6 text-end">
                                     <span class="text-primary fw-bold" id="total_payble_price_show">
+                                        Rs. <?= number_format($invoice_main_data[0]['inv_payble_total'] ?? 0, 2) ?>
                                     </span>
-
-                                    <input type="text" class="form-control form-control-sm" id="total_payble_price">
+                                    <input type="hidden" class="form-control form-control-sm" id="total_payble_price"
+                                        value="<?= $invoice_main_data[0]['inv_payble_total'] ?? 0 ?>">
                                 </div>
                             </div>
                         </div>
@@ -279,21 +304,28 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             <div class="col-4">
                                 <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '0'): ?>
                                 <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
-                                    style="border-radius: 12px;" onclick="approveInvoice()">Approve</button>
+                                    style="border-radius: 12px;" onclick="approveInvoice()">Approve Invoice</button>
                                 <?php else: ?>
                                 <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
-                                    style="border-radius: 12px;" disabled>Approve</button>
+                                    style="border-radius: 12px;" disabled>Approve Invoice</button>
                                 <?php endif; ?>
                             </div>
                             <div class="col-4">
-                                <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '0'): ?>
+                                <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '1'): ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" onclick="deleteInvoice()">Delete</button>
+                                    style="border-radius: 12px;" onclick="deleteInvoice()">Cancel Invoice</button>
                                 <?php else: ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" disabled>Delete</button>
+                                    style="border-radius: 12px;" disabled>Cancel Invoice</button>
                                 <?php endif; ?>
                             </div>
+                            <!-- <div class="col-4">
+                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                                    style="border-radius: 12px;" onclick="deleteInvoice()">Delete</button>
+                               
+                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                                    style="border-radius: 12px;" disabled>Delete</button>
+                            </div> -->
                         </div>
                     </div>
                     <div class="modal-footer bg-light justify-content-center py-2 border-top">
@@ -310,27 +342,24 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 </div>
 <?php include "include/v2/footerscripts.php"; ?>
 
-<script>
+<!-- <script>
 function calculateTotalPayable() {
     const grandPrice = parseFloat(document.getElementById('grand_price_input').value) || 0;
     const advancePrice = parseFloat(document.getElementById('advance_price_input').value) || 0;
 
     const totalPayable = grandPrice - advancePrice;
     document.getElementById('total_payble_price').value = totalPayable.toFixed(2);
-
     const formatted = new Intl.NumberFormat('en-LK', {
         style: 'currency',
         currency: 'LKR',
         minimumFractionDigits: 2
     }).format(totalPayable).replace("LKR", "Rs.");
-
     document.getElementById('total_payble_price_show').textContent = formatted;
 }
 calculateTotalPayable();
-
 document.getElementById('grand_price_input').addEventListener('input', calculateTotalPayable);
 document.getElementById('advance_price_input').addEventListener('input', calculateTotalPayable);
-</script>
+</script> -->
 
 <script>
 function showJobCardStatusMessage() {
@@ -351,8 +380,29 @@ showJobCardStatusMessage();
 </script>
 <script>
 function createInvoice() {
+
+    let seriesType = $('#series_type').val();
+    if (seriesType.trim() === '' || seriesType === ' ') {
+        alert('Please select "Invoice Series Type".');
+        $('#series_type').focus();
+        return;
+    }
+    // if (seriesType.trim() === '' || seriesType === ' ') {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Invoice Series Type Required',
+    //         text: 'Please select "Invoice Series Type".',
+    //         confirmButtonColor: '#3085d6',
+    //         confirmButtonText: 'OK'
+    //     }).then(() => {
+    //         $('#series_type').focus();
+    //     });
+    //     return;
+    // }
+
     let jobtable_data = [];
     let charge_details = [];
+    let reciept_details = [];
 
     let invoice_record_id = $('#invoice_record_id').val();
     let main_insert_status = "<?php echo $is_edit? 'edit' : 'insert';?>";
@@ -384,6 +434,19 @@ function createInvoice() {
         });
     });
 
+
+    $('#reciepttableorder tbody tr').each(function() {
+        reciept_details.push({
+            receipt_number: $(this).find('td[name="receiptnumber"]').text().trim(),
+            jobcard_number: $(this).find('td[name="jobcardnumber"]').text().trim(),
+            pay_date: $(this).find('td[name="paydate"]').text().trim(),
+            payment_type: $(this).find('td[name="paymenttype"]').text().trim(),
+            receipt_amount: parseFloat($(this).find('td[name="receiptamount"]').text()) || 0,
+            insert_status: $(this).find('.insert_status').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
+        });
+    });
+
     let invoiceMeta = {
         invoice_record_id: invoice_record_id,
         main_insert_status: main_insert_status,
@@ -398,13 +461,15 @@ function createInvoice() {
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
         contact_no: $('#customer_contact').val(),
-        // payment_type: $('#payment_type').val(),
+        series_type: $('#series_type option:selected').val(),
         sub_total: parseFloat($('#total_sub_amount').val()) || 0,
         discount_pc: 0,
         discount_amount: parseFloat($('#total_discount').val()) || 0,
         vat: parseFloat($('#vat').val()) || 0,
         vat_amount: parseFloat($('#vatamount').val()) || 0,
         total_payment: parseFloat($('#modeltotalpayment').val()) || 0,
+        total_payable_payment: parseFloat($('#modeltotalpayablepayment').val()) || 0,
+        advance_total_amount: parseFloat($('#advanceamount').val()) || 0,
         remark: $('#remark').val(),
         company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
         branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
@@ -415,12 +480,12 @@ function createInvoice() {
         items: jobtable_data,
         items_total: $('#hidetotalorder').val(),
         charges: charge_details,
+        charges_total: $('#hidechargestotal').val(),
+        receipts: reciept_details,
+        receipts_total: $('#hideadvancetotal').val(),
 
-        charges_total: $('#hidechargestotal').val()
-        payment_data: payment_parsed_data,
 
     };
-
 
     console.log(invoiceData);
 
@@ -468,7 +533,8 @@ function createInvoice() {
 function approveInvoice() {
 
     const approveData = {
-        id: $('#invoice_id').val()
+        id: $('#invoice_id').val(),
+        series_type_id: $('#series_type_id').val()
     };
 
     console.log("Collected Approve Data:", approveData);

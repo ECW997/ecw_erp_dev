@@ -7,26 +7,29 @@
                     <div class="form-group mb-3">
                         <label class="form-label small fw-bold">Date <span class="text-danger">*</span></label>
                         <input type="date" class="form-control form-control-sm input-field" name="date" id="date"
-                            value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>" required readonly>
+                            value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>"
+                            required readonly>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label class="form-label small fw-bold">Job Card No <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-sm input-field" name="job_card_number" id="job_card_number" required>
+                        <select class="form-select form-select-sm input-field" name="job_card_number"
+                            id="job_card_number" required>
                             <option value="">Select</option>
-                            <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
-                                <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
-                                    <?= $invoice_main_data[0]['job_card_no'] ?>
-                                </option>
-                            <?php endif; ?>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="invoice-number mt-1">
                         <span class="small fw-bold text-dark">Invoice #</span>
-                       <span class="badge bg-primary"><?= isset($invoice_main_data[0]['invoice_number']) ? $invoice_main_data[0]['invoice_number'] : 'New' ?></span>
+                        <span class="badge bg-primary">
+                            <?= !empty($invoice_main_data[0]['invoice_number']) 
+                            ? $invoice_main_data[0]['invoice_number'] 
+                            : (!empty($invoice_main_data[0]['draft_number']) 
+                                ? $invoice_main_data[0]['draft_number'] 
+                                : 'New') ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -36,22 +39,29 @@
                 <div class="row g-3">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-label small fw-bold">Customer Name <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">Customer Name <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="customer_name" class="form-control form-control-sm input-field"
-                                id="customer_name" value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>" required>
-                            <input type="hidden" name="customer_id" id="customer_id" value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
+                                id="customer_name"
+                                value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>"
+                                required>
+                            <input type="hidden" name="customer_id" id="customer_id"
+                                value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold">Address <span class="text-danger">*</span></label>
                             <input type="text" name="customer_address" class="form-control form-control-sm input-field"
-                                id="customer_address" value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>" required>
+                                id="customer_address"
+                                value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>"
+                                required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-label small fw-bold">Vehicle No <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">Vehicle No <span
+                                    class="text-danger">*</span></label>
                             <input type="text" name="vehicle_no" class="form-control form-control-sm input-field"
                                 id="vehicle_no" required>
                         </div>
@@ -65,13 +75,16 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="form-label small fw-bold">Vehicle In Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date" id="vehicle_in_date" required>
+                            <label class="form-label small fw-bold">Vehicle In Date <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date"
+                                id="vehicle_in_date" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <input type="hidden" id="jobcardid" name="jobcardid" class="form-control form-control-sm" />
-                        <input type="hidden" id="header_discount_total" name="header_discount_total" class="form-control form-control-sm" value="0" />
+                        <input type="hidden" id="header_discount_total" name="header_discount_total"
+                            class="form-control form-control-sm" value="0" />
                     </div>
                 </div>
             </div>
@@ -129,6 +142,14 @@
                             name="modal_Vehicle_indate" placeholder="Vehicle in Date" readonly>
                         <input type="text" class="form-control mb-2 required-field" id="modal_Vehicle_model"
                             name="modal_Vehicle_model" placeholder="Vehicle Model Name" readonly>
+
+
+
+
+                        <!-- <input type="text" name="jobcard_id" class="form-control form-control-sm input-highlight"
+                            id="jobcard_id"> -->
+
+
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -162,7 +183,7 @@
                                         <td class="text-right"><?= addCommas($item['list_price']) ?></td>
                                         <td class="text-right"><?= addCommas($item['total']) ?></td>
                                         <td class="text-right"><?= addCommas($item['line_discount']) ?></td>
-                                        <td class="text-right"><?= addCommas(0.00) ?></td> 
+                                        <td class="text-right"><?= addCommas(0.00) ?></td>
                                         <td class="text-right"><?= addCommas($item['net_amount']) ?></td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -292,6 +313,8 @@ $(document).ready(function() {
                         $('#modal_Vehicle_brand').val(data.brand_name);
                         $('#modal_Vehicle_model').val(data.model_name);
 
+                        $('#jobcard_id').val(data.idtbl_jobcard);
+
 
                         let index = 1;
                         $('#jobCardDetailsBody').empty();
@@ -382,29 +405,29 @@ $(document).ready(function() {
         $('#jobcardid').val($('#job_card_number').val());
         $('#header_discount_total').val($('#modal_header_discount').val());
 
-         $('#jobcarddetailsModal').modal('hide');
+        $('#jobcarddetailsModal').modal('hide');
 
-        let $tableBodyMain = $('#tableorderBody'); 
+        let $tableBodyMain = $('#tableorderBody');
         $tableBodyMain.empty();
 
-        $('#jobCardDetailsBody tr').each(function () {
+        $('#jobCardDetailsBody tr').each(function() {
             const tds = $(this).find('td');
 
-            const item = tds.eq(1).text().trim();  
-            const itemId = 0;                 
-            const qty = parseFloat(tds.eq(2).text()) || 0;      
-            const unit = "EA";                                
-            const price = parseFloat(tds.eq(3).text()) || 0;   
+            const item = tds.eq(1).text().trim();
+            const itemId = 0;
+            const qty = parseFloat(tds.eq(2).text()) || 0;
+            const unit = "EA";
+            const price = parseFloat(tds.eq(3).text()) || 0;
 
-            const line_discount_type = tds.eq(8).text().trim();  
-            const line_discount_pc = parseFloat(tds.eq(9).text()) || 0;  
-            const discountAmount = parseFloat(tds.eq(10).text()) || 0;  
+            const line_discount_type = tds.eq(8).text().trim();
+            const line_discount_pc = parseFloat(tds.eq(9).text()) || 0;
+            const discountAmount = parseFloat(tds.eq(10).text()) || 0;
 
             const subtotal = price * qty;
             const total = subtotal - discountAmount;
 
             const tax = 0;
-            const totalAfterTax = total + tax;                  
+            const totalAfterTax = total + tax;
 
             const newRow = `
                 <tr>

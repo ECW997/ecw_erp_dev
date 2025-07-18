@@ -166,9 +166,12 @@ function getCustomerDetails() {
 				customerData.vehicle_type_id = result.data.idtbl_vehicle_type;
 				customerData.vehicle_year = result.data.year_name;
 				customerData.vehicle_year_id = result.data.idtbl_vehicle_year;
-				customerData.price_category = result.data.customer_name;
 				customerData.sales_person_name = result.data.sales_person_name;
 				customerData.sales_person_id = result.data.idtbl_sales_person;
+				customerData.price_category = result.data.price_category_id;
+				customerData.price_category_name = result.data.price_category_type;
+
+				
 
 				$('#cus_name').val(customerData.name);
 				$('#contact_no').val(customerData.contact);
@@ -176,6 +179,12 @@ function getCustomerDetails() {
 				$('#address2').val(customerData.address2);
 				$('#nic_number').val(customerData.nic);
 				$('#email').val(customerData.email);
+				// $('#pc_category').val(customerData.price_category_id).trigger('change');
+
+				if (customerData.price_category && customerData.price_category_name) {
+					let option = new Option(customerData.price_category_name, customerData.price_category, true, true);
+					$('#pc_category').append(option).trigger('change');
+				}
 
 				$('#inqSelectConfirmModal').modal('hide');
 				$('#selectCustomerInquiryModal').modal('hide');

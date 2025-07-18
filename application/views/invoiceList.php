@@ -317,6 +317,15 @@ $(document).ready(function() {
                             'id'] +
                         '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                         '<i class="fas fa-external-link-alt"></i></a>';
+
+                    // Delete Button
+                    if (full['is_confirmed'] == "0" && deletecheck == 1) {
+                        button +=
+                            '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
+                            full['id'] + '">' +
+                            '<i class="fas fa-trash-alt"></i></button>';
+                    }
+
                     return button;
                 }
             }
@@ -324,6 +333,36 @@ $(document).ready(function() {
         drawCallback: function(settings) {
             $('[data-toggle="tooltip"]').tooltip();
         }
+    });
+
+    // Add this block for delete functionality
+    $(document).on('click', '.btnDeleteInvoice', function() {
+        var invoiceId = $(this).data('id');
+
+        if (!confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
+
+        $.ajax({
+            url: base_url + "Invoice/deleteInvoice",
+            type: "POST",
+            data: {
+                id: invoiceId
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response && response.status == true) {
+                    success_toastify(response.message);
+                    $('#dataTable').DataTable().ajax.reload(null,
+                        false);
+                } else {
+                    falseResponse(response);
+                }
+            },
+            error: function() {
+                alert("Server error occurred.");
+            }
+        });
     });
 
 });
