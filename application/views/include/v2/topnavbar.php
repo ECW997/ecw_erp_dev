@@ -82,6 +82,26 @@
 
 
 
+<?php
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://www.textit.biz/creditchk/index.php?id=94770103434&pw=6912");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 10); // optional: timeout after 10 seconds
+$response = curl_exec($ch);
+$curlError = curl_error($ch);
+curl_close($ch);
+
+$smsBalance = null;
+$formattedSMSBalanceResponse = 'Unavailable';
+$balanceColor = 'color:gray';
+
+if ($response !== false && is_numeric($response)) {
+    $smsBalance = floatval($response);
+    $formattedSMSBalanceResponse = number_format($smsBalance, 2, '.', ',');
+    $balanceColor = ($smsBalance <= 49) ? 'color:red' : 'color:#06d106';
+}
+?>
+
 
 <nav class="topnav navbar navbar-expand-lg shadow navbar-light" style="background-color:#212529" id="sidenavAccordion">
     <a class="navbar-brand d-none d-sm-block" href="#">
@@ -156,6 +176,13 @@
                 🎉 EDIRISINGHA CUSHION WORKS ( PVT ) LTD. 🎉
             </marquee>
             </li>
+
+
+        <?php if (in_array($_SESSION['typename'], ['Super Administrator', 'Administrator', 'Coordinator', 'Showroom Coordinator'])) { ?>
+        <li id="sms_balance" style="font-weight: 600; margin-right: 2rem; <?php echo $balanceColor; ?>">
+            SMS Balance :- Rs <?php echo $formattedSMSBalanceResponse; ?>
+        </li>
+        <?php } ?>
 
 
         <!-- <div id="snow"></div> -->

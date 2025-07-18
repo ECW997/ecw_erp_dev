@@ -46,6 +46,7 @@ $config['api_endpoints'] = [
     'get_discount_v1' => '/v1/discount_details',
     'approve_job_card_v1' => '/v1/approveDiscount',
     'denied_job_card_v1' => '/v1/deniedDiscount',
+    'get_sales_agents_v1' => '/v1/get_sales_agents',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
@@ -66,10 +67,19 @@ $config['api_endpoints'] = [
     'approve_invoice_v1' => '/v1/approveInvoice',
     'delete_invoice_v1' => '/v1/deleteInvoice',
 
+    'confirm_payment_v1' => '/v1/confirm_payment',
+    'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
-    'get_allocated_payments_v1' => '/v1/get_allocated_payments',
-    'payment_v1' => '/v1/payment',
+    'get_jobcards_by_customer_v1' => '/v1/get_jobcards_by_customer',
+    'get_draft_receiptno_v1' => '/v1/get_draft_receiptno',
+    'get_payment_details_v1' => '/v1/get_payment_details',
+    'get_payment_allocation_details_v1' => '/v1/get_payment_allocation_details',
+    'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
+    'delete_payment_v1' => '/v1/delete_payment',
 
    
+    'approve_invoice_v1' => '/v1/approveInvoice',
+    'delete_invoice_v1' => '/v1/delete_invoice',
+
 ];

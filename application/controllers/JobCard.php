@@ -18,8 +18,11 @@ class JobCard extends CI_Controller {
     }
 
 	public function index(){
+		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
+
 		$this->load->view('jobCardList', $result);
 	}
 

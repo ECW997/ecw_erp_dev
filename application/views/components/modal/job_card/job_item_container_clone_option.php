@@ -50,7 +50,7 @@
                                                     $line_discount_type = $option['line_discount_type'] ?? null;
                                                     $line_discount_pc = $option['line_discount_pc'] ?? '';
                                                 ?>
-                                                <div class="option-item mb-4" data-option-container="<?= $uniqueKey ?>">
+                                                <div class="option-item mb-4" data-option-container="<?= $uniqueKey ?>"  <?= isset($isOriginal) ? 'data-is-original="true"' : '' ?>>
                                                     <div class="job-option-row option-row row g-3 align-items-center" data-level="0">
                                                         <div class="col-md-6">
                                                             <div class="option-select-container">
@@ -81,7 +81,17 @@
                                                                         <?= $optionValue['ValueName'] ?>
                                                                     </option>
                                                                     <?php endforeach; ?>
-                                                                </select>        
+                                                                </select>
+                                                                 <button type="button" class="btn btn-sm btn-outline-primary ms-2 duplicate-option"
+                                                                        data-option-id="<?= $optionId ?>"
+                                                                        data-group-id="<?= $groupId ?>"
+                                                                        data-subjob-id="<?= $subJobId ?>">
+                                                                    <i class="fas fa-copy"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-sm btn-outline-danger remove-option"
+                                                                        title="Remove this option">
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
                                                             </div>
                                                             <div class="child-options-wrapper mt-2"
                                                                 data-parent-option-id="<?= $optionId ?>">
@@ -526,6 +536,7 @@
         trackAjaxCall();
 
         const $selectedOption = $(selectElement);
+        const $optionContainer = $selectedOption.closest('.option-item'); // Get the specific container
         const selectedOptionValue = $selectedOption.val();
         const jobcard_id = $('#jobcard_id').val();
         const optionType = $selectedOption.data('option-type');
@@ -534,9 +545,13 @@
         const jobOptionID = $selectedOption.data('option-id');
         const subJobName = $selectedOption.data('subjob-name');
         const optionGroupName = $selectedOption.data('option-group-name');
+        
+        // Scope to the specific container
         const childWrapperSelector = `.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`;
+        const $childWrapper = $optionContainer.find(childWrapperSelector);
 
         if (!selectedOptionValue) {
+            $childWrapper.html(''); // Clear only this instance's children
             completeAjaxCall();
             return Promise.resolve();
         }
@@ -553,11 +568,12 @@
             data: {
                 jobcard_id: jobcard_id,
                 subJobCategoryID: subJobCategoryID,
-                selectedOptionValue: selectedOptionValue
+                selectedOptionValue: selectedOptionValue,
+                container_id: $optionContainer.data('option-container') // Pass container ID
             },
             success: function(res) {
                 if (!res.status || !res.data || res.data.length === 0) {
-                    $(childWrapperSelector).html('');
+                    $childWrapper.html(''); // Clear only this instance
                     Promise.resolve(
                         getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption)
                     ).finally(completeAjaxCall);
@@ -571,13 +587,15 @@
                     if (!optionValues || optionValues.length === 0) return '';
 
                     const isMediaType = ['image', 'pdf', 'file'].includes(jobOption.Description);
+                    const containerId = $optionContainer.data('option-container');
+                    const uniquePrefix = containerId + '_' + jobOption.JobOptionID;
 
                     if (isMediaType) {
                         return `
                             <div class="ms-2 flex-fill">
                                 <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
                                 <img src="https://devapi.ecw.lk/storage/${optionValues[0].ValueName ? escapeHtml(optionValues[0].ValueName) : 'https://via.placeholder.com/50'}"
-                                    id="preview_image_${jobOption.JobOptionID}"
+                                    id="preview_image_${uniquePrefix}"
                                     data-option-type="${escapeHtml(jobOption.OptionType)}"
                                     data-option-id="${escapeHtml(jobOption.JobOptionID)}"
                                     data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
@@ -599,6 +617,7 @@
                             <div class="ms-2 flex-fill">
                                 <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
                                 <select class="form-select form-select-sm job-option-select job_parent_option_f"
+                                        id="option_${uniquePrefix}"
                                         data-option-type="${escapeHtml(jobOption.OptionType)}"
                                         data-option-id="${escapeHtml(jobOption.JobOptionID)}"
                                         data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
@@ -608,8 +627,7 @@
                                         data-option-name="${escapeHtml(jobOption.OptionName)}"
                                         data-option-description="${escapeHtml(jobOption.Description)}"
                                         data-pre-value="${escapeHtml(jobOption.option_value_id)}"
-                                        ${jobOption.IsRequired == 1 ? 'required' : ''}
-                                        onchange="loadChildOption(this, null, 1)">
+                                        ${jobOption.IsRequired == 1 ? 'required' : ''}>
                                     <option value="">Select an option</option>
                                     ${optionValues.map(val => `
                                         <option value="${escapeHtml(val.id)}"
@@ -627,7 +645,12 @@
                     }
                 }).join('');
 
-                $(childWrapperSelector).html(html);
+                $childWrapper.html(html);
+
+                // Initialize event handlers for new elements
+                $childWrapper.find('.job-option-select').off('change').on('change', function() {
+                    loadChildOption(this, null, 1);
+                });
 
                 const childOptionPromises = res.data
                     .filter(group => {
@@ -637,7 +660,7 @@
                     .map(group => {
                         const jobOption = group.job_option;
                         if (jobOption.option_value_id) {
-                            const childSelect = $(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
+                            const childSelect = $childWrapper.find(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
                             if (childSelect) {
                                 return loadChildOption(childSelect, jobOption.option_value_id, 2);
                             }
@@ -656,16 +679,16 @@
             error: function(xhr, status, error) {
                 if (status !== 'abort') {
                     console.error("Failed to load conditional options:", error);
-                    $(childWrapperSelector).html('<div class="text-danger">Error loading options</div>');
+                    $childWrapper.html('<div class="text-danger">Error loading options</div>');
+                    }
+                    completeAjaxCall();
+                },
+                complete: function() {
+                    delete pendingRequests[selectedOptionValue];
                 }
-                completeAjaxCall();
-            },
-            complete: function() {
-                delete pendingRequests[selectedOptionValue];
-            }
-        });
+            });
 
-        pendingRequests[selectedOptionValue] = xhr;
+            pendingRequests[selectedOptionValue] = xhr;
     }
     
     function getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption) {
@@ -717,4 +740,76 @@
         init();
     });
 
+
+let optionCloneCounter = 1;
+$(document).on('click', '.duplicate-option', function() {
+    const $btn = $(this);
+    const $original = $btn.closest('.option-item');
+    const originalId = $original.data('option-container');
+    
+    // Clone with events
+    const $clone = $original.clone(true);
+
+    // Remove original class and attribute
+    $clone.removeClass('original-option')
+          .removeAttr('data-is-original');
+    
+    // Generate new unique ID
+    // const newId = originalId + '_' + Date.now();
+    const newId = `${originalId}_${optionCloneCounter++}`;
+    $clone.attr('data-option-container', newId);
+    
+    // Update all IDs within the clone
+    updateCloneIds($clone, originalId, newId);
+    
+    // Clear values
+    $clone.find('select').val('');
+    $clone.find('.child-options-wrapper').empty();
+    $clone.find('input[type="number"]').val('');
+
+    // Insert after original
+    $original.after($clone);
+    
+    // Reinitialize event handlers
+    initOptionHandlers($clone);
+
+     // Mark sub-job as edited
+    const subJobId = $btn.data('subjob-id');
+    editedSubJobs.add(subJobId);
+});
+
+$(document).on('click', '.remove-option', function() {
+    const $btn = $(this);
+    const $optionItem = $btn.closest('.option-item');
+    
+    // Confirm deletion
+    if (confirm('Are you sure you want to remove this option?')) {
+        // Remove the entire option item
+        $optionItem.remove();
+        
+        // Update totals
+        schedulePriceUpdate();
+    }
+});
+
+function updateCloneIds($clone, oldId, newId) {
+    // Update all element IDs
+    $clone.find('[id]').each(function() {
+        const $el = $(this);
+        $el.attr('id', $el.attr('id').replace(oldId, newId));
+    });
+    
+    // Update data attributes
+    $clone.find('[data-uniq-id]').attr('data-uniq-id', newId);
+}
+
+function initOptionHandlers($container) {
+    $container.find('.job-option-select').off('change').on('change', function() {
+        loadChildOption(this);
+    });
+    
+    $container.find('.item-price, .item-qty, .line_discount').off('input').on('input', function() {
+        schedulePriceUpdate();
+    });
+}
 </script>
