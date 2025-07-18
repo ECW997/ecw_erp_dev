@@ -44,17 +44,20 @@ class Invoice extends CI_Controller {
 				$result['invoice_main_data'] = null;
 				$result['invoice_detail_data'] = null;
 				$result['extra_charge_data'] = null;
+				$result['reciept_data'] = null;
 				$result['is_edit'] = false;
 			}else if($id=='indirect'){
 				$result['invoice_type'] = 'indirect';
 				$result['invoice_main_data'] = null;
 				$result['invoice_detail_data'] = null;
 				$result['extra_charge_data'] = null;
+				$result['reciept_data'] = null;
 				$result['is_edit'] = false;
 			}else{
 				$result['invoice_main_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['main_data'];
 				$result['invoice_detail_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['details_data'];
 				$result['extra_charge_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['extra_charge_data'];
+				$result['reciept_data'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['reciept_data'];
 				$result['invoice_type'] = $this->Invoiceinfo->getInvoiceById($this->api_token,$id)['data']['main_data'][0]['invoice_type'];
 				$result['is_edit'] = true;
 			}
@@ -82,6 +85,26 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->getJobcardNumbers($api_token,$form_data);
 		echo json_encode($response);
 	}
+
+	public function getAdvancePayments(){
+		$api_token = $this->session->userdata('api_token');
+
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+			'jobcard_id' => $this->input->get('jobcard_id'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->Invoiceinfo->getAdvancePayments($api_token,$form_data);
+		echo json_encode($response);
+	}
+	
+
 	
 	//Approve Invoice
 

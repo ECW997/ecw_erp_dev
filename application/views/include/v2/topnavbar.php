@@ -81,6 +81,7 @@
 
 
 
+
 <?php
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://www.textit.biz/creditchk/index.php?id=94770103434&pw=6912");
@@ -100,6 +101,7 @@ if ($response !== false && is_numeric($response)) {
     $balanceColor = ($smsBalance <= 49) ? 'color:red' : 'color:#06d106';
 }
 ?>
+
 
 <nav class="topnav navbar navbar-expand-lg shadow navbar-light" style="background-color:#212529" id="sidenavAccordion">
     <a class="navbar-brand d-none d-sm-block" href="#">
@@ -175,11 +177,13 @@ if ($response !== false && is_numeric($response)) {
             </marquee>
             </li>
 
+
         <?php if (in_array($_SESSION['typename'], ['Super Administrator', 'Administrator', 'Coordinator', 'Showroom Coordinator'])) { ?>
         <li id="sms_balance" style="font-weight: 600; margin-right: 2rem; <?php echo $balanceColor; ?>">
             SMS Balance :- Rs <?php echo $formattedSMSBalanceResponse; ?>
         </li>
         <?php } ?>
+
 
         <!-- <div id="snow"></div> -->
 

@@ -62,6 +62,10 @@ $config['api_endpoints'] = [
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
     'invoice_v1' => '/v1/invoice',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
+    'get_sel2_pay_allocation_receipt_v1' => '/v1/get_sel2_pay_allocation_receipts',
+
+    'approve_invoice_v1' => '/v1/approveInvoice',
+    'delete_invoice_v1' => '/v1/deleteInvoice',
 
     'confirm_payment_v1' => '/v1/confirm_payment',
     'payment_v1' => '/v1/payment',
@@ -74,6 +78,7 @@ $config['api_endpoints'] = [
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
 
+   
     'approve_invoice_v1' => '/v1/approveInvoice',
     'delete_invoice_v1' => '/v1/delete_invoice',
 

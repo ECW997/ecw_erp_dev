@@ -61,9 +61,10 @@
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
                         <select class="form-control form-control-sm required-field" id="pc_category" name="pc_category"
-                            required>
+                            required style="pointer-events: none;" disabled>
                             <option value="">Select</option>
                         </select>
+                        
                     </div>
                 </div>
             </div>
@@ -228,6 +229,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 function confirmCreateJobCard() {
     customerData.name = $('#cus_name').val();
