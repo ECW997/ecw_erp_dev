@@ -23,22 +23,23 @@ include "include/topnavbar.php";
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-3">
-                                <form action="<?php echo base_url() ?>User/Userprivilegeinsertupdate" method="post" autocomplete="off">
+                                <form action="<?php echo base_url() ?>User/privilegeInsertUpdate" method="post" autocomplete="off">
                                     <div class="form-group mb-1">
-                                        <label class="small font-weight-bold">User*</label>
+                                        <label class="small font-weight-bold">User Type*</label>
                                         <select type="text" class="form-control form-control-sm" name="userlist" id="userlist" required>
                                             <option value="">Select</option>
-                                            <?php foreach ($useraccount->result() as $rowuseraccount) { ?>
-                                            <option value="<?php echo $rowuseraccount->idtbl_user ?>"><?php echo $rowuseraccount->name ?></option>
-                                            <?php } ?>
+                                            <?php foreach($usertype as $user): ?>
+                                                <option value="<?php echo $user['idtbl_user_type']; ?>"><?php echo $user['type']; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Access Menu*</label>
                                         <select type="text" class="form-control form-control-sm" name="menulist[]" id="menulist" required multiple>
-                                            <?php foreach ($menulist->result() as $rowmenulist) { ?>
-                                            <option value="<?php echo $rowmenulist->idtbl_menu_list ?>"><?php echo $rowmenulist->menu ?></option>
-                                            <?php } ?>
+                                            <option value="">Select</option>
+                                            <?php foreach($menulist as $menu): ?>
+                                                <option value="<?php echo $menu['idtbl_menu_list']; ?>"><?php echo $menu['menu']; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -73,12 +74,6 @@ include "include/topnavbar.php";
                                                 Approve Privilege
                                             </label>
                                         </div>
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" value="1" id="allfollowupcheck" name="allfollowupcheck">
-                                            <label class="custom-control-label" for="allfollowupcheck">
-                                                All Followup Privilege
-                                            </label>
-                                        </div>
                                     </div>
                                     <div class="form-group mt-2 text-right">
                                         <button type="submit" id="submitBtn" class="btn btn-primary btn-sm px-4" <?php if($addcheck==0){echo 'disabled';} ?>><i class="far fa-save"></i>&nbsp;Add</button>
@@ -99,7 +94,6 @@ include "include/topnavbar.php";
                                             <th>Active | Deactive</th>
                                             <th>Delete</th>
                                             <th>Approve</th>
-                                            <th>All Followup</th>
                                             <th class="text-right">Actions</th>
                                         </tr>
                                     </thead>
@@ -128,10 +122,24 @@ include "include/topnavbar.php";
             "processing": true,
             "serverSide": true,
             ajax: {
-                url: "<?php echo base_url() ?>scripts/userprivilegelist.php",
-                type: "POST", // you can use GET
-                data: function(d) {
-                    d.userID = '<?php echo $_SESSION['userid']; ?>';
+                url: apiBaseUrl + '/v1/user_privilege',
+                type: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + api_token
+                },
+                dataSrc: function(json) {
+                    if (json.status === false && json.code === 401) {
+                        falseResponse(errorObj);
+                    } else {
+                        return json.data;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 401) {
+                        falseResponse(errorObj);
+                    }
                 }
             },
             "order": [[ 0, "desc" ]],
@@ -140,7 +148,7 @@ include "include/topnavbar.php";
                     "data": "idtbl_user_privilege"
                 },
                 {
-                    "data": "name"
+                    "data": "user_type"
                 },
                 {
                     "data": "menu"
@@ -212,30 +220,17 @@ include "include/topnavbar.php";
                 },
                 {
                     "targets": -1,
-                    "className": 'text-center',
-                    "data": null,
-                    "render": function(data, type, full) {
-                        if(full['all_followup']==1){
-                            return '<i class="fas fa-check text-success mt-2"></i>';
-                        }
-                        else{
-                            return '<i class="fas fa-times text-danger mt-2"></i>';
-                        }
-                    }
-                },
-                {
-                    "targets": -1,
                     "className": 'text-right',
                     "data": null,
                     "render": function(data, type, full) {
                         var button='';
                         button+='<button class="btn btn-primary btn-sm btnEdit mr-1 ';if(editcheck==0){button+='d-none';}button+='" id="'+full['idtbl_user_privilege']+'"><i class="fas fa-pen"></i></button>';
                         if(full['status']==1){
-                        button+='<a href="<?php echo base_url() ?>User/Userprivilegestatus/'+full['idtbl_user_privilege']+'/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';if(statuscheck==0){button+='d-none';}button+='"><i class="fas fa-check"></i></a>';
+                        button+='<a href="<?php echo base_url() ?>User/privilegeStatus/'+full['idtbl_user_privilege']+'/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';if(statuscheck==0){button+='d-none';}button+='"><i class="fas fa-check"></i></a>';
                         }else {
-                        button+='<a href="<?php echo base_url() ?>User/Userprivilegestatus/'+full['idtbl_user_privilege']+'/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';if(statuscheck==0){button+='d-none';}button+='"><i class="fas fa-times"></i></a>';
+                        button+='<a href="<?php echo base_url() ?>User/privilegeStatus/'+full['idtbl_user_privilege']+'/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';if(statuscheck==0){button+='d-none';}button+='"><i class="fas fa-times"></i></a>';
                         }
-                        button+='<a href="<?php echo base_url() ?>User/Userprivilegestatus/'+full['idtbl_user_privilege']+'/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';if(deletecheck==0){button+='d-none';}button+='"><i class="far fa-trash-alt"></i></a>';
+                        button+='<a href="<?php echo base_url() ?>User/privilegeDelete/'+full['idtbl_user_privilege']+'/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';if(deletecheck==0){button+='d-none';}button+='"><i class="far fa-trash-alt"></i></a>';
                         
                         return button;
                     }
@@ -251,33 +246,31 @@ include "include/topnavbar.php";
                 var id = $(this).attr('id');
                 $.ajax({
                     type: "POST",
-                    data: {
-                        recordID: id
-                    },
-                    url: '<?php echo base_url() ?>User/Userprivilegeedit',
+                    dataType : "json",
+                    url: '<?php echo base_url() ?>User/privilegeEdit/'+id,
                     success: function(result) { //alert(result);
-                        var obj = JSON.parse(result);
-                        $('#recordID').val(obj.id);
-                        $('#userlist').val(obj.user);
+                        if (result.status) {
+                            $('#recordID').val(result.data.idtbl_user_privilege);
+                            $('#userlist').val(result.data.user_type_id);
 
-                        var menulist = obj.menu;
-                        var menulistoption = [];
-                        $.each(menulist, function(i, item) {
-                            menulistoption.push(menulist[i].menulistID);
-                        });
+                            // var menulist = result.data.menu;
+                            // var menulistoption = [];
+                            // $.each(menulist, function(i, item) {
+                            //     menulistoption.push(menulist[i].menulistID);
+                            // });
 
-                        $('#menulist').val(menulistoption);
-                        $('#menulist').trigger('change');
+                            $('#menulist').val(result.data.tbl_menu_list_idtbl_menu_list);
+                            $('#menulist').trigger('change');
 
-                        if(obj.add==1){$('#addcheck').prop('checked', true);}
-                        if(obj.edit==1){$('#editcheck').prop('checked', true);}
-                        if(obj.statuschange==1){$('#statuscheck').prop('checked', true);}
-                        if(obj.remove==1){$('#removecheck').prop('checked', true);}
-                        if(obj.approve==1){$('#approvecheck').prop('checked', true);}
-                        if(obj.all_followup==1){$('#allfollowupcheck').prop('checked', true);}
+                            if(result.data.add==1){$('#addcheck').prop('checked', true);}
+                            if(result.data.edit==1){$('#editcheck').prop('checked', true);}
+                            if(result.data.statuschange==1){$('#statuscheck').prop('checked', true);}
+                            if(result.data.remove==1){$('#removecheck').prop('checked', true);}
+                            if(result.data.approve==1){$('#approvecheck').prop('checked', true);}
 
-                        $('#recordOption').val('2');
-                        $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                            $('#recordOption').val('2');
+                            $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                        }
                     }
                 });
             }

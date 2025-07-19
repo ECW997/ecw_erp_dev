@@ -8,83 +8,129 @@ include "include/topnavbar.php";
         <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
-        <style>
-        .text-end {
-            text-align: right !important;
-        }
-        </style>
-            <style>
-        .modal-content {
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-        .btn-option {
-            transition: all 0.2s ease;
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef !important;
-        }
-
-        .btn-option:hover {
-            background-color: #f1f3f5;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        .btn-option:active {
-            transform: translateY(0);
-        }
-
-        .bg-light-blue {
-            background-color: rgba(13, 110, 253, 0.1);
-        }
-
-        .bg-light-orange {
-            background-color: rgba(255, 193, 7, 0.1);
-        }
-
-        .rounded-circle {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .position-absolute {
-            position: absolute;
-        }
-
-        .text-left {
-            text-align: left;
-        }
-        .btn-option:focus {
-            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-        }
+    <style>
+           .card-header {
+      background-color: white;
+      border-bottom: 1px solid #6c757d;
+      padding: 1rem 2rem;
+    }
+    label {
+      color: #6c757d;
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+    .form-control-sm, .custom-select-sm {
+      font-size: 0.85rem;
+      padding: 0.25rem 0.5rem;
+      height: 1.9rem;
+    }
+    #filterBtn {
+      min-width: 100px;
+      height: 1.9rem;
+      font-size: 0.85rem;
+      padding: 0 0.75rem;
+    }
+    .input-group-text {
+      background-color: #e9ecef;
+      border-right: 0;
+      font-weight: 700;
+      color: #6c757d;
+      white-space: nowrap;
+      height: 1.9rem;
+      padding: 0 0.5rem;
+      line-height: 1.9rem;
+    }
+    .input-group > .form-control:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .input-group > .form-control:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 0;
+    }
+    @media (max-width: 575.98px) {
+      .card-header .row > div {
+        margin-bottom: 0.5rem;
+      }
+      .card-header .row > div:last-child {
+        margin-bottom: 0;
+      }
+    } 
     </style>
         <main>
             <div class="page-header page-header-light bg-white shadow">
-                <div class="container-fluid">
-                    <div class="page-header-content py-3">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i class="fas fa-align-left"></i></div>
-                            <span>Payment List</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+        	    <div class="container-fluid">
+        			<div class="page-header-content py-3 d-flex justify-content-between align-items-center">
+        				<h1 class="page-header-title">
+        					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
+        					<span>Payment List</span>
+        				</h1>
+                        <a href="<?= base_url('Payment/paymentDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
+                            <i class="fas fa-plus mr-2"></i>Create New Payment
+                        </a>
+        			</div>
+        		</div>
+        	</div>
             <div class="container-fluid mt-2 p-0 p-2">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-end">
-                        <div class="row">
-                            <div class="col">
-                                <a href="<?= base_url('Payment/paymentDetailIndex') ?>" 
-                                class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
-                                <i class="fas fa-plus mr-3"></i>Create New Payment
-                                </a>
+                    <div class="p-2 d-none">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-start">
+                                <label for="date_from" class="mb-0 mr-2">Date Filter</label>
+                                <div class="input-group" style="max-width: 220px;">
+                                    <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
+                                    <div class="input-group-append">
+                                    <span class="input-group-text">to</span>
+                                    </div>
+                                    <input type="date" id="date_to" class="form-control form-control-sm" aria-label="Date To" />
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="sales_agent" class="mb-0 mr-2">Sales Agent</label>
+                                    <select id="sales_agent" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All</option>
+                                       <?php if (!empty($sales_agents)) : ?>
+                                            <?php foreach ($sales_agents as $agent) : ?>
+                                                <option value="<?= $agent['idtbl_sales_person']; ?>">
+                                                    <?= htmlspecialchars($agent['sales_person_name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="job_status" class="mb-0 mr-2">Job Status</label>
+                                    <select id="job_status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All</option>
+                                    <option value="0">Not Started</option>
+                                    <option value="1">Started</option>
+                                    <option value="2">Job Done</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="status" class="mb-0 mr-2">Status</label>
+                                    <select id="status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All Status</option>
+                                    <option value="0">Draft</option>
+                                    <option value="1">Pending</option>
+                                    <option value="2">Approved</option>
+                                    <option value="3">Cancelled</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
+                                    <i class="fas fa-filter mr-1"></i> Filter
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm ml-2" id="clearFilterBtn">Clear</button>
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-12">
@@ -183,7 +229,7 @@ $(document).ready(function() {
         "destroy": true,
         "processing": true,
         "serverSide": true,
-        dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
+        dom: "<'row'<'col-sm-5'l><'col-sm-2'><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         responsive: true,
         lengthMenu: [
@@ -256,16 +302,41 @@ $(document).ready(function() {
             {
                 "data": "payment_type"
             },
-            {
+            {          
                 "data": "total_received_amount",
-                "className": "text-end",
+                "className": "text-right",
                 "render": function(data, type, full) {
-                    return parseFloat(data).toFixed(2);
+                    let formatted = addCommas(parseFloat(data).toFixed(2));
+                    return `<span style="font-weight: 600;">${formatted}</span>`;
                 }
             },
             {
-                "data": "status"
-            },
+                data: "status",
+                "className": "text-center",
+                render: function (data, type, row) {
+                    let baseClasses = "badge badge-pill";
+                    let style = "";
+
+                    switch (data) {
+                    case "Draft":
+                        style = "background-color: #374151; color: #E5E7EB;"; 
+                        break;
+                    case "Pending":
+                       style = "background-color: #FB923C; color: #FFEDD5;"; 
+                        break;
+                    case "Approved":
+                        style = "background-color: #16A34A; color: #D1FAE5;"; 
+                        break;
+                    case "Cancelled":
+                        style = "background-color: #F87171; color: #FEE2E2;"; 
+                        break;
+                    default:
+                        style = "background-color: #1F2937; color: #F3F4F6;"; 
+                    }
+
+                    return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                }
+            },       
             {
                 "targets": -1,
                 "className": 'text-right',
@@ -286,6 +357,18 @@ $(document).ready(function() {
     });
 
 });
+
+function addCommas(nStr) {
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+}
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");

@@ -4,7 +4,7 @@ include "include/v2/topnavbar.php";
 ?>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <?php include "include/v2/menubar.php"; ?>
+        <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
         <main>

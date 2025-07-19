@@ -26,11 +26,14 @@ class Auth extends CI_Controller {
             $user_data = [
                 'userid' => $loginData['id'],
                 'name' => $loginData['name'],
-                'typename'=>$loginData['role'],
                 'email' => $loginData['email'],
+                'typename'=>$loginData['user_type'],
+                'user_type_id'=>$loginData['user_type_id'],
                 'api_token' => $loginAuthorisation['token'],
-                'employee_id' => $loginData['emp_id'],
+                'employee_id' => $loginData['employee_id'],
                 'emp_no' => $loginData['emp_no'],
+                'last_login_at' => $loginData['last_login_at'],
+                'last_login_user_id' => $loginData['last_login_user_id'],
                 'company_id' => $this->input->post('company_id'),
                 'companyname' => $this->input->post('company_text'),
                 'branch_id' => $this->input->post('branch_id'),
@@ -49,7 +52,7 @@ class Auth extends CI_Controller {
 
             $this->session->set_flashdata('greeting_message', "$greeting, {$user_data['name']}. Welcome to ECW Software");
 
-            redirect('Welcome/Dashboard');            
+            redirect('Auth/Dashboard');            
         } else {
             $this->session->set_flashdata('loginmsg', 'Invalid Username or Password');
             redirect();
@@ -86,8 +89,13 @@ class Auth extends CI_Controller {
     }
 
 	public function Dashboard(){
+        $this->load->helper('api_helper');
+        $auth_info = auth_check();
+		$api_token = $auth_info['api_token'];
+		$auth_user = $auth_info['user'];
+
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($api_token,'')['data'] ?? []));
 		$this->load->view('dashboard', $result);
 	}
 

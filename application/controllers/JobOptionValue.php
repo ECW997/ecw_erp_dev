@@ -4,68 +4,45 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class JobOptionValue extends CI_Controller {
-	public function __construct() {
-        parent::__construct();
-        $this->load->model('JobOptionValueinfo');
-    }
+	protected $api_token;
+    protected $auth_user;
 
+    public function __construct() {
+        parent::__construct();
+		$this->load->helper('api_helper');
+        $this->load->model('JobOptionValueinfo');
+
+		$auth_info = auth_check();
+		$this->api_token = $auth_info['api_token'];
+		$this->auth_user = $auth_info['user'];
+    }
     public function index(){
-		$api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-		
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('job_option_value', $result);
 	}
 
 	public function getJobOption(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$form_data = [
 			'term' => $this->input->get('term'),
 			'page' => $this->input->get('page'),
 		];
 
-		$response = $this->JobOptionValueinfo->getJobOption($api_token,$form_data);
+		$response = $this->JobOptionValueinfo->getJobOption($this->api_token,$form_data);
 		echo json_encode($response);
 	}
 
 	public function getJobOptionValue(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$form_data = [
 			'term' => $this->input->get('term'),
 			'page' => $this->input->get('page'),
 		];
 
-		$response = $this->JobOptionValueinfo->getJobOptionValue($api_token,$form_data);
+		$response = $this->JobOptionValueinfo->getJobOptionValue($this->api_token,$form_data);
 		echo json_encode($response);
 	}
 
 	public function jobOptionValueInsertUpdate() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$recordOption = $this->input->post('recordOption');
 
         $form_data = [
@@ -79,15 +56,13 @@ class JobOptionValue extends CI_Controller {
 	
 		$response='';
 		if($recordOption == '1'){
-			$response = $this->JobOptionValueinfo->jobOptionValueInsert($api_token,$form_data);
+			$response = $this->JobOptionValueinfo->jobOptionValueInsert($this->api_token,$form_data);
 		}else{
-			$response = $this->JobOptionValueinfo->jobOptionValueUpdate($api_token,$form_data);
+			$response = $this->JobOptionValueinfo->jobOptionValueUpdate($this->api_token,$form_data);
 		}
 
 		if ($response) {
 			echo json_encode($response);
-			// $this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-        	// redirect('JobOptionValue');   
 		}else{
 			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
             redirect('JobOptionValue');
@@ -95,32 +70,18 @@ class JobOptionValue extends CI_Controller {
     }
 
     public function jobOptionValueEdit($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->JobOptionValueinfo->jobOptionValueEdit($api_token,$id);
-
+        $response = $this->JobOptionValueinfo->jobOptionValueEdit($this->api_token,$id);
 		echo json_encode($response);
     }
 
 	public function jobOptionValueDetailsList() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
 		$job_option = $this->input->get('job_option');
 		$modalOption = $this->input->get('modalOption', true) ?: '1';
 		$editcheck = $this->input->get('editcheck');
 		$statuscheck = $this->input->get('statuscheck');
 		$deletecheck = $this->input->get('deletecheck');
 
-        $response = $this->JobOptionValueinfo->jobOptionValueDetailsList($api_token,$job_option);
+        $response = $this->JobOptionValueinfo->jobOptionValueDetailsList($this->api_token,$job_option);
 
 		$data['data'] = $response;
 		$data['modalOption'] = $modalOption;
@@ -134,24 +95,15 @@ class JobOptionValue extends CI_Controller {
     }
 
 	public function jobOptionValueStatus($id, $status) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
         $form_data = [
             'recordID' => $id,
 			'status' => $status,
         ];
 
-        $response = $this->JobOptionValueinfo->jobOptionValueStatus($api_token,$form_data);
+        $response = $this->JobOptionValueinfo->jobOptionValueStatus($this->api_token,$form_data);
 
         if ($response) {
-			echo json_encode($response);
-			// $this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-			// redirect('JobOptionValue');      
+			echo json_encode($response);   
         } else {
 			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
             redirect('JobOptionValue');
@@ -159,19 +111,10 @@ class JobOptionValue extends CI_Controller {
     }
 
 	public function jobOptionValueDelete($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->JobOptionValueinfo->jobOptionValueDelete($api_token,$id);
+        $response = $this->JobOptionValueinfo->jobOptionValueDelete($this->api_token,$id);
 
         if ($response) {
-			echo json_encode($response);
-			// $this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-			// redirect('JobOptionValue');      
+			echo json_encode($response);     
         } else {
 			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
             redirect('JobOptionValue');
@@ -179,20 +122,12 @@ class JobOptionValue extends CI_Controller {
     }
 
 	public function getImagesByCategory(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$form_data = [
 			'category_id' => $this->input->post('category_id'),
 			'btn_type' => $this->input->post('btn_type'),
 		];
 
-		$response = $this->JobOptionValueinfo->getImagesByCategory($api_token,$form_data);
+		$response = $this->JobOptionValueinfo->getImagesByCategory($this->api_token,$form_data);
 		echo json_encode($response);
 	}
 }

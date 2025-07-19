@@ -19,13 +19,13 @@ class Payment extends CI_Controller {
 
 	public function index(){
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('paymentList', $result);
 	}
 	
 	public function paymentDetailIndex($id = null){
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$branch_id = $this->session->userdata('branch_id');
 
         if ($id !== null) {

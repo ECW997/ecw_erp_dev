@@ -279,7 +279,7 @@ $(document).ready(function() {
                         colorClass = "text-warning";
                     } else if (data === "Approved") {
                         colorClass = "text-success";
-                    } else if (data === "Rijected") {
+                    } else if (data === "Rejected") {
                         colorClass = "text-danger";
                     }
 
