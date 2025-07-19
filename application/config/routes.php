@@ -55,3 +55,4 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['JobCard/(:num)'] = 'JobCard/index/$1';
 $route['Invoice/(:num)'] = 'Invoice/index/$1';
+$route['Payment/(:num)'] = 'Payment/index/$1';
