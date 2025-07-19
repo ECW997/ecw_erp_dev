@@ -8,7 +8,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 ?>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <?php include "include/v2/menubar.php"; ?>
+        <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
         <main>
@@ -77,12 +77,6 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
                                             onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>Job Summary Print
-                                        </button>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
-                                            <i class="fas fa-print me-2"></i>Invoice Print
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">

@@ -23,7 +23,7 @@ include "include/topnavbar.php";
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-3">
-                                <form action="<?php echo base_url() ?>User/Usertypeinsertupdate" method="post" autocomplete="off">
+                                <form action="<?php echo base_url() ?>User/userTypeInsertUpdate" method="post" autocomplete="off">
                                     <div class="form-group">
                                         <label class="small font-weight-bold">User Type*</label>
                                         <input type="text" class="form-control form-control-sm" name="usertype" id="usertype" required>
@@ -67,10 +67,24 @@ include "include/topnavbar.php";
             "processing": true,
             "serverSide": true,
             ajax: {
-                url: "<?php echo base_url() ?>scripts/usertypelist.php",
-                type: "POST", // you can use GET
-                data: function(d) {
-                    d.userID = '<?php echo $_SESSION['userid']; ?>';
+                url: apiBaseUrl + '/v1/user_type',
+                type: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + api_token
+                },
+                dataSrc: function(json) {
+                    if (json.status === false && json.code === 401) {
+                        falseResponse(errorObj);
+                    } else {
+                        return json.data;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status === 401) {
+                        falseResponse(errorObj);
+                    }
                 }
             },
             "order": [[ 0, "desc" ]],
@@ -89,11 +103,11 @@ include "include/topnavbar.php";
                         var button='';
                         button+='<button class="btn btn-primary btn-sm btnEdit mr-1 ';if(editcheck!=1){button+='d-none';}button+='" id="'+full['idtbl_user_type']+'"><i class="fas fa-pen"></i></button>';
                         if(full['status']==1){
-                            button+='<a href="<?php echo base_url() ?>User/Usertypestatus/'+full['idtbl_user_type']+'/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-check"></i></a>';
+                            button+='<a href="<?php echo base_url() ?>User/userTypeStatus/'+full['idtbl_user_type']+'/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-check"></i></a>';
                         }else{
-                            button+='<a href="<?php echo base_url() ?>User/Usertypestatus/'+full['idtbl_user_type']+'/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-times"></i></a>';
+                            button+='<a href="<?php echo base_url() ?>User/userTypeStatus/'+full['idtbl_user_type']+'/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-times"></i></a>';
                         }
-                        button+='<a href="<?php echo base_url() ?>User/Usertypestatus/'+full['idtbl_user_type']+'/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';if(deletecheck!=1){button+='d-none';}button+='"><i class="fas fa-trash-alt"></i></a>';
+                        button+='<a href="<?php echo base_url() ?>User/userTypeDelete/'+full['idtbl_user_type']+'/3" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';if(deletecheck!=1){button+='d-none';}button+='"><i class="fas fa-trash-alt"></i></a>';
                         
                         return button;
                     }
@@ -103,23 +117,25 @@ include "include/topnavbar.php";
                 $('[data-toggle="tooltip"]').tooltip();
             }
         });
+
         $('#dataTable tbody').on('click', '.btnEdit', function() {
             var r = confirm("Are you sure, You want to Edit this ? ");
             if (r == true) {
                 var id = $(this).attr('id');
                 $.ajax({
-                    type: "POST",
-                    data: {
-                        recordID: id
-                    },
-                    url: '<?php echo base_url() ?>User/Usertypeedit',
-                    success: function(result) { //alert(result);
-                        var obj = JSON.parse(result);
-                        $('#recordID').val(obj.id);
-                        $('#usertype').val(obj.type);                       
+                    type: "GET",
+                    dataType : "json",
+                    url: '<?php echo base_url() ?>User/userTypeEdit/'+id,
+                    success: function(result) { //alert(result);   
+                        if (result.status) {
+                            $('#recordID').val(result.data.id);
+                            $('#usertype').val(result.data.type);                       
 
-                        $('#recordOption').val('2');
-                        $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                            $('#recordOption').val('2');
+                            $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
+                        } else {
+                            falseResponse(result);
+                        }
                     }
                 });
             }

@@ -20,7 +20,7 @@ class JobCard extends CI_Controller {
 	public function index(){
 		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
 
 		$this->load->view('jobCardList', $result);
@@ -28,7 +28,7 @@ class JobCard extends CI_Controller {
 
     public function jobCardDetailIndex($id = null){
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 
         if ($id !== null) {
             $result['job_main_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['main_data'];
@@ -197,55 +197,34 @@ class JobCard extends CI_Controller {
     }
 
     public function getItemParentOptions() {
-		$api_token = $this->session->userdata('api_token');
-        if (!$api_token) {
-            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-            // redirect('Welcome/Logout');
-            return;
-        }
-
         $form_data = [
 			'jobcard_id' => $this->input->post('jobcard_id'),
             'sub_id' => $this->input->post('subJobCategoryID'),
 			'id' => $this->input->post('selectedOptionValue')
         ];
 
-        $response = $this->JobCardinfo->getItemParentOptions($api_token,$form_data);
+        $response = $this->JobCardinfo->getItemParentOptions($this->api_token,$form_data);
         if ($response) {
             echo json_encode($response);
 		}
     }
 
 	public function getOptionvaluePrice() {
-		$api_token = $this->session->userdata('api_token');
-        if (!$api_token) {
-            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-            // redirect('Welcome/Logout');
-            return;
-        }
-
         $form_data = [
             'optionValueId' => $this->input->post('optionValueId'),
 			'priceCategoryId' => $this->input->post('priceCategoryId')
         ];
 
-        $response = $this->JobCardinfo->getOptionvaluePrice($api_token,$form_data);
+        $response = $this->JobCardinfo->getOptionvaluePrice($this->api_token,$form_data);
         if ($response) {
             echo json_encode($response);
 		}
     }
 
 	public function updatediscount() {
-        $api_token = $this->session->userdata('api_token');
-        if (!$api_token) {
-            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-            redirect('Welcome/Logout');
-            return;
-        }
-
         $form_data = $this->input->post();
 
-		$response = $this->JobCardinfo->updatediscount($api_token, $form_data);
+		$response = $this->JobCardinfo->updatediscount($this->api_token, $form_data);
  
 		if ($response) {
             echo json_encode($response);
@@ -256,29 +235,14 @@ class JobCard extends CI_Controller {
     }
 
 	public function getDiscount($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->JobCardinfo->getDiscount($api_token,$id);
-
+        $response = $this->JobCardinfo->getDiscount($this->api_token,$id);
 		echo json_encode($response);
     }
 
 	public function approveJobcard() {
-        $api_token = $this->session->userdata('api_token');
-        if (!$api_token) {
-            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-            redirect('Welcome/Logout');
-            return;
-        }
-
         $form_data = $this->input->post();
 
-		$response = $this->JobCardinfo->approveJobcard($api_token, $form_data);
+		$response = $this->JobCardinfo->approveJobcard($this->api_token, $form_data);
  
 		if ($response) {
             echo json_encode($response);
@@ -289,16 +253,9 @@ class JobCard extends CI_Controller {
     }
 
 	public function deniedJobcard() {
-        $api_token = $this->session->userdata('api_token');
-        if (!$api_token) {
-            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-            redirect('Welcome/Logout');
-            return;
-        }
-
         $form_data = $this->input->post();
 
-		$response = $this->JobCardinfo->deniedJobcard($api_token, $form_data);
+		$response = $this->JobCardinfo->deniedJobcard($this->api_token, $form_data);
  
 		if ($response) {
             echo json_encode($response);

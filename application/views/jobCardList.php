@@ -62,8 +62,8 @@ include "include/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
         <main>
-        <div class="page-header page-header-light bg-white shadow">
-        		<div class="container-fluid">
+            <div class="page-header page-header-light bg-white shadow">
+        	    <div class="container-fluid">
         			<div class="page-header-content py-3 d-flex justify-content-between align-items-center">
         				<h1 class="page-header-title">
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
@@ -266,8 +266,9 @@ include "include/topnavbar.php";
                 },
                 {
                     data: "job_progress_status_text",
+                    className: "text-center",
                     render: function (data, type, row) {
-                        let baseClasses = "rounded px-3 py-1 text-xs font-semibold inline-block select-none";
+                        let baseClasses = "badge badge-pill";
                         let style = "";
 
                         switch (data) {
@@ -295,8 +296,9 @@ include "include/topnavbar.php";
                 },
                 {
                     data: "status",
+                    className: "text-center",
                     render: function (data, type, row) {
-                        let baseClasses = "rounded px-3 py-1 text-xs font-semibold inline-block select-none";
+                        let baseClasses = "badge badge-pill";
                         let style = "";
 
                         switch (data) {

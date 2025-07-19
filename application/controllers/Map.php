@@ -4,34 +4,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class Map extends CI_Controller {
-	public function __construct() {
+	protected $api_token;
+    protected $auth_user;
+
+    public function __construct() {
         parent::__construct();
+		$this->load->helper('api_helper');
         $this->load->model('Mapinfo');
+
+		$auth_info = auth_check();
+		$this->api_token = $auth_info['api_token'];
+		$this->auth_user = $auth_info['user'];
     }
 
     public function index(){
-		$api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-		
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('map', $result);
 	}
 
     public function getMapPdf()
 	{
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$sub_job_category = $this->input->get('sub_job_category');
 		$api_url = 'https://devapi.ecw.lk/api/v1/get_map_pdf';
 
@@ -46,7 +39,7 @@ class Map extends CI_Controller {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, [
 			'Accept: application/pdf',
 			'Content-Type: application/json',
-			'Authorization: Bearer ' . $api_token
+			'Authorization: Bearer ' . $this->api_token
 		]);
 
 		$response = curl_exec($ch);
@@ -82,13 +75,6 @@ class Map extends CI_Controller {
     }
 
 	public function jobOptionInsertUpdate() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$recordOption = $this->input->post('recordOption');
 
         $form_data = [
@@ -106,9 +92,9 @@ class Map extends CI_Controller {
 	
 		$response='';
 		if($recordOption == '1'){
-			$response = $this->Mapinfo->jobOptionInsert($api_token,$form_data);
+			$response = $this->Mapinfo->jobOptionInsert($this->api_token,$form_data);
 		}else{
-			$response = $this->Mapinfo->jobOptionUpdate($api_token,$form_data);
+			$response = $this->Mapinfo->jobOptionUpdate($this->api_token,$form_data);
 		}
 
 		if ($response) {
@@ -120,32 +106,19 @@ class Map extends CI_Controller {
     }
 
     public function jobOptionEdit($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->Mapinfo->jobOptionEdit($api_token,$id);
+        $response = $this->Mapinfo->jobOptionEdit($this->api_token,$id);
 
 		echo json_encode($response);
     }
 
     public function jobOptionDetailsList() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
 		$sub_id = $this->input->get('sub_id');
 		$modalOption = $this->input->get('modalOption', true) ?: '1';
 		$editcheck = $this->input->get('editcheck');
 		$statuscheck = $this->input->get('statuscheck');
 		$deletecheck = $this->input->get('deletecheck');
 
-        $response = $this->Mapinfo->jobOptionDetailsList($api_token,$sub_id);
+        $response = $this->Mapinfo->jobOptionDetailsList($this->api_token,$sub_id);
 
 		$data['data'] = $response;
 		$data['modalOption'] = $modalOption;
@@ -160,19 +133,12 @@ class Map extends CI_Controller {
     }
 
     public function jobOptionStatus($id, $status) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
         $form_data = [
             'recordID' => $id,
 			'status' => $status,
         ];
 
-        $response = $this->Mapinfo->jobOptionStatus($api_token,$form_data);
+        $response = $this->Mapinfo->jobOptionStatus($this->api_token,$form_data);
 
         if ($response) {
 			echo json_encode($response);
@@ -183,14 +149,7 @@ class Map extends CI_Controller {
     }
 
     public function jobOptionDelete($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->Mapinfo->jobOptionDelete($api_token,$id);
+        $response = $this->Mapinfo->jobOptionDelete($this->api_token,$id);
 
         if ($response) {
 			echo json_encode($response);

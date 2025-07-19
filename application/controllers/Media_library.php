@@ -19,7 +19,7 @@ class Media_library extends CI_Controller {
 
     public function index(){
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('media_library', $result);
 	}
 
@@ -43,7 +43,6 @@ class Media_library extends CI_Controller {
 				return;
 			}
 		}
-
 
 		$form_data = [
 			'media_type' => $this->input->post('media_type'),
@@ -109,14 +108,7 @@ class Media_library extends CI_Controller {
 
 
     public function jobOptionDelete($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->JobOptioninfo->jobOptionDelete($api_token,$id);
+        $response = $this->JobOptioninfo->jobOptionDelete($this->api_token,$id);
 
         if ($response) {
 			echo json_encode($response);

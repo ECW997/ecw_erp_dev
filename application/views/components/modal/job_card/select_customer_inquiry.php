@@ -53,6 +53,9 @@
 </div>
 
 <script>
+let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
+let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
+
 $(document).ready(function () {
 	$('#inquiryListDataTable').DataTable({
 		"destroy": true,
@@ -73,6 +76,10 @@ $(document).ready(function () {
 				'Content-Type': 'application/json',
 				'Authorization': 'Bearer ' + api_token
 			},
+			data: function(d) {
+                    d.company_id = company_id;
+                    d.branch_id = branch_id;
+            },
 			dataSrc: function (json) {
 				if (json.status === false && json.code === 401) {
 					falseResponse(errorObj);
