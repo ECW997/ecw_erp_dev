@@ -8,245 +8,259 @@ include "include/v2/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
         <main>
-            <div class="page-header page-header-light bg-white shadow">
+            <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
-                    <div class="page-header-content py-3">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i class="fa fa-cash-register" aria-hidden="true"></i></div>
-                            <span>Payments</span>
-                        </h1>
+                    <div class="page-header-content py-1">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-4">
+                                <h1 class="page-header-title">Payment</h1>
+                            </div>
+                            <div class="col-md-8 text-md-end">
+                                <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
+                                    onclick="window.location.href='<?= base_url('Payment') ?>'">
+                                    <i class="fas fa-arrow-left me-1 text-dark"></i>
+                                    <i class="fas fa-file-invoice me-1 text-dark"></i>
+                                    <span class="text-dark fw-bold">Payment List</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-2 p-0 p-2">
-            	<div class="card">
-            		<div class="card-body p-0 p-2">
-            			<div class="row">
-            				<div class="col-12">
-            					<div class="payment-type-selection mb-4 p-3 border rounded">
-            						<div class="invoice-status-badge d-flex justify-content-between align-items-center">
-            							<button type="button" class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
-                                        onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
-            								<i class="fas fa-cash-register me-1"></i> Print Receipt
-            							</button>
-            							<span class="badge bg-secondary">
-                                            Receipt No :
-                                            <?php
-                                                if ($is_edit) {
-                                                    echo !empty($payment_main_data['receipt_number'])
-                                                        ? $payment_main_data['receipt_number']
-                                                        : ($payment_main_data['draft_receipt_number'] ?? '');
-                                                } else {
-                                                    echo strtoupper($draft_receipt_no);
-                                                }
-                                            ?>
+            <div class="container-fluid mt-2 p-2">
+                <div class="card form-card">
+                    <div class="card-body p-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-header mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                            onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                            <i class="fas fa-cash-register me-1"></i> Print Receipt
+                                        </button>
+                                        <span class="badge bg-secondary">
+                                            Receipt No: 
+                                            <?= $is_edit 
+                                                ? (!empty($payment_main_data['receipt_number']) 
+                                                    ? $payment_main_data['receipt_number'] 
+                                                    : ($payment_main_data['draft_receipt_number'] ?? ''))
+                                                : strtoupper($draft_receipt_no) ?>
                                         </span>
                                     </div>
-            						<div class="row mt-3">
-            							<div class="col-3">
-            								<label for="paymentDate" class="form-label">Payment Date</label>
-            								<input type="date" class="form-control form-control-sm" placeholder="Date"
-            									name="paymentDate" id="paymentDate"
-            									value="<?php echo $is_edit? $payment_main_data['receipt_date'] ?? date('Y-m-d') : date('Y-m-d'); ?>">
-            							</div>
-            							<div class="col-3">
-            								<label class="form-label small fw-bold text-dark">Select Customer</label>
-            								<select class="form-select form-select-sm invoice-select input-highlight"
-            									id="customer" name="customer"
-            									onchange="getCustomerJObOrInvoiceDetails();">
-            									<option value="">Select Customer</option>
-            									<?php if (!empty($payment_main_data['receipt_cus_id'])): ?>
-            									<option value="<?= $payment_main_data['receipt_cus_id'] ?>" selected>
-            										<?= $payment_main_data['customer_name'] ?>
-            									</option>
-            									<?php endif; ?>
-            								</select>
-            							</div>
-            							<div class="col-3">
-            								<label for="paymentBy" class="form-label">Payment By</label>
-            								<input type="text" class="form-control form-control-sm" placeholder="By"
-            									name="paymentBy" id="paymentBy"
-            									value="<?= isset($payment_main_data['customer_name']) ? $payment_main_data['customer_name'] : '' ?>">
-            							</div>
-            							<div class="col-3">
-            								<label for="paymentNote" class="form-label">Payment Note</label>
-            								<input type="text" class="form-control form-control-sm" placeholder="Note"
-            									name="paymentNote" id="paymentNote"
-            									value="<?= isset($payment_main_data['remarks']) ? $payment_main_data['remarks'] : '' ?>">
-            							</div>
-            							<input type="hidden" id="payment_record_id" name="payment_record_id"
-            								value="<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : '' ?>" />
-            							<input type="hidden" id="status" name="status"
-            								value="<?= isset($payment_main_data['status']) ? $payment_main_data['status'] : '' ?>" />
-            						</div>
-            						<hr>
-            						<div class="row mt-3 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
-            							<div class="col-md-6">
-            								<div class="row g-2 align-items-end">
-            									<div class="col-md-5">
-            										<label for="paymentAmount"
-            											class="form-label small fw-bold">Amount</label>
-            										<div class="input-group input-group-sm">
-            											<span class="input-group-text">Rs</span>
-            											<input type="number" step="0.01" class="form-control text-end"
-            												placeholder="0.00" name="paymentAmount" id="paymentAmount">
-            										</div>
-            									</div>
-            									<div class="col-md-6">
-            										<label for="paymentMethod" class="form-label small fw-bold">Payment
-            											Method</label>
-            										<select class="form-select form-select-sm" name="paymentMethod"
-            											id="paymentMethod">
-            											<option value="">Select Method</option>
-            											<option value="CASH">Cash</option>
-            											<option value="BANK_TRANSFER">Bank Transfer</option>
-            											<option value="CREDIT_CARD">Credit Card</option>
-            											<option value="CHEQUE">Cheque</option>
-            										</select>
-            									</div>
-            									<div class="col-md-1">
-            										<button type="button" class="btn btn-sm btn-primary"
-            											id="addPaymentBtn" onclick=" addPayment()">
-            											<i class="fas fa-plus"></i>
-            										</button>
-            									</div>
-            								</div>
-            								<div id="bankTransferDetails" class="row g-2 mt-2 d-none">
-            									<div class="col-md-6">
-            										<label class="form-label small">Bank Name</label>
-            										<input type="text" class="form-control form-control-sm"
-            											name="bank_name">
-            									</div>
-            									<div class="col-md-6">
-            										<label class="form-label small">Transaction ID</label>
-            										<input type="text" class="form-control form-control-sm"
-            											name="transaction_id">
-            									</div>
-            								</div>
-
-            								<div id="chequeDetails" class="row g-2 mt-2 d-none">
-            									<div class="col-md-3">
-            										<label class="form-label small">Cheque Number</label>
-            										<input type="text" class="form-control form-control-sm"
-            											name="cheque_number">
-            									</div>
-            									<div class="col-md-3">
-            										<label class="form-label small">Bank Name</label>
-            										<input type="text" class="form-control form-control-sm"
-            											name="cheque_bank">
-            									</div>
-            									<div class="col-md-3">
-            										<label class="form-label small">Cheque Date</label>
-            										<input type="date" class="form-control form-control-sm"
-            											name="cheque_date">
-            									</div>
-            									<div class="col-md-3">
-            										<label class="form-label small">Clearance Date</label>
-            										<input type="date" class="form-control form-control-sm"
-            											name="cheque_clearance_date">
-            									</div>
-            								</div>
-            							</div>
-
-            							<div class="col-md-6">
-            								<label class="form-label small fw-bold">Payment Details</label>
-            								<div class="table-responsive border rounded">
-            									<table class="table table-bordered table-striped table-sm nowrap w-100"
-            										id="paymentDetailsTable">
-            										<thead>
-            											<tr>
-            												<th width="20%">Method</th>
-            												<th width="30%">Details</th>
-            												<th width="20%" class="text-end">Amount</th>
-            												<th width="20%" class="text-end">Balance</th>
-            												<th width="10%" class="text-center">Action</th>
-            											</tr>
-            										</thead>
-            										<tbody>
-            											<tr>
-            												<td colspan="5" class="text-center text-muted py-3">
-            													No payments added yet
-            												</td>
-            											</tr>
-            										</tbody>
-            									</table>
-            								</div>
-            							</div>
-            						</div>
-            						<hr class="<?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
-            						<div class="row <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
-            							<div class="col-3">
-            								<div class="mb-3">
-            									<label for="PaymentType" class="form-label small fw-bold">Payment
-            										Type</label>
-            									<select class="form-select form-select-sm" name="PaymentType"
-            										id="PaymentType" onchange="getCustomerJObOrInvoiceDetails();">
-            										<option value="">Select Type</option>
-            										<option value="JobCard"
-            											<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
-            											Job card Advance
-            										</option>
-            										<option value="Invoice"
-            											<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
-            											Invoice Payment
-            										</option>
-            									</select>
-            								</div>
-            							</div>
-            						</div>
-            						<div class="table-responsive mt-3 border rounded">
-            							<table class="table table-sm table-bordered mb-0" id="customerOutstandingTable">
-            								<thead class="table-light">
-            									<tr>
-            										<th>Reference No</th>
-            										<th>Date</th>
-            										<th class="text-end">Total</th>
-            										<th class="text-end">Paid</th>
-            										<th class="text-end">Balance</th>
-            										<th class="text-center">Action</th>
-            									</tr>
-            								</thead>
-            								<tbody>
-            									<tr>
-            										<td colspan="6" class="text-center text-muted">Select a customer to
-            											view outstanding payments</td>
-            									</tr>
-            								</tbody>
-            							</table>
-            						</div>
-            						<div class="mt-4">
-            							<h6 class="fw-bold">Allocated Payment Summary</h6>
-            							<div class="table-responsive">
-            								<table class="table table-bordered table-sm" id="allocationSummaryTable">
-            									<thead>
-            										<tr>
-            											<th>Reference ID</th>
-            											<th>Payment Method</th>
-            											<th class="text-end">Allocated Amount</th>
-            										</tr>
-            									</thead>
-            									<tbody>
-            										<tr>
-            											<td colspan="3" class="text-center text-muted">No allocations
-            												yet</td>
-            										</tr>
-            									</tbody>
-            								</table>
-            							</div>
-            						</div>
-            					</div>
-            					<div
-            						class="mt-4 rounded-bottom d-flex justify-content-end align-items-center gap-2 flex-wrap">
-            						<button type="button" class="btn btn-sm btn-success" id="confirmPaymentBtn" 
+                                </div>
+                                <div class="form-section mb-4 p-3 border rounded">
+                                    <h6 class="section-title p-2 mb-3 rounded">Payment Information</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label small fw-bold text-dark">Payment Date</label>
+                                                <input type="date" class="form-control form-control-sm input-highlight" 
+                                                    name="paymentDate" id="paymentDate"
+                                                    value="<?= $is_edit ? $payment_main_data['receipt_date'] ?? date('Y-m-d') : date('Y-m-d') ?>">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label small fw-bold text-dark">Customer <span class="text-danger">*</span></label>
+                                                <select class="form-select form-select-sm input-highlight" 
+                                                    id="customer" name="customer" onchange="getCustomerJObOrInvoiceDetails();">
+                                                    <option value="">Select Customer</option>
+                                                    <?php if (!empty($payment_main_data['receipt_cus_id'])): ?>
+                                                    <option value="<?= $payment_main_data['receipt_cus_id'] ?>" selected>
+                                                        <?= $payment_main_data['customer_name'] ?>
+                                                    </option>
+                                                    <?php endif; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label small fw-bold text-dark">Payment By</label>
+                                                <input type="text" class="form-control form-control-sm input-highlight" 
+                                                    name="paymentBy" id="paymentBy"
+                                                    value="<?= isset($payment_main_data['customer_name']) ? $payment_main_data['customer_name'] : '' ?>">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label small fw-bold text-dark">Payment Note</label>
+                                                <input type="text" class="form-control form-control-sm input-highlight" 
+                                                    name="paymentNote" id="paymentNote"
+                                                    value="<?= isset($payment_main_data['remarks']) ? $payment_main_data['remarks'] : '' ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="payment_record_id" name="payment_record_id"
+                                        value="<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : '' ?>">
+                                    <input type="hidden" id="status" name="status"
+                                        value="<?= isset($payment_main_data['status']) ? $payment_main_data['status'] : '' ?>">
+                                </div>
+                                <div class="row form-section mb-4 p-3 border rounded <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
+                                    <div class="col-6">
+                                        <h6 class="section-title p-2 mb-3 rounded">Payment Entry</h6>
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Amount <span class="text-danger">*</span></label>
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text">Rs</span>
+                                                        <input type="number" step="0.01" class="form-control text-end input-highlight"
+                                                            placeholder="0.00" name="paymentAmount" id="paymentAmount">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Payment Method <span class="text-danger">*</span></label>
+                                                    <select class="form-select form-select-sm input-highlight" name="paymentMethod" id="paymentMethod">
+                                                        <option value="">Select Method</option>
+                                                        <option value="CASH">Cash</option>
+                                                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                                                        <option value="CREDIT_CARD">Credit Card</option>
+                                                        <option value="CHEQUE">Cheque</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 d-flex align-items-end">
+                                                <button type="button" class="btn btn-primary btn-sm w-100 action-btn" id="addPaymentBtn" onclick="addPayment()">
+                                                    <i class="fas fa-plus me-1"></i> Add Payment
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="bankTransferDetails" class="row g-3 mt-2 d-none">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Bank Name</label>
+                                                    <input type="text" class="form-control form-control-sm input-highlight" name="bank_name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Transaction ID</label>
+                                                    <input type="text" class="form-control form-control-sm input-highlight" name="transaction_id">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="chequeDetails" class="row g-3 mt-2 d-none">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Cheque Number</label>
+                                                    <input type="text" class="form-control form-control-sm input-highlight" name="cheque_number">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Bank Name</label>
+                                                    <input type="text" class="form-control form-control-sm input-highlight" name="cheque_bank">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Cheque Date</label>
+                                                    <input type="date" class="form-control form-control-sm input-highlight" name="cheque_date">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Clearance Date</label>
+                                                    <input type="date" class="form-control form-control-sm input-highlight" name="cheque_clearance_date">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="section-title p-2 mb-3 rounded">Payment Details</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped table-sm w-100" id="paymentDetailsTable">
+                                                <thead>
+                                                    <tr class="table-light">
+                                                        <th width="20%">Method</th>
+                                                        <th width="30%">Details</th>
+                                                        <th width="20%" class="text-end">Amount</th>
+                                                        <th width="20%" class="text-end">Balance</th>
+                                                        <th width="10%" class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-3">No payments added yet</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-section mb-4 p-3 border rounded <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label small fw-bold text-dark">Payment Type</label>
+                                                <select class="form-select form-select-sm input-highlight" name="PaymentType" id="PaymentType" 
+                                                    onchange="getCustomerJObOrInvoiceDetails();">
+                                                    <option value="">Select Type</option>
+                                                    <option value="JobCard" <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
+                                                        Job card Advance
+                                                    </option>
+                                                    <option value="Invoice" <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
+                                                        Invoice Payment
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-section mb-4 p-3 border rounded">
+                                    <h6 class="section-title p-2 mb-3 rounded">Customer Outstanding</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered w-100" id="customerOutstandingTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Reference No</th>
+                                                    <th>Date</th>
+                                                    <th class="text-end">Total</th>
+                                                    <th class="text-end">Paid</th>
+                                                    <th class="text-end">Balance</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted">Select a customer to view outstanding payments</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-section mb-4 p-3 border rounded">
+                                    <h6 class="section-title p-2 mb-3 rounded">Allocated Payment Summary</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-sm w-100" id="allocationSummaryTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Reference ID</th>
+                                                    <th>Payment Method</th>
+                                                    <th class="text-end">Allocated Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="3" class="text-center text-muted">No allocations yet</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-actions d-flex justify-content-end gap-2 mt-4">
+                                    <button type="button" class="btn btn-success btn-sm action-btn" id="confirmPaymentBtn" 
                                         onclick="confirmPayment()"
                                         <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                         <i class="fas fa-check-double me-1"></i> Approve Payment
                                     </button>
-            					</div>
-            				</div>
-            			</div>
-            		</div>
-            	</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             </main>
 
@@ -278,6 +292,14 @@ include "include/v2/topnavbar.php";
                 </div>
             </div>
 
+            <div id="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.28); z-index: 9999; display: flex; justify-content: center; align-items: center;">
+                <div class="text-center">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4 class="mt-3">Loading Payment Data...</h4>
+                </div>
+            </div>
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -290,12 +312,33 @@ let header_id = 0;
 let paymentData = [];
 
 $(document).ready(function () {
+    $('#loading-overlay').show();
+    let loadingPromises = [];
+
     header_id = "<?= $payment_main_data['id'] ?? 0 ?>";
     if(header_id != 0){
-        getCustomerJObOrInvoiceDetails().then(function() {
-            loadPayDetail(header_id);
-        });
+        loadingPromises.push(
+            getCustomerJObOrInvoiceDetails().then(function() {
+                return loadPayDetail(header_id);
+            })
+        );
     }
+
+    Promise.all(loadingPromises)
+        .then(function() {
+            $('#loading-overlay').fadeOut(300);
+        })
+        .catch(function(error) {
+            console.error("Error loading data:", error);
+            $('#loading-overlay').html(`
+                <div class="text-center text-danger">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h4>Error loading data</h4>
+                    <p>${error.message || 'Please try again'}</p>
+                    <button class="btn btn-primary mt-2" onclick="location.reload()">Reload Page</button>
+                </div>
+            `);
+    });
 });
 
 const customer = $('#customer');
@@ -353,7 +396,6 @@ function setupAllocationEditHandlers() {
         let refId = null;
 
         if ($row.hasClass('invoice-row') || $row.hasClass('jobcard-row')) {
-            // Editing from paymentDetailsTable
             allocatedAmount = parseFloat(
                 $row.find('.allocated-info').text().replace('Allocated: Rs. ', '')
             );
@@ -572,6 +614,7 @@ function getCustomerJObOrInvoiceDetails() {
                         const ref = isJob ? entry.jobcard.job_card_number : entry.invoice.invoice_number;
                         const date = isJob ? entry.jobcard.jobcard_date : entry.invoice.invoice_date;
                         const id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
+                        const advance_paid = parseFloat(isJob ? 0: entry.invoice.inv_advance_total);
                         const total = parseFloat(isJob ? entry.total : entry.total);
                         const paid = parseFloat(isJob ? entry.paid : entry.paid);
                         const bal = parseFloat(isJob ? entry.balance : entry.outstanding);
@@ -608,6 +651,7 @@ function getCustomerJObOrInvoiceDetails() {
                         <td class="text-end ref_total">${Number(entry.total || 0).toFixed(2)}</td>
                         <td class="text-end ref_paid_show">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_paid d-none">0</td>
+                        <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_balance">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
@@ -871,7 +915,7 @@ function deleteRow(button,table) {
                 }
             },
             error: function() {
-                alert('Error deleting payment. Please try again.');
+                 error_toastify('Error deleting payment. Please try again.');
             }
         });
     }
@@ -886,7 +930,7 @@ function updateBalances() {
         let $row = $(this);
               
         let paymentMethod = $row.find('td').eq(1).text().trim();      
-        let allocateAmountText = $row.find('.allocate_amount').val().replace(/[^\d.-]/g, '');
+        let allocateAmountText = $row.find('.allocate_amount').val();
         let allocateAmount = parseFloat(allocateAmountText) || 0;
         let refNo = $row.find('td').eq(0).text().trim();    
         let refId = $row.find('.ref_id').text().trim();     
@@ -913,7 +957,10 @@ function updateBalances() {
 
         if (matchedAllocations.length > 0) {
             const original_ref_total = parseFloat($row.find('.ref_total').text().replace(',', '').trim()) || 0;
-            const totalAllocated = matchedAllocations.reduce((sum, a) => sum + parseFloat(a.allocate_amount), 0);
+            const original_ref_paid = parseFloat($row.find('.ref_paid').text().replace(',', '').trim()) || 0;
+            const original_ref_advance_paid = parseFloat($row.find('.ref_advance_paid').text().replace(',', '').trim()) || 0;
+            let totalAllocated = matchedAllocations.reduce((sum, a) => sum + parseFloat(a.allocate_amount), 0);
+            totalAllocated += original_ref_advance_paid;
             const new_balance = Math.max(0, original_ref_total - totalAllocated);
 
             $row.find('.ref_paid').text(totalAllocated.toFixed(2));
@@ -983,6 +1030,9 @@ function confirmPayment() {
                 }
             }
         });
+    }else{
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
     }
 }
 

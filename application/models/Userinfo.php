@@ -65,6 +65,10 @@ class Userinfo extends CI_Model{
     }
 
     // User Privilege Functions
+    public function getUsers($api_token,$id){
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_user_list_v1', $id, $headers);
+    }
     public function getUserTypes($api_token,$id){
         $headers = get_api_headers($api_token);
         return call_api('GET', 'get_user_type_list_v1', $id, $headers);

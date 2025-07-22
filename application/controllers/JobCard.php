@@ -107,38 +107,6 @@ class JobCard extends CI_Controller {
 		);
 	}
 
-	public function jobInvoicePDF(){
-		$id=$this->input->get('jobcard_id');
-        $response=$this->JobCardinfo->getJobById($this->api_token,$id);
-
-		if (!$response['status'] || $response['code'] != 200) {
-			show_error('Failed to fetch job card data');
-		}
-
-		$pdf_data = [
-			'main_data'    => $response['data']['main_data'][0],     
-			'details_data' => $response['data']['details_data'],     
-			'summary_data' => $response['data']['summary_data'],
-			'is_discount_approved' => $response['data']['is_discount_approved']       
-		];
-
-		$this->load->library('Pdf');
-
-	   	$customPaper = array(0, 0, 382.84, 380.84); 
-        $this->pdf->setPaper($customPaper);    
-		$this->pdf->set_option('defaultFont', 'Helvetica');           
-		$this->pdf->set_option('isRemoteEnabled', true); 
-
-		$html = $this->load->view('components/pdf/job_invoice_pdf', $pdf_data, TRUE);
-
-		$this->pdf->loadHtml($html);
-		$this->pdf->render();
-		$this->pdf->stream(
-			$pdf_data['main_data']['job_card_number'] . '.pdf', 
-			['Attachment' => 0]  
-		);
-	}
-
     public function getCustomerDetails($id) {
         $response = $this->JobCardinfo->getCustomerDetails($this->api_token,$id);
 		echo json_encode($response);

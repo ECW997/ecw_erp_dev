@@ -9,7 +9,7 @@ include "include/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
     <style>
-           .card-header {
+    .card-header {
       background-color: white;
       border-bottom: 1px solid #6c757d;
       padding: 1rem 2rem;
@@ -77,50 +77,27 @@ include "include/topnavbar.php";
         	</div>
             <div class="container-fluid mt-2 p-0 p-2">
                 <div class="card">
-                    <div class="p-2 d-none">
+                    <div class="p-2 ">
                         <div class="row align-items-center">
-                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-start">
-                                <label for="date_from" class="mb-0 mr-2">Date Filter</label>
-                                <div class="input-group" style="max-width: 220px;">
-                                    <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
-                                    <div class="input-group-append">
-                                    <span class="input-group-text">to</span>
-                                    </div>
-                                    <input type="date" id="date_to" class="form-control form-control-sm" aria-label="Date To" />
-                                </div>
-                            </div>
-
+                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-start"></div>
                             <div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
                                 <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
-                                    <label for="sales_agent" class="mb-0 mr-2">Sales Agent</label>
-                                    <select id="sales_agent" class="custom-select custom-select-sm" style="min-width: 130px;">
-                                    <option value="">All</option>
-                                       <?php if (!empty($sales_agents)) : ?>
-                                            <?php foreach ($sales_agents as $agent) : ?>
-                                                <option value="<?= $agent['idtbl_sales_person']; ?>">
-                                                    <?= htmlspecialchars($agent['sales_person_name']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        <?php endif; ?>
-                                    </select>
-                                </div>
-                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
-                                    <label for="job_status" class="mb-0 mr-2">Job Status</label>
-                                    <select id="job_status" class="custom-select custom-select-sm" style="min-width: 130px;">
-                                    <option value="">All</option>
-                                    <option value="0">Not Started</option>
-                                    <option value="1">Started</option>
-                                    <option value="2">Job Done</option>
-                                    </select>
+                                    <label for="date_from" class="mb-0 mr-2">Date Filter</label>
+                                    <div class="input-group">
+                                        <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
+                                        <div class="input-group-append">
+                                        <span class="input-group-text">to</span>
+                                        </div>
+                                        <input type="date" id="date_to" class="form-control form-control-sm" aria-label="Date To" />
+                                    </div>
                                 </div>
                                 <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
                                     <label for="status" class="mb-0 mr-2">Status</label>
                                     <select id="status" class="custom-select custom-select-sm" style="min-width: 130px;">
                                     <option value="">All Status</option>
-                                    <option value="0">Draft</option>
-                                    <option value="1">Pending</option>
-                                    <option value="2">Approved</option>
-                                    <option value="3">Cancelled</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Cancelled">Cancelled</option>
                                     </select>
                                 </div>
                                 <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
@@ -223,8 +200,44 @@ var statuscheck = '<?php echo $statuscheck; ?>';
 var deletecheck = '<?php echo $deletecheck; ?>';
 
 $(document).ready(function() {
-    var base_url = "<?php echo base_url(); ?>";
+    loadPaymentListTable();
 
+    $('#filterBtn').on('click', function() {
+        loadPaymentListTable();
+    });
+
+    $('#clearFilterBtn').on('click', function() {
+        $('#date_from, #date_to, #status').val('');
+        loadPaymentListTable();
+    });
+});
+
+$(document).on('click', '.btnCancel', function(e) {
+    e.preventDefault();
+    const paymentId = $(this).data('id');
+
+    if (confirm("Are you sure you want to cancel this payment?")) {
+        $.ajax({
+            url: '<?php echo base_url() ?>Payment/cancelPayment/' + paymentId,
+            method: 'POST',
+            dataType: 'json',
+            success: function(result) {
+                if (result.status == true) {
+                    success_toastify(result.message);
+                    loadPaymentListTable();
+                } else {
+                    alert(result.message);
+                }
+            },
+            error: function() {
+                error_toastify('Error deleting payment. Please try again.');
+            }
+        });
+    }
+});
+
+function loadPaymentListTable(){
+    var base_url = "<?php echo base_url(); ?>";
     $('#dataTable').DataTable({
         "destroy": true,
         "processing": true,
@@ -267,6 +280,11 @@ $(document).ready(function() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + api_token
+            },
+            data: function(d) {
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.status = $('#status').val();
             },
             dataSrc: function(json) {
                 if (json.status === false && json.code === 401) {
@@ -343,10 +361,17 @@ $(document).ready(function() {
                 "data": null,
                 "render": function(data, type, full) {
                     var button = '';
+                    if(full['status'] != 'Cancelled'){
                     button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full[
                             'id'] +
                         '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                         '<i class="fas fa-external-link-alt"></i></a>';
+                    }
+                    if(full['status'] == 'Approved'){
+                    button += '<a href="#" data-id="' + full['id'] + 
+                        '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
+                        '<i class="fas fa-ban"></i></a>';
+                    }
                     return button;
                 }
             }
@@ -355,8 +380,7 @@ $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         }
     });
-
-});
+}
 
 function addCommas(nStr) {
     nStr += '';

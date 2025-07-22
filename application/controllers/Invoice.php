@@ -103,10 +103,6 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->getAdvancePayments($api_token,$form_data);
 		echo json_encode($response);
 	}
-	
-
-	
-	//Approve Invoice
 
 	public function approveInvoice() {
         $api_token = $this->session->userdata('api_token');
@@ -128,8 +124,6 @@ class Invoice extends CI_Controller {
 		}   
     }
 
-	//Delete Invoice
-
 	public function deleteInvoice() {
         $api_token = $this->session->userdata('api_token');
         if (!$api_token) {
@@ -150,7 +144,6 @@ class Invoice extends CI_Controller {
 		}   
     }
 
-	
 	public function getJobCardDetails() {
         $api_token = $this->session->userdata('api_token');
         $id = $this->input->post('job_card_id');
@@ -211,4 +204,36 @@ class Invoice extends CI_Controller {
         $response = $this->Invoiceinfo->getInvoiceById($api_token, $id);
         echo json_encode($response);
     }
+
+	public function invoicePDF(){
+		$id=$this->input->get('invoice_id');
+        $response=$this->Invoiceinfo->getInvoicePdfDetails($this->api_token,$id);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch job card data');
+		}
+
+		$pdf_data = [
+			'main_data'    => $response['data']['main_data'][0],     
+			'details_data' => $response['data']['details_data'],     
+			'extra_charge_data' => $response['data']['extra_charge_data'],  
+			'total_paid_for_ref' => $response['data']['total_paid_for_ref'],  
+		];
+
+		$this->load->library('Pdf');
+
+	   	$customPaper = array(0, 0, 382.84, 380.84); 
+        $this->pdf->setPaper($customPaper);    
+		$this->pdf->set_option('defaultFont', 'Helvetica');           
+		$this->pdf->set_option('isRemoteEnabled', true); 
+
+		$html = $this->load->view('components/pdf/job_invoice_pdf', $pdf_data, TRUE);
+
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+		$this->pdf->stream(
+			$pdf_data['main_data']['invoice_number'] . '.pdf', 
+			['Attachment' => 0]  
+		);
+	}
 }

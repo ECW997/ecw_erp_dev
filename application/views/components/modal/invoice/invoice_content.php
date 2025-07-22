@@ -175,56 +175,6 @@
         </div>
 
         <?php $selected_payment = isset($invoice_main_data[0]['payment_term_id']) ? $invoice_main_data[0]['payment_term_id'] : ''; ?>
-        <!-- <div class="payment-summary mt-4">
-            <div class="row g-3">
-                <div class="col-md-2 d-none">
-                    <label class="small form-label text-dark">Payment Type</label>
-                    <select class="form-select form-select-sm" name="payment_type" id="payment_type" required>
-                        <option value="">Select Payment Type</option>
-                        <option value="1" <?= ($selected_payment == '1') ? 'selected' : '' ?>>Cash</option>
-                        <option value="2" <?= ($selected_payment == '2') ? 'selected' : '' ?>>Cheque</option>
-                        <option value="3" <?= ($selected_payment == '3') ? 'selected' : '' ?>>Bank Transfer</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Sub Total</label>
-                    <input type="number" step="any" id="total_sub_amount" name="total_sub_amount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Total Discount</label>
-                    <input type="number" step="any" id="total_discount" name="total_discount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Grand Total</label>
-                    <input type="number" step="any" name="hiddenfulltotal" class="form-control form-control-sm" id="hiddenfulltotal" readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">VAT (%)</label>
-                    <input type="number" id="vat" name="vat" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">VAT Amount</label>
-                    <input type="number" id="vatamount" name="vatamount" class="form-control form-control-sm" value="0" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark fw-bold">Total Payment</label>
-                    <input type="number" step="any" name="modeltotalpayment" class="form-control form-control-sm fw-bold" id="modeltotalpayment" readonly>
-                </div>
-                <div class="col-12">
-                    <label class="small form-label text-dark">Remarks</label>
-                    <textarea name="remark" id="remark" class="form-control form-control-sm" rows="2"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
-                </div>
-                <input name="invoice_record_id" type="number" id="invoice_record_id" value="<?= $invoice_main_data[0]['id'] ?? '' ?>" class="d-none">
-                
-                <div class="col-12 text-end mt-3">
-                    <button type="button" id="btncreateorder" class="btn btn-primary" onclick="createInvoice();">
-                        <i class="fas fa-save me-2"></i><?php echo $is_edit ? 'Update' : 'Create'; ?> Invoice
-                    </button>
-                </div>
-            </div>
-        </div> -->
-
         <div class="payment-summary mt-4">
             <div class="row g-3">
                 <!-- Invoice Summary Card -->
@@ -243,73 +193,6 @@
                                                         <div class="col-4">
                                                             <label class="small form-label text-dark">Reciepts
                                                                 Number</label>
-                                                            <!-- <select id="reciept_no" name="reciept_no"
-                                                                class="form-select form-select-sm" style="width: 100%;">
-
-                                                                <option value="">
-                                                                    Select Reciepts
-                                                                </option>
-                                                                <option value="1" data-receipt_number="RCPT/25/1/0001"
-                                                                    data-jobcard_number="JCN250001"
-                                                                    data-amount="1500.00" data-pay_date="2025-07-01"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0001 / JCN250001
-                                                                </option>
-                                                                <option value="2" data-receipt_number="RCPT/25/1/0002"
-                                                                    data-jobcard_number="JCN250002"
-                                                                    data-amount="3000.00" data-pay_date="2025-07-02"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0002 / JCN250002
-                                                                </option>
-                                                                <option value="3" data-receipt_number="RCPT/25/1/0003"
-                                                                    data-jobcard_number="JCN250003"
-                                                                    data-amount="2750.00" data-pay_date="2025-07-03"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0003 / JCN250003
-                                                                </option>
-                                                                <option value="4" data-receipt_number="RCPT/25/1/0004"
-                                                                    data-jobcard_number="JCN250004"
-                                                                    data-amount="1200.00" data-pay_date="2025-07-04"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0004 / JCN250004
-                                                                </option>
-                                                                <option value="5" data-receipt_number="RCPT/25/1/0005"
-                                                                    data-jobcard_number="JCN250005"
-                                                                    data-amount="5000.00" data-pay_date="2025-07-05"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0005 / JCN250005
-                                                                </option>
-                                                                <option value="6" data-receipt_number="RCPT/25/1/0006"
-                                                                    data-jobcard_number="JCN250006"
-                                                                    data-amount="3500.00" data-pay_date="2025-07-06"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0006 / JCN250006
-                                                                </option>
-                                                                <option value="7" data-receipt_number="RCPT/25/1/0007"
-                                                                    data-jobcard_number="JCN250007"
-                                                                    data-amount="4100.00" data-pay_date="2025-07-07"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0007 / JCN250007
-                                                                </option>
-                                                                <option value="8" data-receipt_number="RCPT/25/1/0008"
-                                                                    data-jobcard_number="JCN250008"
-                                                                    data-amount="2890.00" data-pay_date="2025-07-08"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0008 / JCN250008
-                                                                </option>
-                                                                <option value="9" data-receipt_number="RCPT/25/1/0009"
-                                                                    data-jobcard_number="JCN250009"
-                                                                    data-amount="1999.99" data-pay_date="2025-07-09"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0009 / JCN250009
-                                                                </option>
-                                                                <option value="10" data-receipt_number="RCPT/25/1/0010"
-                                                                    data-jobcard_number="JCN250010"
-                                                                    data-amount="3600.50" data-pay_date="2025-07-10"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0010 / JCN250010
-                                                                </option>
-                                                            </select> -->
                                                             <select class="form-select form-select-sm input-field"
                                                                 name="reciept_no" id="reciept_no" required>
                                                                 <option value="">Select</option>

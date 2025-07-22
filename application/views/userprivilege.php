@@ -25,11 +25,11 @@ include "include/topnavbar.php";
                             <div class="col-3">
                                 <form action="<?php echo base_url() ?>User/privilegeInsertUpdate" method="post" autocomplete="off">
                                     <div class="form-group mb-1">
-                                        <label class="small font-weight-bold">User Type*</label>
+                                        <label class="small font-weight-bold">User*</label>
                                         <select type="text" class="form-control form-control-sm" name="userlist" id="userlist" required>
                                             <option value="">Select</option>
-                                            <?php foreach($usertype as $user): ?>
-                                                <option value="<?php echo $user['idtbl_user_type']; ?>"><?php echo $user['type']; ?></option>
+                                            <?php foreach($users as $user): ?>
+                                                <option value="<?php echo $user['id']; ?>"><?php echo $user['name']; ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -74,6 +74,12 @@ include "include/topnavbar.php";
                                                 Approve Privilege
                                             </label>
                                         </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" value="1" id="cancelcheck" name="cancelcheck">
+                                            <label class="custom-control-label" for="cancelcheck">
+                                                Cancel Privilege
+                                            </label>
+                                        </div>
                                     </div>
                                     <div class="form-group mt-2 text-right">
                                         <button type="submit" id="submitBtn" class="btn btn-primary btn-sm px-4" <?php if($addcheck==0){echo 'disabled';} ?>><i class="far fa-save"></i>&nbsp;Add</button>
@@ -94,6 +100,7 @@ include "include/topnavbar.php";
                                             <th>Active | Deactive</th>
                                             <th>Delete</th>
                                             <th>Approve</th>
+                                            <th>Cancel</th>
                                             <th class="text-right">Actions</th>
                                         </tr>
                                     </thead>
@@ -148,7 +155,7 @@ include "include/topnavbar.php";
                     "data": "idtbl_user_privilege"
                 },
                 {
-                    "data": "user_type"
+                    "data": "user"
                 },
                 {
                     "data": "menu"
@@ -220,6 +227,19 @@ include "include/topnavbar.php";
                 },
                 {
                     "targets": -1,
+                    "className": 'text-center',
+                    "data": null,
+                    "render": function(data, type, full) {
+                        if(full['cancel']==1){
+                            return '<i class="fas fa-check text-success mt-2"></i>';
+                        }
+                        else{
+                            return '<i class="fas fa-times text-danger mt-2"></i>';
+                        }
+                    }
+                },
+                {
+                    "targets": -1,
                     "className": 'text-right',
                     "data": null,
                     "render": function(data, type, full) {
@@ -251,7 +271,7 @@ include "include/topnavbar.php";
                     success: function(result) { //alert(result);
                         if (result.status) {
                             $('#recordID').val(result.data.idtbl_user_privilege);
-                            $('#userlist').val(result.data.user_type_id);
+                            $('#userlist').val(result.data.user_id);
 
                             // var menulist = result.data.menu;
                             // var menulistoption = [];
@@ -267,6 +287,7 @@ include "include/topnavbar.php";
                             if(result.data.statuschange==1){$('#statuscheck').prop('checked', true);}
                             if(result.data.remove==1){$('#removecheck').prop('checked', true);}
                             if(result.data.approve==1){$('#approvecheck').prop('checked', true);}
+                            if(result.data.cancel==1){$('#cancelcheck').prop('checked', true);}
 
                             $('#recordOption').val('2');
                             $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');

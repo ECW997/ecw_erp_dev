@@ -63,35 +63,81 @@ include "include/topnavbar.php";
         .btn-option:focus {
             box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
         }
+        #filterBtn {
+        min-width: 100px;
+        height: 1.9rem;
+        font-size: 0.85rem;
+        padding: 0 0.75rem;
+        }
+        .input-group-text {
+        background-color: #e9ecef;
+        border-right: 0;
+        font-weight: 700;
+        color: #6c757d;
+        white-space: nowrap;
+        height: 1.9rem;
+        padding: 0 0.5rem;
+        line-height: 1.9rem;
+        }
+        .input-group > .form-control:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        }
+        .input-group > .form-control:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 0;
+        }
         </style>
         <main>
             <div class="page-header page-header-light bg-white shadow">
-                <div class="container-fluid">
-                    <div class="page-header-content py-3">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i class="fas fa-align-left"></i></div>
-                            <span>Invoice List</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+        	    <div class="container-fluid">
+        			<div class="page-header-content py-3 d-flex justify-content-between align-items-center">
+        				<h1 class="page-header-title">
+        					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
+        					<span>Invoice List</span>
+        				</h1>
+                        <button
+                            class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>"
+                            data-toggle="modal" data-target="#invoiceTypeModal">
+                            <i class="fas fa-plus mr-3"></i>Create New Invoice
+                        </button>
+        			</div>
+        		</div>
+        	</div>
             <div class="container-fluid mt-2 p-0 p-2">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-end">
-                        <div class="row">
-                            <div class="col">
-                                <button
-                                    class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>"
-                                    data-toggle="modal" data-target="#invoiceTypeModal">
-                                    <i class="fas fa-plus mr-3"></i>Create New Invoice
+                    <div class="p-2 ">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-start"></div>
+                            <div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="date_from" class="mb-0 mr-2">Date Filter</label>
+                                    <div class="input-group">
+                                        <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
+                                        <div class="input-group-append">
+                                        <span class="input-group-text">to</span>
+                                        </div>
+                                        <input type="date" id="date_to" class="form-control form-control-sm" aria-label="Date To" />
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="status" class="mb-0 mr-2">Status</label>
+                                    <select id="status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                        <option value="">All Status</option>
+                                        <option value="0">Pending</option>
+                                        <option value="1">Approved</option>
+                                        <option value="2">Cancelled</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
+                                    <i class="fas fa-filter mr-1"></i> Filter
                                 </button>
-                                <!-- <a href="<?= base_url('Invoice/invoiceDetailIndex') ?>" 
-                                class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
-                                <i class="fas fa-plus mr-3"></i>Create New Invoice
-                                </a> -->
+                                <button class="btn btn-outline-secondary btn-sm ml-2" id="clearFilterBtn">Clear</button>
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="card-body p-0 p-2">
                         <div class="row">
                             <div class="col-12">
@@ -184,6 +230,50 @@ var statuscheck = '<?php echo $statuscheck; ?>';
 var deletecheck = '<?php echo $deletecheck; ?>';
 
 $(document).ready(function() {
+    loadPaymentListTable();
+
+    $('#filterBtn').on('click', function() {
+        loadPaymentListTable();
+    });
+
+    $('#clearFilterBtn').on('click', function() {
+        $('#date_from, #date_to, #status').val('');
+        loadPaymentListTable();
+    });
+
+    // Add this block for delete functionality
+    $(document).on('click', '.btnDeleteInvoice', function() {
+        var invoiceId = $(this).data('id');
+
+        if (!confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
+
+        $.ajax({
+            url: base_url + "Invoice/deleteInvoice",
+            type: "POST",
+            data: {
+                id: invoiceId
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response && response.status == true) {
+                    success_toastify(response.message);
+                    $('#dataTable').DataTable().ajax.reload(null,
+                        false);
+                } else {
+                    falseResponse(response);
+                }
+            },
+            error: function() {
+                alert("Server error occurred.");
+            }
+        });
+    });
+
+});
+
+function loadPaymentListTable(){
     var base_url = "<?php echo base_url(); ?>";
 
     $('#dataTable').DataTable({
@@ -228,6 +318,11 @@ $(document).ready(function() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + api_token
+            },
+            data: function(d) {
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.status = $('#status').val();
             },
             dataSrc: function(json) {
                 if (json.status === false && json.code === 401) {
@@ -334,38 +429,7 @@ $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         }
     });
-
-    // Add this block for delete functionality
-    $(document).on('click', '.btnDeleteInvoice', function() {
-        var invoiceId = $(this).data('id');
-
-        if (!confirm("Are you sure you want to delete this invoice?")) {
-            return;
-        }
-
-        $.ajax({
-            url: base_url + "Invoice/deleteInvoice",
-            type: "POST",
-            data: {
-                id: invoiceId
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response && response.status == true) {
-                    success_toastify(response.message);
-                    $('#dataTable').DataTable().ajax.reload(null,
-                        false);
-                } else {
-                    falseResponse(response);
-                }
-            },
-            error: function() {
-                alert("Server error occurred.");
-            }
-        });
-    });
-
-});
+}
 
 function selectInvoiceType(type) {
     const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
