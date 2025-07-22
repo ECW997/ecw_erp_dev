@@ -60,4 +60,8 @@ class Invoiceinfo extends CI_Model{
         return call_api('POST', 'get_sel2_pay_allocation_receipt_v1', $form_data, $headers);
     }
 
+    public function getInvoicePdfDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_invoice_pdf_v1', $form_data, $headers);
+    }
 }

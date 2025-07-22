@@ -62,6 +62,7 @@ class User extends CI_Controller {
 	public function Userprivilege(){
 		$this->load->model('Userinfo');
 		$this->load->model('Commeninfo');
+		$result['users']=$this->Userinfo->getUsers($this->api_token,'')['data'];
 		$result['usertype']=$this->Userinfo->getUserTypes($this->api_token,'')['data'];
 		$result['menulist']=$this->Userinfo->getMenuList($this->api_token,'')['data'];
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
@@ -77,6 +78,7 @@ class User extends CI_Controller {
 			'editcheck' => $this->input->post('editcheck') ? 1 : 0,
 			'statuscheck' => $this->input->post('statuscheck') ? 1 : 0,
 			'removecheck' => $this->input->post('removecheck') ? 1 : 0,
+			'cancelcheck' => $this->input->post('cancelcheck') ? 1 : 0,
 			'approvecheck' => $this->input->post('approvecheck') ? 1 : 0,
 			'recordID' => $this->input->post('recordID')
 		];

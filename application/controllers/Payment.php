@@ -183,5 +183,19 @@ class Payment extends CI_Controller {
 		);
 	}
 
+	public function cancelPayment($id) {
+		$form_data = [
+			'id' => $id,
+		];
+
+		$response = $this->Paymentinfo->cancelPayment($this->api_token,$form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Payment');
+		}
+    }
 	
 }

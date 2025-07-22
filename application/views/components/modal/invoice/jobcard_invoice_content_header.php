@@ -352,6 +352,7 @@ $(document).ready(function() {
                             .total_line_discount).toFixed(2)));
                         $('#modal_header_discount').val(addCommas(parseFloat(summary
                             .discount_amount).toFixed(2)));
+                        $('#header_discount_total').val(parseFloat(summary.discount_amount).toFixed(2));
                         $('#modal_net_total').val(addCommas(parseFloat(summary.net_total)
                             .toFixed(2)));
 
@@ -403,7 +404,6 @@ $(document).ready(function() {
         $('#vehicle_no').val($('#modal_Vehicle_number').val());
         $('#vehicle_in_date').val($('#modal_Vehicle_indate').val());
         $('#jobcardid').val($('#job_card_number').val());
-        $('#header_discount_total').val($('#modal_header_discount').val());
 
         $('#jobcarddetailsModal').modal('hide');
 

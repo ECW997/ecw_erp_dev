@@ -41,28 +41,6 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <span class="text-dark fw-bold">Invoice List</span>
                                 </button>
                             </div>
-                            <!-- <div class="col-2">
-                                <h2 class="job-header-title" id="top_nav_customer_name">
-                                    <?= isset($invoice_main_data[0]['customer_id']) && $invoice_main_data[0]['customer_id'] 
-                                        ? ($invoice_main_data[0]['jobcard_customer'] ?? '') 
-                                        : ($invoice_main_data[0]['customer_name'] ?? '') ?>
-                                </h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title" id="top_nav_vehicle_no">
-                                    <?= $invoice_main_data[0]['vehicle_number'] ?? '' ?>
-                                </h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title" id="top_nav_vehicle">
-                                    <?= $invoice_main_data[0]['brand_name'] ?? '' ?> - <?= $invoice_main_data[0]['model_name'] ?? '' ?>
-                                </h2>
-                            </div>
-                            <div class="col-2">
-                                <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
-                                    <?= $invoice_main_data[0]['invoice_number'] ?? '' ?>
-                                </h2>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -74,55 +52,27 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn-fixed"
                                     data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                    <i class="fas fa-plus me-1"></i> New Invoice
+                                    <i class="fas fa-plus me-1"></i> New Invoice 
                                 </button>
 
-                                <?php 
-                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? null;
-                                if (!is_null($is_confirmed)): ?>
-                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed"
+                                <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
+                                
+                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed" <?= $is_confirmed == 0 ? '' : 'disabled' ?>
                                     data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
-                                <?php else: ?>
-                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed"
-                                    disabled>
-                                    <i class="fas fa-check me-1"></i> Approve
-                                </button>
-                                <?php endif; ?>
-
-
-                                <?php 
-                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? '0';
-                                if ($is_confirmed === '1'): ?>
-                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
-                                    onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+     
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed" <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                    onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
-                                <?php else: ?>
-                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
-                                    disabled>
-                                    <i class="fas fa-print me-1"></i> Print Invoice
-                                </button>
-                                <?php endif; ?>
-
-
-
-
-                                <!-- <button type="button"
-                                    class="btn btn-secondary btn-sm rounded-2 action-btn-fixed open-payment-modal"
-                                    data-bs-toggle="modal" data-bs-target="#paymentModal" data-payment-type="invoice"
-                                    data-parent-id="<?= $invoice_main_data[0]['id'] ?? '' ?>"
-                                    data-parent-no="<?= $invoice_main_data[0]['invoice_number'] ?? '' ?>">
-                                    <i class="fas fa-cash-register me-1"></i> Payment
-                                </button> -->
 
                                 <input type="text" name="invoice_id"
-                                    class="form-control form-control-sm input-highlight" id="invoice_id"
+                                    class="form-control form-control-sm input-highlight d-none" id="invoice_id"
                                     value="<?= isset($invoice_main_data[0]['id']) ? $invoice_main_data[0]['id'] : '' ?>"
                                     required>
                                 <input type="text" name="approve_id"
-                                    class="form-control form-control-sm input-highlight" id="approve_id"
+                                    class="form-control form-control-sm input-highlight d-none" id="approve_id"
                                     value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
                                     required>
 
@@ -588,9 +538,9 @@ function deleteInvoice() {
 }
 
 
-function exportJobCardInvoice(jobcard_id) {
-    const baseUrl = "<?php echo base_url(); ?>JobCard/jobInvoicePDF";
-    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
+function exportInvoicePDF(invoice_id) {
+    const baseUrl = "<?php echo base_url(); ?>Invoice/invoicePDF";
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}`;
     window.open(url, '_blank');
 }
 
