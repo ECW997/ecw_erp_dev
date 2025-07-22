@@ -56,14 +56,16 @@ include "include/v2/topnavbar.php";
                                                 <label class="form-label small fw-bold text-dark">Payment Date</label>
                                                 <input type="date" class="form-control form-control-sm input-highlight" 
                                                     name="paymentDate" id="paymentDate"
-                                                    value="<?= $is_edit ? $payment_main_data['receipt_date'] ?? date('Y-m-d') : date('Y-m-d') ?>">
+                                                    value="<?= $is_edit ? $payment_main_data['receipt_date'] ?? date('Y-m-d') : date('Y-m-d') ?>"
+                                                    <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Customer <span class="text-danger">*</span></label>
                                                 <select class="form-select form-select-sm input-highlight" 
-                                                    id="customer" name="customer" onchange="getCustomerJObOrInvoiceDetails();">
+                                                    id="customer" name="customer" onchange="getCustomerJObOrInvoiceDetails();"
+                                                    <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Customer</option>
                                                     <?php if (!empty($payment_main_data['receipt_cus_id'])): ?>
                                                     <option value="<?= $payment_main_data['receipt_cus_id'] ?>" selected>
@@ -78,7 +80,8 @@ include "include/v2/topnavbar.php";
                                                 <label class="form-label small fw-bold text-dark">Payment By</label>
                                                 <input type="text" class="form-control form-control-sm input-highlight" 
                                                     name="paymentBy" id="paymentBy"
-                                                    value="<?= isset($payment_main_data['customer_name']) ? $payment_main_data['customer_name'] : '' ?>">
+                                                    value="<?= isset($payment_main_data['customer_name']) ? $payment_main_data['customer_name'] : '' ?>"
+                                                    <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -86,7 +89,8 @@ include "include/v2/topnavbar.php";
                                                 <label class="form-label small fw-bold text-dark">Payment Note</label>
                                                 <input type="text" class="form-control form-control-sm input-highlight" 
                                                     name="paymentNote" id="paymentNote"
-                                                    value="<?= isset($payment_main_data['remarks']) ? $payment_main_data['remarks'] : '' ?>">
+                                                    value="<?= isset($payment_main_data['remarks']) ? $payment_main_data['remarks'] : '' ?>"
+                                                    <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
                                     </div>
@@ -251,9 +255,8 @@ include "include/v2/topnavbar.php";
                                     </div>
                                 </div>
                                 <div class="form-actions d-flex justify-content-end gap-2 mt-4">
-                                    <button type="button" class="btn btn-success btn-sm action-btn" id="confirmPaymentBtn" 
-                                        onclick="confirmPayment()"
-                                        <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
+                                    <button type="button" class="btn btn-success btn-sm action-btn <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>" id="confirmPaymentBtn" 
+                                        onclick="confirmPayment()">
                                         <i class="fas fa-check-double me-1"></i> Approve Payment
                                     </button>
                                 </div>

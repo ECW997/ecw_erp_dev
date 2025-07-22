@@ -93,7 +93,7 @@
                 <div class="extra-charges-card border">
                     <h6 class="section-title p-2 mb-3 rounded">Extra Charges</h6>
 
-                    <form id="expensesform" autocomplete="off" class="mb-3">
+                    <form id="expensesform" autocomplete="off" class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                         <div class="row g-2">
                             <div class="col-7">
                                 <label class="small form-label text-dark">Charge Type</label>
@@ -128,7 +128,7 @@
                                 <tr>
                                     <th>Charge Type</th>
                                     <th class="text-end">Amount</th>
-                                    <th class="text-end">Action</th>
+                                    <th class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,7 +140,7 @@
                                         <?php echo ($item['charge_amount']); ?></td>
                                     <td class="text-end d-none insert_status">existing</td>
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
-                                    <td class="text-end">
+                                    <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                         <div class="btn-group btn-group-sm" role="group">
                                             <button type="button" title="Edit" class="btn btn-primary"
                                                 id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
@@ -174,7 +174,6 @@
             </div>
         </div>
 
-        <?php $selected_payment = isset($invoice_main_data[0]['payment_term_id']) ? $invoice_main_data[0]['payment_term_id'] : ''; ?>
         <div class="payment-summary mt-4">
             <div class="row g-3">
                 <!-- Invoice Summary Card -->
@@ -188,7 +187,7 @@
                                         <div class="col-lg">
                                             <div class="extra-charges-card border">
                                                 <h6 class="section-title p-2 mb-3 rounded">Advance Payments</h6>
-                                                <form id="advance_recieptform" autocomplete="off" class="mb-3">
+                                                <form id="advance_recieptform" autocomplete="off" class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                     <div class="row g-2">
                                                         <div class="col-4">
                                                             <label class="small form-label text-dark">Reciepts
@@ -232,7 +231,7 @@
                                                                 <th class="text-center" style="width:15%;">Payment
                                                                     Method</th>
                                                                 <th class="text-end" style="width:15%;">Amount</th>
-                                                                <th class="text-end">Action</th>
+                                                                <th class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">Action</th>
 
                                                             </tr>
                                                         </thead>
@@ -255,7 +254,7 @@
                                                                 <td class="text-end d-none insert_status">existing</td>
                                                                 <td class="text-end d-none row_id">
                                                                     <?php echo $item['id']; ?></td>
-                                                                <td class="text-end">
+                                                                <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                                     <div class="btn-group btn-group-sm" role="group">
                                                                         <button type="button" title="Edit_2"
                                                                             class="btn btn-primary"
@@ -280,7 +279,7 @@
                                                         id="advance_payment_row_id" value="0" class="d-none">
 
                                                     <div class="row mt-2">
-                                                        <div class="col-11 text-end">
+                                                        <div class="col-12 text-end">
                                                             <div class="total-display">
                                                                 <span class="total-label text-dark">Advance Payment
                                                                     Total:</span>
@@ -333,7 +332,7 @@
                                             <div class="input-group input-group-sm">
                                                 <input type="number" id="vat" name="vat" class="form-control text-end"
                                                     value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>"
-                                                    onkeyup="finaltotalcalculate();" required>
+                                                    onkeyup="finaltotalcalculate();" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </div>
@@ -385,7 +384,7 @@
                                     <label class="small form-label text-dark mb-1">Invoice Series type</label>
                                     <div class="input-group input-group-sm">
                                         <select class="form-control form-control-sm selecter2 px-0" name="series_type"
-                                            id="series_type" required>
+                                            id="series_type" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                             <option value=" " <?= $selected_series_type == ' ' ? 'selected' : '' ?>>
                                                 Select Series Type</option>
                                             <option value="1" <?= $selected_series_type == '1' ? 'selected' : '' ?>>
@@ -398,7 +397,7 @@
                                 <div class="col-md-6">
                                     <label class="small form-label text-dark">Remarks</label>
                                     <textarea name="remark" id="remark" class="form-control form-control-sm"
-                                        rows="2"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
+                                        rows="2" <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
                                     <input type="text" name="jobcard_id"
@@ -410,7 +409,7 @@
 
 
                                 <div class="col-md-3 d-flex align-items-end">
-                                    <button type="button" id="btncreateorder" class="btn btn-primary w-100 fw-bold"
+                                    <button type="button" id="btncreateorder" class="btn btn-primary w-100 fw-bold <?= $is_confirmed == 0 ? '' : 'd-none' ?>"
                                         onclick="createInvoice();">
                                         <i class="fas fa-save me-2"></i><?php echo $is_edit ? 'Update' : 'Create'; ?>
                                         Invoice
