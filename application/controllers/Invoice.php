@@ -210,7 +210,7 @@ class Invoice extends CI_Controller {
         $response=$this->Invoiceinfo->getInvoicePdfDetails($this->api_token,$id);
 
 		if (!$response['status'] || $response['code'] != 200) {
-			show_error('Failed to fetch job card data');
+			show_error('Failed to fetch invoice data');
 		}
 
 		$pdf_data = [

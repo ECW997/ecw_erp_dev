@@ -15,9 +15,14 @@
                     <div class="form-group mb-3">
                         <label class="form-label small fw-bold">Job Card No <span class="text-danger">*</span></label>
                         <select class="form-select form-select-sm input-field" name="job_card_number"
-                            id="job_card_number" required>
+                            id="job_card_number" <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
                             <option value="">Select</option>
-                        </select>
+                            <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
+                            <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
+                            	<?= $invoice_main_data[0]['job_card_no'] ?>
+                            </option>
+                            <?php endif; ?>
+                            </select>
                     </div>
                 </div>
                 <div class="col-md-6 text-md-end">
@@ -44,7 +49,7 @@
                             <input type="text" name="customer_name" class="form-control form-control-sm input-field"
                                 id="customer_name"
                                 value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>"
-                                required>
+                                required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                             <input type="hidden" name="customer_id" id="customer_id"
                                 value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                         </div>
@@ -55,7 +60,7 @@
                             <input type="text" name="customer_address" class="form-control form-control-sm input-field"
                                 id="customer_address"
                                 value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>"
-                                required>
+                                required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -63,14 +68,14 @@
                             <label class="form-label small fw-bold">Vehicle No <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="vehicle_no" class="form-control form-control-sm input-field"
-                                id="vehicle_no" required>
+                                id="vehicle_no" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold">VAT Reg No</label>
                             <input type="text" name="vat_reg_no" class="form-control form-control-sm input-field"
-                                id="vat_reg_no" required>
+                                id="vat_reg_no" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -78,7 +83,7 @@
                             <label class="form-label small fw-bold">Vehicle In Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date"
-                                id="vehicle_in_date" required>
+                                id="vehicle_in_date" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                         </div>
                     </div>
                     <div class="col-md-3">
