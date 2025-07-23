@@ -24,9 +24,10 @@
         Your browser does not support the video tag.
     </video>
     <textarea class="d-none"
-    id="logintext"><?php if($this->session->flashdata('loginmsg')) {echo $this->session->flashdata('loginmsg');} ?></textarea>
+        id="logintext"><?php if($this->session->flashdata('loginmsg')) {echo $this->session->flashdata('loginmsg');} ?></textarea>
+    <div id="particles-js" style="position:fixed; width:100%; height:100%; z-index:0;"></div>
     <div id="login-page"
-        style="background-image: url('images/login_bg3.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center;">
+        style="background-image: url('images/login_bg1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center;">
         <img class="login_logo" src="<?php echo base_url() ?>images/ecw_logo3.png" />
         <!-- partial:index.partial.html -->
         <form id="loginform" action="<?php echo base_url() ?>Auth/LoginUser" method="post">
@@ -231,9 +232,18 @@
             <div class="inputGroup inputGroup3">
                 <button id="login">Log in</button>
             </div>
-            <div class="col-md-12 small text-center">Copyright &copy; ECW Software <?php echo date('Y') ?></div>
+            <div class="col-md-12 small text-center">Forgot your password? <a href="#"></a></div>
+            <div class="help-text">
+                    <p>Need help? Contact your system administrator</p>
+                </div>
         </form>
+        
     </div>
+    
+
+
+
+
     <!-- partial -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -282,12 +292,128 @@
     const video = document.getElementById('intro-video');
     const loginPage = document.getElementById('login-page');
     const loginForm = document.getElementById('loginform');
+    const particlesJsDiv = document.getElementById('particles-js');
 
     // Listen for the video to end
     video.addEventListener('ended', () => {
         video.style.display = 'none';
         loginPage.style.display = 'flex';
         loginForm.style.display = 'block';
+        particlesJsDiv.style.display = 'block';
+
+        // Initialize particles.js after showing the div
+        particlesJS("particles-js", {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#ffffff"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 0,
+                        color: "#000000"
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    },
+                    image: {
+                        src: "img/github.svg",
+                        width: 100,
+                        height: 100
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: {
+                        enable: false,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 5,
+                    random: true,
+                    anim: {
+                        enable: false,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 8,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: true,
+                    attract: {
+                        enable: false,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: "repulse"
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: "push"
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 400,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 200,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+
     });
 
     function success_toastify(actionText) {
@@ -335,7 +461,51 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
     <script src="<?php echo base_url() ?>assets/js/MorphSVGPlugin.js"></script>
     <script src="<?php echo base_url() ?>assets/js/login.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: {
+                    type: "circle",
+                    stroke: { width: 0, color: "#000000" },
+                    polygon: { nb_sides: 5 },
+                    image: { src: "img/github.svg", width: 100, height: 100 }
+                },
+                opacity: { value: 0.5, random: false, anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false } },
+                size: { value: 5, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 8, direction: "none", random: true, straight: false, out_mode: "out", bounce: true, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 400, line_linked: { opacity: 1 } },
+                    bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+                    repulse: { distance: 200, duration: 0.4 },
+                    push: { particles_nb: 4 },
+                    remove: { particles_nb: 2 }
+                }
+            },
+            retina_detect: true
+        });
+    });
+    </script> -->
+<footer class="page-footer">
+    <div class="footer-content">
+        <p class="footer-text">
+            © <?php echo date('Y') ?> ECW Software Solutions. All rights reserved.
+        </p>
+        <p class="footer-subtext">Powered by ERP Management System v1.0</p>
+    </div>
+</footer>
 </body>
 
 </html>

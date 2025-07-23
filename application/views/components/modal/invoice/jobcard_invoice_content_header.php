@@ -88,6 +88,9 @@
                     </div>
                 </div>
             </div>
+            <input type="text" name="status_id" class="form-control form-control-sm input-highlight" id="status_id"
+                value="<?= isset($invoice_main_data[0]['inv_status']) ? $invoice_main_data[0]['inv_status'] : '' ?>"
+                required>
 
             <input type="hidden" name="refillprice" id="refillprice" value="">
             <input type="hidden" name="recordOption" id="recordOption" value="1">
@@ -247,6 +250,21 @@
 
 
 <script>
+$(document).ready(function() {
+    function toggleJobCardNumber() {
+        let statusId = $('#status_id').val();
+        if (statusId && statusId !== '') {
+            $('#job_card_number').prop('disabled', true);
+        } else {
+            $('#job_card_number').prop('disabled', false);
+        }
+    }
+    toggleJobCardNumber();
+    $('#status_id').on('change', function() {
+        toggleJobCardNumber();
+    });
+});
+
 $(document).ready(function() {
 
     let jobCardNumber = $('#job_card_number');

@@ -522,10 +522,11 @@
                                         class="form-control form-control-sm input-highlight" id="jobcard_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
 
-                                        
+                                    <input type="text" name="approve_id"
+                                    class="form-control form-control-sm input-highlight" id="approve_id"
+                                    value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
+                                    required>
                                 </div>
-
-
                                 <div class="col-md-3 d-flex align-items-end">
                                     <button type="button" id="btncreateorder" class="btn btn-primary w-100 fw-bold"
                                         onclick="createInvoice();">
@@ -585,6 +586,15 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 <?php endif; ?>
+
+<script>
+    $(document).ready(function () {
+        const approveVal = $('#approve_id').val();
+        if (approveVal === "1" || approveVal === "2") {
+            $('#btncreateorder').prop('disabled', true);
+        }
+    });
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
