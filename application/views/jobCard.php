@@ -11,6 +11,16 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
         <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
+        <style>
+        .main-group-menu {
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        </style>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -150,8 +160,47 @@ const customerData = {
 
 $(document).ready(function() {
 
+    // $.ajax({
+    //     url: apiBaseUrl + '/v1/main_job_category',
+    //     type: "GET",
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json',
+    //         'Authorization': 'Bearer ' + api_token
+    //     },
+    //     success: function(json) {
+    //         if (json.status === false && json.code === 401) {
+    //             falseResponse(errorObj);
+    //             return;
+    //         }
+    //         let data = json.data;
+    //         $('#buttonsContainer').empty();
+
+    //         data.forEach(function(job) {
+    //             var buttonHtml = `
+    //                 <div class="col-6 mb-3">
+    //                     <button type="button"
+    //                         class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
+    //                         style="padding-left: 20px;"
+    //                         data-id="${job.id}"
+    //                         data-name="${job.name}" onclick="showAddJobItemModal(this);">
+    //                         <i class="fas fa-plus-circle me-2"></i>${job.name}
+    //                     </button>
+    //                 </div>
+    //             `;
+    //             $('#buttonsContainer').append(buttonHtml);
+    //         });
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error("AJAX Error:", error);
+    //         alert('Failed to load main job categories.');
+    //     }
+    // });
+
+
+
     $.ajax({
-        url: apiBaseUrl + '/v1/main_job_category',
+        url: apiBaseUrl + '/v1/main_category_group',
         type: "GET",
         headers: {
             'Accept': 'application/json',
@@ -159,34 +208,68 @@ $(document).ready(function() {
             'Authorization': 'Bearer ' + api_token
         },
         success: function(json) {
-            if (json.status === false && json.code === 401) {
-                falseResponse(errorObj);
-                return;
-            }
-            let data = json.data;
-            $('#buttonsContainer').empty();
+            $('#mainCategoryGroupMenu').empty();
+            json.data.forEach(group => {
+                const groupId = group.id;
+                const groupName = group.group_name;
 
-            data.forEach(function(job) {
-                var buttonHtml = `
-                    <div class="col-6 mb-3">
-                        <button type="button"
-                            class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
-                            style="padding-left: 20px;"
-                            data-id="${job.id}"
-                            data-name="${job.name}" onclick="showAddJobItemModal(this);">
-                            <i class="fas fa-plus-circle me-2"></i>${job.name}
-                        </button>
-                    </div>
-                `;
-                $('#buttonsContainer').append(buttonHtml);
+                //             <a href="#"><span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
+                //      style="cursor:pointer; font-size:1rem;">
+                //     ${groupName}
+                // </span></a>
+
+                const groupHtml = `
+                             <li>
+                             <a href="#">
+                        <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
+                            style="cursor:pointer; font-size:1rem;">
+                            ${groupName}
+                        </span>
+                        </a>
+                    <ul class="dropdown" id="dropdown-${groupId}">
+                        <li><a href="#">Loading...</a></li>
+                    </ul>
+                </li>
+            `;
+                $('#mainCategoryGroupMenu').append(groupHtml);
+
+                $.ajax({
+                    url: apiBaseUrl + '/v1/main_group_assigned_job_categories/' +
+                        groupId,
+                    type: "GET",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + api_token
+                    },
+                    success: function(res) {
+                        const $dropdown = $(`#dropdown-${groupId}`);
+                        $dropdown.empty();
+                        if (res.status && res.main_job_categories.length > 0) {
+                            res.main_job_categories.forEach(cat => {
+                                $dropdown.append(`
+                                <li>
+                                    <a href="#" class="job-category-item" data-id="${cat.idtbl_main_job_category}">
+                                        ${cat.main_job_category}
+                                    </a>
+                                </li>
+                            `);
+                            });
+                        } else {
+                            $dropdown.append(
+                                `<li><a href="#" class="text-muted">No Categories</a></li>`
+                            );
+                        }
+                    }
+                });
             });
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX Error:", error);
-            alert('Failed to load main job categories.');
         }
     });
 
+
+    $(document).on('click', '.job-category-item', function() {
+        showAddJobItemModal(this);
+    });
 
 
 

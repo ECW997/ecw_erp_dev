@@ -263,7 +263,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             <div class="col-4">
                                 <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '1'): ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" onclick="deleteInvoice()">Cancel Invoice</button>
+                                    style="border-radius: 12px;" onclick="cancelInvoice()">Cancel Invoice</button>
                                 <?php else: ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
                                     style="border-radius: 12px;" disabled>Cancel Invoice</button>
@@ -511,7 +511,7 @@ function approveInvoice() {
 
 // Delete invoice
 
-function deleteInvoice() {
+function cancelInvoice() {
 
     const approveData = {
         id: $('#invoice_id').val()
@@ -520,7 +520,7 @@ function deleteInvoice() {
     console.log("Collected Delete Data:", approveData);
 
     $.ajax({
-        url: '<?php echo base_url() ?>Invoice/deleteInvoice',
+        url: '<?php echo base_url() ?>Invoice/cancelInvoice',
         type: 'POST',
         dataType: 'json',
         data: approveData,

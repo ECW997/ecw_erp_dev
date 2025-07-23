@@ -124,7 +124,30 @@ class Invoice extends CI_Controller {
 		}   
     }
 
-	public function deleteInvoice() {
+	//Delete Invoice
+
+	public function deleteInvoice($id) {
+        $api_token = $this->session->userdata('api_token');
+        if (!$api_token) {
+            $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+            redirect('Welcome/Logout');
+            return;
+        }
+
+		$response = $this->Invoiceinfo->deleteInvoice($api_token, $id);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('invoice');
+		}   
+    }
+
+	// cancel Invoice
+
+	public function cancelInvoice() {
+
         $api_token = $this->session->userdata('api_token');
         if (!$api_token) {
             $this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
@@ -134,7 +157,7 @@ class Invoice extends CI_Controller {
 
         $form_data = $this->input->post();
 
-		$response = $this->Invoiceinfo->deleteInvoice($api_token, $form_data);
+		$response = $this->Invoiceinfo->cancelInvoice($api_token, $form_data);
  
 		if ($response) {
             echo json_encode($response);
@@ -143,6 +166,7 @@ class Invoice extends CI_Controller {
             redirect('invoice');
 		}   
     }
+  
 
 	public function getJobCardDetails() {
         $api_token = $this->session->userdata('api_token');
