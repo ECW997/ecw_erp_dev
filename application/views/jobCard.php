@@ -8,7 +8,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 ?>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <?php include "include/v2/menubar.php"; ?>
+        <?php include "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
         <style>
@@ -63,6 +63,7 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     <div class="card-body p-0 p-2">
                         <div class="row mb-3">
                             <div class="col-8">
+                                <?php $is_confirmed = $job_main_data[0]['approve_request_status'] ?? 0; ?>
                                 <div class="row g-2 p-3">
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
@@ -84,19 +85,13 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed == 2 ? '' : 'disabled' ?>
                                             onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>Job Summary Print
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
-                                            onclick="exportJobCardInvoice(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
-                                            <i class="fas fa-print me-2"></i>Invoice Print
-                                        </button>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed == 2 ? '' : 'disabled' ?>
                                             onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>JobCard Print
                                         </button>

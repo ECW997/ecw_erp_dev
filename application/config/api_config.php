@@ -10,6 +10,21 @@ $config['api_endpoints'] = [
     'get_profile' => '/profile',
     'update_profile' => '/profile/update',
     'logout' => '/logout',
+
+    'user_type_v1' => '/v1/user_type',
+    'user_type_status_v1' => '/v1/user_type_status',
+
+    'user_privilege_v1' => '/v1/user_privilege',
+    'user_privilege_status_v1' => '/v1/user_privilege_status',
+    'get_menu_list_v1' => '/v1/get_menu_list',
+    'get_user_list_v1' => '/v1/get_user_list',
+    'get_user_type_list_v1' => '/v1/get_user_type_list',
+
+    'user_account_v1' => '/v1/user_account',
+    'user_account_status_v1' => '/v1/user_account_status',
+
+    'menu_privilege_v1' => '/v1/menu_privilege',
+
     'check_dublicate_entry_v1' => '/v1/check_dublicate_entry',
     'main_job_category_v1' => '/v1/main_job_category',
     'main_job_category_status_v1' => '/v1/main_job_category_status',
@@ -63,11 +78,13 @@ $config['api_endpoints'] = [
     'invoice_v1' => '/v1/invoice',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
     'get_sel2_pay_allocation_receipt_v1' => '/v1/get_sel2_pay_allocation_receipts',
-
     'approve_invoice_v1' => '/v1/approveInvoice',
     'cancel_invoice_v1' => '/v1/cancelInvoice',
 
-    'confirm_payment_v1' => '/v1/confirm_payment',
+    'get_invoice_pdf_v1' => '/v1/get_invoice_pdf',
+//     'delete_invoice_v1' => '/v1/deleteInvoice',
+
+
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
@@ -75,7 +92,9 @@ $config['api_endpoints'] = [
     'get_draft_receiptno_v1' => '/v1/get_draft_receiptno',
     'get_payment_details_v1' => '/v1/get_payment_details',
     'get_payment_allocation_details_v1' => '/v1/get_payment_allocation_details',
+    'confirm_payment_v1' => '/v1/confirm_payment',
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
+
 
 ];

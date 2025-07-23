@@ -93,7 +93,7 @@
                 <div class="extra-charges-card border">
                     <h6 class="section-title p-2 mb-3 rounded">Extra Charges</h6>
 
-                    <form id="expensesform" autocomplete="off" class="mb-3">
+                    <form id="expensesform" autocomplete="off" class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                         <div class="row g-2">
                             <div class="col-7">
                                 <label class="small form-label text-dark">Charge Type</label>
@@ -128,7 +128,7 @@
                                 <tr>
                                     <th>Charge Type</th>
                                     <th class="text-end">Amount</th>
-                                    <th class="text-end">Action</th>
+                                    <th class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,7 +140,7 @@
                                         <?php echo ($item['charge_amount']); ?></td>
                                     <td class="text-end d-none insert_status">existing</td>
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
-                                    <td class="text-end">
+                                    <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                         <div class="btn-group btn-group-sm" role="group">
                                             <button type="button" title="Edit" class="btn btn-primary"
                                                 id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
@@ -174,57 +174,6 @@
             </div>
         </div>
 
-        <?php $selected_payment = isset($invoice_main_data[0]['payment_term_id']) ? $invoice_main_data[0]['payment_term_id'] : ''; ?>
-        <!-- <div class="payment-summary mt-4">
-            <div class="row g-3">
-                <div class="col-md-2 d-none">
-                    <label class="small form-label text-dark">Payment Type</label>
-                    <select class="form-select form-select-sm" name="payment_type" id="payment_type" required>
-                        <option value="">Select Payment Type</option>
-                        <option value="1" <?= ($selected_payment == '1') ? 'selected' : '' ?>>Cash</option>
-                        <option value="2" <?= ($selected_payment == '2') ? 'selected' : '' ?>>Cheque</option>
-                        <option value="3" <?= ($selected_payment == '3') ? 'selected' : '' ?>>Bank Transfer</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Sub Total</label>
-                    <input type="number" step="any" id="total_sub_amount" name="total_sub_amount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Total Discount</label>
-                    <input type="number" step="any" id="total_discount" name="total_discount" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">Grand Total</label>
-                    <input type="number" step="any" name="hiddenfulltotal" class="form-control form-control-sm" id="hiddenfulltotal" readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">VAT (%)</label>
-                    <input type="number" id="vat" name="vat" class="form-control form-control-sm" value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>" onkeyup="finaltotalcalculate();" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark">VAT Amount</label>
-                    <input type="number" id="vatamount" name="vatamount" class="form-control form-control-sm" value="0" required readonly>
-                </div>
-                <div class="col-md-2">
-                    <label class="small form-label text-dark fw-bold">Total Payment</label>
-                    <input type="number" step="any" name="modeltotalpayment" class="form-control form-control-sm fw-bold" id="modeltotalpayment" readonly>
-                </div>
-                <div class="col-12">
-                    <label class="small form-label text-dark">Remarks</label>
-                    <textarea name="remark" id="remark" class="form-control form-control-sm" rows="2"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
-                </div>
-                <input name="invoice_record_id" type="number" id="invoice_record_id" value="<?= $invoice_main_data[0]['id'] ?? '' ?>" class="d-none">
-                
-                <div class="col-12 text-end mt-3">
-                    <button type="button" id="btncreateorder" class="btn btn-primary" onclick="createInvoice();">
-                        <i class="fas fa-save me-2"></i><?php echo $is_edit ? 'Update' : 'Create'; ?> Invoice
-                    </button>
-                </div>
-            </div>
-        </div> -->
-
         <div class="payment-summary mt-4">
             <div class="row g-3">
                 <!-- Invoice Summary Card -->
@@ -238,78 +187,11 @@
                                         <div class="col-lg">
                                             <div class="extra-charges-card border">
                                                 <h6 class="section-title p-2 mb-3 rounded">Advance Payments</h6>
-                                                <form id="advance_recieptform" autocomplete="off" class="mb-3">
+                                                <form id="advance_recieptform" autocomplete="off" class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                     <div class="row g-2">
                                                         <div class="col-4">
                                                             <label class="small form-label text-dark">Reciepts
                                                                 Number</label>
-                                                            <!-- <select id="reciept_no" name="reciept_no"
-                                                                class="form-select form-select-sm" style="width: 100%;">
-
-                                                                <option value="">
-                                                                    Select Reciepts
-                                                                </option>
-                                                                <option value="1" data-receipt_number="RCPT/25/1/0001"
-                                                                    data-jobcard_number="JCN250001"
-                                                                    data-amount="1500.00" data-pay_date="2025-07-01"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0001 / JCN250001
-                                                                </option>
-                                                                <option value="2" data-receipt_number="RCPT/25/1/0002"
-                                                                    data-jobcard_number="JCN250002"
-                                                                    data-amount="3000.00" data-pay_date="2025-07-02"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0002 / JCN250002
-                                                                </option>
-                                                                <option value="3" data-receipt_number="RCPT/25/1/0003"
-                                                                    data-jobcard_number="JCN250003"
-                                                                    data-amount="2750.00" data-pay_date="2025-07-03"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0003 / JCN250003
-                                                                </option>
-                                                                <option value="4" data-receipt_number="RCPT/25/1/0004"
-                                                                    data-jobcard_number="JCN250004"
-                                                                    data-amount="1200.00" data-pay_date="2025-07-04"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0004 / JCN250004
-                                                                </option>
-                                                                <option value="5" data-receipt_number="RCPT/25/1/0005"
-                                                                    data-jobcard_number="JCN250005"
-                                                                    data-amount="5000.00" data-pay_date="2025-07-05"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0005 / JCN250005
-                                                                </option>
-                                                                <option value="6" data-receipt_number="RCPT/25/1/0006"
-                                                                    data-jobcard_number="JCN250006"
-                                                                    data-amount="3500.00" data-pay_date="2025-07-06"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0006 / JCN250006
-                                                                </option>
-                                                                <option value="7" data-receipt_number="RCPT/25/1/0007"
-                                                                    data-jobcard_number="JCN250007"
-                                                                    data-amount="4100.00" data-pay_date="2025-07-07"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0007 / JCN250007
-                                                                </option>
-                                                                <option value="8" data-receipt_number="RCPT/25/1/0008"
-                                                                    data-jobcard_number="JCN250008"
-                                                                    data-amount="2890.00" data-pay_date="2025-07-08"
-                                                                    data-payment_type="2">
-                                                                    RCPT/25/1/0008 / JCN250008
-                                                                </option>
-                                                                <option value="9" data-receipt_number="RCPT/25/1/0009"
-                                                                    data-jobcard_number="JCN250009"
-                                                                    data-amount="1999.99" data-pay_date="2025-07-09"
-                                                                    data-payment_type="3">
-                                                                    RCPT/25/1/0009 / JCN250009
-                                                                </option>
-                                                                <option value="10" data-receipt_number="RCPT/25/1/0010"
-                                                                    data-jobcard_number="JCN250010"
-                                                                    data-amount="3600.50" data-pay_date="2025-07-10"
-                                                                    data-payment_type="1">
-                                                                    RCPT/25/1/0010 / JCN250010
-                                                                </option>
-                                                            </select> -->
                                                             <select class="form-select form-select-sm input-field"
                                                                 name="reciept_no" id="reciept_no" required>
                                                                 <option value="">Select</option>
@@ -349,7 +231,7 @@
                                                                 <th class="text-center" style="width:15%;">Payment
                                                                     Method</th>
                                                                 <th class="text-end" style="width:15%;">Amount</th>
-                                                                <th class="text-end">Action</th>
+                                                                <th class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">Action</th>
 
                                                             </tr>
                                                         </thead>
@@ -372,7 +254,7 @@
                                                                 <td class="text-end d-none insert_status">existing</td>
                                                                 <td class="text-end d-none row_id">
                                                                     <?php echo $item['id']; ?></td>
-                                                                <td class="text-end">
+                                                                <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                                     <div class="btn-group btn-group-sm" role="group">
                                                                         <button type="button" title="Edit_2"
                                                                             class="btn btn-primary"
@@ -397,7 +279,7 @@
                                                         id="advance_payment_row_id" value="0" class="d-none">
 
                                                     <div class="row mt-2">
-                                                        <div class="col-11 text-end">
+                                                        <div class="col-12 text-end">
                                                             <div class="total-display">
                                                                 <span class="total-label text-dark">Advance Payment
                                                                     Total:</span>
@@ -450,7 +332,7 @@
                                             <div class="input-group input-group-sm">
                                                 <input type="number" id="vat" name="vat" class="form-control text-end"
                                                     value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '18' ?>"
-                                                    onkeyup="finaltotalcalculate();" required>
+                                                    onkeyup="finaltotalcalculate();" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </div>
@@ -502,7 +384,7 @@
                                     <label class="small form-label text-dark mb-1">Invoice Series type</label>
                                     <div class="input-group input-group-sm">
                                         <select class="form-control form-control-sm selecter2 px-0" name="series_type"
-                                            id="series_type" required>
+                                            id="series_type" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                             <option value=" " <?= $selected_series_type == ' ' ? 'selected' : '' ?>>
                                                 Select Series Type</option>
                                             <option value="1" <?= $selected_series_type == '1' ? 'selected' : '' ?>>
@@ -515,7 +397,7 @@
                                 <div class="col-md-6">
                                     <label class="small form-label text-dark">Remarks</label>
                                     <textarea name="remark" id="remark" class="form-control form-control-sm"
-                                        rows="2"><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
+                                        rows="2" <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
                                     <input type="text" name="jobcard_id"
@@ -528,7 +410,7 @@
                                     required>
                                 </div>
                                 <div class="col-md-3 d-flex align-items-end">
-                                    <button type="button" id="btncreateorder" class="btn btn-primary w-100 fw-bold"
+                                    <button type="button" id="btncreateorder" class="btn btn-primary w-100 fw-bold <?= $is_confirmed == 0 ? '' : 'd-none' ?>"
                                         onclick="createInvoice();">
                                         <i class="fas fa-save me-2"></i><?php echo $is_edit ? 'Update' : 'Create'; ?>
                                         Invoice

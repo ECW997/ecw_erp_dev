@@ -4,70 +4,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 date_default_timezone_set('Asia/Colombo');
 
 class SubJobCategory extends CI_Controller {
+	protected $api_token;
+    protected $auth_user;
+
     public function __construct() {
         parent::__construct();
+		$this->load->helper('api_helper');
         $this->load->model('SubJobCategoryinfo');
+
+		$auth_info = auth_check();
+		$this->api_token = $auth_info['api_token'];
+		$this->auth_user = $auth_info['user'];
     }
 
     public function index(){
-		$api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$this->load->model('Commeninfo');
-		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('sub_job_category', $result);
 	}
 
 	public function getMainJob(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$form_data = [
 			'term' => $this->input->get('term'),
 			'page' => $this->input->get('page'),
 		];
 
-		$response = $this->SubJobCategoryinfo->getMainJob($api_token,$form_data);
+		$response = $this->SubJobCategoryinfo->getMainJob($this->api_token,$form_data);
 		echo json_encode($response);
 	}
 
 	public function getSubJob(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$form_data = [
 			'term' => $this->input->get('term'),
 			'page' => $this->input->get('page'),
 			'mainJob' => $this->input->get('mainJob'),
 		];
 
-		$response = $this->SubJobCategoryinfo->getSubJob($api_token,$form_data);
+		$response = $this->SubJobCategoryinfo->getSubJob($this->api_token,$form_data);
 
 		echo json_encode($response);
 	}
 
 	public function subJobCategoryInsert() {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
 		$recordOption = $this->input->post('recordOption');
 
         $form_data = [
@@ -78,9 +56,9 @@ class SubJobCategory extends CI_Controller {
 
 		$response='';
 		if($recordOption == '1'){
-			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($api_token,$form_data);
+			$response = $this->SubJobCategoryinfo->subJobCategoryInsert($this->api_token,$form_data);
 		}else{
-			$response = $this->SubJobCategoryinfo->subJobCategoryUpdate($api_token,$form_data);
+			$response = $this->SubJobCategoryinfo->subJobCategoryUpdate($this->api_token,$form_data);
 		}
 
 		if ($response) {
@@ -94,33 +72,18 @@ class SubJobCategory extends CI_Controller {
 
 
 	public function subJobCategoryEdit($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->SubJobCategoryinfo->subJobCategoryEdit($api_token,$id);
-
+        $response = $this->SubJobCategoryinfo->subJobCategoryEdit($this->api_token,$id);
 		echo json_encode($response);
     }
 
 
     public function subJobCategoryStatus($id, $status) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
         $form_data = [
             'recordID' => $id,
 			'status' => $status,
         ];
 
-        $response = $this->SubJobCategoryinfo->subJobCategoryStatus($api_token,$form_data);
+        $response = $this->SubJobCategoryinfo->subJobCategoryStatus($this->api_token,$form_data);
 
         if ($response) {
 			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
@@ -132,14 +95,7 @@ class SubJobCategory extends CI_Controller {
     }
 	
 	public function subJobCategoryDelete($id) {
-        $api_token = $this->session->userdata('api_token');
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-        $response = $this->SubJobCategoryinfo->subJobCategoryDelete($api_token,$id);
+        $response = $this->SubJobCategoryinfo->subJobCategoryDelete($this->api_token,$id);
 
         if ($response) {
 			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
