@@ -1,15 +1,75 @@
 <style>
-    .tooltip-inner {
-        max-width: none !important; 
-        padding: 0; 
-        text-align: left;
-    }
+.tooltip-inner {
+    max-width: none !important;
+    padding: 0;
+    text-align: left;
+}
 
-    .custom-tooltip-box {
-        width: 240px; 
-        padding: 8px;
-        border-radius: 4px;
-    }
+.custom-tooltip-box {
+    width: 240px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.vertical-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 220px;
+    background: #fff;
+    border-right: 1px solid #ddd;
+}
+
+.vertical-menu>li {
+    position: relative;
+}
+
+.vertical-menu>li>a {
+    display: block;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.vertical-menu>li:hover>a {
+    background: #f8f9fa;
+    color: #007bff;
+}
+
+.vertical-menu .dropdown {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    min-width: 220px;
+    background: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 999;
+    padding: 0;
+}
+
+.vertical-menu>li:hover .dropdown {
+    display: block;
+}
+
+.vertical-menu .dropdown li a {
+    display: block;
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 1px solid #eee;
+}
+
+.vertical-menu .dropdown li a:hover {
+    background: linear-gradient(90deg, #74ebd5, #acb6e5);
+    color: #000;
+}
 </style>
 <div class="row p-3">
     <div class="col-3">
@@ -24,16 +84,19 @@
                         $is_discount_approved = $summlist['is_discount_approved'] ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
                         foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
-                        <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?></td>
+                        <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?>
+                        </td>
                         <td class="text-right"><?= number_format($list['sub_total'], 2); ?></td>
                     </tr>
                     <?php endforeach; ?>
                     <tr>
                         <td class="text-left" style="padding-top: 20px;">Line Discount <?= $is_discount_approved ?></td>
-                        <td class="text-right" style="padding-top: 20px;"><?= number_format($summlist['total_line_discount'],2) ?></td>
+                        <td class="text-right" style="padding-top: 20px;">
+                            <?= number_format($summlist['total_line_discount'],2) ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%) <?= $is_discount_approved ?></td>
+                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%)
+                            <?= $is_discount_approved ?></td>
                         <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">
@@ -44,11 +107,14 @@
                 </table>
             </div>
         </div>
-        <div class="row mb-4 mx-auto">
-            <div class="row" id="buttonsContainer">
+        <!-- <div class="row mb-4 mx-auto">
+            <div class="row" id="buttonsContainer"> </div>
+            <div class="row" id="buttonsContainer2">
 
             </div>
-        </div>
+        </div> -->
+
+        <ul class="vertical-menu" id="mainCategoryGroupMenu"></ul>
     </div>
 
     <div class="col-9">
@@ -124,11 +190,12 @@
             </div>
         </div>
         <div class="row mb-4 mx-auto">
-        	<h5>Job Details</h5>
-        	<div style="overflow-x: auto; white-space: nowrap; max-height: 42vh;">
-        		<?php 
+            <h5>Job Details</h5>
+            <div style="overflow-x: auto; white-space: nowrap; max-height: 42vh;">
+                <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
+
         		<div class="details_section mb-2">
         			<table class="w-100">
         				<thead>
@@ -164,12 +231,11 @@
         							<?php echo number_format($detail['total'], 2); ?>
         						</td>
         						<td class="text-right" style="width:10%">
-
-        						</td>
-        						<td class="text-right" style="width:10%">
-        							<?php echo number_format($detail['line_discount'], 2); ?>
-        						</td>
-        						<?php
+                                </td>
+                                <td class="text-right" style="width:10%">
+                                    <?php echo number_format($detail['line_discount'], 2); ?>
+                                </td>
+                                <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
                                     $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
                                    
@@ -259,7 +325,7 @@ $(document).ready(function() {
         });
     });
 
-     $('[data-bs-toggle="tooltip"]').tooltip({
+    $('[data-bs-toggle="tooltip"]').tooltip({
         container: 'body',
         html: true
     });
@@ -280,19 +346,20 @@ function showAddJobItemModal(button) {
     // Show the modal
     $('#addJobItemModal').modal('show');
 
-    $('#jobIdLabel').text(MainJobId); 
+    $('#jobIdLabel').text(MainJobId);
     $('#jobNameLabel').text(MainjobName);
 
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
-    let idtbl_jobcard = <?= isset($job_main_data[0]['idtbl_jobcard']) ? json_encode($job_main_data[0]['idtbl_jobcard']) : 0 ?>;
+    let idtbl_jobcard =
+        <?= isset($job_main_data[0]['idtbl_jobcard']) ? json_encode($job_main_data[0]['idtbl_jobcard']) : 0 ?>;
 
     if (idtbl_jobcard === 0) {
-         error_toastify('Job Card Not Created or Selected!');
-         return false;
+        error_toastify('Job Card Not Created or Selected!');
+        return false;
     }
-    
+
     $('#jobCardForm').empty();
     $.ajax({
         type: "GET",

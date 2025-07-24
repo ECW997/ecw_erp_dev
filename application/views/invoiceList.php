@@ -153,6 +153,7 @@ include "include/topnavbar.php";
                                                 <th>Invoice Type</th>
                                                 <th>Approve Status</th>
                                                 <th>Invoice Amount</th>
+                                                <th>Invoice Status</th>
                                                 <th>Payment Status</th>
                                                 <th class="text-right">Actions</th>
                                             </tr>
@@ -344,7 +345,16 @@ function loadPaymentListTable(){
                 "data": "id"
             },
             {
-                "data": "invoice_number"
+                "data": null,
+                "render": function(data, type, full) {
+                    if (full.invoice_number && full.invoice_number !== "") {
+                        return full.invoice_number;
+                    } else if (full.draft_number && full.draft_number !== "") {
+                        return '<span class="text-muted">' + full.draft_number + '</span>';
+                    } else {
+                        return '<span class="text-danger">N/A</span>';
+                    }
+                }
             },
             {
                 "data": "customer_name"
@@ -374,7 +384,7 @@ function loadPaymentListTable(){
                         colorClass = "text-warning";
                     } else if (data === "Approved") {
                         colorClass = "text-success";
-                    } else if (data === "Rejected") {
+                    } else if (data === "Cancelled") {
                         colorClass = "text-danger";
                     }
 
@@ -387,6 +397,20 @@ function loadPaymentListTable(){
                 "render": function(data, type, full) {
                     let formatted = addCommas(parseFloat(data).toFixed(2));
                     return `<span class="text-dark" style="font-weight: 600;">${formatted}</span>`;
+                }
+            },
+            {
+                "data": "inv_status",
+                "className": "text-center",
+                "render": function(data, type, full) {
+                    if (data === "1") {
+
+                        return '<span class="text-success" style="font-weight: 600;">Active</span>';
+                    } else if (data === "3") {
+                        return '<span class="text-danger" style="font-weight: 600;">Deleted</span>';
+                    } else {
+                        return data;
+                    }
                 }
             },
             {
@@ -413,7 +437,7 @@ function loadPaymentListTable(){
                         '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                         '<i class="fas fa-external-link-alt"></i></a>';
 
-                    // Delete Button
+
                     if (full['is_confirmed'] == "0" && deletecheck == 1) {
                         button +=
                             '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
@@ -429,7 +453,35 @@ function loadPaymentListTable(){
             $('[data-toggle="tooltip"]').tooltip();
         }
     });
-}
+
+  
+    $(document).on('click', '.btnDeleteInvoice', function() {
+        var invoiceId = $(this).data('id');
+
+        if (!confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
+
+        $.ajax({
+            url: base_url + "Invoice/deleteInvoice/" + invoiceId,
+            type: "POST",
+            dataType: "json",
+            success: function(response) {
+                if (response && response.status == true) {
+                    success_toastify(response.message);
+                    $('#dataTable').DataTable().ajax.reload(null, false);
+                } else {
+                    falseResponse(response);
+                }
+            },
+            error: function() {
+                alert("Server error occurred.");
+            }
+        });
+    });
+
+});
+
 
 function selectInvoiceType(type) {
     const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";
