@@ -195,41 +195,42 @@
                 <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
-                <div class="details_section mb-2">
-                    <table class="w-100">
-                        <thead>
-                            <tr>
-                                <th colspan="2" style="width:40%"><?php echo $group['job_sub_category_text']; ?></th>
-                                <th class="text-right" style="width:10%">Price</th>
-                                <th class="text-right" style="width:10%">QTY</th>
-                                <th class="text-right" style="width:10%">Total</th>
-                                <th class="text-right" style="width:10%">O.Charges</th>
-                                <th class="text-right" style="width:10%">Discount</th>
-                                <th class="text-right" style="width:10%">Sub Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($group['details'] as $detail): ?>
-                            <tr>
-                                <td class="text-left" style="width:20%">
-                                    <?php echo $detail['option_group_text']; ?>
-                                    -
-                                    <?php echo $detail['option_text']; ?>
-                                </td>
-                                <td class="text-left" style="width:20%">
-                                    <?php echo $detail['combined_option']; ?>
-                                </td>
-                                <td class="text-right" style="width:10%">
-                                    <?php echo number_format($detail['list_price'], 2); ?>
-                                </td>
-                                <td class="text-right" style="width:10%">
-                                    <?php echo $detail['qty']; ?>
-                                </td>
-                                <td class="text-right" style="width:10%">
-                                    <?php echo number_format($detail['total'], 2); ?>
-                                </td>
-                                <td class="text-right" style="width:10%">
 
+        		<div class="details_section mb-2">
+        			<table class="w-100">
+        				<thead>
+        					<tr>
+        						<th colspan="2" style="width:35%"><?php echo $group['job_sub_category_text']; ?></th>
+        						<th class="text-right" style="width:10%">Price</th>
+        						<th class="text-right" style="width:5%">QTY</th>
+        						<th class="text-right" style="width:10%">Total</th>
+        						<th class="text-right" style="width:10%">O.Charges</th>
+        						<th class="text-right" style="width:10%">Discount</th>
+        						<th class="text-right" style="width:10%">Sub Total</th>
+                                <th class="text-right" style="width:10%">Action</th>
+        					</tr>
+        				</thead>
+        				<tbody>
+        					<?php foreach ($group['details'] as $detail): ?>
+        					<tr>
+        						<td class="text-left" style="width:15%">
+        							<?php echo $detail['option_group_text']; ?>
+        							-
+        							<?php echo $detail['option_text']; ?>
+        						</td>
+        						<td class="text-left" style="width:20%">
+        							<?php echo $detail['combined_option']; ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo number_format($detail['list_price'], 2); ?>
+        						</td>
+        						<td class="text-right" style="width:5%">
+        							<?php echo $detail['qty']; ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
+        							<?php echo number_format($detail['total'], 2); ?>
+        						</td>
+        						<td class="text-right" style="width:10%">
                                 </td>
                                 <td class="text-right" style="width:10%">
                                     <?php echo number_format($detail['line_discount'], 2); ?>
@@ -263,31 +264,37 @@
                                         </div>
                                     </div>';
                                     ?>
-                                <td class="text-right" style="width:10%;">
-                                    <span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
-                                        <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
-                                        <?= number_format($detail['net_amount'], 0); ?>
-                                    </span>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php endforeach; }else { ?>
-                <div class="details_section mb-2">
-                    <table class="w-100">
-                        <thead>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="8" class="text-center">Record not found!</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <?php } ?>
-            </div>
+        						<td class="text-right" style="width:10%;">
+        							<span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
+        								<?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
+        								<?= number_format($detail['net_amount'], 2); ?>
+        							</span>
+        						</td>
+                                <td class="text-right" style="width:10%">
+                                    <button type="button" title="Delete" class="btn btn-sm btn-danger"
+                                                id="<?php echo $detail['parent_id']; ?>" job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" onclick="deleteJobItems(this)">
+                                                <i class="fas fa-trash"></i>
+                                    </button>
+        						</td>
+        					</tr>
+        					<?php endforeach; ?>
+        				</tbody>
+        			</table>
+        		</div>
+        		<?php endforeach; }else { ?>
+        		<div class="details_section mb-2">
+        			<table class="w-100">
+        				<thead>
+        				</thead>
+        				<tbody>
+        					<tr>
+        						<td colspan="8" class="text-center">Record not found!</td>
+        					</tr>
+        				</tbody>
+        			</table>
+        		</div>
+        		<?php } ?>
+        	</div>
         </div>
 
     </div>
@@ -323,7 +330,6 @@ $(document).ready(function() {
         html: true
     });
 });
-
 
 function showAddJobItemModal(button) {
     var MainJobId = $(button).data('id');
@@ -367,5 +373,32 @@ function getSubCategoryListBaseOnMain(MainJobId) {
             $('#jobCardForm').html('<p class="text-center text-danger">Error fetching data!</p>');
         }
     });
+}
+
+function deleteJobItems(elem) {
+	var r = confirm("Are you sure, You want to Delete this ? ");
+	if (r == true) {
+		var id = $(elem).attr('id');
+        var job_card_id = $(elem).attr('job_card_id');
+		$.ajax({
+			type: "POST",
+			dataType: 'json',
+            data: {
+                    id: id,
+                    job_card_id: job_card_id
+            },
+			url: '<?php echo base_url() ?>JobCard/jobCardItemDelete',
+			success: function (result) {
+				if (result.status) {
+					success_toastify(result.message);
+                    setTimeout(function() {
+                            location.reload();
+                        }, 200)
+				} else {
+					error_toastify(result.message);
+				}
+			}
+		});
+	}
 }
 </script>

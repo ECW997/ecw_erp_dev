@@ -233,4 +233,19 @@ class JobCard extends CI_Controller {
 		}   
     }
 
+    public function jobCardItemDelete() {
+		 $form_data = [
+            'recordID' => $this->input->post('id'),
+			'job_card_id' => $this->input->post('job_card_id')
+        ];
+
+        $response = $this->JobCardinfo->jobCardItemDelete($this->api_token,$form_data);
+
+        if ($response) {
+			echo json_encode($response);
+        } else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobOption');
+        }
+    }
 }

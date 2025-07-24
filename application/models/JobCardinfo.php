@@ -73,6 +73,16 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'get_item_price_v1', $form_data, $headers);
     }
 
+    public function jobCardItemDelete($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'jobcard_item_delete_v1', $form_data, $headers);
+    }
+
+
+
+
+
+
 
 
 

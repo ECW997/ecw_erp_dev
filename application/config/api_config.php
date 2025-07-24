@@ -62,6 +62,7 @@ $config['api_endpoints'] = [
     'approve_job_card_v1' => '/v1/approveDiscount',
     'denied_job_card_v1' => '/v1/deniedDiscount',
     'get_sales_agents_v1' => '/v1/get_sales_agents',
+    'jobcard_item_delete_v1' => '/v1/jobcard_item_delete',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',

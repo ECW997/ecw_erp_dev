@@ -225,11 +225,13 @@ function continueAddToJobCard(inputMethod,btn){
             var $field = $(this);
             var val = $field.val()?.trim();
 
-            if (!val || val == "0" ||  val == "") {
+            if (!val || val == "0" || val == "") {
                 $field.addClass('is-invalid');
+                $field.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                 sectionValid = false;
             } else {
                 $field.removeClass('is-invalid');
+                $field.next('.select2-container').find('.select2-selection--single').removeClass('is-invalid');
             }
         });
 
@@ -322,6 +324,9 @@ function continueAddToJobCard(inputMethod,btn){
             var preValue = $(this).data('pre-value');
             var groupKey = subJobCategoryID + '_' + optionGroupID+'_'+optionID;
 
+            var unit_price = parseFloat($('#unit_price_' + groupKey).val()?.trim()) || 0;
+            var original_unit_price = parseFloat($('#unit_price_' + groupKey).data('original_price')) || 0;
+
             var price = parseFloat($('#item_price_' + groupKey).val()?.trim()) || 0;
             var originalPrice = parseFloat($('#item_price_' + groupKey).data('original_price')) || 0;
 
@@ -367,6 +372,8 @@ function continueAddToJobCard(inputMethod,btn){
                     option_value_name:selectedText,
                     option_id: optionID,
                     option_value_id: selectedVal,
+                    unit_price : unit_price || "0",
+                    original_unit_price : original_unit_price || "0",
                     original_price: originalPrice || "0",
                     input_price: price || "0",
                     qty: qty || "0",
@@ -499,8 +506,8 @@ function continueAddToJobCard(inputMethod,btn){
         });
     }
 
-    // console.log(finalDataArray);
-    // console.log("Prepared Job Data: ", jobData);
+    console.log(finalDataArray);
+    console.log("Prepared Job Data: ", jobData);
 
     $.ajax({
             type: "POST",

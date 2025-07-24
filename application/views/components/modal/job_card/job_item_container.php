@@ -71,7 +71,7 @@
                                                                     data-option-name="<?= $optionName ?>"
                                                                     data-option-description="<?= $option['Description']; ?>"
                                                                     data-pre-value="<?= $selectedValue ?>"
-                                                                    onchange="loadChildOption(this,null,1);"
+                                                                    onchange="loadChildOption(this,null,1,'<?= $uniqueKey ?>');"
                                                                     >
                                                                     <option value="">Select an option</option>
                                                                     <?php foreach ($jobOption['option_values'] as $optionValue): ?>
@@ -183,6 +183,9 @@
 
 
 <script>
+    $(document).ready(function() {
+       initSelect2();
+    });
     if (typeof editedSubJobs !== 'undefined' && editedSubJobs instanceof Set) {
         editedSubJobs.clear();
     } else {
@@ -249,12 +252,12 @@
     function init() {
         const jobData = <?php echo json_encode($data); ?>;
         hasEditedData = jobData.data?.some(item =>
-        item.job_options?.some(jitem =>
-            jitem.job_options?.some(option =>
-                option.job_option?.edited && option.job_option?.conditional 
+            item.job_options?.some(jitem =>
+                jitem.job_options?.some(option =>
+                    option.job_option?.edited && option.job_option?.conditional 
+                )
             )
-        )
-    ) || false;
+        ) || false;
         
         console.log('Edited data exists:', hasEditedData);
         
@@ -427,7 +430,7 @@
                 const $select = $(this);
                 const description = $select.data('option-description');
                 if ($select.val() && description === 'image') {
-                     loadChildOption($select, null, 2);
+                     loadChildOption($select, null, 2, null);
                 }
 
                 if ($select.val()) {
@@ -439,7 +442,7 @@
     
     function processSelectedOption($select, jobData) {
         if (!jobData.data) return;
-        
+        let parentUniqueKey='';
         jobData.data.forEach(item => {
             if (!item.job_options) return;
             
@@ -448,18 +451,25 @@
                 if (!jobOptions) return;
                 
                 jobOptions.forEach(option => {
-                    if (option.job_option.OptionType === "Conditional" && 
-                        option.job_option.job_details_option_value) {
-                        
+                    const jobOption = option.job_option;
+                    if(jobOption.OptionType == "Type"){
+                        parentUniqueKey = jobOption.JobSubcategoryID + '_' + jobOption.OptionGroupID + '_' + jobOption.JobOptionID;
+                    }
+
+                    if (
+                        jobOption.OptionType === "Conditional" &&
+                        jobOption.job_details_option_value &&
+                        Array.isArray(option.option_values)
+                    ) {          
                         option.option_values.forEach(valuelist => {
-                            if (option.job_option.job_details_option_value == valuelist.id && 
-                                $select.val() == valuelist.ParentOptionValueID) {
-                                
-                                loadChildOption($select[0], valuelist.id, 2);
+                            if (
+                                jobOption.job_details_option_value == valuelist.id &&
+                                $select.val() == valuelist.ParentOptionValueID
+                            ) {
+                                loadChildOption($select[0], jobOption, 2, parentUniqueKey);
                             }
                         });
                     }
-                    
                 });
             });
         });
@@ -522,7 +532,7 @@
         
     }
     
-    function loadChildOption(selectElement, editId, insertOption) {
+    function loadChildOption(selectElement, editjobOption, insertOption, parentUniqueKey) {
         trackAjaxCall();
 
         const $selectedOption = $(selectElement);
@@ -534,7 +544,10 @@
         const jobOptionID = $selectedOption.data('option-id');
         const subJobName = $selectedOption.data('subjob-name');
         const optionGroupName = $selectedOption.data('option-group-name');
+
         const childWrapperSelector = `.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`;
+
+        console.log(parentUniqueKey);
 
         if (!selectedOptionValue) {
             completeAjaxCall();
@@ -559,17 +572,18 @@
                 if (!res.status || !res.data || res.data.length === 0) {
                     $(childWrapperSelector).html('');
                     Promise.resolve(
-                        getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption)
+                        getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
                     ).finally(completeAjaxCall);
                     return;
                 }
-
+   
                 let html = res.data.map(group => {
                     const jobOption = group.job_option;
                     const optionValues = group.option_values;
 
                     if (!optionValues || optionValues.length === 0) return '';
-
+                    let uniqueKey = `${escapeHtml(jobOption.JobSubcategoryID)}_${escapeHtml(jobOption.OptionGroupID)}_${escapeHtml(jobOption.JobOptionID)}`;
+                    
                     const isMediaType = ['image', 'pdf', 'file'].includes(jobOption.Description);
 
                     if (isMediaType) {
@@ -609,7 +623,7 @@
                                         data-option-description="${escapeHtml(jobOption.Description)}"
                                         data-pre-value="${escapeHtml(jobOption.option_value_id)}"
                                         ${jobOption.IsRequired == 1 ? 'required' : ''}
-                                        onchange="loadChildOption(this, null, 1)">
+                                        onchange="loadChildOption(this, null, 1, '${parentUniqueKey}')">
                                     <option value="">Select an option</option>
                                     ${optionValues.map(val => `
                                         <option value="${escapeHtml(val.id)}"
@@ -619,6 +633,28 @@
                                         </option>
                                     `).join('')}
                                 </select>
+                                
+                            ${res.data.length > 1 ? (() => {
+                                const selectedVal = optionValues.find(v => v.id == jobOption.option_value_id);
+                                const unitPrice = selectedVal ? (selectedVal.edited_price ?? 0) : (jobOption.list_price ?? 0);
+                                const originalPrice = selectedVal ? (selectedVal.original_price ?? 0) : (jobOption.price ?? 0);
+
+                                return `
+                                    <div class="cols-6 w-50">
+                                        <label class="form-label text-muted">Unit Price</label>
+                                        <input type="number"
+                                            class="form-control form-control-sm"
+                                            parentId="${parentUniqueKey}"
+                                            id="unit_price_${uniqueKey}"
+                                            value="${unitPrice}"
+                                            name="unit_price"
+                                            placeholder="Enter unit price"
+                                            data-original_price="${originalPrice}"
+                                            step="0.01"
+                                            min="0" onkeyup="schedulePriceUpdate();">
+                                    </div>
+                                `;
+                            })() : ''}
                             </div>
                             <div class="row align-items-center mb-2 job-option-row" data-level="1">
                                 <div class="child-options-wrapper flex-fill" data-parent-option-id="${jobOption.JobOptionID}"></div>
@@ -628,7 +664,7 @@
                 }).join('');
 
                 $(childWrapperSelector).html(html);
-
+                initSelect2();
                 const childOptionPromises = res.data
                     .filter(group => {
                         const desc = group.job_option.Description;
@@ -636,10 +672,11 @@
                     })
                     .map(group => {
                         const jobOption = group.job_option;
+                        
                         if (jobOption.option_value_id) {
                             const childSelect = $(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
                             if (childSelect) {
-                                return loadChildOption(childSelect, jobOption.option_value_id, 2);
+                                return loadChildOption(childSelect, jobOption, 2, parentUniqueKey);
                             }
                         }
                         return Promise.resolve();
@@ -648,7 +685,7 @@
                 Promise.all(childOptionPromises)
                     .then(() => {
                         return Promise.resolve(
-                            getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption)
+                            getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
                         );
                     })
                     .finally(completeAjaxCall);
@@ -668,7 +705,7 @@
         pendingRequests[selectedOptionValue] = xhr;
     }
     
-    function getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption) {
+    function getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey) {
         if (insertOption == '2') {
             return Promise.resolve();
         }
@@ -687,12 +724,33 @@
             },
             success: function(result) { 
                 if (result.status && selectedOptionValue === lastRequestedOptionValueId) {
-                    const priceSelector = '#item_price_' + subJobCategoryID + '_' + optionGroupID + '_' + jobOptionID;
+                    const linePriceSelector = '#unit_price_' + subJobCategoryID + '_' + optionGroupID + '_' + jobOptionID;
+                    const priceSelector = '#item_price_' + parentUniqueKey;
+                    const $linePriceInput = $(linePriceSelector);
                     const $priceInput = $(priceSelector);
-                    $priceInput
+                   
+                    if ($linePriceInput.length) {
+                        $linePriceInput
                         .val(result.data.Price)
-                        .data('original_price', result.data.Price); 
-                    setTimeout(() => schedulePriceUpdate(), 500);
+                        .data('original_price', result.data.Price);
+
+                        let total = 0;
+                        $(`input[name="unit_price"][parentId="${parentUniqueKey}"]`).each(function () {
+                            const val = parseFloat($(this).val()) || 0;
+                            total += val;
+                        });
+
+                        $priceInput
+                            .val(total.toFixed(2))
+                            .data('original_price', total);
+                        setTimeout(() => schedulePriceUpdate(), 500);
+                    }else{
+                            const price = parseFloat(result.data.Price) || 0;
+                            $priceInput
+                                .val(price.toFixed(2))
+                                .data('original_price', price);
+                            setTimeout(() => schedulePriceUpdate(), 500);
+                    }
                 } else {
                     schedulePriceUpdate();
                 }
@@ -701,6 +759,14 @@
         });
         
         return xhr;
+    }
+
+    function initSelect2(){
+        $('.job-option-select').select2({
+            dropdownParent: $('#addJobItemModal'),
+            theme: "classic",
+            width: '100%',
+        });
     }
 
     function escapeHtml(unsafe) {
