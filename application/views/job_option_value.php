@@ -41,7 +41,6 @@ include "include/topnavbar.php";
                             </div>
                         </div>
 
-
                         <div class="mb-2">
                             <button type="button" id="addBtn"
                                 class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>"
@@ -111,13 +110,25 @@ include "include/topnavbar.php";
                                             <i class="fas fa-file-pdf"></i>
                                         </button>
                                     </div>
-                                    <div class="form-group mb-1">
+                                   <div class="form-group mb-1">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="bulkCopyToggle">
+                                            <label class="form-check-label small" for="bulkCopyToggle">Enable Value Name Bulk Copy</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-1" id="valueNameGroup">
                                         <label class="small font-weight-bold">Value Name*</label>
                                         <input type="text" class="form-control form-control-sm" name="value_name"
-                                            id="value_name" data-field="ValueName" onkeyup="checkedDublicate(this)"
-                                            required>
-                                        <div id="ValueName_errorMsg"
-                                            style="color: red; display: none;font-size: 0.8rem;"></div>
+                                            id="value_name" data-field="ValueName" onkeyup="checkedDublicate(this)" required>
+                                        <div id="ValueName_errorMsg" style="color: red; display: none;font-size: 0.8rem;"></div>
+                                    </div>
+
+                                    <div class="form-group mb-1" id="bulkCopyDropdownGroup" style="display: none;">
+                                        <label class="small font-weight-bold">Select Bulk Copy Source*</label>
+                                        <select class="form-control form-control-sm" id="bulk_copy_source" name="bulk_copy_source">
+                                            <option value="">Select</option>
+                                        </select>
                                     </div>
                                     <div class="form-group mb-1">
                                         <label class="small font-weight-bold">Parent Option Value*</label>
@@ -380,7 +391,6 @@ $(document).ready(function() {
     let job_option = $('#job_option');
     let parent_option_value = $('#parent_option_value');
 
-
     $('#addModal').on('shown.bs.modal', function() {
         $('#job_option').select2({
             dropdownParent: $('#addModal'),
@@ -408,6 +418,47 @@ $(document).ready(function() {
                 }
             }
         });
+    });
+
+    $('#bulkCopyToggle').change(function () {
+        if ($(this).is(':checked')) {
+            $('#bulkCopyDropdownGroup').show();
+            $('#valueNameGroup').hide();
+            $('#value_name').prop('required', false);
+        } else {
+            $('#bulkCopyDropdownGroup').hide();
+            $('#valueNameGroup').show();
+            $('#value_name').prop('required', true);
+        }
+    });
+
+    $('#bulk_copy_source').select2({
+        dropdownParent: $('#addModal'),
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobOptionValue/getJobOptionValue',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                };
+            },
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.pagination.more
+                        }
+                    };
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
     });
 
     $('#parent_option_value').select2({
@@ -439,10 +490,10 @@ $(document).ready(function() {
         }
     });
 
-
-
     $(document).on('click', '#addtolistBtn', function() {
         var job_option = $('#job_option').val();
+        var bulk_copy_toggle = $('#bulkCopyToggle').is(':checked') ? 1 : 0;
+        var copy_value_name_source = $('#bulk_copy_source').val();
         var value_name = $('#value_name').val();
         var parent_option_value = $('#parent_option_value').val();
         var status = $('#status').val();
@@ -454,6 +505,8 @@ $(document).ready(function() {
             dataType: 'json',
             data: {
                 job_option: job_option,
+                bulk_copy_toggle: bulk_copy_toggle,
+                copy_value_name_source: copy_value_name_source,
                 value_name: value_name,
                 parent_option_value: parent_option_value,
                 status: status,
@@ -645,18 +698,6 @@ function showdatatable(sub_job_category) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 function setSelect2Value(selectElement, id, text) {
     console.log(id);
 
@@ -710,8 +751,8 @@ function showDetailsList(job_option, modalOption) {
 
 function cancelBtn() {
     $('#value_name').val('');
-    $('#parent_option_value').val('').trigger('change');
-    $('#status').val('');
+    // $('#parent_option_value').val('').trigger('change');
+    // $('#status').val('');
     $('#recordID').val('');
     $('#recordOption').val('1');
     $('#cancellistBtn').addClass('d-none');
