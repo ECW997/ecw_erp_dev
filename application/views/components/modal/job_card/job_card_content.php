@@ -81,7 +81,8 @@
                     $net_total=0;
                     if($summary_data){
                     foreach ($summary_data as $summlist): 
-                        $is_discount_approved = $summlist['is_discount_approved'] ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
+                        $header_approved_check = $is_header_discount_approved ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
+                        $line_approved_check = $is_line_discount_approved ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
                         foreach ($summlist['summary_list'] as $list): ?>
                     <tr>
                         <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?>
@@ -90,14 +91,18 @@
                     </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <td class="text-left" style="padding-top: 20px;">Line Discount <?= $is_discount_approved ?></td>
+                        <td class="text-left" style="padding-top: 20px;">Line Discount <?= $line_approved_check ?></td>
                         <td class="text-right" style="padding-top: 20px;">
                             <?= number_format($summlist['total_line_discount'],2) ?></td>
                     </tr>
                     <tr>
                         <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%)
-                            <?= $is_discount_approved ?></td>
+                            <?= $header_approved_check ?></td>
                         <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left">Advance</td>
+                        <td class="text-right"><?= number_format($summlist['advance'],2) ?></td>
                     </tr>
                     <tr style="border-top: 1px solid #000; border-bottom: 3px double #000;">
                         <td class="text-left fw-bold">Total</td>
@@ -114,7 +119,7 @@
             </div>
         </div> -->
 
-        <ul class="vertical-menu" id="mainCategoryGroupMenu"></ul>
+        <ul class="vertical-menu <?= ($addcheck == 0) ? 'd-none' : '' ?>" id="mainCategoryGroupMenu"></ul>
     </div>
 
     <div class="col-9">
@@ -139,20 +144,20 @@
                         </td>
 
                         <?php
-                        $statusText = $job_main_data[0]['approve_request_status_text'] ?? '';
+                        $statusText = $job_main_data[0]['status'] ?? '';
                         $style = '';
 
                         switch ($statusText) {
-                            case 'DRAFT':
+                            case 'Draft':
                                 $style = 'color: #374151;';
                                 break;
-                            case 'PENDING':
+                            case 'Pending':
                                 $style = 'color: #FB923C;';
                                 break;
-                            case 'APPROVED':
+                            case 'Approved':
                                 $style = 'color: #16A34A;';
                                 break;
-                            case 'CANCELLED':
+                            case 'Cancelled':
                                 $style = 'color: #F87171;';
                                 break;
                             default:
@@ -160,7 +165,7 @@
                                 break;
                         }
                         ?>
-                        <td colspan="2" class="text-left fw-bold" style="<?= $style ?>">
+                        <td colspan="2" class="text-left fw-bold" id="main_status_stage" style="<?= $style ?>">
                             <?= $statusText ?>
                         </td>
                     </tr>
@@ -182,7 +187,7 @@
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">
                             <?= $job_main_data[0]['total_days'] ?? '' ?></td>
                         <td colspan="2" class="text-left"></td>
-                        <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning"
+                        <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                 data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit" id="openEditModalBtn"><i
                                     class="fas fa-edit"></i></button></td>
                     </tr>
@@ -207,7 +212,7 @@
         						<th class="text-right" style="width:10%">O.Charges</th>
         						<th class="text-right" style="width:10%">Discount</th>
         						<th class="text-right" style="width:10%">Sub Total</th>
-                                <th class="text-right" style="width:10%">Action</th>
+                                <th class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">Action</th>
         					</tr>
         				</thead>
         				<tbody>
@@ -233,7 +238,7 @@
         						<td class="text-right" style="width:10%">
                                 </td>
                                 <td class="text-right" style="width:10%">
-                                    <?php echo number_format($detail['line_discount'], 2); ?>
+                                    <?php echo $is_line_discount_approved ? (number_format($detail['line_discount'], 2)):(number_format(0, 2)); ?>
                                 </td>
                                 <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
@@ -267,10 +272,10 @@
         						<td class="text-right" style="width:10%;">
         							<span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
         								<?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
-        								<?= number_format($detail['net_amount'], 2); ?>
+        								<?= $is_line_discount_approved == true ? (number_format($detail['net_amount'], 2)) : (number_format($detail['total'], 2)); ?>
         							</span>
         						</td>
-                                <td class="text-right" style="width:10%">
+                                <td class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">
                                     <button type="button" title="Delete" class="btn btn-sm btn-danger"
                                                 id="<?php echo $detail['parent_id']; ?>" job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" onclick="deleteJobItems(this)">
                                                 <i class="fas fa-trash"></i>
@@ -304,19 +309,21 @@
 $(document).ready(function() {
     $('#openEditModalBtn').on('click', function() {
 
-        var customerName = $('#content_customer_name').text().trim();
-        var contactNo = $('#content_cus_contact').text().trim();
-        var address = $('#content_address').text().trim().split(',');
-        var scheduleDate = $('#content_schedule_date').text().trim();
-        var deliveryDate = $('#content_hand_over_date').text().trim();
-        var priceCategory = $('#p_category').text().trim();
+        $('#edit_cus_name').val(<?= json_encode($job_main_data[0]['customer_name'] ?? '') ?>);
+        $('#edit_contact_no').val(<?= json_encode($job_main_data[0]['customer_mobile_num'] ?? '') ?>);
+        $('#edit_nic_number').val(<?= json_encode($job_main_data[0]['nic_number'] ?? '') ?>);
+        $('#edit_address1').val(<?= json_encode($job_main_data[0]['address'] ?? '') ?>);
+        $('#edit_address2').val(<?= json_encode($job_main_data[0]['address_2'] ?? '') ?>);
+        $('#edit_email').val(<?= json_encode($job_main_data[0]['email'] ?? '') ?>);
+        $('#edit_schedule_date').val(<?= json_encode($job_main_data[0]['job_start_datetime'] ?? '') ?>);
+        $('#edit_delivery_date').val(<?= json_encode($job_main_data[0]['handover_date'] ?? '') ?>);
+        $('#edit_vat_reg_type').val(<?= json_encode($job_main_data[0]['tax_type'] ?? '') ?>);
+        $('#edit_vat_number').val(<?= json_encode($job_main_data[0]['tax_number'] ?? '') ?>);
 
-        $('#edit_cus_name').val(customerName);
-        $('#edit_contact_no').val(contactNo);
-        $('#edit_address1').val(address[0] ? address[0].trim() : '');
-        $('#edit_address2').val(address[1] ? address[1].trim() : '');
-        $('#edit_schedule_date').val(scheduleDate);
-        $('#edit_delivery_date').val(deliveryDate);
+
+        $('#edit_price_category').append(
+            new Option(<?= json_encode($job_main_data[0]['price_category_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['price_cat'] ?? '') ?>, true, true)
+        ).trigger('change');
 
         $('#p_category option').each(function() {
             if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {

@@ -16,11 +16,11 @@
 					</div>
 					<div class="col-12 col-md-3 d-flex align-items-center mb-2 mb-md-0">
 						<h6 class="col-form-label me-2 text-nowrap">P.C.</h6>
-						<select class="form-select form-select-sm" id="price_category" name="price_category">
+						<select class="form-select form-select-sm" id="price_category" name="price_category" disabled>
 							<option value="">Select</option>
 						</select>
 					</div>
-					<div class="col-12 col-md-4 d-flex justify-content-md-end align-items-center mb-2 mb-md-0">
+					<div class="col-12 col-md-4 justify-content-md-end align-items-center mb-2 mb-md-0 d-none">
                         <div class="input-group input-group-sm justify-content-md-end align-items-center me-2">
                         	<div class="input-group-prepend">
                         		<h6 class="col-form-label me-1 text-nowrap">Discount</h6>
@@ -31,9 +31,9 @@
                         	</select>
                         </div>
 						<input class="form-control form-control-sm text-end item_discount w-50" type="number" step="any" id="item_discount"
-							name="item_discount">
+							name="item_discount" onkeyup="updateTotalNetPrice();">
 					</div>
-					<div class="col-12 col-md-2 d-flex justify-content-md-end align-items-center">
+					<div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
 						<h2 class="me-2 text-nowrap">Total:</h2>
 						<h2 id="item_total_net_price" class="me-2 text-nowrap">0</h2>
 					</div>
@@ -225,7 +225,7 @@ function continueAddToJobCard(inputMethod,btn){
             var $field = $(this);
             var val = $field.val()?.trim();
 
-            if (!val || val == "0" || val == "") {
+            if (!val || val == "") {
                 $field.addClass('is-invalid');
                 $field.next('.select2-container').find('.select2-selection--single').addClass('is-invalid');
                 sectionValid = false;
@@ -262,7 +262,7 @@ function continueAddToJobCard(inputMethod,btn){
 
             if (groupHasSelection) {
 
-                if (!priceField.val()?.trim() || priceField.val().trim() === "0") {
+                if (!priceField.val()?.trim()) {
                     priceField.addClass('is-invalid');
                     allValid = false;
                 } else {
@@ -339,7 +339,9 @@ function continueAddToJobCard(inputMethod,btn){
             var lineDiscount = netPrice - finalNetPrice;
 
             preValue = preValue || selectedVal;
-            $(this).data('pre-value', selectedVal);
+            if(optionType == 'Type' || optionType == 'Primary'){
+                $(this).data('pre-value', selectedVal);
+            }
 
             if (!jobData[mainJobID]){
                 jobData[mainJobID] ={

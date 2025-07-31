@@ -79,7 +79,10 @@ class User extends CI_Controller {
 			'statuscheck' => $this->input->post('statuscheck') ? 1 : 0,
 			'removecheck' => $this->input->post('removecheck') ? 1 : 0,
 			'cancelcheck' => $this->input->post('cancelcheck') ? 1 : 0,
-			'approvecheck' => $this->input->post('approvecheck') ? 1 : 0,
+			'approve1check' => $this->input->post('approve1check') ? 1 : 0,
+			'approve2check' => $this->input->post('approve2check') ? 1 : 0,
+			'approve3check' => $this->input->post('approve3check') ? 1 : 0,
+			'approve4check' => $this->input->post('approve4check') ? 1 : 0,
 			'recordID' => $this->input->post('recordID')
 		];
 
@@ -117,7 +120,7 @@ class User extends CI_Controller {
 		$this->load->model('Userinfo');
 		$this->load->model('Commeninfo');
 		$result['usertype']=$this->Userinfo->getUserTypes($this->api_token,'')['data'];
-		$result['employeelist']=$this->Userinfo->Getemployee();
+		$result['employeelist']=$this->Userinfo->getEmployee($this->api_token,'')['data'];
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 
 		$this->load->view('useraccount', $result);

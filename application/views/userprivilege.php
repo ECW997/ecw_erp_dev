@@ -69,9 +69,27 @@ include "include/topnavbar.php";
                                             </label>
                                         </div>
                                         <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" value="1" id="approvecheck" name="approvecheck">
-                                            <label class="custom-control-label" for="approvecheck">
-                                                Approve Privilege
+                                            <input class="custom-control-input" type="checkbox" value="1" id="approve1check" name="approve1check">
+                                            <label class="custom-control-label" for="approve1check">
+                                                Approve 1 Privilege
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" value="1" id="approve2check" name="approve2check">
+                                            <label class="custom-control-label" for="approve2check">
+                                                Approve 2 Privilege
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" value="1" id="approve3check" name="approve3check">
+                                            <label class="custom-control-label" for="approve3check">
+                                                Approve 3 Privilege
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input" type="checkbox" value="1" id="approve4check" name="approve4check">
+                                            <label class="custom-control-label" for="approve4check">
+                                                Approve 4 Privilege
                                             </label>
                                         </div>
                                         <div class="custom-control custom-checkbox">
@@ -99,7 +117,10 @@ include "include/topnavbar.php";
                                             <th>Edit</th>
                                             <th>Active | Deactive</th>
                                             <th>Delete</th>
-                                            <th>Approve</th>
+                                            <th>Approve 1</th>
+                                            <th>Approve 2</th>
+                                            <th>Approve 3</th>
+                                            <th>Approve 4</th>
                                             <th>Cancel</th>
                                             <th class="text-right">Actions</th>
                                         </tr>
@@ -217,7 +238,46 @@ include "include/topnavbar.php";
                     "className": 'text-center',
                     "data": null,
                     "render": function(data, type, full) {
-                        if(full['approve']==1){
+                        if(full['approve1']==1){
+                            return '<i class="fas fa-check text-success mt-2"></i>';
+                        }
+                        else{
+                            return '<i class="fas fa-times text-danger mt-2"></i>';
+                        }
+                    }
+                },
+                {
+                    "targets": -1,
+                    "className": 'text-center',
+                    "data": null,
+                    "render": function(data, type, full) {
+                        if(full['approve2']==1){
+                            return '<i class="fas fa-check text-success mt-2"></i>';
+                        }
+                        else{
+                            return '<i class="fas fa-times text-danger mt-2"></i>';
+                        }
+                    }
+                },
+                {
+                    "targets": -1,
+                    "className": 'text-center',
+                    "data": null,
+                    "render": function(data, type, full) {
+                        if(full['approve3']==1){
+                            return '<i class="fas fa-check text-success mt-2"></i>';
+                        }
+                        else{
+                            return '<i class="fas fa-times text-danger mt-2"></i>';
+                        }
+                    }
+                },
+                {
+                    "targets": -1,
+                    "className": 'text-center',
+                    "data": null,
+                    "render": function(data, type, full) {
+                        if(full['approve4']==1){
                             return '<i class="fas fa-check text-success mt-2"></i>';
                         }
                         else{
@@ -286,7 +346,10 @@ include "include/topnavbar.php";
                             if(result.data.edit==1){$('#editcheck').prop('checked', true);}
                             if(result.data.statuschange==1){$('#statuscheck').prop('checked', true);}
                             if(result.data.remove==1){$('#removecheck').prop('checked', true);}
-                            if(result.data.approve==1){$('#approvecheck').prop('checked', true);}
+                            if(result.data.approve1==1){$('#approve1check').prop('checked', true);}
+                            if(result.data.approve2==1){$('#approve2check').prop('checked', true);}
+                            if(result.data.approve3==1){$('#approve3check').prop('checked', true);}
+                            if(result.data.approve4==1){$('#approve4check').prop('checked', true);}
                             if(result.data.cancel==1){$('#cancelcheck').prop('checked', true);}
 
                             $('#recordOption').val('2');

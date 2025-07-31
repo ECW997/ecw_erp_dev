@@ -167,7 +167,6 @@ class Invoice extends CI_Controller {
 		}   
     }
   
-
 	public function getJobCardDetails() {
         $api_token = $this->session->userdata('api_token');
         $id = $this->input->post('job_card_id');
@@ -259,5 +258,28 @@ class Invoice extends CI_Controller {
 			$pdf_data['main_data']['invoice_number'] . '.pdf', 
 			['Attachment' => 0]  
 		);
+	}
+
+	public function insertNewItem(){
+		$form_data = [
+            'item_name' => $this->input->post('item_name'),
+			'usable_type' => $this->input->post('usable_type'),
+			'uom' => $this->input->post('uom'),
+			'unit_price' => $this->input->post('unit_price'),
+			'sales_price' => $this->input->post('sales_price'),
+			'minimum_qty' => $this->input->post('minimum_qty'),
+			'qty' => $this->input->post('qty'),
+			'company_id' => $this->input->post('company_id'),
+			'branch_id' => $this->input->post('branch_id')
+        ];
+		
+		$response = $this->Invoiceinfo->insertNewItem($this->api_token,$form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('Invoice');
+		}
 	}
 }

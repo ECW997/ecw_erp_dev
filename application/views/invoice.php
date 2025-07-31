@@ -2,10 +2,7 @@
 include "include/v2/header.php";  
 include "include/v2/topnavbar.php"; 
 ?>
-<?php
-// Retrieve the customer_id from the URL
-$customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
-?>
+
 <style>
 
 </style>
@@ -50,14 +47,14 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn-fixed"
+                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
                                     data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
                                     <i class="fas fa-plus me-1"></i> New Invoice 
                                 </button>
 
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
                                 
-                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed" <?= $is_confirmed == 0 ? '' : 'disabled' ?>
+                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>" 
                                     data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
@@ -161,7 +158,6 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                             <h5 class="modal-title text-dark fw-bold" id="jobcardApproveModelLabel">Invoice Approval
                             </h5>
                         </div>
-
                     </div>
                     <div class="modal-body p-4">
                         <div class="d-grid gap-3">
@@ -173,16 +169,16 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                     <span class="text-dark fw-bold" id="subtotal_with_extra_price">
                                         Rs. <?= number_format($invoice_main_data[0]['inv_gross_total'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="text" name="invoice_id"
+                                    <input type="hidden" name="invoice_id"
                                         class="form-control form-control-sm input-highlight" id="invoice_id"
                                         value="<?= isset($invoice_main_data[0]['id']) ? $invoice_main_data[0]['id'] : '' ?>">
-                                    <input type="text" name="approve_id"
+                                    <input type="hidden" name="approve_id"
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>">
-                                    <input type="text" name="jobcard_id"
+                                    <input type="hidden" name="jobcard_id"
                                         class="form-control form-control-sm input-highlight" id="jobcard_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
-                                    <input type="text" name="series_type_id"
+                                    <input type="hidden" name="series_type_id"
                                         class="form-control form-control-sm input-highlight" id="series_type_id"
                                         value="<?= isset($invoice_main_data[0]['series_type']) ? $invoice_main_data[0]['series_type'] : '' ?>">
                                 </div>
@@ -251,31 +247,28 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                                 <button type="button" class="btn btn-light w-100" data-bs-dismiss="modal"
                                     style="border-radius: 12px; font-weight:bold;">Close</button>
                             </div>
+                            <?php if($approve1check==1): ?>
                             <div class="col-4">
                                 <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '0'): ?>
                                 <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
                                     style="border-radius: 12px;" onclick="approveInvoice()">Approve Invoice</button>
                                 <?php else: ?>
-                                <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
-                                    style="border-radius: 12px;" disabled>Approve Invoice</button>
+                                <button type="button" class="btn btn-success w-100 d-none" id="approveJobcardBtn"
+                                    style="border-radius: 12px;">Approve Invoice</button>
                                 <?php endif; ?>
                             </div>
+                            <?php endif; ?>
+                            <?php if($cancelcheck==1): ?>
                             <div class="col-4">
                                 <?php if (($invoice_main_data[0]['is_confirmed'] ?? '0') == '1'): ?>
                                 <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
                                     style="border-radius: 12px;" onclick="cancelInvoice()">Cancel Invoice</button>
                                 <?php else: ?>
-                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" disabled>Cancel Invoice</button>
+                                <button type="button" class="btn btn-danger w-100 d-none" id="deniedJobcardBtn"
+                                    style="border-radius: 12px;">Cancel Invoice</button>
                                 <?php endif; ?>
                             </div>
-                            <!-- <div class="col-4">
-                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" onclick="deleteInvoice()">Delete</button>
-                               
-                                <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
-                                    style="border-radius: 12px;" disabled>Delete</button>
-                            </div> -->
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="modal-footer bg-light justify-content-center py-2 border-top">
@@ -329,6 +322,16 @@ function showJobCardStatusMessage() {
 showJobCardStatusMessage();
 </script>
 <script>
+var addcheck = '<?php echo $addcheck; ?>';
+var editcheck = '<?php echo $editcheck; ?>';
+var statuscheck = '<?php echo $statuscheck; ?>';
+var deletecheck = '<?php echo $deletecheck; ?>';
+var approve1check = '<?php echo $approve1check; ?>';
+var approve2check = '<?php echo $approve2check; ?>';
+var approve3check = '<?php echo $approve3check; ?>';
+var approve4check = '<?php echo $approve4check; ?>';
+var cancelcheck = '<?php echo $cancelcheck; ?>';
+
 function createInvoice() {
 
     let seriesType = $('#series_type').val();
@@ -337,18 +340,6 @@ function createInvoice() {
         $('#series_type').focus();
         return;
     }
-    // if (seriesType.trim() === '' || seriesType === ' ') {
-    //     Swal.fire({
-    //         icon: 'warning',
-    //         title: 'Invoice Series Type Required',
-    //         text: 'Please select "Invoice Series Type".',
-    //         confirmButtonColor: '#3085d6',
-    //         confirmButtonText: 'OK'
-    //     }).then(() => {
-    //         $('#series_type').focus();
-    //     });
-    //     return;
-    // }
 
     let jobtable_data = [];
     let charge_details = [];
@@ -371,6 +362,8 @@ function createInvoice() {
             tax: parseFloat($(this).find('td:eq(8)').text()) || 0,
             total_after_tax: parseFloat($(this).find('.total_after_tax').text()) || 0,
             insert_status: $(this).find('.insert_status').text().trim(),
+            pre_item_id: $(this).find('.pre_item').text().trim(),
+            pre_qty: $(this).find('.pre_qty').text().trim(),
             row_id: $(this).find('.row_id').text().trim(),
         });
     });
@@ -394,6 +387,7 @@ function createInvoice() {
             receipt_amount: parseFloat($(this).find('td[name="receiptamount"]').text()) || 0,
             insert_status: $(this).find('.insert_status').text().trim(),
             row_id: $(this).find('.row_id').text().trim(),
+            jobcard_id: $(this).find('.jobcard_id').text().trim(),
         });
     });
 
@@ -410,7 +404,8 @@ function createInvoice() {
         vat_reg_no: $('#vat_reg_no').val(),
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
-        contact_no: $('#customer_contact').val(),
+        contact_no: $('#customer_contact').val() ,
+        customer_nic: $('#customer_nic').val(),
         series_type: $('#series_type option:selected').val(),
         sub_total: parseFloat($('#total_sub_amount').val()) || 0,
         discount_pc: 0,
@@ -482,6 +477,10 @@ function createInvoice() {
 
 function approveInvoice() {
 
+    if (!confirm(`Are you sure you want to approve invoice?`)) {
+        return;
+    }
+
     const approveData = {
         id: $('#invoice_id').val(),
         series_type_id: $('#series_type_id').val()
@@ -512,7 +511,9 @@ function approveInvoice() {
 // Delete invoice
 
 function cancelInvoice() {
-
+    if (!confirm(`Are you sure you want to denide invoice?`)) {
+        return;
+    }
     const approveData = {
         id: $('#invoice_id').val()
     };

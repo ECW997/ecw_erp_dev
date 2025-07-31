@@ -49,7 +49,7 @@
                             <input type="text" name="customer_name" class="form-control form-control-sm input-field"
                                 id="customer_name"
                                 value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>"
-                                required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                required readonly>
                             <input type="hidden" name="customer_id" id="customer_id"
                                 value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                         </div>
@@ -60,7 +60,7 @@
                             <input type="text" name="customer_address" class="form-control form-control-sm input-field"
                                 id="customer_address"
                                 value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>"
-                                required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -68,14 +68,14 @@
                             <label class="form-label small fw-bold">Vehicle No <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="vehicle_no" class="form-control form-control-sm input-field"
-                                id="vehicle_no" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                id="vehicle_no" required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold">VAT Reg No</label>
                             <input type="text" name="vat_reg_no" class="form-control form-control-sm input-field"
-                                id="vat_reg_no" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                id="vat_reg_no" required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -83,7 +83,7 @@
                             <label class="form-label small fw-bold">Vehicle In Date <span
                                     class="text-danger">*</span></label>
                             <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date"
-                                id="vehicle_in_date" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                id="vehicle_in_date" required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <input type="text" name="status_id" class="form-control form-control-sm input-highlight" id="status_id"
+            <input type="hidden" name="status_id" class="form-control form-control-sm input-highlight" id="status_id"
                 value="<?= isset($invoice_main_data[0]['inv_status']) ? $invoice_main_data[0]['inv_status'] : '' ?>"
                 required>
 
@@ -102,7 +102,6 @@
         </form>
     </div>
 </div>
-
 
 <div class="modal fade" id="jobcarddetailsModal" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true"
     data-bs-backdrop="static">
@@ -234,7 +233,12 @@
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <h6 class="col-form-label me-2 text-nowrap" id="discount_approval_status">Discount approve</h6>
+                        <h6 class="col-form-label me-2 text-nowrap" id="line_discount_approval_status">Discount approve</h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <h6 class="col-form-label me-2 text-nowrap" id="header_discount_approval_status">Discount approve</h6>
                     </div>
                 </div>
 
@@ -251,7 +255,6 @@
         </div>
     </div>
 </div>
-
 
 
 <script>
@@ -346,17 +349,17 @@ $(document).ready(function() {
                             section.details.forEach(detail => {
                                 let row = `
                                     <tr>
-                                        <td class="text-center">${index++}</td>
+                                        <td class="text-center">${index++} ${res.data.line_discount_status}</td>
                                         <td class="text-left">${section.job_sub_category_text} - ${detail.option_group_text} (${detail.combined_option})</td>
                                         <td class="text-center">${detail.qty}</td>
                                         <td class="text-right">${(parseFloat(detail.list_price).toFixed(2))}</td>
                                         <td class="text-right">${(parseFloat(detail.total).toFixed(2))}</td>
-                                        <td class="text-right">${(parseFloat(detail.line_discount).toFixed(2))}</td>
+                                        <td class="text-right">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
                                         <td class="text-right">${(parseFloat(0).toFixed(2))}</td>
-                                        <td class="text-right">${(parseFloat(detail.net_amount).toFixed(2))}</td>
+                                        <td class="text-right">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.net_amount).toFixed(2)) : (parseFloat(detail.total).toFixed(2))}</td>
                                         <td class="text-right d-none line_discount_type">${(parseFloat(detail.line_discount_type).toFixed(2))}</td>
-                                        <td class="text-right d-none line_discount_pc">${(parseFloat(detail.line_discount_pc).toFixed(2))}</td>
-                                        <td class="text-right d-none line_discount">${(parseFloat(detail.line_discount).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount_pc">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount_pc).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
 
                                     </tr>
                                 `;
@@ -364,37 +367,47 @@ $(document).ready(function() {
                             });
                         });
 
-
-
                         let summary = res.data.summary_data[0];
-                        let approveRequestStatus = data.approve_request_status;
+                        let approveRequestStatus = data.status;
 
-                        $('#modal_sub_total').val(addCommas(parseFloat(summary.sub_total)
-                            .toFixed(2)));
-                        $('#modal_line_discount').val(addCommas(parseFloat(summary
-                            .total_line_discount).toFixed(2)));
-                        $('#modal_header_discount').val(addCommas(parseFloat(summary
-                            .discount_amount).toFixed(2)));
-                        $('#header_discount_total').val(parseFloat(summary.discount_amount).toFixed(2));
+                        $('#modal_sub_total').val(addCommas(parseFloat(summary.sub_total).toFixed(2)));
+                        $('#modal_line_discount').val((summary.line_discount_status == 'Approved') ? addCommas(parseFloat(summary.total_line_discount).toFixed(2)) : addCommas(parseFloat(0).toFixed(2)));
+                        $('#modal_header_discount').val((summary.header_discount_status == 'Approved') ? addCommas(parseFloat(summary.discount_amount).toFixed(2)) : addCommas(parseFloat(0).toFixed(2)));
+                        $('#header_discount_total').val((summary.header_discount_status == 'Approved') ? parseFloat(summary.discount_amount).toFixed(2) : parseFloat(0).toFixed(2));
                         $('#modal_net_total').val(addCommas(parseFloat(summary.net_total)
                             .toFixed(2)));
 
-                        if (summary.is_discount_approved) {
-                            $('#discount_approval_status')
-                                .text('Discount Approved')
+                        if (summary.is_line_discount_approved) {
+                            $('#line_discount_approval_status')
+                                .text('Line Discount '+ summary.line_discount_status)
                                 .css({
                                     color: 'green',
                                     fontWeight: 'bold'
                                 });
                         } else {
-                            $('#discount_approval_status')
-                                .text('Discount Approval Pending')
+                            $('#line_discount_approval_status')
+                                .text('Line Discount Approval '+ summary.line_discount_status)
                                 .css({
                                     color: 'orange',
                                     fontWeight: 'bold'
                                 });
                         }
 
+                        if (summary.is_header_discount_approved) {
+                            $('#header_discount_approval_status')
+                                .text('Header Discount '+ summary.header_discount_status)
+                                .css({
+                                    color: 'green',
+                                    fontWeight: 'bold'
+                                });
+                        } else {
+                            $('#header_discount_approval_status')
+                                .text('Header Discount Approval '+ summary.header_discount_status)
+                                .css({
+                                    color: 'orange',
+                                    fontWeight: 'bold'
+                                });
+                        }
 
 
                         let $invoiceBtn = $('#readyToInvoiceBtn');
@@ -476,7 +489,6 @@ $(document).ready(function() {
     });
 
 });
-
 
 
 function addCommas(nStr) {

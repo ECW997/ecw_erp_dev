@@ -22,6 +22,7 @@ $config['api_endpoints'] = [
 
     'user_account_v1' => '/v1/user_account',
     'user_account_status_v1' => '/v1/user_account_status',
+    'get_employee_details_v1' => '/v1/get_employee_details',
 
     'menu_privilege_v1' => '/v1/menu_privilege',
 
@@ -59,10 +60,13 @@ $config['api_endpoints'] = [
     'get_item_price_v1' => '/v1/get_item_price',
     'discount_update_v1' => '/v1/update_discount',
     'get_discount_v1' => '/v1/discount_details',
-    'approve_job_card_v1' => '/v1/approveDiscount',
-    'denied_job_card_v1' => '/v1/deniedDiscount',
+    'approve_jobcard_discount_v1' => '/v1/approve_jobcard_discount',
+    'denied_jobcard_discount_v1' => '/v1/denied_jobcard_discount',
+    'approve_job_card_v1' => '/v1/approve_jobcard',
+    'denied_job_card_v1' => '/v1/denied_jobcard',
     'get_sales_agents_v1' => '/v1/get_sales_agents',
     'jobcard_item_delete_v1' => '/v1/jobcard_item_delete',
+    'jobcard_header_update_v1' => '/v1/jobcard_header_update',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
@@ -97,5 +101,5 @@ $config['api_endpoints'] = [
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
 
-
+    'item_v1' => '/v1/item',
 ];

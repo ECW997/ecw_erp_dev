@@ -20,7 +20,7 @@ class Auth extends CI_Controller {
 
         $response = $this->Authinfo->login($form_data);
 
-        if ($response['status'] === true) {
+        if (isset($response['status']) && $response['status'] === true) {
             $loginData = $response['data'];
             $loginAuthorisation = $response['authorisation'];
             $user_data = [
@@ -54,7 +54,11 @@ class Auth extends CI_Controller {
 
             redirect('Auth/Dashboard');            
         } else {
-            $this->session->set_flashdata('loginmsg', 'Invalid Username or Password');
+            if ($response['message'] == 'This account is already logged in on another device.') {
+                $this->session->set_flashdata('loginmsg', 'You are already logged in on another device. Please logout there first.');
+            } else {
+                $this->session->set_flashdata('loginmsg', 'Invalid Username or Password');
+            }
             redirect();
         }
     }

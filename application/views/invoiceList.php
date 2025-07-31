@@ -229,6 +229,11 @@ var addcheck = '<?php echo $addcheck; ?>';
 var editcheck = '<?php echo $editcheck; ?>';
 var statuscheck = '<?php echo $statuscheck; ?>';
 var deletecheck = '<?php echo $deletecheck; ?>';
+var approve1check = '<?php echo $approve1check; ?>';
+var approve2check = '<?php echo $approve2check; ?>';
+var approve3check = '<?php echo $approve3check; ?>';
+var approve4check = '<?php echo $approve4check; ?>';
+var cancelcheck = '<?php echo $cancelcheck; ?>';
 
 $(document).ready(function() {
     loadPaymentListTable();
@@ -480,7 +485,7 @@ function loadPaymentListTable(){
         });
     });
 
-});
+};
 
 
 function selectInvoiceType(type) {

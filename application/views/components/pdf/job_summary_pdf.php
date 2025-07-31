@@ -107,7 +107,7 @@
 <body>
 
 <header>
-     <table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
+    <table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
      	<tr>
      		<th rowspan="7" style="text-align:left;width:17%;"><img style="height:65px;collapse;margin-left:5px"
      				src="<?php echo base_url() ?>assets/img/logo-icon.png" /></th>
@@ -117,7 +117,7 @@
         <div></div>
         <tr>
         	<th style="width:10%;" class="header_th">Cus. Code</th>
-        	<th style="width:25%;" class="header_th"><span> : </span>3634</th>
+        	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_code'] ?></th>
         	<th style="width:10%;" class="header_th">Job No.</th>
         	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['job_card_number'] ?></th>
         </tr>
@@ -149,7 +149,7 @@
         	<th style="width:10%;" class="header_th">NIC No</th>
         	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['nic_number'] ?? 'N/A' ?></th>
         </tr>
-        </table>
+    </table>
 </header>
 
 <footer>
@@ -193,7 +193,6 @@
             $maxPageHeight = 220;
             $totalRows = count($details_data); 
 			$groupedData = [];
-			$is_discount_approved = ($is_discount_approved);
 
 			foreach ($details_data as $item) {
 				$category = $item['job_sub_category_text'] ?? 'N/A';
@@ -204,8 +203,6 @@
 					$groupedData[$category][] = $joblist;
 				}
 			}
-
-			
 			?>
 
             <?php foreach ($groupedData as $category => $jobs): ?>
@@ -216,8 +213,8 @@
 				</tr>
 
 				<?php foreach ($jobs as $joblist): 
-					$line_net_total = $is_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
-					$line_discount = $is_discount_approved ? number_format(($joblist['line_discount'] ?? 0), 2) : number_format((0), 2);
+					$line_net_total = $is_line_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
+					$line_discount = $is_line_discount_approved ? number_format(($joblist['line_discount'] ?? 0), 2) : number_format((0), 2);
 					?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $count ?></td>
@@ -259,56 +256,70 @@
         </tbody>
     </table>
 
- <?php 
-    $net_total=0;
-    if($summary_data){
-    foreach ($summary_data as $summlist):?>
-    <table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
-    	<tr>
-    		<td style="width:30%;text-align:left;" class="datatable_data_td">Pay.Method : Bank</td>
-    		<td style="width:40%;text-align:left;" class="datatable_data_td">Due. Date : N/A</td>
-    		<td colspan="3" style="width:13%;text-align:left;" class="datatable_data_td">Total Value</td>
-    		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format($summlist['sub_total'],2) ?></td>
-    	</tr>
-    	<tr>
-    		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
-    		<td style="width:13%;text-align:left;" class="datatable_data_td">Disc. Total</td>
-    		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= $is_discount_approved ? (number_format(($summlist['discount_amount'] + $summlist['total_line_discount']),2)) : number_format((0), 2) ?></td>
-    	</tr>
-    	<tr>
-    		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
-    		<td style="width:13%;text-align:left;" class="datatable_data_td">SVAT / VAT</td>
-    		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format($summlist['vat_amount'],2) ?></td>
-    	</tr>
-    	<tr>
-    		<td colspan="4" style="width:70%;text-align:left;" class="datatable_data_td"></td>
-    		<td style="width:13%;text-align:left;" class="datatable_data_td">Total</td>
-    		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format($summlist['total'],2) ?></td>
-    	</tr>
-    	<tr>
-    		<td style="width:30%;text-align:center;" class="datatable_data_td">........................</td>
-    		<td style="width:40%;text-align:center;" class="datatable_data_td">........................</td>
-    		<td colspan="3" style="width:13%;text-align:left;" class="datatable_data_td">T. Advance</td>
-    		<td style="width:2%;text-align:center;" class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;" class="datatable_data_td"><?= number_format($summlist['advance'],2) ?></td>
-    	</tr>
-    	<tr>
-    		<td style="width:30%;text-align:center;" class="datatable_data_td">Customer</td>
-    		<td style="width:40%;text-align:center;" class="datatable_data_td">Sales Person</td>
-    		<td colspan="3"
-    			style="width:13%;text-align:left;border-top: 1px solid #000; border-bottom: 3px double #000;"
-    			class="datatable_data_td">Balance</td>
-    		<td style="width:2%;text-align:center;border-top: 1px solid #000; border-bottom: 3px double #000;"
-    			class="datatable_data_td">:</td>
-    		<td style="width:15%;text-align:right;border-top: 1px solid #000; border-bottom: 3px double #000;"
-    			class="datatable_data_td"><?= number_format($summlist['net_total'],2) ?></td>
-    	</tr>
-    </table>
-    <?php endforeach;  }?>
+	<?php 
+		$net_total = 0;
+		if ($summary_data) {
+			foreach ($summary_data as $summlist): ?>
+			<table style="table-layout: fixed; padding: 3px; width: 100%; border-collapse: collapse;">
+				<tr>
+					<td style="width: 30%; text-align: left;" class="datatable_data_td">Pay.Method : Bank</td>
+					<td style="width: 40%; text-align: left;" class="datatable_data_td">Due. Date : N/A</td>
+					<td colspan="3" style="width: 13%; text-align: left;" class="datatable_data_td">Total Value</td>
+					<td style="width: 2%; text-align: center;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right;" class="datatable_data_td">
+						<?= number_format($summlist['sub_total'], 2) ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="width: 70%; text-align: left;" class="datatable_data_td"></td>
+					<td style="width: 13%; text-align: left;" class="datatable_data_td">Disc. Total</td>
+					<td style="width: 2%; text-align: center;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right;" class="datatable_data_td">
+						<?php $header_discount =  $summlist['header_discount_status'] == 'Approved' ? $summlist['discount_amount'] : 0?>
+						<?php $line_discount =  $summlist['line_discount_status'] == 'Approved' ? $summlist['total_line_discount'] : 0?>
+						<?=	number_format($header_discount + $line_discount, 2) ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="width: 70%; text-align: left;" class="datatable_data_td"></td>
+					<td style="width: 13%; text-align: left;" class="datatable_data_td">SVAT / VAT</td>
+					<td style="width: 2%; text-align: center;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right;" class="datatable_data_td">
+						<?= number_format($summlist['vat_amount'], 2) ?>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="width: 70%; text-align: left;" class="datatable_data_td"></td>
+					<td style="width: 13%; text-align: left;" class="datatable_data_td">Total</td>
+					<td style="width: 2%; text-align: center;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right;" class="datatable_data_td">
+						<?php echo number_format($summlist['total'], 2); ?>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 30%; text-align: center;" class="datatable_data_td">........................</td>
+					<td style="width: 40%; text-align: center;" class="datatable_data_td">........................</td>
+					<td colspan="3" style="width: 13%; text-align: left;" class="datatable_data_td">T. Advance</td>
+					<td style="width: 2%; text-align: center;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right;" class="datatable_data_td">
+						<?= number_format($summlist['advance'], 2) ?>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 30%; text-align: center;" class="datatable_data_td">Customer</td>
+					<td style="width: 40%; text-align: center;" class="datatable_data_td">Sales Person</td>
+					<td colspan="3" style="width: 13%; text-align: left; border-top: 1px solid #000; border-bottom: 3px double #000;" class="datatable_data_td">Balance</td>
+					<td style="width: 2%; text-align: center; border-top: 1px solid #000; border-bottom: 3px double #000;" class="datatable_data_td">:</td>
+					<td style="width: 15%; text-align: right; border-top: 1px solid #000; border-bottom: 3px double #000;" class="datatable_data_td">
+						<?php echo number_format($summlist['net_total'], 2); ?>
+					</td>
+				</tr>
+			</table>
+	<?php 
+			endforeach;
+		} 
+	?>
+
     </div>
 
 </body>
