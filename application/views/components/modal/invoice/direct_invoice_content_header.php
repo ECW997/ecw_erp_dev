@@ -30,41 +30,53 @@
             <div class="customer-details mb-4 p-3 border rounded ">
                 <h6 class="section-title p-2 mb-3 rounded">Customer Information</h6>
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold text-dark">Customer Name <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="customer_name" class="form-control form-control-sm input-highlight"
                                 id="customer_name"
                                 value="<?= isset($invoice_main_data[0]['customer_name']) ? $invoice_main_data[0]['customer_name'] : '' ?>"
-                                required>
+                                required <?= $is_confirmed == 0 ? '' : 'readonly' ?>>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold text-dark">Customer Address <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="customer_address"
                                 class="form-control form-control-sm input-highlight" id="customer_address"
                                 value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>"
-                                required>
+                                required <?= $is_confirmed == 0 ? '' : 'readonly' ?>>
+                            <input type="hidden" name="customer_id" id="customer_id"
+                                value="<?= isset($invoice_main_data[0]['customer_id']) ? $invoice_main_data[0]['customer_id'] : '' ?>">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold text-dark">Contact No <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="customer_contact"
                                 class="form-control form-control-sm input-highlight" id="customer_contact"
                                 value="<?= isset($invoice_main_data[0]['contact_no']) ? $invoice_main_data[0]['contact_no'] : '' ?>"
-                                required>
+                                required <?= $is_confirmed == 0 ? '' : 'readonly' ?>>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label small fw-bold text-dark">Nic No <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="customer_nic"
+                                class="form-control form-control-sm input-highlight" id="customer_nic"
+                                value="<?= isset($invoice_main_data[0]['nic_number']) ? $invoice_main_data[0]['nic_number'] : '' ?>"
+                                required <?= $is_confirmed == 0 ? '' : 'readonly' ?>>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Item Details Section -->
-            <div class="invoice-items mb-4 p-3 border rounded ">
+            <div class="invoice-items mb-4 p-3 border rounded <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                 <h6 class="section-title p-2 mb-3 rounded">Item Details</h6>
                 <div class="row g-3">
                     <div class="col-md-3">
@@ -75,6 +87,7 @@
                                 onchange="getDirectSalesItemDetails(this.value)" required>
                                 <option value="">Select Item</option>
                             </select>
+                            <button type="button" class="btn btn-sm btn-warning mt-2 <?= ($addcheck == 0) ? 'd-none' : '' ?>" data-bs-toggle="modal" data-bs-target="#addNewItemModal">Add New Item</button>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -109,23 +122,88 @@
                                 class="form-control form-control-sm text-end input-highlight" id="discount" value="0">
                         </div>
                     </div>
-                    <div class="col-md-1 d-flex align-items-end">
+                    <div class="col-md-1 d-flex align-items-center">
                         <button type="button" id="formsubmit" title="Insert"
-                            class="btn btn-success btn-sm w-100 add-to-list-btn" onclick="addToList();">
+                            class="btn btn-success btn-sm w-100 add-to-list-btn me-2 <?= ($addcheck == 0) ? 'd-none' : '' ?>" onclick="addToList();">
                             <i class="fas fa-plus"></i>
                         </button>
                         <button type="button" id="formsubmit" title="Update"
-                            class="btn btn-warning btn-sm w-100 d-none update-to-list-btn" onclick="updateToList();">
+                            class="btn btn-warning btn-sm w-100 d-none update-to-list-btn <?= ($editcheck == 0) ? 'd-none' : '' ?>" onclick="updateToList();">
                             <i class="fas fa-sync"></i>
+                        </button>
+                        <button type="button" id="formsubmit" title="Clear"
+                            class="btn btn-secondary btn-sm w-100 clear-list-btn" onclick="clearList();">
+                            <i class="fas fa-eraser"></i>
                         </button>
                     </div>
                 </div>
 
                 <input name="available_qty" type="number" id="available_qty" class="d-none">
                 <input name="row_id" type="number" id="row_id" value="0" class="d-none">
+                <input name="pre_item" type="number" id="pre_item" class="d-none" value="0">
+                <input name="pre_qty" type="number" id="pre_qty" class="d-none" value="0">
             </div>
         </form>
     </div>
+</div>
+
+<div class="modal fade" id="addNewItemModal" tabindex="-1" aria-labelledby="addNewItemModalLabel" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title text-white" id="addNewItemModalLabel">
+                    Add New Item
+                </h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="addNewItemForm">
+                    <div class="row">
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Item Name <span class="text-danger">*</span></label>
+                            <input type="text" name="item_name" class="form-control form-control-sm" id="item_name" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">UOM <span class="text-danger">*</span></label>
+                            <input type="text" name="uom" class="form-control form-control-sm" id="uom" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Unit Price <span class="text-danger">*</span></label>
+                            <input type="text" name="unit_price" class="form-control form-control-sm" id="unit_price" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Sales Price <span class="text-danger">*</span></label>
+                            <input type="text" name="sales_price" class="form-control form-control-sm" id="sales_price" required>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                         <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Minimum Qty <span class="text-danger">*</span></label>
+                            <input type="text" name="minimum_qty" class="form-control form-control-sm" id="minimum_qty" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Qty <span class="text-danger">*</span></label>
+                            <input type="text" name="order_qty" class="form-control form-control-sm" id="order_qty" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small fw-bold text-dark">Usable Type <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm input-highlight" name="usable_type" id="usable_type" required>
+                                <option value="">Select Type</option>
+                                <option value="All">All</option>
+                                <option value="Production">Production</option>
+                                <option value="DirectSale">DirectSale</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="addNewItemdBtn" class="btn btn-primary" onclick="addNewItem();">Add New Item<i
+						class="fas fa-plus-circle ml-2"></i></i></button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
@@ -172,9 +250,9 @@ function getDirectSalesItemDetails(item_id) {
         url: '<?php echo base_url() ?>Invoice/getDirectSalesItemDetails/' + item_id,
         success: function(result) {
             if (result.status) {
-                // $('#price').val(result.data[0].sale_price);
+                $('#unit').val(result.data[0].uom);
                 $('#original_price_show').text(result.data[0].sale_price);
-                $('#available_qty_show').text('(Availablity ' + result.data[0].qty + ')');
+                $('#available_qty_show').text('(Availablity ' + (result.data[0].qty - result.data[0].issued_qty) + ')');
                 $('#available_qty').val(result.data[0].qty);
             } else {
                 falseResponse(result);
@@ -191,11 +269,30 @@ function addToList() {
         return;
     }
 
+    const itemId = $('#item').val();
+
+    let itemExists = false;
+
+    $('#tableorder tbody tr').each(function () {
+        const existingItemId = $(this).find('.item_id').text().trim();
+        if (existingItemId === itemId) {
+            itemExists = true;
+            return false; 
+        }
+    });
+
+    if (itemExists) {
+        alert('This item with the same unit already exists in the list.');
+        clearItemFields();
+        return;
+    }
+
     const date = $('#date').val();
     const customerName = $('#customer_name').val();
     const customerAddress = $('#customer_address').val();
+    const customerContact = $('#customer_contact').val();
+    const customerNic = $('#customer_nic').val();
     const item = $('#item option:selected').text();
-    const itemId = $('#item').val();
     const unit = $('#unit').val();
     const price = parseFloat($('#price').val()) || 0;
     const qty = parseFloat($('#qty').val()) || 0;
@@ -223,6 +320,8 @@ function addToList() {
             <td class="text-end d-none insert_status">new</td>
             <td class="text-end d-none item_id">${itemId}</td>
             <td class="text-end d-none row_id">0</td>
+            <td class="text-end d-none pre_item">0</td>
+            <td class="text-end d-none pre_qty">0</td>
             <td class="text-center">
                 <button type="button" title="Edit" class="btn btn-primary btn-sm d-none" id="0" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
                 <button type="button" title="Delete" class="btn btn-danger btn-sm" id="0" onclick="ItemSoftDelete(this)"><i class="fas fa-trash"></i></button>
@@ -245,15 +344,36 @@ function updateToList() {
         return;
     }
 
+    const itemId = $('#item').val();
+
+    let itemExists = false;
+
+    $('#tableorder tbody tr').each(function () {
+        const existingItemId = $(this).find('.item_id').text().trim();
+        if (existingItemId === itemId) {
+            itemExists = true;
+            return false; 
+        }
+    });
+
+    if (itemExists) {
+        alert('This item with the same unit already exists in the list.');
+        clearItemFields();
+        return;
+    }
+
     const date = $('#date').val();
     const customerName = $('#customer_name').val();
     const customerAddress = $('#customer_address').val();
+    const customerContact = $('#customer_contact').val();
+    const customerNic = $('#customer_nic').val();
     const item = $('#item option:selected').text();
-    const itemId = $('#item').val();
     const unit = $('#unit').val();
     const price = parseFloat($('#price').val()) || 0;
     const qty = parseFloat($('#qty').val()) || 0;
     const discountPercent = parseFloat($('#discount').val()) || 0;
+    const pre_itemId = $('#pre_item').val();
+    const pre_qty = parseFloat($('#pre_qty').val()) || 0;
 
     const subtotal = price * qty;
     const discountAmount = (discountPercent / 100) * subtotal;
@@ -279,6 +399,8 @@ function updateToList() {
             <td class="text-end d-none insert_status">updated</td>
             <td class="text-end d-none item_id">${itemId}</td>
             <td class="text-end d-none row_id">${rowId}</td>
+            <td class="text-end d-none pre_item">${pre_itemId}</td>
+            <td class="text-end d-none pre_qty">${pre_qty}</td>
             <td class="text-center">
                 <div class="btn-group btn-group-sm" role="group">
                     <button type="button" title="Edit" class="btn btn-primary btn-sm" id="${rowId}" onclick="editRow(this)"><i class="fas fa-pen"></i></button>
@@ -328,6 +450,8 @@ function editRow(button) {
         const discountPercent = parseFloat(row.find('td:eq(5)').text());
         const itemId = row.find('.item_id').text();
         const rowId = row.find('.row_id').text();
+        const pre_itemId = row.find('.pre_item').text();
+        const pre_qty = row.find('.pre_qty').text();
 
         if (itemId && itemName) {
             let option = new Option(itemName, itemId, true, true);
@@ -340,6 +464,8 @@ function editRow(button) {
         $('#discount').val(discountPercent);
 
         $('#row_id').val(rowId);
+        $('#pre_item').val(pre_itemId);
+        $('#pre_qty').val(pre_qty);
 
         $('.update-to-list-btn').removeClass('d-none');
         $('.add-to-list-btn').addClass('d-none');
@@ -377,5 +503,70 @@ function clearItemFields() {
     $('#available_qty_show').text('');
     $('#unit').val('');
     $('#discount').val(0);
+}
+
+function addNewItem(){
+    var form = $('#addNewItemForm')[0];
+     if (form.checkValidity()) {
+
+        const btn = document.getElementById('addNewItemdBtn');
+        btn.disabled = true;
+        btn.innerHTML = `Adding <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
+
+        var item_name = $('#item_name').val();
+        var usable_type = $('#usable_type').val();
+        var uom = $('#uom').val();
+        var unit_price = $('#unit_price').val();
+        var sales_price = $('#sales_price').val();
+        var minimum_qty = $('#minimum_qty').val();
+        var qty = $('#order_qty').val();
+
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data: {
+                item_name: item_name,
+                usable_type: usable_type,
+                uom: uom,
+                unit_price: unit_price,
+                sales_price: sales_price,
+                minimum_qty: minimum_qty,
+                qty: qty,
+                company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
+                branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
+            },
+            url: '<?php echo base_url() ?>Invoice/insertNewItem',
+            success: function(result) {
+                if (result.status == true) {
+                    success_toastify(result.message);
+                    btn.disabled = false;
+                    btn.innerHTML = `Add New Item <i class="fas fa-plus-circle ml-2"></i>`;
+                    $('#item').append(
+                        new Option(item_name, result.data, true, true)
+                    ).trigger('change');
+                    $('#addNewItemForm')[0].reset();
+                    $('#addNewItemModal').modal('hide');
+                    $('.modal-backdrop').remove();
+                } else {
+                    falseResponse(result);
+                    btn.disabled = false;
+                    btn.innerHTML = `Add New Item <i class="fas fa-plus-circle ml-2"></i>`;
+                }
+            }
+        });
+
+    } else {
+        form.reportValidity();
+    }
+}
+
+function clearList(){
+    $('#item').val('').trigger('change');
+    $('#unit').val('');
+    $('#price').val('');
+    $('#original_price_show').text('');
+    $('#qty').val('');
+    $('#available_qty_show').text('');
+    $('#discount').val('');
 }
 </script>

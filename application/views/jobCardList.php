@@ -81,7 +81,7 @@ include "include/topnavbar.php";
                         <div class="row align-items-center">
                             <div class="col-12 col-md-3 d-flex align-items-center justify-content-start">
                                 <label for="date_from" class="mb-0 mr-2">Date Filter</label>
-                                <div class="input-group" style="max-width: 220px;">
+                                <div class="input-group">
                                     <input type="date" id="date_from" class="form-control form-control-sm" aria-label="Date From" />
                                     <div class="input-group-append">
                                     <span class="input-group-text">to</span>
@@ -117,10 +117,10 @@ include "include/topnavbar.php";
                                     <label for="status" class="mb-0 mr-2">Status</label>
                                     <select id="status" class="custom-select custom-select-sm" style="min-width: 130px;">
                                     <option value="">All Status</option>
-                                    <option value="0">Draft</option>
-                                    <option value="1">Pending</option>
-                                    <option value="2">Approved</option>
-                                    <option value="3">Cancelled</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Cancelled">Cancelled</option>
                                     </select>
                                 </div>
                                 <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
@@ -166,10 +166,17 @@ include "include/topnavbar.php";
 </div>
 <?php include "include/footerscripts.php"; ?>
 <script>
-    var addcheck='<?php echo $addcheck; ?>';
-    var editcheck='<?php echo $editcheck; ?>';
-    var statuscheck='<?php echo $statuscheck; ?>';
-    var deletecheck='<?php echo $deletecheck; ?>';
+    var addcheck = '<?php echo $addcheck; ?>';
+    var editcheck = '<?php echo $editcheck; ?>';
+    var statuscheck = '<?php echo $statuscheck; ?>';
+    var deletecheck = '<?php echo $deletecheck; ?>';
+    var approve1check = '<?php echo $approve1check; ?>';
+    var approve2check = '<?php echo $approve2check; ?>';
+    var approve3check = '<?php echo $approve3check; ?>';
+    var approve4check = '<?php echo $approve4check; ?>';
+    var cancelcheck = '<?php echo $cancelcheck; ?>';
+
+
 
     $(document).ready(function() {
       var base_url = "<?php echo base_url(); ?>";

@@ -34,6 +34,16 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'discount_update_v1', $form_data, $headers);
     }
 
+    public function approveDiscount($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'approve_jobcard_discount_v1', $form_data, $headers);
+    }
+
+    public function deniedDiscount($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'denied_jobcard_discount_v1', $form_data, $headers);
+    }
+
     public function approveJobcard($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'approve_job_card_v1', $form_data, $headers);
@@ -76,6 +86,11 @@ class JobCardinfo extends CI_Model{
     public function jobCardItemDelete($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'jobcard_item_delete_v1', $form_data, $headers);
+    }
+
+    public function updateJobCardHeader($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'jobcard_header_update_v1', $form_data, $headers);
     }
 
 

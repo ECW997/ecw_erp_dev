@@ -119,10 +119,10 @@ class Userinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('DELETE', 'user_account_v1', $id, $headers);
     }
-    // public function getEmployeeDetails($api_token) {
-    //     $headers = get_api_headers($api_token);
-    //     return call_api('GET', 'get_employee_details_v1', null, $headers);
-    // }
+    public function getEmployee($api_token,$id){
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_employee_details_v1', $id, $headers);
+    }
     
 
     // public function Usertype(){
@@ -143,19 +143,19 @@ class Userinfo extends CI_Model{
 
     //     return $respond=$this->db->get();
     // }
-    public function Getemployee(){
-        $company_id=$_SESSION['company_id'];
-        $branch_id=$_SESSION['branch_id'];
+    // public function Getemployee(){
+    //     $company_id=$_SESSION['company_id'];
+    //     $branch_id=$_SESSION['branch_id'];
 
-        $this->db->select('id, calling_name');
-        $this->db->from('employees');
-        $this->db->where('is_resigned','0');
-        $this->db->where('deleted','0');
-        $this->db->where('emp_company',$company_id);
-        $this->db->where('emp_branch',$branch_id);
+    //     $this->db->select('id, calling_name');
+    //     $this->db->from('employees');
+    //     $this->db->where('is_resigned','0');
+    //     $this->db->where('deleted','0');
+    //     $this->db->where('emp_company',$company_id);
+    //     $this->db->where('emp_branch',$branch_id);
 
-        return $respond=$this->db->get();
-    }
+    //     return $respond=$this->db->get();
+    // }
     // public function Useraccountedit(){
     //     $recordID=$this->input->post('recordID');
 

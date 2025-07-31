@@ -61,6 +61,7 @@
                                                                 <select class="form-select job-option-select job_option_f"
                                                                     id="job_option_<?= $optionId ?>" 
                                                                     name="job_option_<?= $optionId ?>"
+                                                                    data-uniq-id="<?= $uniqueKey ?>"
                                                                     data-option-type="<?= $option['OptionType']; ?>"
                                                                     data-option-id="<?= $optionId ?>"
                                                                     data-option-group="<?= $groupId ?>"
@@ -100,7 +101,7 @@
                                                                             data-original_price="<?= $price ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
                                                                             value="<?= $list_price ?>"
-                                                                            onkeyup="schedulePriceUpdate();">
+                                                                            onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-3">
                                                                         <label class="form-label small mb-1">Qty</label>
@@ -110,7 +111,7 @@
                                                                             name="item_qty_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
                                                                             value="<?= $qty ?>"
-                                                                            onkeyup="schedulePriceUpdate();">
+                                                                            onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-5">
                                                                         <label class="form-label small mb-1">Total</label>
@@ -130,7 +131,7 @@
                                                                         id="line_discount_type_<?= $uniqueKey ?>"
                                                                         name="line_discount_type_<?= $uniqueKey ?>" 
                                                                         data-uniq-id="<?= $uniqueKey ?>"
-                                                                        onchange="schedulePriceUpdate();">
+                                                                        onchange="schedulePriceUpdate(this);">
                                                                             <option <?= ($line_discount_type == '1') ? 'selected' : '' ?> value="1">%</option>
                                                                             <option <?= ($line_discount_type == '2') ? 'selected' : '' ?> value="2">Amount</option>
                                                                         </select>
@@ -138,12 +139,12 @@
                                                                     <div class="col-md-3">
                                                                         <label class="form-label small mb-1">Discount</label>
                                                                         <input class="form-control form-control-sm text-end line_discount" 
-                                                                            type="number" step="any" 
+                                                                            type="number" step="any" min="0"
                                                                             id="line_discount_<?= $uniqueKey ?>"
                                                                             name="line_discount_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
                                                                             value="<?= $line_discount_pc ?>"
-                                                                            onkeyup="schedulePriceUpdate();">
+                                                                            onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-5">
                                                                         <label class="form-label small mb-1">Net Price</label>
@@ -180,7 +181,6 @@
         </div>
     <?php endif; ?>
 <?php endif; ?>
-
 
 <script>
     $(document).ready(function() {
@@ -263,7 +263,7 @@
         
         setupEditedSubJobs();
         setupPriceCategory();
-        setupEventListeners();
+        // setupEventListeners();
         
         processInitialData().then(() => {
             return setupOptionSelects();
@@ -344,11 +344,11 @@
         }
     }
     
-    function setupEventListeners() {
-        $(document).on('input change', '.item-price, .item-qty, .line_discount_type, .line_discount, .item_discount', 
-            debounce(handlePriceUpdate, 300)
-        );
-    }
+    // function setupEventListeners() {
+    //     $(document).on('input change', '.form-select .item-price, .item-qty, .line_discount_type, .line_discount, .item_discount', 
+    //         debounce(handlePriceUpdate, 300)
+    //     );
+    // }
 
     function processInitialData() {
         return new Promise((resolve) => {
@@ -388,38 +388,38 @@
         });
     }
 
-    function loadEditedOption(option) {
-        return new Promise((resolve) => {
-            if (!option.edited) {
-                resolve();
-                return;
-            }
+    // function loadEditedOption(option) {
+    //     return new Promise((resolve) => {
+    //         if (!option.edited) {
+    //             resolve();
+    //             return;
+    //         }
             
-            // console.log(`Loading edited option ${option.JobOptionID}`);
+    //         // console.log(`Loading edited option ${option.JobOptionID}`);
             
-            // Find the corresponding select element
-            const $select = $(`select[data-option-id="${option.JobOptionID}"]`);
+    //         // Find the corresponding select element
+    //         const $select = $(`select[data-option-id="${option.JobOptionID}"]`);
             
-            if ($select.length === 0) {
-                console.warn(`Select element not found for option ${option.JobOptionID}`);
-                resolve();
-                return;
-            }
+    //         if ($select.length === 0) {
+    //             console.warn(`Select element not found for option ${option.JobOptionID}`);
+    //             resolve();
+    //             return;
+    //         }
             
-            // If we have a selected value, load it
-            if (option.job_details_option_value) {
-                trackAjaxCall();
-                $select.val(option.job_details_option_value);
-                loadChildOption($select[0], option.job_details_option_value, 2)
-                    .finally(() => {
-                        completeAjaxCall();
-                        resolve();
-                    });
-            } else {
-                resolve();
-            }
-        });
-    }
+    //         // If we have a selected value, load it
+    //         if (option.job_details_option_value) {
+    //             trackAjaxCall();
+    //             $select.val(option.job_details_option_value);
+    //             loadChildOption($select[0], option.job_details_option_value, 2)
+    //                 .finally(() => {
+    //                     completeAjaxCall();
+    //                     resolve();
+    //                 });
+    //         } else {
+    //             resolve();
+    //         }
+    //     });
+    // }
     
     
     function setupOptionSelects() {
@@ -428,21 +428,27 @@
         setTimeout(() => {
             $('.job-option-select').each(function() {
                 const $select = $(this);
+                const subJobCategory = $select.data('sub-job-category');
+                const optionGroup = $select.data('option-group');
+                const optionId = $select.data('option-id');
+
+                const parentUniqueKey = `${subJobCategory}_${optionGroup}_${optionId}`;
+
                 const description = $select.data('option-description');
                 if ($select.val() && description === 'image') {
-                     loadChildOption($select, null, 2, null);
+                     loadChildOption($select, null, 2, parentUniqueKey);
                 }
 
                 if ($select.val()) {
-                    processSelectedOption($select, jobData);
+                    processSelectedOption($select, jobData, parentUniqueKey);
                 }
             });
         }, 50);
     }
     
-    function processSelectedOption($select, jobData) {
+    function processSelectedOption($select, jobData, parentUniqueKey) {
         if (!jobData.data) return;
-        let parentUniqueKey='';
+     
         jobData.data.forEach(item => {
             if (!item.job_options) return;
             
@@ -452,24 +458,21 @@
                 
                 jobOptions.forEach(option => {
                     const jobOption = option.job_option;
-                    if(jobOption.OptionType == "Type"){
-                        parentUniqueKey = jobOption.JobSubcategoryID + '_' + jobOption.OptionGroupID + '_' + jobOption.JobOptionID;
-                    }
+                    // if(jobOption.OptionType == "Type" || jobOption.OptionType == "Primary"){
+                    //     parentUniqueKey = jobOption.JobSubcategoryID + '_' + jobOption.OptionGroupID + '_' + jobOption.JobOptionID;
+                    // }
 
-                    if (
-                        jobOption.OptionType === "Conditional" &&
-                        jobOption.job_details_option_value &&
-                        Array.isArray(option.option_values)
-                    ) {          
-                        option.option_values.forEach(valuelist => {
-                            if (
-                                jobOption.job_details_option_value == valuelist.id &&
-                                $select.val() == valuelist.ParentOptionValueID
-                            ) {
-                                loadChildOption($select[0], jobOption, 2, parentUniqueKey);
-                            }
-                        });
-                    }
+                    if (jobOption.OptionType === "Conditional" && jobOption.job_details_option_value && Array.isArray(option.option_values)) 
+                        {  
+                            option.option_values.forEach(valuelist => {
+                                if (
+                                    jobOption.job_details_option_value == valuelist.id &&
+                                    $select.val() == valuelist.ParentOptionValueID
+                                ) {
+                                    loadChildOption($select[0], jobOption, 2, parentUniqueKey);
+                                }
+                            });
+                        }
                 });
             });
         });
@@ -484,14 +487,26 @@
         };
     }
     
-    function handlePriceUpdate() {
-        const $input = $(this);
+    function handlePriceUpdate(selectElement) {
+        const $input = $(selectElement);
         const uniqId = $input.data('uniq-id');
         
-        const price = parseFloat($('#item_price_'+uniqId).val()) || 0;
-        const qty = parseFloat($('#item_qty_'+uniqId).val()) || 0;
-        const lineDiscountType = $('#line_discount_type_'+uniqId).val();
-        const lineDiscount = parseFloat($('#line_discount_'+uniqId).val()) || 0;
+        const $priceInput = $('#item_price_' + uniqId);
+        const $qtyInput = $('#item_qty_' + uniqId);
+        const $discountInput = $('#line_discount_' + uniqId);
+
+        const price = parseFloat($priceInput.val()) || 0;
+        const qty = parseFloat($qtyInput.val()) || 0;
+        const lineDiscountType = $('#line_discount_type_' + uniqId).val();
+        const lineDiscount = parseFloat($discountInput.val()) || 0;
+
+        if (price < 0 || qty < 0 || lineDiscount < 0) {
+            if (price < 0) $priceInput.val('');
+            if (qty < 0) $qtyInput.val('');
+            if (lineDiscount < 0) $discountInput.val('');
+
+            return;
+        }
 
         const netPrice = price * qty;
         const lineFinalTotal = (lineDiscountType == '1' 
@@ -504,27 +519,28 @@
         updateTotalNetPrice();
     }
 
-    function schedulePriceUpdate() {
+    function schedulePriceUpdate(selectElement) {
         if (window.priceUpdateTimer) {
             clearTimeout(window.priceUpdateTimer);
         }
         
         window.priceUpdateTimer = setTimeout(function() {
-            updateTotalNetPrice();
+            handlePriceUpdate(selectElement);
             addToJobCard(2);
         }, 300);
     }
 
     function updateTotalNetPrice() {
         let total = 0;
-        const discount = parseFloat($('#item_discount').val()) || 0;
-        const discountType = $('#discount_type').val();
+        let discount = parseFloat($('#item_discount').val()) || 0;
+        discount = discount < 0 ? 0 : discount;
+        let discountType = $('#discount_type').val();
         
         $('.item-net-price').each(function() {
             total += parseFloat($(this).val()) || 0;
         });
         
-        const finalTotal = (discountType == '1' 
+        let finalTotal = (discountType == '1' 
             ? (total - (total * discount / 100)) 
             : (total - discount));
         
@@ -533,8 +549,6 @@
     }
     
     function loadChildOption(selectElement, editjobOption, insertOption, parentUniqueKey) {
-        trackAjaxCall();
-
         const $selectedOption = $(selectElement);
         const selectedOptionValue = $selectedOption.val();
         const jobcard_id = $('#jobcard_id').val();
@@ -547,7 +561,13 @@
 
         const childWrapperSelector = `.child-options-wrapper[data-parent-option-id="${jobOptionID}"]`;
 
-        console.log(parentUniqueKey);
+        if (selectedOptionValue === '' || selectedOptionValue === null) {
+            clearRowData(parentUniqueKey); 
+            $(childWrapperSelector).html('');
+            return false;
+        }
+        
+        trackAjaxCall();
 
         if (!selectedOptionValue) {
             completeAjaxCall();
@@ -572,7 +592,7 @@
                 if (!res.status || !res.data || res.data.length === 0) {
                     $(childWrapperSelector).html('');
                     Promise.resolve(
-                        getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
+                        getOptionValuePrice(selectElement,subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
                     ).finally(completeAjaxCall);
                     return;
                 }
@@ -614,6 +634,7 @@
                                 <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
                                 <select class="form-select form-select-sm job-option-select job_parent_option_f"
                                         data-option-type="${escapeHtml(jobOption.OptionType)}"
+                                        data-uniq-id="${parentUniqueKey}"
                                         data-option-id="${escapeHtml(jobOption.JobOptionID)}"
                                         data-option-group="${escapeHtml(jobOption.OptionGroupID)}"
                                         data-sub-job-category="${escapeHtml(jobOption.JobSubcategoryID)}"
@@ -640,7 +661,7 @@
                                 const originalPrice = selectedVal ? (selectedVal.original_price ?? 0) : (jobOption.price ?? 0);
 
                                 return `
-                                    <div class="cols-6 w-50">
+                                    <div class="cols-6 w-50 d-none">
                                         <label class="form-label text-muted">Unit Price</label>
                                         <input type="number"
                                             class="form-control form-control-sm"
@@ -685,7 +706,7 @@
                 Promise.all(childOptionPromises)
                     .then(() => {
                         return Promise.resolve(
-                            getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
+                            getOptionValuePrice(selectElement,subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
                         );
                     })
                     .finally(completeAjaxCall);
@@ -705,11 +726,11 @@
         pendingRequests[selectedOptionValue] = xhr;
     }
     
-    function getOptionValuePrice(subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey) {
+    function getOptionValuePrice(selectElement,subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey) {
         if (insertOption == '2') {
             return Promise.resolve();
         }
-        
+      
         trackAjaxCall();
         lastRequestedOptionValueId = selectedOptionValue;
         const price_category = $('#price_category').val();
@@ -728,7 +749,7 @@
                     const priceSelector = '#item_price_' + parentUniqueKey;
                     const $linePriceInput = $(linePriceSelector);
                     const $priceInput = $(priceSelector);
-                   
+                     console.log(parentUniqueKey, result.data.Price);
                     if ($linePriceInput.length) {
                         $linePriceInput
                         .val(result.data.Price)
@@ -743,16 +764,16 @@
                         $priceInput
                             .val(total.toFixed(2))
                             .data('original_price', total);
-                        setTimeout(() => schedulePriceUpdate(), 500);
+                        setTimeout(() => schedulePriceUpdate(selectElement), 500);
                     }else{
                             const price = parseFloat(result.data.Price) || 0;
                             $priceInput
                                 .val(price.toFixed(2))
                                 .data('original_price', price);
-                            setTimeout(() => schedulePriceUpdate(), 500);
+                            setTimeout(() => schedulePriceUpdate(selectElement), 500);
                     }
                 } else {
-                    schedulePriceUpdate();
+                    schedulePriceUpdate(selectElement);
                 }
             },
             complete: completeAjaxCall
@@ -767,6 +788,15 @@
             theme: "classic",
             width: '100%',
         });
+    }
+
+    function clearRowData(parentUniqueKey){
+        $('#item_price_' + parentUniqueKey).val('').removeClass('is-invalid');
+        $('#item_qty_' + parentUniqueKey).val('').removeClass('is-invalid');
+        $('#item_total_price_' + parentUniqueKey).val('').removeClass('is-invalid');
+        $('#line_discount_type_' + parentUniqueKey).val('1').removeClass('is-invalid');
+        $('#line_discount_' + parentUniqueKey).val('').removeClass('is-invalid');
+        $('#item_net_price_' + parentUniqueKey).val('').removeClass('is-invalid');
     }
 
     function escapeHtml(unsafe) {

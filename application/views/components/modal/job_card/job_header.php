@@ -13,9 +13,9 @@
                         <h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
                         <input type="text" class="form-control mb-2 required-field" id="cus_name" name="cus_name"
                             placeholder="Customer Name">
-                        <input type="text" class="form-control mb-2" id="contact_no" name="contact_no"
+                        <input type="text" class="form-control mb-2 required-field" id="contact_no" name="contact_no"
                             placeholder="Contact No">
-                        <input type="text" class="form-control" id="nic_number"
+                        <input type="text" class="form-control required-field" id="nic_number"
                             name="nic_number" placeholder="NIC No">
                     </div>
                     <div class="col">
@@ -61,7 +61,7 @@
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">Price Category</h6>
                         <select class="form-control form-control-sm required-field" id="pc_category" name="pc_category"
-                            required style="pointer-events: none;" disabled>
+                            required style="pointer-events: none;">
                             <option value="">Select</option>
                         </select>
                         
@@ -114,46 +114,90 @@
                 <div class="mb-3 row">
                     <div class="col">
                         <label class="form-label">Confirm Customer Info</label>
-                        <input type="text" class="form-control mb-2" id="edit_cus_name" name="edit_cus_name"
+                        <input type="text" class="form-control mb-2 edit_required-field" id="edit_cus_name" name="edit_cus_name"
                             placeholder="Customer Name">
-                        <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no"
+                        <input type="text" class="form-control edit_required-field" id="edit_contact_no" name="edit_contact_no"
                             placeholder="Contact No">
+                        <input type="text" class="form-control edit_required-field" id="edit_nic_number"
+                            name="edit_nic_number" placeholder="NIC No">
                     </div>
                     <div class="col">
                         <label class="form-label">Address</label>
-                        <input type="text" class="form-control mb-2" id="edit_address1" name="edit_address1"
+                        <input type="text" class="form-control mb-2 edit_required-field" id="edit_address1" name="edit_address1"
                             placeholder="Address 1">
                         <input type="text" class="form-control" id="edit_address2" name="edit_address2"
                             placeholder="Address 2">
+                        <input type="text" class="form-control" id="edit_email" name="edit_email" placeholder="E-mail">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Schedule Date</label>
-                        <input type="datetime-local" class="form-control" id="edit_schedule_date"
+                        <input type="datetime-local" class="form-control edit_required-field" id="edit_schedule_date"
                             name="edit_schedule_date" placeholder="Schedule Date">
                     </div>
                     <div class="col-6">
                         <label class="col-form-label">Delivery Date</label>
-                        <input type="date" class="form-control" id="edit_delivery_date" name="edit_delivery_date"
+                        <input type="date" class="form-control edit_required-field" id="edit_delivery_date" name="edit_delivery_date"
                             placeholder="Delivery Date">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
+                        <select class="form-control form-control-sm edit_required-field" id="edit_vat_reg_type"
+                            name="edit_vat_reg_type" required>
+                            <option value="">Select VAT Type</option>
+                            <option value="1">Non VAT</option>
+                            <option value="2">VAT</option>
+                            <option value="3">SVAT</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Registration No <span
+                                class="text-danger">*</span></h6>
+                        <input type="text" class="form-control edit_required-field" id="edit_vat_number" name="edit_vat_number"
+                            placeholder="VAT Registration No">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
                         <label class="col-form-label">Price Category</label>
-                        <select class="form-select" id="p_category" name="p_category">
+                        <select class="form-control form-control-sm edit_required-field" id="edit_price_category" name="edit_price_category">
                             <option selected>Open this select menu</option>
-                            <option value="1">Small</option>
-                            <option value="2">Medium</option>
-                            <option value="3">Large</option>
                         </select>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="createJobCardBtn" class="btn btn-warning">Edit Job Card<i
+                <button type="button" id="editJobCardBtn" class="btn btn-warning">Edit Job Card<i
                         class="fas fa-plus-circle ml-2"></i></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateJobCardConfirmModal" tabindex="-1" aria-labelledby="updateJobCardConfirmModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content next-step-confirmation">
+            <div class="modal-header next-step-header">
+                <h5 class="next-step-title" id="updateJobCardConfirmModalLabel">Proceed to Create Job Card</h5>
+                <button type="button" class="btn-close next-step-btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-question-circle next-step-icon"></i>
+                <p class="mb-0">Are you sure you want to proceed?<br>This action will create a new Job Card and cannot
+                    be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary next-step-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary next-step-btn-confirm" onclick="confirmEditJobCard()">
+                    <i class="fas fa-arrow-right me-2"></i>Proceed
+                </button>
             </div>
         </div>
     </div>
@@ -191,8 +235,26 @@ $(document).on('click', '#createJobCardBtn', function() {
             $(this).removeClass('is-invalid');
         }
     });
+    
     if (isValid) {
         $('#createJobCardConfirmModal').modal('show');
+    }
+})
+
+$(document).on('click', '#editJobCardBtn', function() {
+    let isValid = true;
+    $('.edit_required-field').each(function() {
+        let value = $(this).val();
+
+        if (!value || value === "") {
+            $(this).addClass('is-invalid');
+            isValid = false;
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    if (isValid) {
+        $('#updateJobCardConfirmModal').modal('show');
     }
 })
 
@@ -201,6 +263,36 @@ $(document).ready(function() {
     let price_category = $('#pc_category');
 
     price_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getPriceCategory',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
+    let edit_price_category = $('#edit_price_category');
+    edit_price_category.select2({
         placeholder: 'Select...',
         width: '100%',
         allowClear: true,
@@ -257,22 +349,54 @@ function confirmCreateJobCard() {
 }
 
 function confirmEditJobCard() {
-    customerData.name = $('#cus_name').val();
-    customerData.contact = $('#contact_no').val();
-    customerData.address1 = $('#address1').val();
-    customerData.address2 = $('#address2').val();
-    customerData.schedule_date = $('#schedule_date').val();
-    customerData.handover_date = $('#handover_date').val();
-    customerData.status = 'DRAFT';
-    customerData.price_category = $('#pc_category').val();
+    var edit_cus_id = <?= json_encode($job_main_data[0]['customer_id'] ?? 0) ?>;
+    var edit_cus_name = $('#edit_cus_name').val();
+    var edit_contact_no = $('#edit_contact_no').val();
+    var edit_nic_number = $('#edit_nic_number').val();
+    var edit_address1 = $('#edit_address1').val();
+    var edit_address2 = $('#edit_address2').val();
+    var edit_email = $('#edit_email').val();
+    var edit_schedule_date = $('#edit_schedule_date').val();
+    var edit_delivery_date = $('#edit_delivery_date').val();
+    var edit_vat_reg_type = $('#edit_vat_reg_type').val();
+    var edit_vat_number = $('#edit_vat_number').val();
+    var edit_price_category = $('#edit_price_category').val();
 
-    $('#createJobCardConfirmModal').modal('hide');
-    $('#jobHeaderModal').modal('hide');
+    $('#updateJobCardConfirmModal').modal('hide');
     $('#jobHeaderModal_edit').modal('hide');
-    $('#main_job_details').modal('hide');
     $('.modal-backdrop').remove();
 
-    editJobCard();
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+            cus_id: edit_cus_id,
+            cus_name: edit_cus_name,
+            contact_no: edit_contact_no,
+            nic_number: edit_nic_number,
+            address1: edit_address1,
+            address2: edit_address2,
+            email: edit_email,
+            schedule_date:edit_schedule_date,
+            delivery_date: edit_delivery_date,
+            vat_reg_type: edit_vat_reg_type,
+            vat_number: edit_vat_number,
+            price_category: edit_price_category,
+            jobcard_id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>
+        },
+        url: '<?php echo base_url() ?>JobCard/updateJobCardHeader',
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + result
+                        .data;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
 }
 
 function createNewJobCard() {

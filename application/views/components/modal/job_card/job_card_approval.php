@@ -4,8 +4,6 @@
         <div class="modal-content rounded-4">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title text-black" id="jobcardApproveModelLabel">Job Card Approval</h5>
-                <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -21,7 +19,7 @@
                             <input type="hidden" id="jobcard_id"
                                 value="<?= $job_main_data[0]['idtbl_jobcard'] ?? $jobcard_id ?? '' ?>">
                             <input type="hidden" id="jobcard_approve_status"
-                                value="<?= $job_main_data[0]['approve_request_status'] ?? '' ?>">
+                                value="<?= $job_main_data[0]['status'] ?? '' ?>">
                         </div>
                     </div>
                     <table class="table table-borderless">
@@ -30,101 +28,135 @@
                                 <td><label class="small fw-bold">Line Change</label></td>
                                 <td class="text-danger">
                                     <span id="line_discount_precentage_show">
+                                        <?= number_format(($summary_data[0]['sub_total'] ?? 0) > 0 ? (($summary_data[0]['total_line_discount'] ?? 0) / $summary_data[0]['sub_total']) * 100 : 0, 2) ?>%
                                     </span>
-                                    <input type="hidden" class="form-control form-control-sm"
-                                        id="line_discount_precentage" placeholder="Enter amount">
                                 </td>
-
                                 <td class="text-danger text-end">
                                     <span id="line_discount_show">
                                         Rs. <?= number_format($summary_data[0]['total_line_discount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="hidden" class="form-control form-control-sm" id="line_discount"
-                                        value="<?= $summary_data[0]['total_line_discount'] ?? $jobcard_id ?? '' ?>">
+                                    <input type="hidden" id="line_discount" value="<?= $summary_data[0]['total_line_discount'] ?? 0 ?>">
+                                    <input type="hidden" id="line_discount_status" value="<?= $job_main_data[0]['line_discount_approve'] ?? 'Pending' ?>">
+                                </td>
+                                <td class="text-end ">
+                                    <?php if(($summary_data[0]['total_line_discount'] ?? 0) > 0): ?>
+                                    <div class="btn-group btn-group-sm line-discount-actions">
+                                        <?php 
+                                        $lineStatus = $job_main_data[0]['line_discount_approve'] ?? 'Pending';
+                                        if($lineStatus === 'Approved'): ?>
+                                            <span class="badge badge-pill text-bg-success"><i class="fas fa-check-circle me-2"></i>Approved</span>
+                                        <?php elseif($lineStatus === 'Denied'): ?>
+                                            <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
+                                        <?php else: ?>
+                                            <?php if($approve2check==1){ ?>
+                                                <button type="button" class="btn btn-success btn-sm approve-line-discount" 
+                                                    onclick="approveDiscount('line')">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm deny-line-discount"
+                                                    onclick="denyDiscount('line')">
+                                                    <i class="fas fa-times"></i> Deny
+                                                </button>
+                                            <?php } else { ?>
+                                                <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Not Approved</span>
+                                            <?php } ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
 
-
                             <tr>
-                                <td><label class="small fw-bold ">Header Discount</label></td>
-
-                                <td class="text-danger"><span id="header_discount_precentage_show">
-                                        <?= number_format($job_main_data[0]['discount'] ?? 0, 2) ?>%
-                                        <input type="hidden" class="form-control form-control-sm"
-                                            id="header_discount_precentage"
-                                            value="<?= $job_main_data[0]['discount'] ?? 0 ?>"></td>
-
-                                <td class="text-danger text-end"><span id="header_discount_show">
-                                        Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
-                                        <input type="hidden" class="form-control form-control-sm" id="header_discount"
-                                            value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>"></td>
-                            </tr>
-
-
-
-                            <tr>
-                                <td><label class="small fw-bold ">Net Discount </label></td>
-
+                                <td><label class="small fw-bold">Header Discount</label></td>
                                 <td class="text-danger">
-                                    <span id="net_discount_precentage_show">
-
+                                    <span id="header_discount_precentage_show">
+                                        <?= number_format($job_main_data[0]['discount'] ?? 0, 2) ?>%
                                     </span>
-                                    <input type="hidden" class="form-control form-control-sm"
-                                        id="net_discount_precentage" placeholder="Enter amount">
                                 </td>
-
                                 <td class="text-danger text-end">
-                                    <span id="net_discount_show">
-
+                                    <span id="header_discount_show">
+                                        Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="hidden" class="form-control form-control-sm" id="net_discount"
-                                        placeholder="Enter amount">
+                                    <input type="hidden" id="header_discount" value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>">
+                                    <input type="hidden" id="header_discount_status" value="<?= $job_main_data[0]['header_discount_approve'] ?? 'Pending' ?>">
+                                </td>
+                                <td class="text-end ">
+                                    <?php if(($job_main_data[0]['discount_amount'] ?? 0) > 0): ?>
+                                    <div class="btn-group btn-group-sm header-discount-actions">
+                                        <?php 
+                                        $headerStatus = $job_main_data[0]['header_discount_approve'] ?? 'Pending';
+                                        if($headerStatus === 'Approved'): ?>
+                                            <span class="badge badge-pill text-bg-success"><i class="fas fa-check-circle me-2"></i>Approved</span>
+                                        <?php elseif($headerStatus === 'Denied'): ?>
+                                            <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
+                                        <?php else: ?>
+                                            <?php if($approve2check==1){ ?>
+                                                <button type="button" class="btn btn-success btn-sm approve-header-discount"
+                                                    onclick="approveDiscount('header')">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm deny-header-discount"
+                                                    onclick="denyDiscount('header')">
+                                                    <i class="fas fa-times"></i> Deny
+                                                </button>
+                                            <?php } else { ?>
+                                                <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Not Approved</span>
+                                            <?php } ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-
+                            <tr>
+                                <td><label class="small fw-bold">Net Discount</label></td>
+                                <td class="text-danger">
+                                    <span id="net_discount_precentage_show"></span>
+                                </td>
+                                <td class="text-danger text-end">
+                                    <span id="net_discount_show"></span>
+                                </td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
-
                     <div class="row mt-4">
                         <div class="col-6">
                             <h5>Net Price: </h5>
                         </div>
                         <div class="col-6 text-end">
                             <span class="text-dark fw-bold" id="net_price_show">
+                                Rs. 
                             </span>
-                            <input type="hidden" class="form-control form-control-sm" id="net_price"
-                                placeholder="Enter amount">
-
+                            <input type="hidden" id="net_price" value="">
                         </div>
                     </div>
 
-
                     <?php
-                                    $currentPrice = $summary_data[0]['sub_total'] ?? 0;
-                                    $changeAmount = $summary_data[0]['total_line_discount'] ?? 0;
-                                    $changePercentage = $job_main_data[0]['discount'] ?? 0;
-                                    $listPrice = $job_main_data[0]['sub_total'] ?? 0;
+                    $currentPrice = $summary_data[0]['sub_total'] ?? 0;
+                    $changeAmount = $summary_data[0]['total_line_discount'] ?? 0;
+                    $changePercentage = $job_main_data[0]['discount'] ?? 0;
+                    $listPrice = $job_main_data[0]['sub_total'] ?? 0;
 
-                                    $tooltipText = '
-                                     <div class="custom-tooltip-box text-start">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Standard :</span>
-                                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change Amount:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change %:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Price:</span>
-                                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
-                                        </div>
-                                    </div>';
-                                    ?>
+                    $tooltipText = '
+                    <div class="custom-tooltip-box text-start">
+                        <div class="d-flex justify-content-between">
+                            <span>Standard :</span>
+                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Change Amount:</span>
+                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Change %:</span>
+                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Price:</span>
+                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
+                        </div>
+                    </div>';
+                    ?>
 
                     <div class="row mt-4">
                         <div class="col-2">
@@ -144,14 +176,18 @@
                         <button type="button" class="btn btn-light w-100" data-bs-dismiss="modal"
                             style="border-radius: 12px; font-weight:bold;">Close</button>
                     </div>
+                    <?php if($approve1check==1): ?>
                     <div class="col-4">
                         <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
                             style="border-radius: 12px;" onclick="approveJobcard()">Approve</button>
                     </div>
+                    <?php endif; ?>
+                    <?php if($cancelcheck==1): ?>
                     <div class="col-4">
-                        <button type="button" class="btn btn-danger w-100" id="deniedJobcardBtn"
+                        <button type="button" class="btn btn-danger w-100 <?= $is_confirmed ? '' : 'd-none' ?>" id="deniedJobcardBtn"
                             style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="modal-footer bg-light justify-content-center py-2 border-top">
@@ -162,146 +198,162 @@
 </div>
 
 
-<!-- <div class="modal fade" id="hoverModal" tabindex="-1" aria-labelledby="hoverModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                Are you sure you want to approve this job card?
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('jobcardApproveModel');
-    modal.addEventListener('shown.bs.modal', function() {
-        calculateLineDiscountPercentage();
-        calculateNetDiscount();
-        calculateNetPrice();
 
-        const status = document.getElementById('jobcard_approve_status').value;
-        const discount = document.getElementById('net_discount').value;
-        const approveBtn = document.getElementById('approveJobcardBtn');
-        const deniedBtn = document.getElementById('deniedJobcardBtn');
-
-        console.log("Job Card discount:", discount);
-        console.log("Job Card status:", status);
-
-        approveBtn.style.display = "block";
-        deniedBtn.style.display = "block";
-        approveBtn.disabled = false;
-        deniedBtn.disabled = false;
-
-        if (parseFloat(discount) === 0) {
-            approveBtn.disabled = true;
-            deniedBtn.disabled = true;
-            return;
-        }
-
-        if (status === '0' || status === '1') {} else if (status === '2') {
-            approveBtn.disabled = true;
-        } else if (status === '3') {
-            deniedBtn.disabled = true;
-        } else {
-            approveBtn.style.display = "none";
-            deniedBtn.style.display = "none";
-        }
-    });
-
+$(document).ready(function() {
+    <?php if ($is_edit == '1'): ?>
+        checkDiscountApprovals();
+        recalculateNetPrice();
+    <?php endif; ?>
 });
-</script>
 
-
-<script>
-function showJobCardStatusMessage() {
-    const status = document.getElementById('jobcard_approve_status').value;
-    const messageDiv = document.getElementById('jobcard_status_message');
-
-    if (status === '2') {
-        messageDiv.textContent = "This Job Card is already Approved";
-        messageDiv.classList.remove('text-danger');
-        messageDiv.classList.add('text-success');
-    } else if (status === '3') {
-        messageDiv.textContent = "This Job Card is already Rejected";
-        messageDiv.classList.remove('text-success');
-        messageDiv.classList.add('text-danger');
-    } else {
-        messageDiv.textContent = "";
-        messageDiv.classList.remove('text-success', 'text-danger');
-    }
-}
-
-showJobCardStatusMessage();
-</script>
-
-<script>
-function calculateLineDiscountPercentage() {
-    let price = parseFloat(document.getElementById('standard_price').value) || 0;
-    let lineDiscountValue = parseFloat(document.getElementById('line_discount').value) || 0;
-
-    if (price === 0) {
-        document.getElementById('line_discount_precentage').value = 0;
-        document.getElementById('line_discount_precentage_show').textContent = '0%';
+function approveDiscount(type){
+    if (!confirm(`Are you sure you want to approve the ${type} discount?`)) {
         return;
     }
 
-    let percentage = (lineDiscountValue / price) * 100;
-    document.getElementById('line_discount_precentage_show').textContent = percentage.toFixed(2) + '%';
-    document.getElementById('line_discount_precentage').value = percentage.toFixed(2);
+    $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', true);
 
+    $.ajax({
+        url: '<?php echo base_url() ?>JobCard/approveDiscount',
+        type: 'POST',
+        dataType: 'json',
+         data: {
+            jobcard_id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
+            discount_type: type,
+            action: 'Approved'
+        },
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                $(`.${type}-discount-actions`).html(`
+                     <span class="badge badge-pill text-bg-success"><i class="fas fa-check-circle me-2"></i>Approved</span>
+                `);
+                $(`#${type}_discount_status`).val('Approved');
+                $('#main_status_stage').html('Pending').css('color', '#FB923C');
+                checkDiscountApprovals();
+                recalculateNetPrice();
+            } else {
+                error_toastify(result.message);
+                $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', false);
+            }
+        },
+        error: function() {
+            $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', false);
+            error_toastify('Error processing request');
+        }
+    });
 }
 
-function calculateNetDiscount() {
-    let price = parseFloat(document.getElementById('standard_price')?.value) || 0;
-    let lineDiscount = parseFloat(document.getElementById('line_discount')?.value) || 0;
-    let headerDiscount = parseFloat(document.getElementById('header_discount')?.value) || 0;
-
-    console.log(price);
-    // console.log(lineDiscount);
-    // console.log(headerDiscount);
-
-    let netDiscount = lineDiscount + headerDiscount;
-    let netDiscountPercentage = price === 0 ? 0 : (netDiscount / price) * 100;
-
-    document.getElementById('net_discount').value = netDiscount.toFixed(2);
-    document.getElementById('net_discount_precentage').value = netDiscountPercentage.toFixed(2);
-
-    const spanPercentage = document.getElementById('net_discount_precentage_show');
-    if (spanPercentage) {
-        spanPercentage.textContent = netDiscountPercentage.toFixed(2) + '%';
+function denyDiscount(type) {
+    if (!confirm(`Are you sure you want to denide the ${type} discount?`)) {
+        return;
     }
 
-    const spanAmount = document.getElementById('net_discount_show');
-    if (spanAmount) {
-        spanAmount.textContent = 'Rs. ' + netDiscount.toFixed(2);
-    }
+    $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', true);
+    
+    $.ajax({
+        url: '<?php echo base_url() ?>JobCard/deniedDiscount',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            jobcard_id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
+            discount_type: type,
+            action: 'Denied'
+        },
+        success: function(result) {
+            if(result.status == true) {
+                success_toastify(result.message);
+                $(`.${type}-discount-actions`).html(`
+                    <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
+                `);
+                
+                $(`#${type}_discount_status`).val('Denied');
+                $('#main_status_stage').html('Pending').css('color', '#FB923C');
+                recalculateNetPrice();
+                checkDiscountApprovals();
+            } else {
+                $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', false);
+                error_toastify(result.message);
+            }
+        },
+        error: function() {
+            $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', false);
+            error_toastify('Error processing request');
+        }
+    });
 }
 
-function calculateNetPrice() {
-    let standardPrice = parseFloat(document.getElementById('standard_price')?.value) || 0;
-    let netDiscount = parseFloat(document.getElementById('net_discount')?.value) || 0;
+function checkDiscountApprovals() {
+    let lineStatus = $('#line_discount_status').val();
+    let headerStatus = $('#header_discount_status').val();
+    let hasLineDiscount = parseFloat($('#line_discount').val()) > 0;
+    let hasHeaderDiscount = parseFloat($('#header_discount').val()) > 0;
+    
+    let is_jobcard_approved = <?= (isset($job_main_data[0]['status']) && $job_main_data[0]['status'] === 'Approved') ? 'true' : 'false' ?>;
+    let enableApproval = true;
 
+    if(is_jobcard_approved){
+        enableApproval = false;
+    }else{
+        if(hasLineDiscount && lineStatus === 'Pending') {
+                enableApproval = false;
+            }
+        
+        if(hasHeaderDiscount && headerStatus === 'Pending') {
+            enableApproval = false;
+        }
+    }
+    
+    $('#approveJobcardBtn').prop('disabled', !enableApproval);
+}
+
+function recalculateNetPrice() {
+    let standardPrice = parseFloat($('#standard_price').val());
+    let lineDiscount = parseFloat($('#line_discount').val());
+    let headerDiscount = parseFloat($('#header_discount').val());
+    let lineStatus = $('#line_discount_status').val();
+    let headerStatus = $('#header_discount_status').val();
+    
+    let netDiscount = 0;
+    
+    if(lineStatus === 'Approved') netDiscount += lineDiscount;
+    if(headerStatus === 'Approved') netDiscount += headerDiscount;
+    
     let netPrice = standardPrice - netDiscount;
-    netPrice = netPrice < 0 ? 0 : netPrice;
+    
+    $('#net_price').val(netPrice.toFixed(2));
+    $('#net_price_show').text('Rs. ' + netPrice.toFixed(2));
+    $('#net_discount_show').text('Rs. ' + netDiscount.toFixed(2));
 
-    document.getElementById('net_price').value = netPrice.toFixed(2);
-    document.getElementById('net_price_show').textContent = 'Rs. ' + netPrice.toFixed(2);
+    if (standardPrice > 0) {
+        let discountPercent = (netDiscount / standardPrice) * 100;
+        $('#net_discount_precentage_show').text(discountPercent.toFixed(2) + '%');
+    } else {
+        $('#net_discount_precentage_show').text('0.00%');
+    }
 }
-
 
 function approveJobcard() {
+    if (!confirm(`Are you sure you want to approve jobcard?`)) {
+        return;
+    }
+
+    let lineDiscount = parseFloat($('#line_discount').val());
+    let lineStatus = $('#line_discount_status').val();
+    let line_discount_price = (lineStatus === 'Approved') ? lineDiscount : 0;
+
+    let headerDiscount = parseFloat($('#header_discount').val());
+    let headerStatus = $('#header_discount_status').val();
+    let header_discount_price = (headerStatus === 'Approved') ? headerDiscount : 0;
 
     const approveData = {
-        id: $('#jobcard_id').val(),
+        id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
         net_total: $('#net_price').val(),
-        header_discount_price: $('#header_discount').val(),
-        line_discount_price: $('#line_discount').val()
+        header_discount_price: header_discount_price,
+        line_discount_price: line_discount_price
 
     };
-
-    console.log("Collected Approve Data:", approveData);
 
     $.ajax({
         url: '<?php echo base_url() ?>JobCard/approveJobcard',
@@ -325,15 +377,25 @@ function approveJobcard() {
 
 
 function deniedJobcard() {
+    if (!confirm(`Are you sure you want to denide jobcard?`)) {
+        return;
+    }
+
+    let lineDiscount = parseFloat($('#line_discount').val());
+    let lineStatus = $('#line_discount_status').val();
+    let line_discount_price = (lineStatus === 'Approved') ? lineDiscount : 0;
+
+    let headerDiscount = parseFloat($('#header_discount').val());
+    let headerStatus = $('#header_discount_status').val();
+    let header_discount_price = (headerStatus === 'Approved') ? headerDiscount : 0;
 
     const approveData = {
-        id: $('#jobcard_id').val(),
-        // net_total: $('#net_price').val()
-        header_discount_price: $('#header_discount').val(),
-        line_discount_price: $('#line_discount').val()
-    };
+        id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
+        net_total: $('#net_price').val(),
+        header_discount_price: header_discount_price,
+        line_discount_price: line_discount_price
 
-    console.log("Collected Approve Data:", approveData);
+    };
 
     $.ajax({
         url: '<?php echo base_url() ?>JobCard/deniedJobcard',

@@ -224,7 +224,8 @@ tr {
 				<?php
 				$inv_gross_total = (float)($main_data['inv_gross_total'] ?? 0);
 				$inv_discount_amount = (float)($main_data['inv_discount_amount'] ?? 0);
-				$total_discount = $inv_discount_amount + $total_line_discount;
+				// $total_discount = $main_data['invoice_type'] == 'direct' ? $inv_discount_amount : $inv_discount_amount + $total_line_discount;
+				$total_discount = $inv_discount_amount;
 				$advance = (float)($main_data['inv_advance_total'] ?? 0);
 				$grand_total = $inv_gross_total - ($total_discount + $advance);
 				$total_paid = (float)($total_paid_for_ref ?? 0);

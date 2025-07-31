@@ -50,10 +50,9 @@ $companylist = $this->db->query($companyaql);
                                     <select class="form-control form-control-sm" name="employee" id="employee"
                                         required>
                                         <option value="">Select</option>
-                                        <?php foreach($employeelist->result() as $rowemployeelist){ ?>
-                                        <option value="<?php echo $rowemployeelist->id ?>">
-                                            <?php echo $rowemployeelist->calling_name ?></option>
-                                        <?php } ?>
+                                        <?php foreach($employeelist as $employee): ?>
+                                            <option value="<?php echo $employee['id']; ?>"><?php echo $employee['emp_id']; ?>-<?php echo $employee['calling_name']; ?> (<?php echo $employee['jobtitle']; ?>)</option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                     <div class="form-group mb-1">
@@ -125,6 +124,7 @@ $companylist = $this->db->query($companyaql);
         });
         $('#employee').select2({
             width: '100%',
+            allowClear: true
         });
 
         $('#dataTable').DataTable({

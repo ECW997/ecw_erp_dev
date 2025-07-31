@@ -75,14 +75,23 @@ include "include/v2/topnavbar.php";
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="form-label small fw-bold text-dark">Payment By</label>
-                                                <input type="text" class="form-control form-control-sm input-highlight" 
-                                                    name="paymentBy" id="paymentBy"
-                                                    value="<?= isset($payment_main_data['customer_name']) ? $payment_main_data['customer_name'] : '' ?>"
-                                                    <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
-                                            </div>
+                                        <div class="col-md-3 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
+                                        	<div class="form-group">
+                                        		<label class="form-label small fw-bold text-dark">Payment Type</label>
+                                        		<select class="form-select form-select-sm input-highlight"
+                                        			name="PaymentType" id="PaymentType"
+                                        			onchange="getCustomerJObOrInvoiceDetails();">
+                                        			<option value="">Select Type</option>
+                                        			<option value="JobCard"
+                                        				<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
+                                        				Job card Advance
+                                        			</option>
+                                        			<option value="Invoice"
+                                        				<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
+                                        				Invoice Payment
+                                        			</option>
+                                        		</select>
+                                        	</div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -126,7 +135,7 @@ include "include/v2/topnavbar.php";
                                                 </div>
                                             </div>
                                             <div class="col-md-4 d-flex align-items-end">
-                                                <button type="button" class="btn btn-primary btn-sm w-100 action-btn" id="addPaymentBtn" onclick="addPayment()">
+                                                <button type="button" class="btn btn-primary btn-sm w-100 action-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>" id="addPaymentBtn" onclick="addPayment()">
                                                     <i class="fas fa-plus me-1"></i> Add Payment
                                                 </button>
                                             </div>
@@ -194,25 +203,7 @@ include "include/v2/topnavbar.php";
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-section mb-4 p-3 border rounded <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
-                                    <div class="row g-3">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="form-label small fw-bold text-dark">Payment Type</label>
-                                                <select class="form-select form-select-sm input-highlight" name="PaymentType" id="PaymentType" 
-                                                    onchange="getCustomerJObOrInvoiceDetails();">
-                                                    <option value="">Select Type</option>
-                                                    <option value="JobCard" <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
-                                                        Job card Advance
-                                                    </option>
-                                                    <option value="Invoice" <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
-                                                        Invoice Payment
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                               
                                 <div class="form-section mb-4 p-3 border rounded">
                                     <h6 class="section-title p-2 mb-3 rounded">Customer Outstanding</h6>
                                     <div class="table-responsive">
@@ -255,7 +246,7 @@ include "include/v2/topnavbar.php";
                                     </div>
                                 </div>
                                 <div class="form-actions d-flex justify-content-end gap-2 mt-4">
-                                    <button type="button" class="btn btn-success btn-sm action-btn <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>" id="confirmPaymentBtn" 
+                                    <button type="button" class="btn btn-success btn-sm action-btn <?= ($approve1check == 0) ? 'd-none' : '' ?> <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>" id="confirmPaymentBtn" 
                                         onclick="confirmPayment()">
                                         <i class="fas fa-check-double me-1"></i> Approve Payment
                                     </button>
@@ -308,6 +299,15 @@ include "include/v2/topnavbar.php";
 </div>
 <?php include "include/v2/footerscripts.php"; ?>
 <script>
+var addcheck = '<?php echo $addcheck; ?>';
+var editcheck = '<?php echo $editcheck; ?>';
+var statuscheck = '<?php echo $statuscheck; ?>';
+var deletecheck = '<?php echo $deletecheck; ?>';
+var approve1check = '<?php echo $approve1check; ?>';
+var approve2check = '<?php echo $approve2check; ?>';
+var approve3check = '<?php echo $approve3check; ?>';
+var approve4check = '<?php echo $approve4check; ?>';
+var cancelcheck = '<?php echo $cancelcheck; ?>';
 
 let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
 let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
@@ -624,7 +624,7 @@ function getCustomerJObOrInvoiceDetails() {
 
                         let actionBtn = '';
                         if (bal > 0) {
-                            if(receipt_status != 'Approved'){
+                            if(receipt_status != 'Approved' && addcheck==1){
                                 actionBtn = `<button type="button" class="btn btn-sm btn-primary allocate-payment-btn">
                                                 <i class="fas fa-money-check-alt"></i>
                                             </button>`;
@@ -678,7 +678,6 @@ function createReceipt(){
     let draft_receipt_no = "<?php echo $is_edit? $payment_main_data['draft_receipt_number'] ?? '' : strtoupper($draft_receipt_no);?>";
     let date = $('#paymentDate').val();
     let customer_id = $('#customer').val();
-    let payment_by = $('#paymentBy').val();
     let payment_note = $('#paymentNote').val();
     let payment_type = $('#PaymentType').val();
 
@@ -714,7 +713,6 @@ function createReceipt(){
                 draft_receipt_no:draft_receipt_no,
                 date:date,
                 customer_id: customer_id,
-                payment_by: payment_by,
                 payment_type: payment_type,
                 payment_note: payment_note,
                 company_id: company_id,
@@ -851,7 +849,7 @@ function loadPayAllocationDetail(header_id){
                                             <td class="ref_no">${refNo}</td>
                                             <td class="">${paymentMethod}</td>
                                             <td class="text-end">
-                                                <input type="number" step="0.01" class="form-control text-end allocate_amount" placeholder="0.00" value="${allocateAmount.toFixed(2)}" ${status != 1 ? 'disabled' : ''}>
+                                                <input type="number" step="0.01" class="form-control text-end allocate_amount" placeholder="0.00" value="${allocateAmount.toFixed(2)}" ${status != 1 ? 'disabled' : ''} ${editcheck == 0 ? 'disabled' : ''}>
                                             </td>
                                             <td class="d-none ref_id">${refId}</td>
                                             <td class="d-none payment_type">${payment_type}</td>

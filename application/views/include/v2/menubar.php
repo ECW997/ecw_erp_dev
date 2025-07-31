@@ -34,60 +34,80 @@ else if($functionmenu=='Company'){
     $editcheck=checkprivilege($menuprivilegearray, 4, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 4, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 4, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 4, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 4, 6);
 }
 else if($functionmenu=='Branch'){
     $addcheck=checkprivilege($menuprivilegearray, 5, 1);
     $editcheck=checkprivilege($menuprivilegearray, 5, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 5, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 5, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 5, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 5, 6);
 }
 else if($functionmenu=='Vehicle_brand'){
     $addcheck=checkprivilege($menuprivilegearray, 6, 1);
     $editcheck=checkprivilege($menuprivilegearray, 6, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 6, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 6, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 6, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 6, 6);
 }
 else if($functionmenu=='Vehicle_model'){
     $addcheck=checkprivilege($menuprivilegearray, 7, 1);
     $editcheck=checkprivilege($menuprivilegearray, 7, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 7, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 7, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 7, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 7, 6);
 }
 else if($functionmenu=='Vehicle_series'){
     $addcheck=checkprivilege($menuprivilegearray, 8, 1);
     $editcheck=checkprivilege($menuprivilegearray, 8, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 8, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 8, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 8, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 8, 6);
 }
 else if($functionmenu=='Vehicle_generation'){
     $addcheck=checkprivilege($menuprivilegearray, 9, 1);
     $editcheck=checkprivilege($menuprivilegearray, 9, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 9, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 9, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 9, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 9, 6);
 }
 else if($functionmenu=='Vehicle_year'){
     $addcheck=checkprivilege($menuprivilegearray, 10, 1);
     $editcheck=checkprivilege($menuprivilegearray, 10, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 10, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 10, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 10, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 10, 6);
 }
 else if($functionmenu=='Jobs'){
     $addcheck=checkprivilege($menuprivilegearray, 14, 1);
     $editcheck=checkprivilege($menuprivilegearray, 14, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 14, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 14, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 14, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 14, 6);
 }
 else if($functionmenu=='Vehicle_type'){
     $addcheck=checkprivilege($menuprivilegearray, 16, 1);
     $editcheck=checkprivilege($menuprivilegearray, 16, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 16, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 16, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 16, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 16, 6);
 }
 else if($functionmenu=='Leather_Type'){
     $addcheck=checkprivilege($menuprivilegearray, 20, 1);
     $editcheck=checkprivilege($menuprivilegearray, 20, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 20, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 20, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 20, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 20, 6);
 }
 
 else if($functionmenu=='Hood_Material'){
@@ -95,6 +115,8 @@ else if($functionmenu=='Hood_Material'){
     $editcheck=checkprivilege($menuprivilegearray, 21, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 21, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 21, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 21, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 21, 6);
 }
 
 else if($functionmenu=='Carpet'){
@@ -102,6 +124,8 @@ else if($functionmenu=='Carpet'){
     $editcheck=checkprivilege($menuprivilegearray, 22, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 22, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 22, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 22, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 22, 6);
 }
 
 else if($functionmenu=='Stitching_Design'){
@@ -109,6 +133,8 @@ else if($functionmenu=='Stitching_Design'){
     $editcheck=checkprivilege($menuprivilegearray, 23, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 23, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 23, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 23, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 23, 6);
 }
 
 else if($functionmenu=='Seat_Type'){
@@ -116,6 +142,8 @@ else if($functionmenu=='Seat_Type'){
     $editcheck=checkprivilege($menuprivilegearray, 24, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 24, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 24, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 24, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 24, 6);
 }
 
 else if($functionmenu=='Logo'){
@@ -123,6 +151,8 @@ else if($functionmenu=='Logo'){
     $editcheck=checkprivilege($menuprivilegearray, 25, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 25, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 25, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 25, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 25, 6);
 }
 
 else if($functionmenu=='Logo_Colour'){
@@ -130,6 +160,8 @@ else if($functionmenu=='Logo_Colour'){
     $editcheck=checkprivilege($menuprivilegearray, 26, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 26, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 26, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 26, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 26, 6);
 }
 
 else if($functionmenu=='Thread_Colour'){
@@ -137,6 +169,8 @@ else if($functionmenu=='Thread_Colour'){
     $editcheck=checkprivilege($menuprivilegearray, 27, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 27, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 27, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 27, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 27, 6);
 }
 
 else if($functionmenu=='Stitch_Style'){
@@ -144,12 +178,16 @@ else if($functionmenu=='Stitch_Style'){
     $editcheck=checkprivilege($menuprivilegearray, 28, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 28, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 28, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 28, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 28, 6);
 }
 else if($functionmenu=='Payment_Method'){
     $addcheck=checkprivilege($menuprivilegearray, 29, 1);
     $editcheck=checkprivilege($menuprivilegearray, 29, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 29, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 29, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 29, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 29, 6);
 }
 else if($functionmenu=='Job_price_details'){
     $addcheck=checkprivilege($menuprivilegearray, 40, 1);
@@ -157,133 +195,175 @@ else if($functionmenu=='Job_price_details'){
     $statuscheck=checkprivilege($menuprivilegearray, 40, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 40, 4);
     $approvecheck=checkprivilege($menuprivilegearray, 40, 5);
-    $all_followup=checkprivilege($menuprivilegearray, 40, 6);
+    $cancelcheck=checkprivilege($menuprivilegearray, 40, 6);
 }
 else if($functionmenu=='Price_category'){
     $addcheck=checkprivilege($menuprivilegearray, 42, 1);
     $editcheck=checkprivilege($menuprivilegearray, 42, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 42, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 42, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 42, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 42, 6);
 }
 else if($functionmenu=='Department'){
     $addcheck=checkprivilege($menuprivilegearray, 45, 1);
     $editcheck=checkprivilege($menuprivilegearray, 45, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 45, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 45, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 45, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 45, 6);
 }
 else if($functionmenu=='Employee'){
     $addcheck=checkprivilege($menuprivilegearray, 46, 1);
     $editcheck=checkprivilege($menuprivilegearray, 46, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 46, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 46, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 46, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 46, 6);
 }
 else if($functionmenu=='Jobtitle'){
     $addcheck=checkprivilege($menuprivilegearray, 47, 1);
     $editcheck=checkprivilege($menuprivilegearray, 47, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 47, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 47, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 47, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 47, 6);
 }
 else if($functionmenu=='Customer'){
     $addcheck=checkprivilege($menuprivilegearray, 48, 1);
     $editcheck=checkprivilege($menuprivilegearray, 48, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 48, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 48, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 48, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 48, 6);
 }
 else if($functionmenu=='MainJobCategory'){
     $addcheck=checkprivilege($menuprivilegearray, 49, 1);
     $editcheck=checkprivilege($menuprivilegearray, 49, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 49, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 49, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 49, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 49, 6);
 }
 else if($functionmenu=='SubJobCategory'){
     $addcheck=checkprivilege($menuprivilegearray, 50, 1);
     $editcheck=checkprivilege($menuprivilegearray, 50, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 50, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 50, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 50, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 50, 6);
 }
 else if($functionmenu=='Material'){
     $addcheck=checkprivilege($menuprivilegearray, 51, 1);
     $editcheck=checkprivilege($menuprivilegearray, 51, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 51, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 51, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 51, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 51, 6);
 }
 else if($functionmenu=='SalesJobsDetails'){
     $addcheck=checkprivilege($menuprivilegearray, 52, 1);
     $editcheck=checkprivilege($menuprivilegearray, 52, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 52, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 52, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 52, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 52, 6);
 }
 else if($functionmenu=='JobCard'){
     $addcheck=checkprivilege($menuprivilegearray, 53, 1);
     $editcheck=checkprivilege($menuprivilegearray, 53, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 53, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 53, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 53, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 53, 6);
 }
 else if($functionmenu=='AssignEmployeeToJob'){
     $addcheck=checkprivilege($menuprivilegearray, 57, 1);
     $editcheck=checkprivilege($menuprivilegearray, 57, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 57, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 57, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 57, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 57, 6);
 }
 else if($functionmenu=='JobCard_information'){
     $addcheck=checkprivilege($menuprivilegearray, 58, 1);
     $editcheck=checkprivilege($menuprivilegearray, 58, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 58, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 58, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 58, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 58, 6);
 }
 else if($functionmenu=='AssignEmployeeToJobDashboad'){
     $addcheck=checkprivilege($menuprivilegearray, 59, 1);
     $editcheck=checkprivilege($menuprivilegearray, 59, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 59, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 59, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 59, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 59, 6);
 }
 else if($functionmenu=='SupervisorAssignEmployeeToJob'){
     $addcheck=checkprivilege($menuprivilegearray, 61, 1);
     $editcheck=checkprivilege($menuprivilegearray, 61, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 61, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 61, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 61, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 61, 6);
 }
 else if($functionmenu=='JobOptionGroup'){
     $addcheck=checkprivilege($menuprivilegearray, 62, 1);
     $editcheck=checkprivilege($menuprivilegearray, 62, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 62, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 62, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 62, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 62, 6);
 }
 else if($functionmenu=='JobOption'){
     $addcheck=checkprivilege($menuprivilegearray, 63, 1);
     $editcheck=checkprivilege($menuprivilegearray, 63, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 63, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 63, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 63, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 63, 6);
 }
 else if($functionmenu=='JobOptionValue'){
     $addcheck=checkprivilege($menuprivilegearray, 64, 1);
     $editcheck=checkprivilege($menuprivilegearray, 64, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 64, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 64, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 64, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 64, 6);
 }
 else if($functionmenu=='Map'){
     $addcheck=checkprivilege($menuprivilegearray, 65, 1);
     $editcheck=checkprivilege($menuprivilegearray, 65, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 65, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 65, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 65, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 65, 6);
 }
 else if($functionmenu=='Media_library'){
     $addcheck=checkprivilege($menuprivilegearray, 66, 1);
     $editcheck=checkprivilege($menuprivilegearray, 66, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 66, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 66, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 66, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 66, 6);
 }
 else if($functionmenu=='Invoice'){
     $addcheck=checkprivilege($menuprivilegearray, 67, 1);
     $editcheck=checkprivilege($menuprivilegearray, 67, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 67, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 67, 6);
 }
 else if($functionmenu=='Payment'){
     $addcheck=checkprivilege($menuprivilegearray, 67, 1);
     $editcheck=checkprivilege($menuprivilegearray, 67, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 67, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 67, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 67, 5);
+    $cancelcheck=checkprivilege($menuprivilegearray, 67, 6);
 }
 
 
@@ -305,8 +385,9 @@ function checkprivilege($arraymenu, $menuID, $type){
             }
             else if($type==5){
                 return $array->approve;
-            }else if($type==6){
-                return $array->all_followup;
+            }
+            else if($type==6){
+                return $array->cancel;
             }
         }
     }

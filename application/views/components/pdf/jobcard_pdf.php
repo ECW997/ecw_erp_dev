@@ -1,266 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECW Software - Job Card</title>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            margin: 6mm 10mm 6mm 10mm;
+            size: A4 portrait;
+        }
 
- <!DOCTYPE html>
- <html>
+        * {
+            box-sizing: border-box;
+        }
 
- <head>
- 	<title>ECW Software</title>
- 	<link rel="preconnect" href="https://fonts.googleapis.com">
- 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- 	<link
- 		href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
- 		rel="stylesheet">
- 	<link rel="icon" type="image/x-icon" href="assets/img/ecw2.jpg" />
- 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
- 	<style>
- 		@page {
- 			margin: 5mm 16mm 5mm 20mm;
- 			/* top right bottom left */
- 		}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #000;
+        }
 
- 		body {
- 			margin: 0;
- 			font-family: "Roboto", sans-serif;
- 			font-size: 12px;
- 			line-height: 1.5;
- 			text-align: left;
- 		}
+        .page-container {
+            width: 100%;
+        }
 
- 		header {
- 			position: fixed;
- 			top: 20px;
- 			left: 0;
- 			right: 0;
- 			height: 90px;
- 			text-align: center;
- 			line-height: 35px;
- 			border-bottom: 2px solid #000;
- 		}
+        /* Header Section */
+        .document-header {
+            text-align: center;
+            margin-bottom: 8px;
+            padding: 6px 0;
+            border-bottom: 2px solid #000;
+            page-break-inside: avoid;
+        }
 
- 		footer {
- 			position: fixed;
- 			bottom: 50px;
- 			left: 0;
- 			right: 0;
- 			height: 30px;
- 			text-align: center;
- 			line-height: 30px;
- 			border-top: 1px solid #ddd;
- 		}
+        .document-header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
- 		.content {
- 			margin-top: 0px;
+        .document-header .company-info {
+            font-size: 10px;
+            margin-top: 2px;
+            color: #666;
+        }
 
- 		}
+        /* Main Information Section */
+        .main-info-section {
+            margin-bottom: 8px;
+            page-break-inside: avoid;
+        }
 
- 		.header_th {
- 			text-align: right;
- 			height: 8px;
- 			line-height: 0.4rem;
- 			padding: 0;
- 			font-weight: 400;
- 		}
+        .section-header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0;
+        }
 
- 		.sub_header_text_th {
- 			text-align: left;
- 			height: 4px;
- 			line-height: 0.8rem;
- 			padding: 0;
- 			font-weight: 700;
- 		}
+        .main-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000;
+            font-size: 9px;
+            margin-bottom: 6px;
+        }
 
- 		.sub_header_text_td {
- 			text-align: left;
- 			height: 4px;
- 			line-height: 0.8rem;
- 			padding: 0;
- 			font-weight: 400;
- 		}
+        .main-info-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: left;
+            padding: 3px 5px;
+            border: 1px solid #000;
+            width: 18%;
+            vertical-align: middle;
+        }
 
- 		.datatable_td {
- 			padding: 3px;
- 			color: #000;
- 			border: 1px solid #000;
- 			font-size: 9px
- 		}
+        .main-info-table td {
+            padding: 3px 5px;
+            border: 1px solid #000;
+            text-align: left;
+            vertical-align: middle;
+        }
 
- 		.datatable_data_td {
- 			border: none;
- 			text-align: left;
- 			height: 4px;
- 			line-height: 0.6rem;
- 			padding: 0;
- 			padding: 0 3px 0 3px;
- 			font-weight: 400;
- 		}
+        /* Job Details Section */
+        .job-details-section {
+            margin-top: 8px;
+            page-break-inside: avoid;
+        }
 
- 		.datatable_total_td {
- 			padding: 3px;
- 			border-top: 1.5px solid #000;
- 			border-left: none;
- 			border-right: none;
- 			border-bottom: 1.5px solid #000;
- 			text-align: right;
- 		}
- 	</style>
- </head>
+        .job-header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+            border: 1px solid #000;
+        }
 
- <body>
- 	<div class="content">
- 		<h1 style="text-align:center;">JOB CARD</h1>
- 		<table
- 			style="table-layout: fixed;padding:3px;padding-left:0px;padding-right:0px;width:100%;border-collapse: collapse;border-bottom: 1.5px solid #000">
- 			<tr>
- 				<th style="width:15%;" class="sub_header_text_th">Customer</th>
- 				<th style="width:45%;" class="sub_header_text_td"><?= $main_data['customer_name'] ?? 'N/A' ?></th>
- 				<th style="width:20%;" class="sub_header_text_th">Job Card No</th>
- 				<th style="width:20%;" class="sub_header_text_td"><?= $main_data['job_card_number'] ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Address</th>
- 				<th style="" class="sub_header_text_td"><?= ($main_data['address'] ?? '') . 
-                        (!empty($main_data['address_2']) ? ', ' . $main_data['address_2'] : '') . 
-                        (!empty($main_data['city']) ? ', ' . $main_data['city'] : '') . 
-                        (!empty($main_data['district']) ? ', ' . $main_data['district'] : '') ?>
-                </th>
- 				<th style="" class="sub_header_text_th">Created Date</th>
- 				<th style="" class="sub_header_text_td"><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Contact No</th>
- 				<th style="" class="sub_header_text_td"> <?= $main_data['customer_mobile_num'] ?? 'N/A' ?>
-					<?= (!empty($main_data['customer_mobile_num_2']) && $main_data['customer_mobile_num_2'] != "+94" ? ' / ' . $main_data['customer_mobile_num_2'] : '') ?>
-                </th>
- 				<th style="" class="sub_header_text_th">Created at</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['branch'] ?? 'N/A' ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Vehicle No</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['customer_vehicle_number'] ?? 'N/A' ?></th>
- 				<th style="" class="sub_header_text_th">Sales Person Code</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['sales_person_code'] ?? 'N/A' ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Vehicle Type</th>
- 				<th style="" class="sub_header_text_td"><?= ($main_data['brand_name'] ?? '') . 
-                        (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?>
-                </th>
- 				<th style="" class="sub_header_text_th">Quotation No</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['quotation_no'] ?? 'None' ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">NIC</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['nic_number'] ?? 'N/A' ?></th>
- 				<th style="" class="sub_header_text_th">Customer PO</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['customer_po'] ?? 'None' ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Job Start Date</th>
- 				<th style="" class="sub_header_text_td"><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></th>
- 				<th style="" class="sub_header_text_th">Payment Method</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['payment_type'] ?? 'N/A' ?></th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th">Sales Person</th>
- 				<th style="" class="sub_header_text_td"><?= $main_data['sales_person_name'] ?? 'N/A' ?></th>
- 				<th style="" class="sub_header_text_th">Job Complete Date</th>
- 				<th style="" class="sub_header_text_td">
-					<?= !empty($main_data['complete_date']) ? date('d/m/Y', strtotime($main_data['complete_date'])) : 'Pending' ?>
-				</th>
- 			</tr>
- 			<tr>
- 				<th style="" class="sub_header_text_th"></th>
- 				<th style="" class="sub_header_text_td"></th>
- 				<th style="" class="sub_header_text_th">Print Date</th>
- 				<th style="" class="sub_header_text_td"><?= date('d/m/Y') ?></th>
- 			</tr>
- 		</table>
- 		<h2 style="text-align:center;">JOB DETAILS</h2>
- 		<table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
- 			<tr>
- 				<th style="width:4%;text-align:left;font-size:12px;"
- 					class="sub_header_text_th datatable_td datatable_total_td">No</th>
- 				<th style="width:46%;text-align:left;font-size:12px;"
- 					class="sub_header_text_th datatable_td datatable_total_td">Job</th>
- 				<th style="width:40%;text-align:left;font-size:12px;"
- 					class="sub_header_text_th datatable_td datatable_total_td">Remark</th>
-				<th style="width:10%;text-align:left;font-size:12px;"
- 					class="sub_header_text_th datatable_td datatable_total_td">Quantity</th>
- 			</tr>
- 		</table>
+        .job-header-table th {
+            background-color: #444;
+            color: white;
+            text-align: center;
+            padding: 4px 3px;
+            font-size: 9px;
+            font-weight: bold;
+            border: 1px solid #000;
+            text-transform: uppercase;
+        }
 
- 		<?php 
-        $mainJob_cnt = 1;
-        foreach ($details_data as $item): ?>
- 		<table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;border: 0px solid #000">
- 			<tr>
-				<td style="width:4%;text-align:left;border: 0px solid #000;font-size:12px;font-weight:bold;" class="datatable_td">
-					<?= $mainJob_cnt ?>.</td>
-				<td colspan="3" style="width:96%;text-align:left;border: 0px solid #000;font-size:12px;font-weight:bold;" class="datatable_td">
-					<?= $item['job_sub_category_text'] ?? 'N/A' ?> 
-				</td>
-			</tr>
+        /* Job Category Containers */
+        .job-category-container {
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+            border: 1px solid #000;
+            background-color: #fafafa;
+        }
+
+        .job-category-header {
+            background-color: #e0e0e0;
+            border-bottom: 1px solid #000;
+            padding: 4px 6px;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .job-items-container {
+            padding: 4px;
+        }
+
+        /* Individual Job Items */
+        .job-item {
+            border: 1px solid #ccc;
+            margin-bottom: 6px;
+            background-color: white;
+            page-break-inside: avoid;
+        }
+
+        .job-item-content {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .job-item-content td {
+            padding: 4px;
+            border-right: 1px solid #ddd;
+            vertical-align: top;
+            font-size: 9px;
+        }
+
+        .job-item-content td:last-child {
+            border-right: none;
+        }
+
+        .job-number {
+            width: 6%;
+            text-align: center;
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+
+        .job-description {
+            width: 40%;
+            font-weight: 500;
+        }
+
+        .job-remarks {
+            width: 44%;
+        }
+
+        .job-quantity {
+            width: 10%;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Image Handling */
+        .image-container {
+            margin-top: 3px;
+            text-align: center;
+            max-height: 80px;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 80px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+        }
+
+        /* Signature Section */
+        .signature-section {
+            margin-top: 4px;
+            border-top: 1px dotted #666;
+            padding-top: 3px;
+            page-break-inside: avoid;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7px;
+        }
+
+        .signature-table th {
+            background-color: #e8e8e8;
+            border: 1px solid #666;
+            padding: 1px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 6px;
+            height: 14px;
+        }
+
+        .signature-table td {
+            border: 1px solid #666;
+            padding: 1px;
+            text-align: center;
+            height: 14px;
+            font-size: 7px;
+        }
+
+        /* Page Break Controls */
+        .page-break-before {
+            page-break-before: always;
+        }
+
+        .page-break-after {
+            page-break-after: always;
+        }
+
+        .no-page-break {
+            page-break-inside: avoid;
+        }
+
+        .keep-together {
+            page-break-inside: avoid;
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Category Separators */
+        .category-separator {
+            border-bottom: 1px dashed #666;
+            margin: 8px 0;
+            height: 1px;
+            page-break-after: avoid;
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-bold { font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
+
+        /* Enhanced Page Break Controls */
+        .header-and-customer-info {
+            page-break-inside: avoid;
+            page-break-after: avoid;
+        }
+
+        .job-details-with-header {
+            page-break-before: avoid;
+        }
+
+        .keep-together {
+            page-break-inside: avoid;
+            orphans: 2;
+            widows: 2;
+        }
+
+        /* Print Optimizations */
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
             
-        <?php
-        $joblist_cnt = 1;
-        foreach ($item['details'] as $joblist): ?>
-            <tr style="border-bottom: 1px dotted #000;">
-                <td style="width:4%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-				</td>
-				<td style="width:4%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					<?= $joblist_cnt ?>.</td>
-				<td style="width:42%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					<?= $joblist['option_group_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?>
-				</td>
-				<td style="width:40%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-                    <?= $joblist['combined_option'] ?? 'N/A' ?> <br>
-                    <?php if($joblist['description'] == 'image'): ?>
-                        <img 
-                            style="height:165px;"
-                            src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" 
-                        />
-                    <?php endif; ?>
-                </td>
-				<td style="width:10%;text-align:left;border:none;font-size:12px;" class="datatable_td">
-					X <?= $joblist['qty'] ?? 0 ?>
-				</td>
-			</tr>
-        <?php $joblist_cnt++; ?>
-        <?php endforeach; ?>
- 		</table>
+            .header-and-customer-info {
+                break-inside: avoid;
+                break-after: avoid;
+            }
+            
+            .job-details-with-header {
+                break-before: avoid;
+            }
+            
+            .job-category-container {
+                break-inside: avoid;
+            }
+            
+            .job-item {
+                break-inside: avoid;
+            }
+        }
 
-       
- 		<table style="table-layout: fixed; padding: 3px; width: 100%; border-collapse: collapse; page-break-inside: avoid;">
-			<tr>
-				<th style="width:3%;text-align:left;" class="sub_header_text_th datatable_td">#</th>
-				<th style="width:7%;text-align:left;" class="sub_header_text_th datatable_td">EMP CODE</th>
-				<th style="width:13%;text-align:center;" class="sub_header_text_th datatable_td">RATE</th>
-				<th style="width:17%;text-align:left;" class="sub_header_text_th datatable_td">EMP.</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">E-R OFFICER</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">PRODUCTION SUPERVISOR</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">QUALITY SUPERVISOR</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">UPDATED HR DEPT.</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED HR DEPT.</th>
-				<th style="width:10%;text-align:left;" class="sub_header_text_th datatable_td">CHECKED ACC DEPT.</th>
-			</tr>
-			<tr>
-				<td style="width:3%;text-align:left;" class="datatable_td"></td>
-				<td style="width:7%;text-align:left;" class="datatable_td">ECW001</td>
-				<td style="width:13%;text-align:center;" class="datatable_td"></td>
-				<td style="width:17%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-				<td style="width:10%;text-align:left;" class="datatable_td"></td>
-			</tr>
-		</table>
-	
- 		<div style="border-bottom: 2px dashed #000;margin-top:10px;"></div>
- 		<?php $mainJob_cnt++; ?>
-		<?php endforeach; ?>
+        /* Footer Space */
+        .document-footer {
+            margin-top: 15px;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+        }
+    </style>
+</head>
 
- 	</div>
- </body>
+<body>
+    <div class="page-container">
+        
+        <!-- Header and Customer Information - Keep Together -->
+        <div class="header-and-customer-info">
+            <!-- Document Header -->
+            <div class="document-header">
+                <h1>Job Card Quotation</h1>
+                <div class="company-info">ECW Software Solutions</div>
+            </div>
 
- </html>
+            <!-- Main Information Section -->
+            <div class="main-info-section">
+                <div class="section-header">Customer & Job Information</div>
+                <table class="main-info-table">
+                    <tr>
+                        <th>Customer:</th>
+                        <td><?= $main_data['customer_name'] ?? 'N/A' ?></td>
+                        <th>Contact No:</th>
+                        <td>
+                            <?= $main_data['customer_mobile_num'] ?? 'N/A' ?>
+                            <?= (!empty($main_data['customer_mobile_num_2']) && $main_data['customer_mobile_num_2'] != "+94" ? ' / ' . $main_data['customer_mobile_num_2'] : '') ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td colspan="3">
+                            <?= ($main_data['address'] ?? '') . 
+                               (!empty($main_data['address_2']) ? ', ' . $main_data['address_2'] : '') . 
+                               (!empty($main_data['city']) ? ', ' . $main_data['city'] : '') . 
+                               (!empty($main_data['district']) ? ', ' . $main_data['district'] : '') ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>NIC:</th>
+                        <td><?= $main_data['nic_number'] ?? 'N/A' ?></td>
+                        <th>Customer PO:</th>
+                        <td><?= $main_data['customer_po'] ?? 'None' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Vehicle No:</th>
+                        <td><?= $main_data['customer_vehicle_number'] ?? 'N/A' ?></td>
+                        <th>Vehicle Type:</th>
+                        <td>
+                            <?= ($main_data['brand_name'] ?? '') . 
+                               (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sales Person:</th>
+                        <td><?= $main_data['sales_person_name'] ?? 'N/A' ?></td>
+                        <th>Sales Code:</th>
+                        <td><?= $main_data['sales_person_code'] ?? 'N/A' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Job Card No:</th>
+                        <td><?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <th>Quotation No:</th>
+                        <td><?= $main_data['quotation_no'] ?? 'None' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Created Date:</th>
+                        <td><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></td>
+                        <th>Created At:</th>
+                        <td><?= $main_data['branch'] ?? 'N/A' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Job Start:</th>
+                        <td><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></td>
+                        <th>Job Complete:</th>
+                        <td>
+                            <?= !empty($main_data['complete_date']) ? date('d/m/Y', strtotime($main_data['complete_date'])) : 'Pending' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Handover Date:</th>
+                        <td><?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
+                        <th>Print Date:</th>
+                        <td><?= date('d/m/Y') ?></td>
+                    </tr>
+                    <tr>
+                        <th>Payment Method:</th>
+                        <td colspan="3"><?= $main_data['payment_type'] ?? 'N/A' ?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="job-details-section job-details-with-header">
+            <div class="section-header">Job Details & Work Instructions</div>
+
+            <table class="job-header-table">
+                <tr>
+                    <th style="width:6%;">No</th>
+                    <th style="width:40%;">Job Description</th>
+                    <th style="width:44%;">Remarks & Details</th>
+                    <th style="width:10%;">Qty</th>
+                </tr>
+            </table>
+
+            <?php 
+            $mainJob_cnt = 1;
+            $totalCategories = count($details_data);
+            
+            foreach ($details_data as $categoryIndex => $item): ?>
+                
+                <div class="job-category-container keep-together">
+                    <div class="job-category-header">
+                        <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?></strong>
+                    </div>
+                    
+                    <div class="job-items-container">
+                        <?php
+                        $joblist_cnt = 1;
+                        $totalJobsInCategory = count($item['details']);
+                        
+                        foreach ($item['details'] as $jobIndex => $joblist): ?>
+                            
+                            <div class="job-item keep-together">
+                                <table class="job-item-content">
+                                    <tr>
+                                        <td class="job-number"><?= $joblist_cnt ?></td>
+                                        <td class="job-description">
+                                            <strong><?= $joblist['option_group_text'] ?? 'N/A' ?></strong>
+                                            <br><?= $joblist['option_text'] ?? 'N/A' ?>
+                                        </td>
+                                        <td class="job-remarks">
+                                            <?= $joblist['combined_option'] ?? 'N/A' ?>
+                                            
+                                            <?php if($joblist['description'] == 'image'): ?>
+                                                <div class="image-container">
+                                                    <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" alt="Job Reference Image" />
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="job-quantity">x <?= $joblist['qty'] ?? 0 ?></td>
+                                    </tr>
+                                </table>
+                                
+                                <div class="signature-section">
+                                    <table class="signature-table">
+                                        <tr>
+                                            <th style="width:4%;">#</th>
+                                            <th style="width:9%;">EMP CODE</th>
+                                            <th style="width:8%;">RATE</th>
+                                            <th style="width:12%;">EMPLOYEE</th>
+                                            <th style="width:11%;">E-R OFFICER</th>
+                                            <th style="width:11%;">PROD. SUPERVISOR</th>
+                                            <th style="width:11%;">QUALITY SUPERVISOR</th>
+                                            <th style="width:11%;">UPDATED HR</th>
+                                            <th style="width:11%;">CHECKED HR</th>
+                                            <th style="width:12%;">CHECKED ACC</th>
+                                        </tr>
+                                        <tr>
+                                            <td>1</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <?php $joblist_cnt++; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <?php if ($categoryIndex < $totalCategories - 1): ?>
+                    <div class="category-separator"></div>
+                <?php endif; ?>
+                
+                <?php $mainJob_cnt++; ?>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="document-footer">
+            <p>This job card was generated on <?= date('d/m/Y H:i:s') ?> | ECW Software Solutions</p>
+            <p>Please retain this document for your records</p>
+        </div>
+
+    </div>
+</body>
+</html>

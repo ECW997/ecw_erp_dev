@@ -3,9 +3,12 @@ include "include/v2/header.php";
 include "include/v2/topnavbar.php"; 
 ?>
 <?php
-// Retrieve the customer_id from the URL
-$customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
+$status = isset($job_main_data[0]['status']) ? $job_main_data[0]['status'] : '';
+$is_any_confirmation = in_array($status, ['Approved', 'Cancelled']);
+$is_confirmed = ($status === 'Approved');
+$is_denied = ($status === 'Cancelled');
 ?>
+
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
         <?php include "include/menubar.php"; ?>
@@ -63,35 +66,34 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
                     <div class="card-body p-0 p-2">
                         <div class="row mb-3">
                             <div class="col-8">
-                                <?php $is_confirmed = $job_main_data[0]['approve_request_status'] ?? 0; ?>
                                 <div class="row g-2 p-3">
-                                    <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                    <div class="col-12 col-sm-6 col-md-2 d-grid <?= ($addcheck == 0) ? 'd-none' : '' ?>">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 "
                                             data-bs-toggle="modal" data-bs-target="#selectCustomerInquiryModal">
                                             <i class="fas fa-plus me-2"></i> New Job Card
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button"
-                                            class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal"
+                                            class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal" <?= $is_any_confirmation ? 'disabled' : '' ?>
                                             data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100"
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_any_confirmation ? 'disabled' : '' ?>
                                             data-bs-toggle="modal" data-bs-target="#jobcardApproveModel">
                                             <i class="fas fa-check me-2"></i> Approve
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed == 2 ? '' : 'disabled' ?>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed ? '' : 'disabled' ?>
                                             onclick="exportJobCardSummary(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>Job Summary Print
                                         </button>
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed == 2 ? '' : 'disabled' ?>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed ? '' : 'disabled' ?>
                                             onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>JobCard Print
                                         </button>
@@ -122,6 +124,16 @@ $customer_id = isset($_GET['customer_id']) ? $_GET['customer_id'] : '';
 
 
 <script>
+var addcheck = '<?php echo $addcheck; ?>';
+var editcheck = '<?php echo $editcheck; ?>';
+var statuscheck = '<?php echo $statuscheck; ?>';
+var deletecheck = '<?php echo $deletecheck; ?>';
+var approve1check = '<?php echo $approve1check; ?>';
+var approve2check = '<?php echo $approve2check; ?>';
+var approve3check = '<?php echo $approve3check; ?>';
+var approve4check = '<?php echo $approve4check; ?>';
+var cancelcheck = '<?php echo $cancelcheck; ?>';
+
 const customerData = {
     name: "",
     email: "",
@@ -160,45 +172,6 @@ const customerData = {
 
 $(document).ready(function() {
 
-    // $.ajax({
-    //     url: apiBaseUrl + '/v1/main_job_category',
-    //     type: "GET",
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json',
-    //         'Authorization': 'Bearer ' + api_token
-    //     },
-    //     success: function(json) {
-    //         if (json.status === false && json.code === 401) {
-    //             falseResponse(errorObj);
-    //             return;
-    //         }
-    //         let data = json.data;
-    //         $('#buttonsContainer').empty();
-
-    //         data.forEach(function(job) {
-    //             var buttonHtml = `
-    //                 <div class="col-6 mb-3">
-    //                     <button type="button"
-    //                         class="btn btn-info rounded-3 w-100 btn-sm d-flex align-items-center justify-content-start"
-    //                         style="padding-left: 20px;"
-    //                         data-id="${job.id}"
-    //                         data-name="${job.name}" onclick="showAddJobItemModal(this);">
-    //                         <i class="fas fa-plus-circle me-2"></i>${job.name}
-    //                     </button>
-    //                 </div>
-    //             `;
-    //             $('#buttonsContainer').append(buttonHtml);
-    //         });
-    //     },
-    //     error: function(xhr, status, error) {
-    //         console.error("AJAX Error:", error);
-    //         alert('Failed to load main job categories.');
-    //     }
-    // });
-
-
-
     $.ajax({
         url: apiBaseUrl + '/v1/main_category_group',
         type: "GET",
@@ -213,24 +186,19 @@ $(document).ready(function() {
                 const groupId = group.id;
                 const groupName = group.group_name;
 
-                //             <a href="#"><span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
-                //      style="cursor:pointer; font-size:1rem;">
-                //     ${groupName}
-                // </span></a>
-
                 const groupHtml = `
-                             <li>
-                             <a href="#">
-                        <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
-                            style="cursor:pointer; font-size:1rem;">
-                            ${groupName}
-                        </span>
+                    <li <?= $is_any_confirmation ? 'class="d-none"' : '' ?>>
+                        <a href="#">
+                            <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
+                                style="cursor:pointer; font-size:1rem;">
+                                ${groupName}
+                            </span>
                         </a>
-                    <ul class="dropdown" id="dropdown-${groupId}">
-                        <li><a href="#">Loading...</a></li>
-                    </ul>
-                </li>
-            `;
+                        <ul class="dropdown" id="dropdown-${groupId}">
+                            <li><a href="#">Loading...</a></li>
+                        </ul>
+                    </li>
+                `;
                 $('#mainCategoryGroupMenu').append(groupHtml);
 
                 $.ajax({

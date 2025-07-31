@@ -34,11 +34,15 @@ class JobCard extends CI_Controller {
             $result['job_main_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['main_data'];
 			$result['job_detail_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['details_data'];
 			$result['summary_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['summary_data'];
+			$result['is_line_discount_approved'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['is_line_discount_approved'];
+			$result['is_header_discount_approved'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['is_header_discount_approved'];
             $result['is_edit'] = true;
         } else {
             $result['job_main_data'] = null;
             $result['job_detail_data'] = null;
 			$result['summary_data'] = null;
+			$result['is_line_discount_approved'] = null;
+			$result['is_header_discount_approved'] = null;
             $result['is_edit'] = false;
         }
 
@@ -87,7 +91,8 @@ class JobCard extends CI_Controller {
 			'main_data'    => $response['data']['main_data'][0],     
 			'details_data' => $response['data']['details_data'],     
 			'summary_data' => $response['data']['summary_data'],     
-			'is_discount_approved' => $response['data']['is_discount_approved']     
+			'is_header_discount_approved' => $response['data']['is_header_discount_approved'],
+			'is_line_discount_approved' => $response['data']['is_line_discount_approved']    
 		];
 
 		$this->load->library('Pdf');
@@ -207,6 +212,40 @@ class JobCard extends CI_Controller {
 		echo json_encode($response);
     }
 
+	public function approveDiscount() {
+		$form_data = [
+            'jobcard_id' => $this->input->post('jobcard_id'),
+			'discount_type' => $this->input->post('discount_type'),
+			'action' => $this->input->post('action')
+        ];
+
+		$response = $this->JobCardinfo->approveDiscount($this->api_token, $form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobCard');
+		}   
+    }
+
+	public function deniedDiscount() {
+        $form_data = [
+            'jobcard_id' => $this->input->post('jobcard_id'),
+			'discount_type' => $this->input->post('discount_type'),
+			'action' => $this->input->post('action')
+        ];
+
+		$response = $this->JobCardinfo->deniedDiscount($this->api_token, $form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobCard');
+		}   
+    }
+
 	public function approveJobcard() {
         $form_data = $this->input->post();
 
@@ -247,5 +286,32 @@ class JobCard extends CI_Controller {
 			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
             redirect('JobOption');
         }
+    }
+
+	public function updateJobCardHeader() {
+        $form_data = [
+			'cus_id' => $this->input->post('cus_id'),
+            'cus_name' => $this->input->post('cus_name'),
+			'contact_no' => $this->input->post('contact_no'),
+			'nic_number' => $this->input->post('nic_number'),
+			'address1' => $this->input->post('address1'),
+			'address2' => $this->input->post('address2'),
+			'email' => $this->input->post('email'),
+			'schedule_date' => $this->input->post('schedule_date'),
+			'delivery_date' => $this->input->post('delivery_date'),
+			'vat_reg_type' => $this->input->post('vat_reg_type'),
+			'vat_number' => $this->input->post('vat_number'),
+			'price_category' => $this->input->post('price_category'),
+			'jobcard_id' => $this->input->post('jobcard_id')
+        ];
+
+		$response = $this->JobCardinfo->updateJobCardHeader($this->api_token, $form_data);
+ 
+		if ($response) {
+            echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+            redirect('JobCard');
+		}   
     }
 }
