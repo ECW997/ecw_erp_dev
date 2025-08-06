@@ -51,7 +51,7 @@ include "include/v2/topnavbar.php";
                                 <div class="form-section mb-4 p-3 border rounded">
                                     <h6 class="section-title p-2 mb-3 rounded">Payment Information</h6>
                                     <div class="row g-3">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Payment Date</label>
                                                 <input type="date" class="form-control form-control-sm input-highlight" 
@@ -60,7 +60,7 @@ include "include/v2/topnavbar.php";
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Customer <span class="text-danger">*</span></label>
                                                 <select class="form-select form-select-sm input-highlight" 
@@ -75,16 +75,16 @@ include "include/v2/topnavbar.php";
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
+                                        <div class="col-md-2">
                                         	<div class="form-group">
                                         		<label class="form-label small fw-bold text-dark">Payment Type</label>
                                         		<select class="form-select form-select-sm input-highlight"
                                         			name="PaymentType" id="PaymentType"
-                                        			onchange="getCustomerJObOrInvoiceDetails();">
+                                        			onchange="getCustomerJObOrInvoiceDetails();" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                         			<option value="">Select Type</option>
                                         			<option value="JobCard"
                                         				<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
-                                        				Job card Advance
+                                        				Advance Payment
                                         			</option>
                                         			<option value="Invoice"
                                         				<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
@@ -93,7 +93,25 @@ include "include/v2/topnavbar.php";
                                         		</select>
                                         	</div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
+                                        	<div class="form-group">
+                                        		<label class="form-label small fw-bold text-dark">Payment Series</label>
+                                        		<select class="form-select form-select-sm input-highlight"
+                                        			name="PaymentSeries" id="PaymentSeries"
+                                        			onchange="getCustomerJObOrInvoiceDetails();" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
+                                        			<option value="">Select Type</option>
+                                        			<option value="1"
+                                        				<?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '1' ? 'selected' : '' ?>>
+                                        				Series 01
+                                        			</option>
+                                        			<option value="2"
+                                        				<?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '2' ? 'selected' : '' ?>>
+                                        				Series 02
+                                        			</option>
+                                        		</select>
+                                        	</div>
+                                        </div>
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Payment Note</label>
                                                 <input type="text" class="form-control form-control-sm input-highlight" 
@@ -108,8 +126,8 @@ include "include/v2/topnavbar.php";
                                     <input type="hidden" id="status" name="status"
                                         value="<?= isset($payment_main_data['status']) ? $payment_main_data['status'] : '' ?>">
                                 </div>
-                                <div class="row form-section mb-4 p-3 border rounded <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
-                                    <div class="col-6">
+                                <div class="row form-section mb-4 p-3 border rounded ">
+                                    <div class="col <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'd-none' : '' ?>">
                                         <h6 class="section-title p-2 mb-3 rounded">Payment Entry</h6>
                                         <div class="row g-3">
                                             <div class="col-md-4">
@@ -124,9 +142,9 @@ include "include/v2/topnavbar.php";
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label small fw-bold text-dark">Payment Method <span class="text-danger">*</span></label>
+                                                    <label class="form-label small fw-bold text-dark">Payment Mode <span class="text-danger">*</span></label>
                                                     <select class="form-select form-select-sm input-highlight" name="paymentMethod" id="paymentMethod">
-                                                        <option value="">Select Method</option>
+                                                        <option value="">Select Mode</option>
                                                         <option value="CASH">Cash</option>
                                                         <option value="BANK_TRANSFER">Bank Transfer</option>
                                                         <option value="CREDIT_CARD">Credit Card</option>
@@ -181,13 +199,13 @@ include "include/v2/topnavbar.php";
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col">
                                         <h6 class="section-title p-2 mb-3 rounded">Payment Details</h6>
                                         <div class="table-responsive">
                                             <table class="table table-bordered table-striped table-sm w-100" id="paymentDetailsTable">
                                                 <thead>
                                                     <tr class="table-light">
-                                                        <th width="20%">Method</th>
+                                                        <th width="20%">Mode</th>
                                                         <th width="30%">Details</th>
                                                         <th width="20%" class="text-end">Amount</th>
                                                         <th width="20%" class="text-end">Balance</th>
@@ -233,7 +251,7 @@ include "include/v2/topnavbar.php";
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Reference ID</th>
-                                                    <th>Payment Method</th>
+                                                    <th>Payment Mode</th>
                                                     <th class="text-end">Allocated Amount</th>
                                                 </tr>
                                             </thead>
@@ -242,6 +260,8 @@ include "include/v2/topnavbar.php";
                                                     <td colspan="3" class="text-center text-muted">No allocations yet</td>
                                                 </tr>
                                             </tbody>
+                                            <tfooter>
+                                            </tfooter>
                                         </table>
                                     </div>
                                 </div>
@@ -516,6 +536,8 @@ $('#confirmAllocateBtn').on('click', function() {
 });
 
 function addPayment() {
+    let PaymentSeries = $('#PaymentSeries').val();
+
     let method = $('#paymentMethod').val();
     let amount = parseFloat($('#paymentAmount').val()) || 0;
     let bankName = $('input[name="bank_name"]').val() || '';
@@ -524,6 +546,11 @@ function addPayment() {
     let chequeDate = $('input[name="cheque_date"]').val() || '';
     let clearanceDate = $('input[name="cheque_clearance_date"]').val() || '';
     
+     if (PaymentSeries =='' ) {
+        alert('Please select payment series');
+        return;
+    }
+
     if (!amount || amount <= 0 || !method) {
         alert('Please enter a valid amount and select payment method');
         return;
@@ -591,7 +618,7 @@ $('#paymentMethodDropdown').on('change', function () {
 });
 
 function getCustomerJObOrInvoiceDetails() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve, reject) {   
         const paymentType = $('#PaymentType').val();
         const customerId = $('#customer').val();
         const receipt_status = $('#status').val();
@@ -620,6 +647,7 @@ function getCustomerJObOrInvoiceDetails() {
                         const advance_paid = parseFloat(isJob ? 0: entry.invoice.inv_advance_total);
                         const total = parseFloat(isJob ? entry.total : entry.total);
                         const paid = parseFloat(isJob ? entry.paid : entry.paid);
+                        
                         const bal = parseFloat(isJob ? entry.balance : entry.outstanding);
 
                         let actionBtn = '';
@@ -653,7 +681,8 @@ function getCustomerJObOrInvoiceDetails() {
                         <td>${date}</td>
                         <td class="text-end ref_total">${Number(entry.total || 0).toFixed(2)}</td>
                         <td class="text-end ref_paid_show">${Number(entry.paid || 0).toFixed(2)}</td>
-                        <td class="text-end ref_paid d-none">0</td>
+                        <td class="text-end ref_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
+                        <td class="text-end ref_pre_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_balance">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
@@ -680,6 +709,7 @@ function createReceipt(){
     let customer_id = $('#customer').val();
     let payment_note = $('#paymentNote').val();
     let payment_type = $('#PaymentType').val();
+    let payment_series = $('#PaymentSeries').val();
 
     let allocationData = [];
 
@@ -704,7 +734,7 @@ function createReceipt(){
             status: row_status
         });
     });
-    console.log(allocationData);
+    // console.log(allocationData);
     
     $.ajax({
             type: "POST",
@@ -714,6 +744,7 @@ function createReceipt(){
                 date:date,
                 customer_id: customer_id,
                 payment_type: payment_type,
+                payment_series: payment_series,
                 payment_note: payment_note,
                 company_id: company_id,
                 branch_id: branch_id,
@@ -746,7 +777,6 @@ function loadPayDetail(header_id) {
         error_toastify("No header ID provided.");
         return;
     }
-    
     $.ajax({
         type: "GET",
         dataType: 'json',
@@ -775,7 +805,7 @@ function loadPayDetail(header_id) {
                         let rowId = item.id || '';
 
                         let $newRow = $('<tr>').addClass('new-payment').hide();
-
+                        var isApproved = <?= (isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved') ? 'true' : 'false' ?>;
                         $newRow.append(
                             $('<td>').text(methodText),
                             $('<td>').text('Payment Received'),
@@ -789,7 +819,7 @@ function loadPayDetail(header_id) {
                             $('<td class="text-end d-none pay_clearance_date">').text(clearanceDate),
                             $('<td class="text-end d-none row_id">').text(rowId),
                             $('<td class="text-center">').append(
-                                $('<button class="btn btn-sm btn-outline-danger delete-payment" id="'+rowId+'" onclick="deleteRow(this,1)">')
+                                $('<button class="btn btn-sm btn-outline-danger delete-payment '+(isApproved ? 'd-none':'')+'" id="'+rowId+'" onclick="deleteRow(this,1)">')
                                     .html('<i class="fas fa-trash"></i>')
                             )
                         );
@@ -819,7 +849,6 @@ function loadPayAllocationDetail(header_id){
             return;
         }
     const receipt_status = $('#status').val();
-
     $.ajax({
             type: "GET",
             dataType: 'json',
@@ -827,7 +856,14 @@ function loadPayAllocationDetail(header_id){
             success: function(result) {
                 if (result.status == true) {
                 	let $tbody = $('#allocationSummaryTable tbody');
+                    let $tfoot = $('#allocationSummaryTable tfoot');
+                    if ($tfoot.length === 0) {
+                        $tfoot = $('<tfoot></tfoot>');
+                        $('#allocationSummaryTable').append($tfoot);
+                    }
+
                 	$tbody.empty();
+                    $tfoot.empty();
                 	if (result.data.length === 0) {
                 		$tbody.html('<tr><td colspan="3" class="text-center text-muted py-3">No payments Allocated yet</td></tr>');
                 	} else {
@@ -886,7 +922,7 @@ function loadPayAllocationDetail(header_id){
                                     <td class="text-end">${totalAllocated.toFixed(2)}</td>
                                 </tr>
                             `);
-                			$tbody.append($totalRow);
+                            $tfoot.html($totalRow);
                 		}
                 		updateBalances();
                 	}
@@ -923,6 +959,7 @@ function deleteRow(button,table) {
 }
 
 function updateBalances() {
+    var isApproved = <?= (isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved') ? 'true' : 'false' ?>;
     let allocations = [];
     let total_allocated_amount = 0;
     let errorFlag = false;
@@ -951,33 +988,37 @@ function updateBalances() {
 
     });
   
-    $('#customerOutstandingTable tbody tr').each(function () {
-        const $row = $(this);
-        const row_ref_id = $row.find('.ref_id').text().trim();
-        const matchedAllocations = allocations.filter(a => a.ref_id === row_ref_id);
+    if (!isApproved) {
+        $('#customerOutstandingTable tbody tr').each(function () {
+            const $row = $(this);
+            const row_ref_id = $row.find('.ref_id').text().trim();
+            const matchedAllocations = allocations.filter(a => a.ref_id === row_ref_id);
 
-        if (matchedAllocations.length > 0) {
-            const original_ref_total = parseFloat($row.find('.ref_total').text().replace(',', '').trim()) || 0;
-            const original_ref_paid = parseFloat($row.find('.ref_paid').text().replace(',', '').trim()) || 0;
-            const original_ref_advance_paid = parseFloat($row.find('.ref_advance_paid').text().replace(',', '').trim()) || 0;
-            let totalAllocated = matchedAllocations.reduce((sum, a) => sum + parseFloat(a.allocate_amount), 0);
-            totalAllocated += original_ref_advance_paid;
-            const new_balance = Math.max(0, original_ref_total - totalAllocated);
+            if (matchedAllocations.length > 0) {
+                const original_ref_total = parseFloat($row.find('.ref_total').text().replace(',', '').trim()) || 0;
+                const original_ref_paid = parseFloat($row.find('.ref_pre_paid').text().replace(',', '').trim()) || 0;
+                const original_ref_advance_paid = parseFloat($row.find('.ref_advance_paid').text().replace(',', '').trim()) || 0;
+                let totalAllocated = matchedAllocations.reduce((sum, a) => sum + parseFloat(a.allocate_amount), 0);
+                totalAllocated += original_ref_advance_paid;
+                totalAllocated += original_ref_paid;
+                const new_balance = Math.max(0, original_ref_total - totalAllocated);
 
-            $row.find('.ref_paid').text(totalAllocated.toFixed(2));
-            $row.find('.ref_balance').text(new_balance.toFixed(2));
-            $row.find('.ref_paid_show').text(totalAllocated.toFixed(2));
+                $row.find('.ref_paid').text(totalAllocated.toFixed(2));
+                $row.find('.ref_balance').text(new_balance.toFixed(2));
+                $row.find('.ref_paid_show').text(totalAllocated.toFixed(2));
 
-        }
-    });
+            }
+        });
+    }
 
      $('#paymentDetailsTable tbody tr').each(function () {
         const $row = $(this);
         const methodName = $row.find('td:eq(0)').text().trim(); 
         let originalAmount = parseFloat($row.find('.pay_amount').text().replace(',', '').trim());
         let newBalance = originalAmount;
+        
         allocations.forEach(allocation => {
-            if (allocation.payment_method === methodName && allocation.row_status == 1) {
+            if (allocation.payment_method === methodName) {
                 if(allocation.allocate_amount > newBalance){
                     alert("Allocation amount exceeds available balance for " + methodName);
                     errorFlag = true;

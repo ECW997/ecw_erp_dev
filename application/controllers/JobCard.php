@@ -127,6 +127,17 @@ class JobCard extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function getPaymentMethod(){
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->JobCardinfo->getPaymentMethod($this->api_token,$form_data);
+		echo json_encode($response);
+	}
+
+
     public function createJobCard() {
         $form_data = $this->input->post('data');
 
@@ -302,6 +313,7 @@ class JobCard extends CI_Controller {
 			'vat_reg_type' => $this->input->post('vat_reg_type'),
 			'vat_number' => $this->input->post('vat_number'),
 			'price_category' => $this->input->post('price_category'),
+			'payment_method' => $this->input->post('payment_method'),
 			'jobcard_id' => $this->input->post('jobcard_id')
         ];
 

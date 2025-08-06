@@ -32,7 +32,7 @@
             margin-bottom: 8px;
             padding: 6px 0;
             border-bottom: 2px solid #000;
-            page-break-inside: avoid;
+            page-break-after: avoid;
         }
 
         .document-header h1 {
@@ -52,7 +52,7 @@
         /* Main Information Section */
         .main-info-section {
             margin-bottom: 8px;
-            page-break-inside: avoid;
+            page-break-after: avoid;
         }
 
         .section-header {
@@ -65,13 +65,14 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 0;
+            page-break-after: avoid;
         }
 
         .main-info-table {
             width: 100%;
             border-collapse: collapse;
             border: 1px solid #000;
-            font-size: 9px;
+            font-size: 10px;
             margin-bottom: 6px;
         }
 
@@ -103,6 +104,7 @@
             border-collapse: collapse;
             margin-bottom: 6px;
             border: 1px solid #000;
+            page-break-after: avoid;
         }
 
         .job-header-table th {
@@ -110,7 +112,7 @@
             color: white;
             text-align: center;
             padding: 4px 3px;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: bold;
             border: 1px solid #000;
             text-transform: uppercase;
@@ -130,6 +132,7 @@
             padding: 4px 6px;
             font-weight: bold;
             font-size: 10px;
+            page-break-after: avoid;
         }
 
         .job-items-container {
@@ -147,13 +150,14 @@
         .job-item-content {
             width: 100%;
             border-collapse: collapse;
+            border: 1px solid #000;
         }
 
         .job-item-content td {
             padding: 4px;
-            border-right: 1px solid #ddd;
+            border: 1px solid #666;
             vertical-align: top;
-            font-size: 9px;
+            font-size: 10px;
         }
 
         .job-item-content td:last-child {
@@ -174,6 +178,7 @@
 
         .job-remarks {
             width: 44%;
+            font-weight: 500;
         }
 
         .job-quantity {
@@ -188,6 +193,7 @@
             text-align: center;
             max-height: 80px;
             overflow: hidden;
+            page-break-inside: avoid;
         }
 
         .image-container img {
@@ -199,8 +205,7 @@
 
         /* Signature Section */
         .signature-section {
-            margin-top: 4px;
-            border-top: 1px dotted #666;
+            margin-top: -4px;
             padding-top: 3px;
             page-break-inside: avoid;
         }
@@ -208,7 +213,7 @@
         .signature-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 7px;
+            font-size: 8px;
         }
 
         .signature-table th {
@@ -217,7 +222,7 @@
             padding: 1px;
             text-align: center;
             font-weight: bold;
-            font-size: 6px;
+            font-size: 9px;
             height: 14px;
         }
 
@@ -226,7 +231,7 @@
             padding: 1px;
             text-align: center;
             height: 14px;
-            font-size: 7px;
+            font-size: 10px;
         }
 
         /* Page Break Controls */
@@ -250,7 +255,7 @@
 
         /* Category Separators */
         .category-separator {
-            border-bottom: 1px dashed #666;
+            border-bottom: 2px dashed #000;
             margin: 8px 0;
             height: 1px;
             page-break-after: avoid;
@@ -300,6 +305,14 @@
             .job-item {
                 break-inside: avoid;
             }
+            
+            .image-container {
+                break-inside: avoid;
+            }
+            
+            .signature-section {
+                break-inside: avoid;
+            }
         }
 
         /* Footer Space */
@@ -310,6 +323,7 @@
             text-align: center;
             font-size: 8px;
             color: #666;
+            page-break-before: avoid;
         }
     </style>
 </head>
@@ -323,8 +337,14 @@
             <div class="document-header">
                 <h1>Job Card Quotation</h1>
                 <div class="company-info">ECW Software Solutions</div>
+                <table style="width: 100%; margin-top: 5px;">
+                    <tr>
+                        <td style="font-size:14px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <td style="font-size:14px; font-weight:bold; text-align:right; padding:0px; width:50%;">Handover Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
+                    </tr>
+                </table>
             </div>
-
+            
             <!-- Main Information Section -->
             <div class="main-info-section">
                 <div class="section-header">Customer & Job Information</div>
@@ -355,7 +375,7 @@
                     </tr>
                     <tr>
                         <th>Vehicle No:</th>
-                        <td><?= $main_data['customer_vehicle_number'] ?? 'N/A' ?></td>
+                        <td><?= $main_data['vehicle_number'] ?? 'N/A' ?></td>
                         <th>Vehicle Type:</th>
                         <td>
                             <?= ($main_data['brand_name'] ?? '') . 
@@ -378,7 +398,7 @@
                         <th>Created Date:</th>
                         <td><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></td>
                         <th>Created At:</th>
-                        <td><?= $main_data['branch'] ?? 'N/A' ?></td>
+                        <td><?= date('h:i A', strtotime($main_data['jobcard_date'])) ?></td>
                     </tr>
                     <tr>
                         <th>Job Start:</th>
@@ -438,10 +458,10 @@
                                         <td class="job-number"><?= $joblist_cnt ?></td>
                                         <td class="job-description">
                                             <strong><?= $joblist['option_group_text'] ?? 'N/A' ?></strong>
-                                            <br><?= $joblist['option_text'] ?? 'N/A' ?>
                                         </td>
                                         <td class="job-remarks">
-                                            <?= $joblist['combined_option'] ?? 'N/A' ?>
+                                            <?= $joblist['option_text'] ?? 'N/A' ?> <br>
+                                            <?= $joblist['combined_option'] ?? 'N/A' ?> <?= ($joblist['description'] != 'image') ? ($joblist['child_value_name'] ?? ''):'' ?>
                                             
                                             <?php if($joblist['description'] == 'image'): ?>
                                                 <div class="image-container">
@@ -506,7 +526,7 @@
                                     </table>
                                 </div>
                             </div>
-                            
+                            <div style="border-bottom: 1px dashed #000;margin_bottom:4px"></div>
                             <?php $joblist_cnt++; ?>
                         <?php endforeach; ?>
                     </div>
@@ -520,11 +540,27 @@
             <?php endforeach; ?>
         </div>
 
+        <table style="border-collapse: collapse; border-spacing: 0; width: 100%; margin-top: 30px;">
+            <tr>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">...............................................</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">...............................................</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">...............................................</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">...............................................</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">...............................................</td>
+            </tr>
+            <tr>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">Customer</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">Sales Person Job &amp; Price Accepted By</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">Showroom Manager Technical Approval</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">Head Of Operation Production Accepted By</td>
+                <td style="font-size:10px; font-weight:bold; text-align:center; padding:3px; width: 20%;">Job Coordinator Before Pics</td>
+            </tr>
+        </table>
+       
         <div class="document-footer">
             <p>This job card was generated on <?= date('d/m/Y H:i:s') ?> | ECW Software Solutions</p>
             <p>Please retain this document for your records</p>
         </div>
-
     </div>
 </body>
 </html>

@@ -135,7 +135,7 @@ tr {
 <footer>
 	<table>
 		<tr>
-			<td style="width:65%;" class="footer_text">EDIRISINGHA GROUP (PVT.) LTD</td>
+			<td style="width:65%;" class="footer_text">Edirisingha Cushion Works (Pvt) Ltd</td>
 			<td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
 			<td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
 				<i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>
@@ -155,7 +155,6 @@ tr {
 	</table>
 </footer>
 
-<?= $header['print_receipt_cnt'] ?>
 <?php foreach ($invoices as $inv_index => $invoice): ?>
     <div style="<?= ($inv_index < count($invoices) - 1) ? 'page-break-after: always;' : '' ?>">
         <div style="margin-bottom: 20px;">
@@ -172,7 +171,7 @@ tr {
                         <th class="datatable_td" style="width:15%">AMOUNT</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody>   
                     <?php foreach ($invoice['invoice_details'] as $i => $item): ?>
                     <tr>
                         <td class="datatable_data_td"><?= $i+1 ?></td>

@@ -71,6 +71,7 @@ class Payment extends CI_Controller {
 			'payment_by' => $this->input->post('payment_by'),
 			'payment_note' => $this->input->post('payment_note'),
 			'payment_type' => $this->input->post('payment_type'),
+			'payment_series' => $this->input->post('payment_series'),
 			'branch_id' => $this->input->post('branch_id'),
 			'company_id' => $this->input->post('company_id'),
 			'payment_data' => $this->input->post('payment_data'),

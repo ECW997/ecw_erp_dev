@@ -41,7 +41,7 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
-                        <select class="form-control form-control-sm " id="vat_reg_type" name="vat_reg_type" required>
+                        <select class="form-control form-control-sm" id="vat_reg_type" name="vat_reg_type">
                             <option value="">Select VAT Type</option>
                             <option value="1">Non VAT</option>
                             <option value="2">VAT</option>
@@ -51,7 +51,7 @@
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">VAT Registration No <span
                                 class="text-danger">*</span></h6>
-                        <input type="text" class="form-control " id="vat_number" name="vat_number"
+                        <input type="text" class="form-control" id="vat_number" name="vat_number"
                             placeholder="VAT Registration No">
                     </div>
                 </div>
@@ -64,7 +64,13 @@
                         </select>
 
                     </div>
-                    
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">Payment Method</h6>
+                        <select class="form-control form-control-sm required-field" id="payment_method" name="payment_method"
+                            required style="pointer-events: none;">
+                            <option value="">Select</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -140,12 +146,37 @@
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
+                        <select class="form-control form-control-sm" id="edit_vat_reg_type"
+                            name="edit_vat_reg_type">
+                            <option value="">Select VAT Type</option>
+                            <option value="1">Non VAT</option>
+                            <option value="2">VAT</option>
+                            <option value="3">SVAT</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">VAT Registration No <span
+                                class="text-danger">*</span></h6>
+                        <input type="text" class="form-control" id="edit_vat_number" name="edit_vat_number"
+                            placeholder="VAT Registration No">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
                         <label class="col-form-label">Price Category</label>
                         <select class="form-select" id="p_category" name="p_category">
                             <option selected>Open this select menu</option>
                             <option value="1">Small</option>
                             <option value="2">Medium</option>
                             <option value="3">Large</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="col-form-label me-2 text-nowrap">Payment Method</h6>
+                        <select class="form-control form-control-sm edit_required-field" id="edit_payment_method" name="edit_payment_method"
+                            required style="pointer-events: none;">
+                            <option value="">Select</option>
                         </select>
                     </div>
                 </div>
@@ -227,6 +258,97 @@ $(document).ready(function() {
             }
         }
     });
+
+    let edit_price_category = $('#edit_price_category');
+    edit_price_category.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getPriceCategory',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
+    let payment_method = $('#payment_method');
+    payment_method.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getPaymentMethod',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
+    let edit_payment_method = $('#edit_payment_method');
+    edit_payment_method.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getPaymentMethod',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
 });
 
 
@@ -239,6 +361,7 @@ function confirmCreateJobCard() {
     customerData.handover_date = $('#handover_date').val();
     customerData.status = 'DRAFT';
     customerData.price_category = $('#pc_category').val();
+    customerData.payment_method = $('#payment_method').val();
     customerData.vat_reg_type = $('#vat_reg_type').val();
     customerData.vat_number = $('#vat_number').val();
     customerData.nic = $('#nic_number').val();
@@ -256,14 +379,19 @@ function confirmCreateJobCard() {
 }
 
 function confirmEditJobCard() {
-    customerData.name = $('#cus_name').val();
-    customerData.contact = $('#contact_no').val();
-    customerData.address1 = $('#address1').val();
-    customerData.address2 = $('#address2').val();
-    customerData.schedule_date = $('#schedule_date').val();
-    customerData.handover_date = $('#handover_date').val();
-    customerData.status = 'DRAFT';
-    customerData.price_category = $('#pc_category').val();
+    var edit_cus_id = <?= json_encode($job_main_data[0]['customer_id'] ?? 0) ?>;
+    var edit_cus_name = $('#edit_cus_name').val();
+    var edit_contact_no = $('#edit_contact_no').val();
+    var edit_nic_number = $('#edit_nic_number').val();
+    var edit_address1 = $('#edit_address1').val();
+    var edit_address2 = $('#edit_address2').val();
+    var edit_email = $('#edit_email').val();
+    var edit_schedule_date = $('#edit_schedule_date').val();
+    var edit_delivery_date = $('#edit_delivery_date').val();
+    var edit_vat_reg_type = $('#edit_vat_reg_type').val();
+    var edit_vat_number = $('#edit_vat_number').val();
+    var edit_price_category = $('#edit_price_category').val();
+    var edit_payment_method= $('#edit_payment_method').val();
 
     $('#createJobCardConfirmModal').modal('hide');
     $('#jobHeaderModal').modal('hide');
@@ -271,10 +399,42 @@ function confirmEditJobCard() {
     $('#main_job_details').modal('hide');
     $('.modal-backdrop').remove();
 
-    editJobCard();
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        data: {
+            cus_id: edit_cus_id,
+            cus_name: edit_cus_name,
+            contact_no: edit_contact_no,
+            nic_number: edit_nic_number,
+            address1: edit_address1,
+            address2: edit_address2,
+            email: edit_email,
+            schedule_date:edit_schedule_date,
+            delivery_date: edit_delivery_date,
+            vat_reg_type: edit_vat_reg_type,
+            vat_number: edit_vat_number,
+            price_category: edit_price_category,
+            payment_method:edit_payment_method,
+            jobcard_id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>
+        },
+        url: '<?php echo base_url() ?>JobCard/updateJobCardHeader',
+        success: function(result) {
+            if (result.status == true) {
+                success_toastify(result.message);
+                setTimeout(function() {
+                    window.location.href = '<?= base_url("JobCard/jobCardDetailIndex/") ?>' + result
+                        .data;
+                }, 1000);
+            } else {
+                falseResponse(result);
+            }
+        }
+    });
 }
 
 function createNewJobCard() {
+    
     $.ajax({
         type: "POST",
         dataType: 'json',
