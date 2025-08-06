@@ -1,14 +1,17 @@
 /* colors */
-html {
-    width: 100%;
+html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     background-color: #eff3f4;
     position: relative;
     width: 100%;
+    min-height: 100vh;
     height: 100vh; 
+    overflow: hidden;
     font-size: 16px;
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 400;
@@ -27,6 +30,7 @@ body {
     display: none;
     height: 100vh;
 }
+
 #loginform {
     display: none;
 }
@@ -46,7 +50,7 @@ body {
     transform: translate(-50%, -50%);
     display: block;
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
     /* Transparent dark background */
     background: rgba(30, 30, 30, 0.7); /* dark color with transparency */
     margin: 0;
@@ -110,9 +114,9 @@ body {
   form label {
     margin: 0 0 12px;
     display: block;
-    font-size: 1.25em;
+    /* font-size: 1.25em; */
     color: #f1f4f5;
-    font-weight: 500;
+    /* font-weight: 500; */
     font-family: inherit;
   }
   form select {
@@ -345,3 +349,5 @@ body {
     color: rgba(255, 255, 255, 1);
   }
 }
+
+

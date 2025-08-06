@@ -13,18 +13,17 @@
                         <h6 class="col-form-label me-2 text-nowrap">Confirm Customer Info</h6>
                         <input type="text" class="form-control mb-2 required-field" id="cus_name" name="cus_name"
                             placeholder="Customer Name">
-                        <input type="text" class="form-control mb-2 required-field" id="contact_no" name="contact_no"
+                        <input type="text" class="form-control mb-2" id="contact_no" name="contact_no"
                             placeholder="Contact No">
-                        <input type="text" class="form-control required-field" id="nic_number"
-                            name="nic_number" placeholder="NIC No">
+                        <input type="text" class="form-control" id="nic_number" name="nic_number" placeholder="NIC No">
                     </div>
                     <div class="col">
                         <h6 class="col-form-label me-2 text-nowrap">Address</h6>
                         <input type="text" class="form-control mb-2 required-field" id="address1" name="address1"
                             placeholder="Address 1">
-                        <input type="text" class="form-control mb-2" id="address2" name="address2" placeholder="Address 2">
-                        <input type="text" class="form-control" id="email"
-                            name="email" placeholder="E-mail">
+                        <input type="text" class="form-control mb-2" id="address2" name="address2"
+                            placeholder="Address 2">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="E-mail">
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -42,8 +41,7 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
-                        <select class="form-control form-control-sm" id="vat_reg_type"
-                            name="vat_reg_type">
+                        <select class="form-control form-control-sm" id="vat_reg_type" name="vat_reg_type">
                             <option value="">Select VAT Type</option>
                             <option value="1">Non VAT</option>
                             <option value="2">VAT</option>
@@ -64,7 +62,7 @@
                             required style="pointer-events: none;">
                             <option value="">Select</option>
                         </select>
-                        
+
                     </div>
                     <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">Payment Method</h6>
@@ -121,31 +119,28 @@
                 <div class="mb-3 row">
                     <div class="col">
                         <label class="form-label">Confirm Customer Info</label>
-                        <input type="text" class="form-control mb-2 edit_required-field" id="edit_cus_name" name="edit_cus_name"
+                        <input type="text" class="form-control mb-2" id="edit_cus_name" name="edit_cus_name"
                             placeholder="Customer Name">
-                        <input type="text" class="form-control edit_required-field" id="edit_contact_no" name="edit_contact_no"
+                        <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no"
                             placeholder="Contact No">
-                        <input type="text" class="form-control edit_required-field" id="edit_nic_number"
-                            name="edit_nic_number" placeholder="NIC No">
                     </div>
                     <div class="col">
                         <label class="form-label">Address</label>
-                        <input type="text" class="form-control mb-2 edit_required-field" id="edit_address1" name="edit_address1"
+                        <input type="text" class="form-control mb-2" id="edit_address1" name="edit_address1"
                             placeholder="Address 1">
                         <input type="text" class="form-control" id="edit_address2" name="edit_address2"
                             placeholder="Address 2">
-                        <input type="text" class="form-control" id="edit_email" name="edit_email" placeholder="E-mail">
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Schedule Date</label>
-                        <input type="datetime-local" class="form-control edit_required-field" id="edit_schedule_date"
+                        <input type="datetime-local" class="form-control" id="edit_schedule_date"
                             name="edit_schedule_date" placeholder="Schedule Date">
                     </div>
                     <div class="col-6">
                         <label class="col-form-label">Delivery Date</label>
-                        <input type="date" class="form-control edit_required-field" id="edit_delivery_date" name="edit_delivery_date"
+                        <input type="date" class="form-control" id="edit_delivery_date" name="edit_delivery_date"
                             placeholder="Delivery Date">
                     </div>
                 </div>
@@ -170,8 +165,11 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Price Category</label>
-                        <select class="form-control form-control-sm edit_required-field" id="edit_price_category" name="edit_price_category">
+                        <select class="form-select" id="p_category" name="p_category">
                             <option selected>Open this select menu</option>
+                            <option value="1">Small</option>
+                            <option value="2">Medium</option>
+                            <option value="3">Large</option>
                         </select>
                     </div>
                     <div class="col-6">
@@ -184,34 +182,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="editJobCardBtn" class="btn btn-warning">Edit Job Card<i
+                <button type="button" id="createJobCardBtn" class="btn btn-warning">Edit Job Card<i
                         class="fas fa-plus-circle ml-2"></i></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="updateJobCardConfirmModal" tabindex="-1" aria-labelledby="updateJobCardConfirmModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content next-step-confirmation">
-            <div class="modal-header next-step-header">
-                <h5 class="next-step-title" id="updateJobCardConfirmModalLabel">Proceed to Create Job Card</h5>
-                <button type="button" class="btn-close next-step-btn-close" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <i class="fas fa-question-circle next-step-icon"></i>
-                <p class="mb-0">Are you sure you want to proceed?<br>This action will create a new Job Card and cannot
-                    be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary next-step-btn-cancel" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="button" class="btn btn-primary next-step-btn-confirm" onclick="confirmEditJobCard()">
-                    <i class="fas fa-arrow-right me-2"></i>Proceed
-                </button>
             </div>
         </div>
     </div>
@@ -249,26 +221,8 @@ $(document).on('click', '#createJobCardBtn', function() {
             $(this).removeClass('is-invalid');
         }
     });
-    
     if (isValid) {
         $('#createJobCardConfirmModal').modal('show');
-    }
-})
-
-$(document).on('click', '#editJobCardBtn', function() {
-    let isValid = true;
-    $('.edit_required-field').each(function() {
-        let value = $(this).val();
-
-        if (!value || value === "") {
-            $(this).addClass('is-invalid');
-            isValid = false;
-        } else {
-            $(this).removeClass('is-invalid');
-        }
-    });
-    if (isValid) {
-        $('#updateJobCardConfirmModal').modal('show');
     }
 })
 
@@ -439,8 +393,10 @@ function confirmEditJobCard() {
     var edit_price_category = $('#edit_price_category').val();
     var edit_payment_method= $('#edit_payment_method').val();
 
-    $('#updateJobCardConfirmModal').modal('hide');
+    $('#createJobCardConfirmModal').modal('hide');
+    $('#jobHeaderModal').modal('hide');
     $('#jobHeaderModal_edit').modal('hide');
+    $('#main_job_details').modal('hide');
     $('.modal-backdrop').remove();
 
     $.ajax({

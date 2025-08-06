@@ -28,10 +28,10 @@
     <div id="particles-js" style="position:fixed; width:100%; height:100%; z-index:0;"></div>
     <div id="login-page"
         style="background-image: url('images/login_bg1.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center;">
-        <img class="login_logo" src="<?php echo base_url() ?>images/ecw_logo3.png" />
+        <img class="login_logo planet-spin" src="<?php echo base_url() ?>images/ecw_logo3.png" />
         <!-- partial:index.partial.html -->
         <form id="loginform" action="<?php echo base_url() ?>Auth/LoginUser" method="post">
-            <div class="svgContainer">
+            <!-- <div class="svgContainer">
                 <div>
                     <svg class="mySVG" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                         viewBox="0 0 200 200">
@@ -196,7 +196,7 @@
                         </g>
                     </svg>
                 </div>
-            </div>
+            </div> -->
 
             <div class="inputGroup inputGroup1">
                 <label for="loginEmail" id="loginEmailLabel">User Name</label>

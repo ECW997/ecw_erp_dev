@@ -77,6 +77,7 @@ include "include/topnavbar.php";
                                             <option value="1">Stitching Design</option>
                                             <option value="2">Marketing</option>
                                             <option value="3">Production</option>
+                                            <option value="4">DOT Design</option>
 
                                         </select>
                                     </div>
