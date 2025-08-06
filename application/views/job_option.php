@@ -11,6 +11,11 @@ include "include/topnavbar.php";
             /* Adjusts modal width to 95% of the viewport */
             width: 65vw;
         }
+
+        .custom-modal .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
         </style>
         <?php include "include/menubar.php"; ?>
     </div>
@@ -140,10 +145,10 @@ include "include/topnavbar.php";
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
-                            			<label class="small font-weight-bold">Description*</label>
-                            			<input type="text" class="form-control form-control-sm" name="description"
-                            				id="description">
-                            		</div>
+                                        <label class="small font-weight-bold">Description*</label>
+                                        <input type="text" class="form-control form-control-sm" name="description"
+                                            id="description">
+                                    </div>
                                     <div class="form-group mb-1">
                                         <button type="button" id="addtolistBtn"
                                             class="btn btn-primary btn-sm px-4 mt-auto p-2">
@@ -293,7 +298,7 @@ $(document).ready(function() {
                 return {
                     term: params.term || '',
                     page: params.page || 1,
-                    sub_job_category:sub_job_category.val()
+                    sub_job_category: sub_job_category.val()
                 }
             },
             cache: true,
@@ -446,7 +451,8 @@ $(document).ready(function() {
                 url: '<?php echo base_url() ?>JobOption/jobOptionEdit/' + id,
                 success: function(result) {
                     if (result.status) {
-                        var Option_Group = new Option(result.data.option_group_name, result.data.option_group, true, true);
+                        var Option_Group = new Option(result.data.option_group_name, result
+                            .data.option_group, true, true);
                         $('#option_group_id').append(Option_Group).trigger('change');
 
                         $('#recordID').val(result.data.id);
