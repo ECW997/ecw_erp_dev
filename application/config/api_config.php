@@ -51,9 +51,10 @@ $config['api_endpoints'] = [
     'job_option_value_status_v1' => '/v1/job_option_value_status',
     'get_images_by_category_v1' => '/v1/get_images_by_category',
 
+    'job_card_v1' => '/v1/job_card',
     'customer_details_v1' => '/v1/customer_details',
     'get_sel2_pricecategory_v1' => '/v1/get_sel2_price_category',
-    'job_card_v1' => '/v1/job_card',
+    'get_sel2_payment_method_v1' => '/v1/get_sel2_payment_method',
     'insertJobCardDetail_v1' => '/v1/insertJobCardDetail',
     'get_sub_job_base_main_v1' => '/v1/get_sub_job_base_main',
     'get_item_parent_options_v1' => '/v1/get_item_parent_options',
@@ -87,8 +88,6 @@ $config['api_endpoints'] = [
     'cancel_invoice_v1' => '/v1/cancelInvoice',
 
     'get_invoice_pdf_v1' => '/v1/get_invoice_pdf',
-//     'delete_invoice_v1' => '/v1/deleteInvoice',
-
 
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
@@ -100,6 +99,8 @@ $config['api_endpoints'] = [
     'confirm_payment_v1' => '/v1/confirm_payment',
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
+    'cancel_payment_v1' => '/v1/cancel_payment',
+
 
     'item_v1' => '/v1/item',
 ];

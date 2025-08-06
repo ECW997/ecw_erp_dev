@@ -749,21 +749,25 @@
                     const priceSelector = '#item_price_' + parentUniqueKey;
                     const $linePriceInput = $(linePriceSelector);
                     const $priceInput = $(priceSelector);
-                     console.log(parentUniqueKey, result.data.Price);
+                    //  console.log(parentUniqueKey, result.data.Price);
                     if ($linePriceInput.length) {
                         $linePriceInput
                         .val(result.data.Price)
                         .data('original_price', result.data.Price);
 
                         let total = 0;
+                        let count = 0;
                         $(`input[name="unit_price"][parentId="${parentUniqueKey}"]`).each(function () {
                             const val = parseFloat($(this).val()) || 0;
                             total += val;
+                            count++;
                         });
 
+                        let average = count ? total / count : 0;
+                        
                         $priceInput
-                            .val(total.toFixed(2))
-                            .data('original_price', total);
+                            .val(average.toFixed(2))
+                            .data('original_price', average);
                         setTimeout(() => schedulePriceUpdate(selectElement), 500);
                     }else{
                             const price = parseFloat(result.data.Price) || 0;

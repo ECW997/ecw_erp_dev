@@ -248,34 +248,34 @@ $(document).ready(function() {
     });
 
     // Add this block for delete functionality
-    $(document).on('click', '.btnDeleteInvoice', function() {
-        var invoiceId = $(this).data('id');
+    // $(document).on('click', '.btnDeleteInvoice', function() {
+    //     var invoiceId = $(this).data('id');
 
-        if (!confirm("Are you sure you want to delete this invoice?")) {
-            return;
-        }
+    //     if (!confirm("Are you sure you want to delete this invoice?")) {
+    //         return;
+    //     }
 
-        $.ajax({
-            url: base_url + "Invoice/deleteInvoice",
-            type: "POST",
-            data: {
-                id: invoiceId
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response && response.status == true) {
-                    success_toastify(response.message);
-                    $('#dataTable').DataTable().ajax.reload(null,
-                        false);
-                } else {
-                    falseResponse(response);
-                }
-            },
-            error: function() {
-                alert("Server error occurred.");
-            }
-        });
-    });
+    //     $.ajax({
+    //         url: base_url + "Invoice/deleteInvoice",
+    //         type: "POST",
+    //         data: {
+    //             id: invoiceId
+    //         },
+    //         dataType: "json",
+    //         success: function(response) {
+    //             if (response && response.status == true) {
+    //                 success_toastify(response.message);
+    //                 $('#dataTable').DataTable().ajax.reload(null,
+    //                     false);
+    //             } else {
+    //                 falseResponse(response);
+    //             }
+    //         },
+    //         error: function() {
+    //             alert("Server error occurred.");
+    //         }
+    //     });
+    // });
 
 });
 
@@ -443,7 +443,7 @@ function loadPaymentListTable(){
                         '<i class="fas fa-external-link-alt"></i></a>';
 
 
-                    if (full['is_confirmed'] == "0" && deletecheck == 1) {
+                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3") {
                         button +=
                             '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
                             full['id'] + '">' +

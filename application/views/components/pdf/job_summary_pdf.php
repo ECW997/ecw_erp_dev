@@ -44,7 +44,7 @@
     }
 
     .content {
-    	margin-top: 100px;
+    	margin-top: 120px;
     }
 
     .header_th {
@@ -117,34 +117,32 @@
         <div></div>
         <tr>
         	<th style="width:10%;" class="header_th">Cus. Code</th>
-        	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_code'] ?></th>
+        	<th style="width:20%;" class="header_th"><span> : </span><?= $main_data['customer_code'] ?></th>
         	<th style="width:10%;" class="header_th">Job No.</th>
         	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['job_card_number'] ?></th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Cus. Name</th>
-        	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_name'] ?? 'N/A' ?></th>
+        	<th style="width:20%;" class="header_th"><span> : </span><?= $main_data['customer_name'] ?? 'N/A' ?></th>
         	<th style="width:10%;" class="header_th">PO No.</th>
         	<th style="width:10%;" class="header_th"><span> : </span>None</th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Address</th>
         	<th style="width:20%;" class="header_th"><span> : </span><?= ($main_data['address'] ?? '') . 
-                        (!empty($main_data['address_2']) ? ', ' . $main_data['address_2'] : '') . 
-                        (!empty($main_data['city']) ? ', ' . $main_data['city'] : '') . 
-                        (!empty($main_data['district']) ? ', ' . $main_data['district'] : '') ?></th>
+                        (!empty($main_data['address_2']) ? ', ' . $main_data['address_2'] : '')  ?></th>
         	<th style="width:10%;" class="header_th">S.P.Code</th>
-        	<th style="width:10%;" class="header_th"><span> : </span>02</th>
+        	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['sales_person_code'] ?? 'N/A' ?></th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Vehicle No.</th>
-        	<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_vehicle_number'] ?? 'N/A' ?></th>
+        	<th style="width:20%;" class="header_th"><span> : </span><?= $main_data['vehicle_number'] ?? 'N/A' ?></th>
         	<th style="width:10%;" class="header_th">Created Date</th>
         	<th style="width:10%;" class="header_th"><span> : </span><?= date('d/m/Y') ?></th>
         </tr>
         <tr>
         	<th style="width:10%;" class="header_th">Vehicle Type.</th>
-        	<th style="width:25%;" class="header_th"><span> : </span><?= ($main_data['brand_name'] ?? '') . 
+        	<th style="width:20%;" class="header_th"><span> : </span><?= ($main_data['brand_name'] ?? '') . 
                         (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?></th>
         	<th style="width:10%;" class="header_th">NIC No</th>
         	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['nic_number'] ?? 'N/A' ?></th>
@@ -155,7 +153,7 @@
 <footer>
 	<table style="table-layout: fixed;padding:3px;width:100%;border-collapse: collapse;">
 		<tr>
-			<td style="width:65%;" class="footer_text">EDIRISINGHA GROUP (PVT.) LTD</td>
+			<td style="width:65%;" class="footer_text">Edirisingha Cushion Works (Pvt) Ltd</td>
 			<td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
 			<td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
 				<i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>

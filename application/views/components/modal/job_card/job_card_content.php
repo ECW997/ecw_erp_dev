@@ -176,7 +176,8 @@
                         </td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
-                        <td colspan="3" class="text-left"></td>
+                        <td class="text-left fw-bold">Payment Method</td>
+                        <td colspan="2" class="text-left"></td>
                     </tr>
                     <tr>
                         <td class="text-left" id="content_cus_contact">
@@ -186,7 +187,9 @@
                             <?= $job_main_data[0]['handover_date'] ?? '' ?></td>
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">
                             <?= $job_main_data[0]['total_days'] ?? '' ?></td>
-                        <td colspan="2" class="text-left"></td>
+                       <td class="text-left fw-bold text-success">
+                            <?= $job_main_data[0]['payment_type'] ?? '' ?></td>
+                        <td class="text-left"></td>
                         <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                 data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit" id="openEditModalBtn"><i
                                     class="fas fa-edit"></i></button></td>
@@ -323,6 +326,10 @@ $(document).ready(function() {
 
         $('#edit_price_category').append(
             new Option(<?= json_encode($job_main_data[0]['price_category_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['price_cat'] ?? '') ?>, true, true)
+        ).trigger('change');
+
+        $('#edit_payment_method').append(
+            new Option(<?= json_encode($job_main_data[0]['payment_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['peyment_method'] ?? '') ?>, true, true)
         ).trigger('change');
 
         $('#p_category option').each(function() {

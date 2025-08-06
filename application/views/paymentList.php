@@ -235,7 +235,7 @@ $(document).on('click', '.btnCancel', function(e) {
                 }
             },
             error: function() {
-                error_toastify('Error deleting payment. Please try again.');
+                error_toastify('Error canceling payment. Please try again.');
             }
         });
     }
