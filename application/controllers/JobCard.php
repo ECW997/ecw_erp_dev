@@ -137,7 +137,6 @@ class JobCard extends CI_Controller {
 		echo json_encode($response);
 	}
 
-
     public function createJobCard() {
         $form_data = $this->input->post('data');
 

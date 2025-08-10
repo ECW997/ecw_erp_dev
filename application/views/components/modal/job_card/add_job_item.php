@@ -338,6 +338,8 @@ function continueAddToJobCard(inputMethod,btn){
 
             var lineDiscount = netPrice - finalNetPrice;
 
+            var remarkField = $('#remark_' + groupKey).val();
+
             preValue = preValue || selectedVal;
             if(optionType == 'Type' || optionType == 'Primary'){
                 $(this).data('pre-value', selectedVal);
@@ -384,6 +386,7 @@ function continueAddToJobCard(inputMethod,btn){
                     line_input_discount: lineInputDiscount || "0",
                     line_discount: lineDiscount || "0",
                     final_net_price: finalNetPrice || "0",
+                    remark: remarkField,
                     parent_id:parentId,
                     pre_value:preValue
                 });

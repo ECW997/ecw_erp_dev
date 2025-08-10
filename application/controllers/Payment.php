@@ -125,6 +125,8 @@ class Payment extends CI_Controller {
 	public function verifyPayment() {
 		$form_data = [
 			'recordID' => $this->input->post('recordID'),
+			'payment_note' => $this->input->post('payment_note'),
+			'payment_series' => $this->input->post('payment_series'),
         ];
 		$response = $this->Paymentinfo->verifyPayment($this->api_token,$form_data);
  

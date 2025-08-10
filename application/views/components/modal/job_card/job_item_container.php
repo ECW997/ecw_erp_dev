@@ -49,6 +49,7 @@
                                                     $line_discount = $option['line_discount'] ?? '';
                                                     $line_discount_type = $option['line_discount_type'] ?? null;
                                                     $line_discount_pc = $option['line_discount_pc'] ?? '';
+                                                    $remark = $option['remark'] ?? '';
                                                 ?>
                                                 <div class="option-item mb-4" data-option-container="<?= $uniqueKey ?>">
                                                     <div class="job-option-row option-row row g-3 align-items-center" data-level="0">
@@ -156,7 +157,19 @@
                                                                             value="<?= $net_amount ?>">
                                                                     </div>
                                                                 </div>
+
                                                             </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label class="form-label small mb-1">
+                                                                Remark 
+                                                                <span id="remark_save_status_<?= $uniqueKey ?>" class="text-danger"></span>
+                                                            </label>
+                                                            <input class="form-control form-control-sm text-left item-price remark_f" 
+                                                                type="text" id="remark_<?= $uniqueKey ?>" name="remark_<?= $uniqueKey ?>" 
+                                                                value="<?= $remark ?>" data-uniq-id="<?= $uniqueKey ?>" 
+                                                                oninput="markRemarkUnsaved(this)" 
+                                                                onkeydown="if (event.key === 'Enter') handleRemarkEnter(this);">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -793,6 +806,37 @@
             width: '100%',
         });
     }
+
+    function markRemarkUnsaved(inputElement) {
+        var uniqId = $(inputElement).data('uniq-id');
+        var $statusEl = $('#remark_save_status_' + uniqId);
+        $statusEl.text('Not Saved').removeClass('text-success').addClass('text-danger');
+    }
+
+    function handleRemarkEnter(inputElement) {
+        var uniqId = $(inputElement).data('uniq-id');
+        addToJobCard(2);
+        var $statusEl = $('#remark_save_status_' + uniqId);
+        $statusEl.text('Saved').removeClass('text-danger').addClass('text-success');
+    }
+
+    let remarkTimeouts = {};
+
+    $('.remark_f').on('input', function () {
+        const inputElement = this;
+        const uniqId = $(inputElement).data('uniq-id');
+
+        clearTimeout(remarkTimeouts[uniqId]);
+
+        remarkTimeouts[uniqId] = setTimeout(function () {
+            addToJobCard(2); 
+            
+            $('#remark_save_status_' + uniqId)
+                .text('Saved')
+                .removeClass('text-danger')
+                .addClass('text-success');
+        }, 1500);
+    });
 
     function clearRowData(parentUniqueKey){
         $('#item_price_' + parentUniqueKey).val('').removeClass('is-invalid');

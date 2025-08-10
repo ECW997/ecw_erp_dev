@@ -97,8 +97,7 @@ include "include/v2/topnavbar.php";
                                         	<div class="form-group">
                                         		<label class="form-label small fw-bold text-dark">Payment Series</label>
                                         		<select class="form-select form-select-sm input-highlight"
-                                        			name="PaymentSeries" id="PaymentSeries"
-                                        			onchange="getCustomerJObOrInvoiceDetails();" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
+                                        			name="PaymentSeries" id="PaymentSeries" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                         			<option value="">Select Type</option>
                                         			<option value="1"
                                         				<?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '1' ? 'selected' : '' ?>>
@@ -893,6 +892,9 @@ function loadPayAllocationDetail(header_id){
                                             <td class="d-none pay_details_id">${pay_details_id}</td>
                                             <td class="d-none row_id">${row_id}</td>
                                             <td class="d-none row_status">${status}</td>
+                                            <td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger delete-allocate-payment-btn" id="${row_id}" onclick="deleteRow(this,2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button></td>
                                         </tr>
                                     `);
 
@@ -946,6 +948,9 @@ function deleteRow(button,table) {
                     success_toastify(result.message);
                     if(header_id != 0){
                         loadPayDetail(header_id); 
+                        setTimeout(function() {
+                            location.reload();
+                        }, 200)
                     }
                 } else {
                     alert(result.message);
@@ -1041,6 +1046,8 @@ function updateBalances() {
 function confirmPayment() {
     const btn = document.getElementById('confirmPaymentBtn');
     let pay_header_id = $('#payment_record_id').val();
+    let payment_note = $('#paymentNote').val();
+    let Payment_series = $('#PaymentSeries').val();
     if (pay_header_id !='') {
         btn.disabled = true;
         btn.innerHTML = `Approving <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
@@ -1055,6 +1062,8 @@ function confirmPayment() {
             dataType: 'json',
             data: {
                 recordID:pay_header_id,
+                payment_note:payment_note,
+                payment_series:Payment_series
             },
             url: '<?php echo base_url() ?>Payment/verifyPayment',
             success: function(result) {

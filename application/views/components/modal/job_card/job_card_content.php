@@ -203,92 +203,80 @@
                 <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
-
         		<div class="details_section mb-2">
-        			<table class="w-100">
-        				<thead>
-        					<tr>
-        						<th colspan="2" style="width:35%"><?php echo $group['job_sub_category_text']; ?></th>
-        						<th class="text-right" style="width:10%">Price</th>
-        						<th class="text-right" style="width:5%">QTY</th>
-        						<th class="text-right" style="width:10%">Total</th>
-        						<th class="text-right" style="width:10%">O.Charges</th>
-        						<th class="text-right" style="width:10%">Discount</th>
-        						<th class="text-right" style="width:10%">Sub Total</th>
-                                <th class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">Action</th>
-        					</tr>
-        				</thead>
-        				<tbody>
-        					<?php foreach ($group['details'] as $detail): ?>
-        					<tr>
-        						<td class="text-left" style="width:15%">
-        							<?php echo $detail['option_group_text']; ?>
-        							-
-        							<?php echo $detail['option_text']; ?>
-        						</td>
-        						<td class="text-left" style="width:20%">
-        							<?php echo $detail['combined_option']; ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-        							<?php echo number_format($detail['list_price'], 2); ?>
-        						</td>
-        						<td class="text-right" style="width:5%">
-        							<?php echo $detail['qty']; ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-        							<?php echo number_format($detail['total'], 2); ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-                                </td>
-                                <td class="text-right" style="width:10%">
-                                    <?php echo $is_line_discount_approved ? (number_format($detail['line_discount'], 2)):(number_format(0, 2)); ?>
-                                </td>
+                    <table class="w-100 table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;"><?php echo $group['job_sub_category_text']; ?></th>
+                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">Description</th>
+                                <th style="width:15%; word-wrap: break-word; word-break: break-word; white-space: normal;">Remark</th>
+                                <th style="width:8%" class="text-right">Price</th>
+                                <th style="width:6%" class="text-right">QTY</th>
+                                <th style="width:9%" class="text-right">Total</th>
+                                <th style="width:7%" class="text-right">O.Charges</th>
+                                <th style="width:7%" class="text-right">Discount</th>
+                                <th style="width:8%" class="text-right">Sub Total</th>
+                                <th style="width:8%" class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($group['details'] as $detail): ?>
                                 <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
                                     $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
-                                   
                                     $listPrice = $detail['list_price'];
                                     $currentPrice = $detail['price'];
                                     $changeAmount = $listPrice - $currentPrice;
                                     $changePercentage = $listPrice != 0 ? ($changeAmount / $listPrice) * 100 : 0;
 
                                     $tooltipText = '
-                                     <div class="custom-tooltip-box text-start">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Standard Price:</span>
-                                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change Amount:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change %:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Price:</span>
-                                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
-                                        </div>
-                                    </div>';
-                                    ?>
-        						<td class="text-right" style="width:10%;">
-        							<span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
-        								<?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
-        								<?= $is_line_discount_approved == true ? (number_format($detail['net_amount'], 2)) : (number_format($detail['total'], 2)); ?>
-        							</span>
-        						</td>
-                                <td class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">
-                                    <button type="button" title="Delete" class="btn btn-sm btn-danger"
-                                                id="<?php echo $detail['parent_id']; ?>" job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" onclick="deleteJobItems(this)">
-                                                <i class="fas fa-trash"></i>
-                                    </button>
-        						</td>
-        					</tr>
-        					<?php endforeach; ?>
-        				</tbody>
-        			</table>
-        		</div>
+                                        <div class="custom-tooltip-box text-start">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Standard Price:</span>
+                                                <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Change Amount:</span>
+                                                <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Change %:</span>
+                                                <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Price:</span>
+                                                <span class="ml-3">' . number_format($listPrice, 2) . '</span>
+                                            </div>
+                                        </div>';
+                                ?>
+                                <tr>
+                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['option_group_text'] ?> - <?= $detail['option_text'] ?></td>
+                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['combined_option'] ?></td>
+                                    <td style="width:15%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= isset($detail['remark']) ? $detail['remark'] : '-' ?></td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right"><?= number_format($detail['list_price'], 2) ?></td>
+                                    <td style="width:6%; vertical-align: middle;" class="text-right"><?= $detail['qty'] ?></td>
+                                    <td style="width:9%; vertical-align: middle;" class="text-right"><?= number_format($detail['total'], 2) ?></td>
+                                    <td style="width:7%; vertical-align: middle;" class="text-right">-</td>
+                                    <td style="width:7%; vertical-align: middle;" class="text-right"><?= $is_line_discount_approved ? number_format($detail['line_discount'], 2) : number_format(0, 2) ?></td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right">
+                                        <span class="pe-2 ps-2 <?= $priceChangeHighlight ?>"
+                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : '' ?>>
+                                            <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
+                                        </span>
+                                    </td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>">
+                                        <button type="button" title="Delete" class="btn btn-sm btn-danger"
+                                                id="<?= $detail['parent_id'] ?>" 
+                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
+                                                onclick="deleteJobItems(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
         		<?php endforeach; }else { ?>
         		<div class="details_section mb-2">
         			<table class="w-100">

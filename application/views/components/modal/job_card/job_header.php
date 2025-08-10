@@ -43,7 +43,7 @@
                         <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
                         <select class="form-control form-control-sm" id="vat_reg_type" name="vat_reg_type">
                             <option value="">Select VAT Type</option>
-                            <option value="1">Non VAT</option>
+                            <option selected value="1">Non VAT</option>
                             <option value="2">VAT</option>
                             <option value="3">SVAT</option>
                         </select>
@@ -366,9 +366,7 @@ function confirmCreateJobCard() {
     customerData.vat_number = $('#vat_number').val();
     customerData.nic = $('#nic_number').val();
     customerData.email = $('#email').val();
-    customerData.vat_type = $('#vat_reg_type').val();
-    customerData.vat_number = $('#vat_number').val();
-
+    
     $('#createJobCardConfirmModal').modal('hide');
     $('#jobHeaderModal').modal('hide');
     $('#jobHeaderModal_edit').modal('hide');

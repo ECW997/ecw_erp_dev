@@ -165,6 +165,8 @@ const customerData = {
     sales_person_name: "",
     schedule_date: "",
     handover_date: "",
+    vat_reg_type: "",
+    vat_number: "",
     days: "",
     status: "",
     company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",

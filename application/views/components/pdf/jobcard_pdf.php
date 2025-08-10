@@ -165,24 +165,24 @@
         }
 
         .job-number {
-            width: 6%;
+            width: 5%;
             text-align: center;
             font-weight: bold;
             background-color: #f5f5f5;
         }
 
         .job-description {
-            width: 40%;
+            width: 30%;
             font-weight: 500;
         }
 
         .job-remarks {
-            width: 44%;
+            width: 30%;
             font-weight: 500;
         }
 
         .job-quantity {
-            width: 10%;
+            width: 5%;
             text-align: center;
             font-weight: bold;
         }
@@ -427,10 +427,11 @@
 
             <table class="job-header-table">
                 <tr>
-                    <th style="width:6%;">No</th>
-                    <th style="width:40%;">Job Description</th>
-                    <th style="width:44%;">Remarks & Details</th>
-                    <th style="width:10%;">Qty</th>
+                    <th style="width:5%;">No</th>
+                    <th style="width:30%;">Job Description</th>
+                    <th style="width:30%;">Details</th>
+                    <th style="width:30%;">Remarks</th>
+                    <th style="width:5%;">Qty</th>
                 </tr>
             </table>
 
@@ -468,6 +469,9 @@
                                                     <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" alt="Job Reference Image" />
                                                 </div>
                                             <?php endif; ?>
+                                        </td>
+                                        <td class="job-remarks">
+                                            <?= $joblist['remark'] ?? 'N/A' ?>
                                         </td>
                                         <td class="job-quantity">x <?= $joblist['qty'] ?? 0 ?></td>
                                     </tr>
