@@ -47,19 +47,22 @@ include "include/v2/topnavbar.php";
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                <button type="button"
+                                    class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
                                     data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                    <i class="fas fa-plus me-1"></i> New Invoice 
+                                    <i class="fas fa-plus me-1"></i> New Invoice
                                 </button>
 
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
-                                
-                                <button type="button" class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>" 
+
+                                <button type="button"
+                                    class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
                                     data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
                                     <i class="fas fa-check me-1"></i> Approve
                                 </button>
-     
-                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed" <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
                                     onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Invoice
                                 </button>
@@ -335,11 +338,29 @@ var cancelcheck = '<?php echo $cancelcheck; ?>';
 function createInvoice() {
 
     let seriesType = $('#series_type').val();
+    let predictDays = $('#predict_days').val();
+    let paymentType = $('#paymenttype').val();
+
+    console.log("Series Type: ", seriesType);
+    console.log("Predict Days: ", predictDays);
+    console.log("Payment Type: ", paymentType);
+
+    if (paymentType.trim() === '' || paymentType === ' ') {
+        alert('Please select "Payment Method".');
+        $('#paymenttype').focus();
+        return;
+    }
     if (seriesType.trim() === '' || seriesType === ' ') {
         alert('Please select "Invoice Series Type".');
         $('#series_type').focus();
         return;
     }
+    if (paymentType === '2' && (predictDays.trim() === '' || predictDays === ' ')) {
+        alert('Please enter "Predict Days".');
+        $('#predict_days').focus();
+        return;
+    }
+
 
     let jobtable_data = [];
     let charge_details = [];
@@ -404,9 +425,12 @@ function createInvoice() {
         vat_reg_no: $('#vat_reg_no').val(),
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
-        contact_no: $('#customer_contact').val() ,
+        contact_no: $('#customer_contact').val(),
         customer_nic: $('#customer_nic').val(),
         series_type: $('#series_type option:selected').val(),
+        payment_type: $('#paymenttype option:selected').val(),
+        predict_days: $('#predict_days').val(),
+        due_date: $('#due_date').val(),
         sub_total: parseFloat($('#total_sub_amount').val()) || 0,
         discount_pc: 0,
         discount_amount: parseFloat($('#total_discount').val()) || 0,
