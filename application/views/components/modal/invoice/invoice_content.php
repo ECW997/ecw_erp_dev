@@ -14,7 +14,9 @@
                                 <th class="text-center">Discount(%)</th>
                                 <th class="text-center">Tax</th>
                                 <th class="text-end">Total Amount</th>
-                                <th class="text-center <?= ($is_confirmed == 0 && $invoice_type == 'direct' && ($deletecheck != 0 || $editcheck != 0)) ? '' : 'd-none' ?>">Action</th>
+                                <th
+                                    class="text-center <?= ($is_confirmed == 0 && $invoice_type == 'direct' && ($deletecheck != 0 || $editcheck != 0)) ? '' : 'd-none' ?>">
+                                    Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableorderBody" class="table-group-divider">
@@ -41,11 +43,13 @@
                                 <td
                                     class="text-center <?= $is_confirmed == 0 ? '' : 'd-none' ?> <?= (isset($invoice_main_data[0]['invoice_type'])) && $invoice_main_data[0]['invoice_type'] == 'direct' ? '' : 'd-none' ?>">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" title="Edit" class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                        <button type="button" title="Edit"
+                                            class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                             id="<?php echo $item['id']; ?>" onclick="editRow(this)">
                                             <i class="fas fa-pen"></i>
                                         </button>
-                                        <button type="button" title="Delete" class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
+                                        <button type="button" title="Delete"
+                                            class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
                                             id="<?php echo $item['id']; ?>" onclick="deleteRow(this)">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -144,11 +148,13 @@
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
                                     <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" title="Edit" class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                            <button type="button" title="Edit"
+                                                class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                                 id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
                                                 <i class="fas fa-pen"></i>
                                             </button>
-                                            <button type="button" title="Delete" class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
+                                            <button type="button" title="Delete"
+                                                class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
                                                 id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -189,7 +195,8 @@
                                         <div class="col-lg">
                                             <div class="extra-charges-card border">
                                                 <h6 class="section-title p-2 mb-3 rounded">Advance Payments</h6>
-                                                <form id="advance_recieptform" autocomplete="off" class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
+                                                <form id="advance_recieptform" autocomplete="off"
+                                                    class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                     <div class="row g-2">
                                                         <div class="col-4">
                                                             <label class="small form-label text-dark">Reciepts
@@ -233,7 +240,9 @@
                                                                 <th class="text-center" style="width:15%;">Payment
                                                                     Method</th>
                                                                 <th class="text-end" style="width:15%;">Amount</th>
-                                                                <th class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">Action</th>
+                                                                <th
+                                                                    class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
+                                                                    Action</th>
 
                                                             </tr>
                                                         </thead>
@@ -256,7 +265,8 @@
                                                                 <td class="text-end d-none insert_status">existing</td>
                                                                 <td class="text-end d-none row_id">
                                                                     <?php echo $item['id']; ?></td>
-                                                                <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
+                                                                <td
+                                                                    class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                                     <div class="btn-group btn-group-sm" role="group">
                                                                         <button type="button" title="Edit_2"
                                                                             class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
@@ -334,7 +344,8 @@
                                             <div class="input-group input-group-sm">
                                                 <input type="number" id="vat" name="vat" class="form-control text-end"
                                                     value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '0' ?>"
-                                                    onkeyup="finaltotalcalculate();" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                                    onkeyup="finaltotalcalculate();" required
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </div>
@@ -355,7 +366,7 @@
                                             </div>
                                         </div>
                                         <div class="col">
-                                             <label class="small form-label text-dark mb-1">Total invoice Amount</label>
+                                            <label class="small form-label text-dark mb-1">Total invoice Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-warning text-white fw-bold">Rs.</span>
                                                 <input type="number" step="any" id="modeltotalpayment"
@@ -382,8 +393,8 @@
 
                             <div class="row mt-3">
                                 <?php $selected_series_type = $invoice_main_data[0]['series_type'] ?? ''; ?>
-                                <div class="col-3">
-                                    <label class="small form-label text-dark mb-1">Invoice Series type</label>
+                                <div class="col-2">
+                                    <label class="small form-label text-dark mb-1">Invoice Series Type</label>
                                     <div class="input-group input-group-sm">
                                         <select class="form-control form-control-sm selecter2 px-0" name="series_type"
                                             id="series_type" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
@@ -396,10 +407,42 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <?php $selected_payment_type = $invoice_main_data[0]['payment_type'] ?? ''; ?>
+                                <div class="col-2">
+                                    <label class="small form-label text-dark mb-1">Payment Method</label>
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-control form-control-sm selecter2 px-0" name="paymenttype"
+                                            id="paymenttype" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                            <option value=" " <?= $selected_payment_type == ' ' ? 'selected' : '' ?>>
+                                                Select Payment Method</option>
+                                            <option value="1" <?= $selected_payment_type == '1' ? 'selected' : '' ?>>
+                                                Cash</option>
+                                            <option value="2" <?= $selected_payment_type == '2' ? 'selected' : '' ?>>
+                                                Credit</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-2" id="predict_days_col">
+                                    <label class="small form-label text-dark mb-1">Predict Days</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="predict_days"
+                                            class="form-control form-control-sm input-highlight" id="predict_days"
+                                            value="<?= isset($invoice_main_data[0]['predict_days']) ? $invoice_main_data[0]['predict_days'] : '' ?>"
+                                             <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                    </div>
+                                </div>
+                                <div class="col-2" id="due_date_col">
+                                    <label class="form-label small fw-bold">Due Date <span
+                                            class="text-danger">*</span></label>
+                                    <input type="date" class="form-control form-control-sm input-field" name="due_date"
+                                        id="due_date"
+                                        value="<?= isset($invoice_main_data[0]['due_date']) ? $invoice_main_data[0]['due_date'] : date('Y-m-d') ?>"
+                                        <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                </div>
+                                <div class="col-md">
                                     <label class="small form-label text-dark">Remarks</label>
-                                    <textarea name="remark" id="remark" class="form-control form-control-sm"
-                                        rows="2" <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
+                                    <textarea name="remark" id="remark" class="form-control form-control-sm" rows="2"
+                                        <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
                                     <input type="hidden" name="jobcard_id"
@@ -407,11 +450,11 @@
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
 
                                     <input type="hidden" name="approve_id"
-                                    class="form-control form-control-sm input-highlight" id="approve_id"
-                                    value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
-                                    required>
+                                        class="form-control form-control-sm input-highlight" id="approve_id"
+                                        value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
+                                        required>
                                 </div>
-                                <div class="col-md-3 d-flex align-items-end">
+                                <div class="col-md-2 d-flex align-items-end">
                                     <?php
                                     $is_button_hidden = ($is_confirmed != 0) || ($is_edit ? $editcheck == 0 : $addcheck == 0);
                                     ?>
@@ -475,12 +518,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <?php endif; ?>
 
 <script>
-    $(document).ready(function () {
-        const approveVal = $('#approve_id').val();
-        if (approveVal === "1" || approveVal === "2") {
-            $('#btncreateorder').prop('disabled', true);
-        }
-    });
+$(document).ready(function() {
+    const approveVal = $('#approve_id').val();
+    if (approveVal === "1" || approveVal === "2") {
+        $('#btncreateorder').prop('disabled', true);
+    }
+});
 </script>
 
 <script>
@@ -498,8 +541,62 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 $(document).ready(function() {
+    function toggleDueFields() {
+        const paymentType = $('#paymenttype').val();
+        if (paymentType === '2') {
+            $('#predict_days_col').show();
+            $('#due_date_col').show();
+            $('#predict_days').prop('required', true);
+            $('#due_date').prop('required', true);
+        } else {
+            $('#predict_days_col').hide();
+            $('#due_date_col').hide();
+            $('#predict_days').prop('required', false).val('');
+            $('#due_date').prop('required', false).val('');
+        }
+    }
+
+    // Initial check
+    toggleDueFields();
+
+    // Listen for Select2 change event
+    $('#paymenttype').on('change.select2 change', toggleDueFields);
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dueDateInput = document.getElementById('due_date');
+    if (!dueDateInput.value) {
+        const today = new Date();
+        dueDateInput.value = today.toISOString().slice(0, 10);
+    }
+
+    const predictDaysInput = document.getElementById('predict_days');
+    predictDaysInput.addEventListener('input', function() {
+        const days = parseInt(this.value, 10);
+        if (!isNaN(days)) {
+            const today = new Date();
+            today.setDate(today.getDate() + days);
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            dueDateInput.value = `${yyyy}-${mm}-${dd}`;
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
     $('#series_type').select2({
         width: '100%',
+    });
+    $('#paymenttype').select2({
+        width: '100%',
+        // placeholder: 'Select Payment Type',
+        // allowClear: true
     });
 
 
