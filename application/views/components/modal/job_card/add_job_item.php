@@ -186,22 +186,34 @@ function reSetContent(target) {
 }
 
 function addToJobCard(inputMethod){
-    const btn = document.getElementById('addToJobCardBtn');
+    let Operationtext = '';
+    let OriginalOperationtext = '';
+    let btn;
+    if($('#recordOption').val() == 'add'){
+        btn = document.getElementById('addToJobCardBtn');
+        Operationtext = 'Adding';
+        OriginalOperationtext = 'Add to Job Card';
+    }else{
+        btn = document.getElementById('updateToJobCardBtn');
+        Operationtext = 'Updating';
+        OriginalOperationtext = 'Update';
+    }
+
     if(inputMethod == 1){
         if (btn) btn.disabled = true;
-        btn.innerHTML = `Adding <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
-    
+        btn.innerHTML = Operationtext + `<span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
+        
         setTimeout(function () {
-            continueAddToJobCard(inputMethod,btn);
+            continueAddToJobCard(inputMethod,btn,OriginalOperationtext);
         }, 3000);
     }else{
-        continueAddToJobCard(inputMethod,btn);
+        continueAddToJobCard(inputMethod,btn,OriginalOperationtext);
     }
 
 
 }
 
-function continueAddToJobCard(inputMethod,btn){
+function continueAddToJobCard(inputMethod,btn,OriginalOperationtext){
     let allValid = true;
     var validatedGroups = {};
     var jobData = [];
@@ -418,7 +430,7 @@ function continueAddToJobCard(inputMethod,btn){
         btn.disabled = true;
         return;
     }else{
-        btn.disabled = false;  
+        btn.disabled = false; 
     }
 
     // arrange data
@@ -527,7 +539,7 @@ function continueAddToJobCard(inputMethod,btn){
                     if(inputMethod == 1){
                         success_toastify(result.message);
                         btn.disabled = false;
-                        btn.innerHTML = `Add to Job Card <i class="fas fa-plus-circle ml-2"></i>`;
+                        btn.innerHTML = OriginalOperationtext+`<i class="fas fa-plus-circle ml-2"></i>`;
                         $('#addJobItemModal').modal('hide');
                         reSetContent('#jobCardForm');
                         setTimeout(function() {
@@ -537,7 +549,7 @@ function continueAddToJobCard(inputMethod,btn){
                 } else {
                     falseResponse(result);
                     btn.disabled = false;
-                    btn.innerHTML = `Add to Job Card <i class="fas fa-plus-circle ml-2"></i>`;
+                    btn.innerHTML = OriginalOperationtext+` <i class="fas fa-plus-circle ml-2"></i>`;
                 }
             }
     });

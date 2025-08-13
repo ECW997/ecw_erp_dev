@@ -4,8 +4,9 @@ include "include/v2/topnavbar.php";
 ?>
 <?php
 $status = isset($job_main_data[0]['status']) ? $job_main_data[0]['status'] : '';
-$is_any_confirmation = in_array($status, ['Approved', 'Cancelled']);
-$is_confirmed = ($status === 'Approved');
+$is_any_confirmation = in_array($status, ['Approved', 'Re-Approved', 'Cancelled']);
+$is_confirmed = in_array($status, ['Approved', 'Re-Approved']);
+$showApproveBtn = in_array($status, ['Draft','Pending', 'Re-Approve Pending']);
 $is_denied = ($status === 'Cancelled');
 ?>
 
@@ -96,6 +97,12 @@ $is_denied = ($status === 'Cancelled');
                                         <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed ? '' : 'disabled' ?>
                                             onclick="exportJobCardPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
                                             <i class="fas fa-print me-2"></i>JobCard Print
+                                        </button>
+                                    </div>
+                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100" <?= $is_confirmed ? '' : 'disabled' ?>
+                                            onclick="exportJobCardQuotationPDF(<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>);">
+                                            <i class="fas fa-print me-2"></i>JobCard Quotation Print
                                         </button>
                                     </div>
                                 </div>
@@ -190,7 +197,7 @@ $(document).ready(function() {
                 const groupName = group.group_name;
 
                 const groupHtml = `
-                    <li <?= $is_any_confirmation ? 'class="d-none"' : '' ?>>
+                    <li>
                         <a href="#">
                             <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
                                 style="cursor:pointer; font-size:1rem;">
@@ -259,6 +266,12 @@ $(document).ready(function() {
 
 function exportJobCardPDF(jobcard_id) {
     const baseUrl = "<?php echo base_url(); ?>JobCard/jobCardPDF";
+    const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
+    window.open(url, '_blank');
+}
+
+function exportJobCardQuotationPDF(jobcard_id) {
+    const baseUrl = "<?php echo base_url(); ?>JobCard/jobCardQuotationPDF";
     const url = `${baseUrl}?jobcard_id=${encodeURIComponent(jobcard_id)}`;
     window.open(url, '_blank');
 }

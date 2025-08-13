@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ECW Software - Job Card</title>
+    <title>ECW Software - Quotation</title>
     <meta charset="UTF-8">
     <style>
         @page {
@@ -335,7 +335,7 @@
         <div class="header-and-customer-info">
             <!-- Document Header -->
             <div class="document-header">
-                <h1>Job Card</h1>
+                <h1>Quotation</h1>
                 <div class="company-info">ECW Software Solutions</div>
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
@@ -383,16 +383,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Job Card No:</th>
-                        <td><?= $main_data['job_card_number'] ?? 'N/A' ?></td>
-                        <th>Payment Method:</th>
-                        <td><?= $main_data['payment_type'] ?? 'N/A' ?></td>
-                    </tr>
-                    <tr>
                         <th>Sales Person:</th>
                         <td><?= $main_data['sales_person_name'] ?? 'N/A' ?></td>
                         <th>Sales Code:</th>
                         <td><?= $main_data['sales_person_code'] ?? 'N/A' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Job Card No:</th>
+                        <td><?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <th>Quotation No:</th>
+                        <td><?= $main_data['quotation_no'] ?? 'None' ?></td>
                     </tr>
                     <tr>
                         <th>Created Date:</th>
@@ -401,16 +401,8 @@
                         <td><?= date('h:i A', strtotime($main_data['jobcard_date'])) ?></td>
                     </tr>
                     <tr>
-                        <th>Job Start:</th>
-                        <td><?= date('d/m/Y', strtotime($main_data['jobcard_date'])) ?></td>
-                        <th>Job Complete:</th>
-                        <td>
-                            <?= !empty($main_data['complete_date']) ? date('d/m/Y', strtotime($main_data['complete_date'])) : 'Pending' ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Handover Date:</th>
-                        <td><?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
+                        <th>Payment Method:</th>
+                        <td><?= $main_data['payment_type'] ?? 'N/A' ?></td>
                         <th>Print Date:</th>
                         <td><?= date('d/m/Y') ?></td>
                     </tr>
@@ -472,59 +464,6 @@
                                         <td class="job-quantity">x <?= $joblist['qty'] ?? 0 ?></td>
                                     </tr>
                                 </table>
-                                
-                                <div class="signature-section">
-                                    <table class="signature-table">
-                                        <tr>
-                                            <th style="width:4%;">#</th>
-                                            <th style="width:9%;">EMP CODE</th>
-                                            <th style="width:8%;">RATE</th>
-                                            <th style="width:12%;">EMPLOYEE</th>
-                                            <th style="width:11%;">E-R OFFICER</th>
-                                            <th style="width:11%;">PROD. SUPERVISOR</th>
-                                            <th style="width:11%;">QUALITY SUPERVISOR</th>
-                                            <th style="width:11%;">UPDATED HR</th>
-                                            <th style="width:11%;">CHECKED HR</th>
-                                            <th style="width:12%;">CHECKED ACC</th>
-                                        </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </table>
-                                </div>
                             </div>
                             <div style="border-bottom: 1px dashed #000;margin_bottom:4px"></div>
                             <?php $joblist_cnt++; ?>

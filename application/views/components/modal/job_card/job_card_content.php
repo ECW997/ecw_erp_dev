@@ -112,13 +112,6 @@
                 </table>
             </div>
         </div>
-        <!-- <div class="row mb-4 mx-auto">
-            <div class="row" id="buttonsContainer"> </div>
-            <div class="row" id="buttonsContainer2">
-
-            </div>
-        </div> -->
-
         <ul class="vertical-menu <?= ($addcheck == 0) ? 'd-none' : '' ?>" id="mainCategoryGroupMenu"></ul>
     </div>
 
@@ -149,22 +142,28 @@
 
                         switch ($statusText) {
                             case 'Draft':
-                                $style = 'color: #374151;';
+                                $style = 'color: #6B7280;';  
                                 break;
                             case 'Pending':
-                                $style = 'color: #FB923C;';
+                                $style = 'color: #F59E0B;';  
                                 break;
                             case 'Approved':
-                                $style = 'color: #16A34A;';
+                                $style = 'color: #10B981;';  
                                 break;
                             case 'Cancelled':
-                                $style = 'color: #F87171;';
+                                $style = 'color: #EF4444;'; 
+                                break;
+                            case 'Re-Approve Pending':
+                                $style = 'color: #F97316;';  
+                                break;
+                            case 'Re-Approved':
+                                $style = 'color: #059669;';  
                                 break;
                             default:
-                                $style = 'color: #1F2937;';
+                                $style = 'color: #4B5563;'; 
                                 break;
                         }
-                        ?>
+                                                ?>
                         <td colspan="2" class="text-left fw-bold" id="main_status_stage" style="<?= $style ?>">
                             <?= $statusText ?>
                         </td>
@@ -216,7 +215,7 @@
                                 <th style="width:7%" class="text-right">O.Charges</th>
                                 <th style="width:7%" class="text-right">Discount</th>
                                 <th style="width:8%" class="text-right">Sub Total</th>
-                                <th style="width:8%" class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>">Action</th>
+                                <th style="width:8%" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -264,7 +263,13 @@
                                             <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
                                         </span>
                                     </td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>">
+                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
+                                        <button type="button" title="Edit" class="btn btn-sm btn-primary"
+                                                id="<?= $detail['parent_id'] ?>" 
+                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
+                                                onclick="editJobItems(this)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                         <button type="button" title="Delete" class="btn btn-sm btn-danger"
                                                 id="<?= $detail['parent_id'] ?>" 
                                                 job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
@@ -296,6 +301,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="editJobItemModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Job Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editJobItemForm" class="jobcard-body">
+                    <input type="hidden" name="parent_id" id="edit_parent_id">
+                    <input type="hidden" name="job_card_id" id="edit_job_card_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="updateToJobCardBtn" onclick="addToJobCard(1)">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="recordOption" value="add">
 <script>
 $(document).ready(function() {
     $('#openEditModalBtn').on('click', function() {
@@ -320,11 +346,11 @@ $(document).ready(function() {
             new Option(<?= json_encode($job_main_data[0]['payment_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['peyment_method'] ?? '') ?>, true, true)
         ).trigger('change');
 
-        $('#p_category option').each(function() {
-            if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
-                $(this).prop('selected', true);
-            }
-        });
+        // $('#p_category option').each(function() {
+        //     if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
+        //         $(this).prop('selected', true);
+        //     }
+        // });
     });
 
     $('[data-bs-toggle="tooltip"]').tooltip({
@@ -350,7 +376,7 @@ function showAddJobItemModal(button) {
 
     $('#jobIdLabel').text(MainJobId);
     $('#jobNameLabel').text(MainjobName);
-
+    $('#recordOption').val('add');
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
@@ -373,6 +399,30 @@ function getSubCategoryListBaseOnMain(MainJobId) {
         },
         error: function() {
             $('#jobCardForm').html('<p class="text-center text-danger">Error fetching data!</p>');
+        }
+    });
+}
+
+function editJobItems(btn) {
+    let parentId = $(btn).attr('id');
+    let jobCardId = $(btn).attr('job_card_id');
+
+    $('#edit_parent_id').val(parentId);
+    $('#edit_job_card_id').val(jobCardId);
+    $('#editJobItemModal').modal('show');
+    $('#editJobItemForm').empty();
+    $('#recordOption').val('edit');
+    $.ajax({
+        url: '<?= base_url("JobCard/getJobCardEditDetails") ?>',
+        type: 'POST',
+        data: { parent_id: parentId, job_card_id: jobCardId },
+        success: function(result) {
+            if (result) {
+                $('#editJobItemForm').append(result);
+            }
+        },
+        error: function() {
+            $('#editJobItemForm').html('<p class="text-center text-danger">Error fetching data!</p>');
         }
     });
 }

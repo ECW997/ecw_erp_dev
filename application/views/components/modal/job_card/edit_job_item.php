@@ -77,7 +77,9 @@
                                                                     >
                                                                     <option value="">Select an option</option>
                                                                     <?php foreach ($jobOption['option_values'] as $optionValue): ?>
-                                                                    <option value="<?= $optionValue['id'] ?>" data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
+                                                                    <option <?= ($selectedValue == $optionValue['id']) ? 'selected' : '' ?> 
+                                                                        value="<?= $optionValue['id'] ?>"  
+                                                                        data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
                                                                         <?= $optionValue['ValueName'] ?>
                                                                     </option>
                                                                     <?php endforeach; ?>
@@ -99,7 +101,7 @@
                                                                             name="item_price_<?= $uniqueKey ?>"
                                                                             data-original_price="<?= $price ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
+                                                                            value="<?= $list_price ?>"
                                                                             onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-3">
@@ -109,7 +111,7 @@
                                                                             id="item_qty_<?= $uniqueKey ?>"
                                                                             name="item_qty_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
+                                                                            value="<?= $qty ?>"
                                                                             onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-5">
@@ -119,7 +121,7 @@
                                                                             id="item_total_price_<?= $uniqueKey ?>"
                                                                             name="item_total_price_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value="">
+                                                                            value="<?= $total ?>">
                                                                     </div>
                                                                 </div>
                                                                 
@@ -131,8 +133,8 @@
                                                                         name="line_discount_type_<?= $uniqueKey ?>" 
                                                                         data-uniq-id="<?= $uniqueKey ?>"
                                                                         onchange="schedulePriceUpdate(this);">
-                                                                            <option value="1">%</option>
-                                                                            <option value="2">Amount</option>
+                                                                            <option <?= ($line_discount_type == '1') ? 'selected' : '' ?> value="1">%</option>
+                                                                            <option <?= ($line_discount_type == '2') ? 'selected' : '' ?> value="2">Amount</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-md-3">
@@ -142,7 +144,7 @@
                                                                             id="line_discount_<?= $uniqueKey ?>"
                                                                             name="line_discount_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
+                                                                            value="<?= $line_discount_pc ?>"
                                                                             onkeyup="schedulePriceUpdate(this);">
                                                                     </div>
                                                                     <div class="col-md-5">
@@ -152,7 +154,7 @@
                                                                             id="item_net_price_<?= $uniqueKey ?>"
                                                                             name="item_net_price_<?= $uniqueKey ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value="">
+                                                                            value="<?= $net_amount ?>">
                                                                     </div>
                                                                 </div>
 
@@ -165,7 +167,7 @@
                                                             </label>
                                                             <input class="form-control form-control-sm text-left item-price remark_f" 
                                                                 type="text" id="remark_<?= $uniqueKey ?>" name="remark_<?= $uniqueKey ?>" 
-                                                                value="" data-uniq-id="<?= $uniqueKey ?>" 
+                                                                value="<?= $remark ?>" data-uniq-id="<?= $uniqueKey ?>" 
                                                                 oninput="markRemarkUnsaved(this)" 
                                                                 onkeydown="if (event.key === 'Enter') handleRemarkEnter(this);">
                                                         </div>
@@ -262,14 +264,23 @@
 
     function init() {
         const jobData = <?php echo json_encode($data); ?>;
-    
+        hasEditedData = jobData.data?.some(item =>
+            item.job_options?.some(jitem =>
+                jitem.job_options?.some(option =>
+                    option.job_option?.edited && option.job_option?.conditional 
+                )
+            )
+        ) || false;
         
         console.log('Edited data exists:', hasEditedData);
         
         setupEditedSubJobs();
         setupPriceCategory();
+        // setupEventListeners();
         
         processInitialData().then(() => {
+            return setupOptionSelects();
+        }).then(() => {
             console.log('Initial load complete');
             isInitialLoadComplete = true;
             if (hasEditedData) {
@@ -282,6 +293,7 @@
             hideLoadingModal();
         });
     }
+    
 
     function setupEditedSubJobs() {
         $(document).on('change input', '.sub-job-collapse input, .sub-job-collapse select', function() {
@@ -336,7 +348,7 @@
             ).trigger('change');
         }
     }
-
+    
     function processInitialData() {
         return new Promise((resolve) => {
             const jobData = <?php echo json_encode($data); ?>;
@@ -601,7 +613,8 @@
                                     <option value="">Select an option</option>
                                     ${optionValues.map(val => `
                                         <option value="${escapeHtml(val.id)}"
-                                                data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}">
+                                                data-parent-id="${escapeHtml(val.ParentOptionValueID || '0')}"
+                                                ${val.id == jobOption.option_value_id ? 'selected' : ''}>
                                             ${escapeHtml(val.ValueName)}
                                         </option>
                                     `).join('')}
@@ -619,7 +632,7 @@
                                             class="form-control form-control-sm"
                                             parentId="${parentUniqueKey}"
                                             id="unit_price_${uniqueKey}"
-                                            value=""
+                                            value="${unitPrice}"
                                             name="unit_price"
                                             placeholder="Enter unit price"
                                             data-original_price="${originalPrice}"
@@ -638,18 +651,30 @@
 
                 $(childWrapperSelector).html(html);
                 initSelect2();
-                Promise.resolve(
-                    getOptionValuePrice(
-                        selectElement,
-                        subJobCategoryID,
-                        optionGroupID,
-                        selectedOptionValue,
-                        jobOptionID,
-                        $selectedOption,
-                        insertOption,
-                        parentUniqueKey
-                    )
-                ).finally(completeAjaxCall);
+                const childOptionPromises = res.data
+                    .filter(group => {
+                        const desc = group.job_option.Description;
+                        return !['image', 'pdf', 'file'].includes(desc);
+                    })
+                    .map(group => {
+                        const jobOption = group.job_option;
+                        
+                        if (jobOption.option_value_id) {
+                            const childSelect = $(`select[data-option-id="${jobOption.JobOptionID}"]`)[0];
+                            if (childSelect) {
+                                return loadChildOption(childSelect, jobOption, 2, parentUniqueKey);
+                            }
+                        }
+                        return Promise.resolve();
+                    });
+
+                Promise.all(childOptionPromises)
+                    .then(() => {
+                        return Promise.resolve(
+                            getOptionValuePrice(selectElement,subJobCategoryID, optionGroupID, selectedOptionValue, jobOptionID, $selectedOption, insertOption, parentUniqueKey)
+                        );
+                    })
+                    .finally(completeAjaxCall);
             },
             error: function(xhr, status, error) {
                 if (status !== 'abort') {
@@ -728,7 +753,7 @@
 
     function initSelect2(){
         $('.job-option-select').select2({
-            dropdownParent: $('#addJobItemModal'),
+            dropdownParent: $('#editJobItemModal'),
             theme: "classic",
             width: '100%',
         });
@@ -746,7 +771,6 @@
         var $statusEl = $('#remark_save_status_' + uniqId);
         $statusEl.text('Saved').removeClass('text-danger').addClass('text-success');
     }
-
 
     $('.remark_f').on('input', function () {
         let remarkTimeouts = {};
