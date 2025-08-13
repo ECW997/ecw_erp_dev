@@ -68,6 +68,7 @@ $config['api_endpoints'] = [
     'get_sales_agents_v1' => '/v1/get_sales_agents',
     'jobcard_item_delete_v1' => '/v1/jobcard_item_delete',
     'jobcard_header_update_v1' => '/v1/jobcard_header_update',
+    'get_jobcard_edit_details_v1' => '/v1/get_jobcard_edit_details',
 
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',

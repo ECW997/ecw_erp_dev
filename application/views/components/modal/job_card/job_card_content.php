@@ -112,13 +112,6 @@
                 </table>
             </div>
         </div>
-        <!-- <div class="row mb-4 mx-auto">
-            <div class="row" id="buttonsContainer"> </div>
-            <div class="row" id="buttonsContainer2">
-
-            </div>
-        </div> -->
-
         <ul class="vertical-menu <?= ($addcheck == 0) ? 'd-none' : '' ?>" id="mainCategoryGroupMenu"></ul>
     </div>
 
@@ -149,22 +142,28 @@
 
                         switch ($statusText) {
                             case 'Draft':
-                                $style = 'color: #374151;';
+                                $style = 'color: #6B7280;';  
                                 break;
                             case 'Pending':
-                                $style = 'color: #FB923C;';
+                                $style = 'color: #F59E0B;';  
                                 break;
                             case 'Approved':
-                                $style = 'color: #16A34A;';
+                                $style = 'color: #10B981;';  
                                 break;
                             case 'Cancelled':
-                                $style = 'color: #F87171;';
+                                $style = 'color: #EF4444;'; 
+                                break;
+                            case 'Re-Approve Pending':
+                                $style = 'color: #F97316;';  
+                                break;
+                            case 'Re-Approved':
+                                $style = 'color: #059669;';  
                                 break;
                             default:
-                                $style = 'color: #1F2937;';
+                                $style = 'color: #4B5563;'; 
                                 break;
                         }
-                        ?>
+                                                ?>
                         <td colspan="2" class="text-left fw-bold" id="main_status_stage" style="<?= $style ?>">
                             <?= $statusText ?>
                         </td>
@@ -203,92 +202,86 @@
                 <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
-
         		<div class="details_section mb-2">
-        			<table class="w-100">
-        				<thead>
-        					<tr>
-        						<th colspan="2" style="width:35%"><?php echo $group['job_sub_category_text']; ?></th>
-        						<th class="text-right" style="width:10%">Price</th>
-        						<th class="text-right" style="width:5%">QTY</th>
-        						<th class="text-right" style="width:10%">Total</th>
-        						<th class="text-right" style="width:10%">O.Charges</th>
-        						<th class="text-right" style="width:10%">Discount</th>
-        						<th class="text-right" style="width:10%">Sub Total</th>
-                                <th class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">Action</th>
-        					</tr>
-        				</thead>
-        				<tbody>
-        					<?php foreach ($group['details'] as $detail): ?>
-        					<tr>
-        						<td class="text-left" style="width:15%">
-        							<?php echo $detail['option_group_text']; ?>
-        							-
-        							<?php echo $detail['option_text']; ?>
-        						</td>
-        						<td class="text-left" style="width:20%">
-        							<?php echo $detail['combined_option']; ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-        							<?php echo number_format($detail['list_price'], 2); ?>
-        						</td>
-        						<td class="text-right" style="width:5%">
-        							<?php echo $detail['qty']; ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-        							<?php echo number_format($detail['total'], 2); ?>
-        						</td>
-        						<td class="text-right" style="width:10%">
-                                </td>
-                                <td class="text-right" style="width:10%">
-                                    <?php echo $is_line_discount_approved ? (number_format($detail['line_discount'], 2)):(number_format(0, 2)); ?>
-                                </td>
+                    <table class="w-100 table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;"><?php echo $group['job_sub_category_text']; ?></th>
+                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">Description</th>
+                                <th style="width:15%; word-wrap: break-word; word-break: break-word; white-space: normal;">Remark</th>
+                                <th style="width:8%" class="text-right">Price</th>
+                                <th style="width:6%" class="text-right">QTY</th>
+                                <th style="width:9%" class="text-right">Total</th>
+                                <th style="width:7%" class="text-right">O.Charges</th>
+                                <th style="width:7%" class="text-right">Discount</th>
+                                <th style="width:8%" class="text-right">Sub Total</th>
+                                <th style="width:8%" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($group['details'] as $detail): ?>
                                 <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
                                     $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
-                                   
                                     $listPrice = $detail['list_price'];
                                     $currentPrice = $detail['price'];
                                     $changeAmount = $listPrice - $currentPrice;
                                     $changePercentage = $listPrice != 0 ? ($changeAmount / $listPrice) * 100 : 0;
 
                                     $tooltipText = '
-                                     <div class="custom-tooltip-box text-start">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Standard Price:</span>
-                                            <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change Amount:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Change %:</span>
-                                            <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Price:</span>
-                                            <span class="ml-3">' . number_format($listPrice, 2) . '</span>
-                                        </div>
-                                    </div>';
-                                    ?>
-        						<td class="text-right" style="width:10%;">
-        							<span class="pe-2 ps-2 <?= $priceChangeHighlight; ?>"
-        								<?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : ''; ?>>
-        								<?= $is_line_discount_approved == true ? (number_format($detail['net_amount'], 2)) : (number_format($detail['total'], 2)); ?>
-        							</span>
-        						</td>
-                                <td class="text-right <?= ($is_any_confirmation || $deletecheck == 0) ? 'd-none' : '' ?>" style="width:10%">
-                                    <button type="button" title="Delete" class="btn btn-sm btn-danger"
-                                                id="<?php echo $detail['parent_id']; ?>" job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" onclick="deleteJobItems(this)">
-                                                <i class="fas fa-trash"></i>
-                                    </button>
-        						</td>
-        					</tr>
-        					<?php endforeach; ?>
-        				</tbody>
-        			</table>
-        		</div>
+                                        <div class="custom-tooltip-box text-start">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Standard Price:</span>
+                                                <span class="ml-3 text-success">' . number_format($currentPrice, 2) . '</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Change Amount:</span>
+                                                <span class="ml-3 text-danger">' . number_format($changeAmount, 2) . '</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Change %:</span>
+                                                <span class="ml-3 text-danger">' . number_format($changePercentage, 2) . '%</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Price:</span>
+                                                <span class="ml-3">' . number_format($listPrice, 2) . '</span>
+                                            </div>
+                                        </div>';
+                                ?>
+                                <tr>
+                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['option_group_text'] ?> - <?= $detail['option_text'] ?></td>
+                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['combined_option'] ?></td>
+                                    <td style="width:15%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= isset($detail['remark']) ? $detail['remark'] : '-' ?></td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right"><?= number_format($detail['list_price'], 2) ?></td>
+                                    <td style="width:6%; vertical-align: middle;" class="text-right"><?= $detail['qty'] ?></td>
+                                    <td style="width:9%; vertical-align: middle;" class="text-right"><?= number_format($detail['total'], 2) ?></td>
+                                    <td style="width:7%; vertical-align: middle;" class="text-right">-</td>
+                                    <td style="width:7%; vertical-align: middle;" class="text-right"><?= $is_line_discount_approved ? number_format($detail['line_discount'], 2) : number_format(0, 2) ?></td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right">
+                                        <span class="pe-2 ps-2 <?= $priceChangeHighlight ?>"
+                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : '' ?>>
+                                            <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
+                                        </span>
+                                    </td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
+                                        <button type="button" title="Edit" class="btn btn-sm btn-primary"
+                                                id="<?= $detail['parent_id'] ?>" 
+                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
+                                                onclick="editJobItems(this)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" title="Delete" class="btn btn-sm btn-danger"
+                                                id="<?= $detail['parent_id'] ?>" 
+                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
+                                                onclick="deleteJobItems(this)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
         		<?php endforeach; }else { ?>
         		<div class="details_section mb-2">
         			<table class="w-100">
@@ -308,6 +301,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="editJobItemModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Job Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editJobItemForm" class="jobcard-body">
+                    <input type="hidden" name="parent_id" id="edit_parent_id">
+                    <input type="hidden" name="job_card_id" id="edit_job_card_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="updateToJobCardBtn" onclick="addToJobCard(1)">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="recordOption" value="add">
 <script>
 $(document).ready(function() {
     $('#openEditModalBtn').on('click', function() {
@@ -332,11 +346,11 @@ $(document).ready(function() {
             new Option(<?= json_encode($job_main_data[0]['payment_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['peyment_method'] ?? '') ?>, true, true)
         ).trigger('change');
 
-        $('#p_category option').each(function() {
-            if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
-                $(this).prop('selected', true);
-            }
-        });
+        // $('#p_category option').each(function() {
+        //     if ($(this).text().toLowerCase() === priceCategory.toLowerCase()) {
+        //         $(this).prop('selected', true);
+        //     }
+        // });
     });
 
     $('[data-bs-toggle="tooltip"]').tooltip({
@@ -362,7 +376,7 @@ function showAddJobItemModal(button) {
 
     $('#jobIdLabel').text(MainJobId);
     $('#jobNameLabel').text(MainjobName);
-
+    $('#recordOption').val('add');
 }
 
 function getSubCategoryListBaseOnMain(MainJobId) {
@@ -385,6 +399,30 @@ function getSubCategoryListBaseOnMain(MainJobId) {
         },
         error: function() {
             $('#jobCardForm').html('<p class="text-center text-danger">Error fetching data!</p>');
+        }
+    });
+}
+
+function editJobItems(btn) {
+    let parentId = $(btn).attr('id');
+    let jobCardId = $(btn).attr('job_card_id');
+
+    $('#edit_parent_id').val(parentId);
+    $('#edit_job_card_id').val(jobCardId);
+    $('#editJobItemModal').modal('show');
+    $('#editJobItemForm').empty();
+    $('#recordOption').val('edit');
+    $.ajax({
+        url: '<?= base_url("JobCard/getJobCardEditDetails") ?>',
+        type: 'POST',
+        data: { parent_id: parentId, job_card_id: jobCardId },
+        success: function(result) {
+            if (result) {
+                $('#editJobItemForm').append(result);
+            }
+        },
+        error: function() {
+            $('#editJobItemForm').html('<p class="text-center text-danger">Error fetching data!</p>');
         }
     });
 }

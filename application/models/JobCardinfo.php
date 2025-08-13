@@ -97,6 +97,11 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'jobcard_header_update_v1', $form_data, $headers);
     }
 
+    public function getJobCardEditDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_jobcard_edit_details_v1', $form_data, $headers);
+    }
+
 
 
 

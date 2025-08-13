@@ -43,7 +43,7 @@
                         <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
                         <select class="form-control form-control-sm" id="vat_reg_type" name="vat_reg_type">
                             <option value="">Select VAT Type</option>
-                            <option value="1">Non VAT</option>
+                            <option selected value="1">Non VAT</option>
                             <option value="2">VAT</option>
                             <option value="3">SVAT</option>
                         </select>
@@ -165,11 +165,8 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <label class="col-form-label">Price Category</label>
-                        <select class="form-select" id="p_category" name="p_category">
+                           <select class="form-control form-control-sm edit_required-field" id="edit_price_category" name="edit_price_category">
                             <option selected>Open this select menu</option>
-                            <option value="1">Small</option>
-                            <option value="2">Medium</option>
-                            <option value="3">Large</option>
                         </select>
                     </div>
                     <div class="col-6">
@@ -182,27 +179,35 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="createJobCardBtn" class="btn btn-warning">Edit Job Card<i
+                <button type="button" id="editJobCardBtn" class="btn btn-warning">Edit Job Card<i
                         class="fas fa-plus-circle ml-2"></i></i></button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="main_job_details" tabindex="-1" aria-labelledby="jobHeaderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content rounded-4">
-            <div class="modal-header bg-dark ">
-                <h5 class="modal-title text-white" id="jobHeaderModalLabel">Sample Job Details Model</h5>
-                <button type="button" class="btn-close btn-close-white " data-bs-dismiss="modal"
+
+<div class="modal fade" id="updateJobCardConfirmModal" tabindex="-1" aria-labelledby="updateJobCardConfirmModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content next-step-confirmation">
+            <div class="modal-header next-step-header">
+                <h5 class="next-step-title" id="updateJobCardConfirmModalLabel">Proceed to Create Job Card</h5>
+                <button type="button" class="btn-close next-step-btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <h1>Job Options Here</h1>
+            <div class="modal-body text-center">
+                <i class="fas fa-question-circle next-step-icon"></i>
+                <p class="mb-0">Are you sure you want to proceed?<br>This action will create a new Job Card and cannot
+                    be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" id="createJobCardBtn" class="btn btn-dark">Create<i
-                        class="fas fa-plus-circle ml-2"></i></i></button>
+                <button type="button" class="btn btn-secondary next-step-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary next-step-btn-confirm" onclick="confirmEditJobCard()">
+                    <i class="fas fa-arrow-right me-2"></i>Proceed
+                </button>
             </div>
         </div>
     </div>
@@ -223,6 +228,23 @@ $(document).on('click', '#createJobCardBtn', function() {
     });
     if (isValid) {
         $('#createJobCardConfirmModal').modal('show');
+    }
+})
+
+$(document).on('click', '#editJobCardBtn', function() {
+    let isValid = true;
+    $('.edit_required-field').each(function() {
+        let value = $(this).val();
+
+        if (!value || value === "") {
+            $(this).addClass('is-invalid');
+            isValid = false;
+        } else {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    if (isValid) {
+        $('#updateJobCardConfirmModal').modal('show');
     }
 })
 

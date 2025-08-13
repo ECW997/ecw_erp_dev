@@ -178,8 +178,9 @@
                     </div>
                     <?php if($approve1check==1): ?>
                     <div class="col-4">
-                        <button type="button" class="btn btn-success w-100" id="approveJobcardBtn"
-                            style="border-radius: 12px;" onclick="approveJobcard()">Approve</button>
+                        <button type="button" class="btn btn-success w-100 <?= $showApproveBtn ? '' : 'd-none' ?>" id="approveJobcardBtn" style="border-radius: 12px;" onclick="approveJobcard()">
+                            Approve
+                        </button>
                     </div>
                     <?php endif; ?>
                     <?php if($cancelcheck==1): ?>

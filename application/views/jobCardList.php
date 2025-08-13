@@ -309,21 +309,29 @@ include "include/topnavbar.php";
                         let style = "";
 
                         switch (data) {
-                        case "Draft":
-                            style = "background-color: #374151; color: #E5E7EB;"; 
-                            break;
-                        case "Pending":
-                            style = "background-color: #FB923C; color: #FFEDD5;"; 
-                            break;
-                        case "Approved":
-                            style = "background-color: #16A34A; color: #D1FAE5;"; 
-                            break;
-                        case "Cancelled":
-                            style = "background-color: #F87171; color: #FEE2E2;"; 
-                            break;
-                        default:
-                            style = "background-color: #1F2937; color: #F3F4F6;"; 
+                            case 'Draft':
+                                style = 'background-color: #6B7280; color: #FFFFFF;'; 
+                                break;
+                            case 'Pending':
+                                style = 'background-color: #F59E0B; color: #1F2937;'; 
+                                break;
+                            case 'Approved':
+                                style = 'background-color: #10B981; color: #FFFFFF;';
+                                break;
+                            case 'Cancelled':
+                                style = 'background-color: #EF4444; color: #FFFFFF;';
+                                break;
+                            case 'Re-Approve Pending':
+                                style = 'background-color: #F97316; color: #FFFFFF;'; 
+                                break;
+                            case 'Re-Approved':
+                                style = 'background-color: #059669; color: #FFFFFF;'; 
+                                break;
+                            default:
+                                style = 'background-color: #4B5563; color: #FFFFFF;'; 
+                                break;
                         }
+
 
                         return `<span class="${baseClasses}" style="${style}">${data}</span>`;
                     }
