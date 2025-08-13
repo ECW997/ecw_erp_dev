@@ -16,7 +16,7 @@
 					</div>
 					<div class="col-12 col-md-3 d-flex align-items-center mb-2 mb-md-0">
 						<h6 class="col-form-label me-2 text-nowrap">P.C.</h6>
-						<select class="form-select form-select-sm" id="price_category" name="price_category" disabled>
+						<select class="form-select form-select-sm" id="price_category" name="price_category">
 							<option value="">Select</option>
 						</select>
 					</div>

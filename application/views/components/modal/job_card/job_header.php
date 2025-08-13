@@ -388,7 +388,7 @@ function confirmCreateJobCard() {
     customerData.vat_number = $('#vat_number').val();
     customerData.nic = $('#nic_number').val();
     customerData.email = $('#email').val();
-    
+
     $('#createJobCardConfirmModal').modal('hide');
     $('#jobHeaderModal').modal('hide');
     $('#jobHeaderModal_edit').modal('hide');
