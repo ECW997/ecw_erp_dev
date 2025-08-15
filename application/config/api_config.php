@@ -92,6 +92,9 @@ $config['api_endpoints'] = [
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
+
+    'get_all_outstanding_invoices_v1' => '/v1/get_all_outstanding_invoices',
+
     'get_jobcards_by_customer_v1' => '/v1/get_jobcards_by_customer',
     'get_draft_receiptno_v1' => '/v1/get_draft_receiptno',
     'get_payment_details_v1' => '/v1/get_payment_details',

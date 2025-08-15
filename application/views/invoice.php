@@ -21,6 +21,17 @@ include "include/v2/topnavbar.php";
             justify-content: center;
             font-weight: 500;
         }
+
+        .swal2-warning-toast {
+            background: #e41111ff !important;
+            color: #f5f5f5ff !important;
+            border: 2px solid #f8f3f3ff !important;
+            font-weight: 500;
+        }
+
+        .swal2-warning-toast .swal2-title {
+            color: #f7f3f3ff !important;
+        }
         </style>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
@@ -345,18 +356,51 @@ function createInvoice() {
     console.log("Predict Days: ", predictDays);
     console.log("Payment Type: ", paymentType);
 
-    if (paymentType.trim() === '' || paymentType === ' ') {
-        alert('Please select "Payment Method".');
-        $('#paymenttype').focus();
-        return;
-    }
     if (seriesType.trim() === '' || seriesType === ' ') {
-        alert('Please select "Invoice Series Type".');
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please select "Invoice Series Type".',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-warning-toast'
+            }
+        });
         $('#series_type').focus();
         return;
     }
+    if (paymentType.trim() === '' || paymentType === ' ') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please select "Payment Method".',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-warning-toast'
+            }
+        });
+        $('#paymenttype').focus();
+        return;
+    }
     if (paymentType === '2' && (predictDays.trim() === '' || predictDays === ' ')) {
-        alert('Please enter "Predict Days".');
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please Enter "Predict Days".',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-warning-toast'
+            }
+        });
         $('#predict_days').focus();
         return;
     }

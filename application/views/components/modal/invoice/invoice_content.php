@@ -435,7 +435,7 @@
                                     <label class="form-label small fw-bold">Due Date <span
                                             class="text-danger">*</span></label>
                                     <input type="date" class="form-control form-control-sm input-field" name="due_date"
-                                        id="due_date"
+                                        id="due_date" readonly
                                         value="<?= isset($invoice_main_data[0]['due_date']) ? $invoice_main_data[0]['due_date'] : date('Y-m-d') ?>"
                                         <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                 </div>
