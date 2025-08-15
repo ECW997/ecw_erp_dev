@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 38mm 15mm 25mm 5mm;
+	  margin: 33mm 15mm 15mm 5mm;
 }
 
 body {
@@ -20,10 +20,10 @@ body {
 
 header {
     position: fixed;
-    top: -38mm;
+    top: -33mm;
     left: 0;
     right: 0;
-    height: 38mm;
+    height: 33mm;
 }
 
 footer {
@@ -78,23 +78,25 @@ tr {
     	font-weight: 400;
     }
 </style>
-<?php if ($header['print_receipt_cnt'] > 1): ?>
-    <style>
-        body::before {
-            content: "DUPLICATE";
-            position: fixed;
-            top: 25%;
-            left: 5%;
-            width: 100%;
-            text-align: center;
-            font-size: 100px;
-            color: rgba(200, 0, 0, 0.08);
-            transform: rotate(-45deg);
-            z-index: 9999;
-            pointer-events: none;
-        }
-    </style>
-<?php endif; ?>
+
+<?php
+$branchOutput = '';
+
+switch ($header['company_branch_id']) {
+    case '1':
+        $branchOutput = 'Head Office - Nittambuwa 0332 286 729'; 
+        break;
+    case '2':
+        $branchOutput = 'BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 220'; 
+        break;
+    case '3':
+        $branchOutput = 'No Branch 3'; 
+        break;
+    default:
+        $branchOutput = 'No Branch defult'; 
+        break;
+}
+?>
 </head>
 <body>
 
@@ -104,18 +106,27 @@ tr {
 			<th>
 				<img style="height:65px;collapse;margin-left:5px" src="<?php echo base_url() ?>assets/img/logo-icon.png" />
 			</th>
-			<th colspan="3" style="width:83%;font-size:14px;font-weight:500;text-align:center;" class="header_th"><span
-					style="margin-left:-55">PAYMENT RECEIPT</span>
+            <th colspan="3" style="width:83%;font-size:14px;font-weight:500;" class="header_th">
+				<table style="width:100%;">
+					<tr>
+						<td style="text-align:right; width:60%;">PAYMENT RECEIPT</td>
+						<td style="text-align:right; width:40%;">
+							<?php if ($header['print_receipt_cnt'] > 1): ?>
+								<span style="font-size:11px;color: rgba(200, 0, 0, 1);">(DUPLICATE)</span>
+							<?php endif; ?>
+						</td>
+					</tr>
+				</table>
 			</th>
 		</tr>
 		<tr>
 			<th style="width:10%;" class="header_th">Cus. Code</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $header['receipt_cus_id'] ?></th>
+			<th style="width:25%;" class="header_th"><span> : </span><?= $header['customer_code'] ?></th>
 			<th style="width:10%;" class="header_th">Receipt No.</th>
 			<th style="width:10%;" class="header_th"><span> : </span><?= $header['receipt_number'] ?></th>
 		</tr>
 		<tr>
-			<th style="width:10%;" class="header_th">Cust Name</th>
+			<th style="width:10%;" class="header_th">Cus Name</th>
 			<th style="width:25%;" class="header_th"><span> : </span><?= $header['customer_name'] ?></th>
 			<th style="width:10%;" class="header_th">Date</th>
 			<th style="width:10%;" class="header_th"><span> : </span><?= date('d/m/Y',strtotime($header['receipt_date'])) ?></th>
@@ -145,7 +156,7 @@ tr {
 			</td>
 		</tr>
 		<tr>
-			<td class="footer_text">BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 220</td>
+			<td class="footer_text"><?= $branchOutput ?></td>
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
@@ -229,7 +240,13 @@ tr {
                                 <tr>
                                     <td class="datatable_data_td" style="font-weight:bold;">Total Paid</td>
                                     <td class="datatable_data_td" style="text-align:center; font-weight:bold;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; font-weight:bold;"><?= number_format($invoice['totals']['total_paid_for_ref'] ?? 0, 2) ?></td>
+                                    <td class="datatable_data_td" style="text-align:right; font-weight:bold;">
+                                        <?= number_format(
+                                            ($invoice['totals']['total_paid_for_ref'] ?? 0) + 
+                                            ($invoice['totals']['advance_total'] ?? 0), 
+                                            2
+                                        ) ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="datatable_data_td" style="border-top:1px solid #000; border-bottom:3px double #000; font-weight:bold;">Net Balance</td>

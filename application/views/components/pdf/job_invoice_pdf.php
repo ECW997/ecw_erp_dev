@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 33mm 15mm 22mm 5mm;
+	  margin: 33mm 15mm 15mm 5mm;
 }
 
 body {
@@ -28,10 +28,10 @@ header {
 
 footer {
     position: fixed;
-    bottom: -22mm;
+    bottom: -25mm;
     left: 0;
     right: 0;
-    height: 22mm;
+    height: 25mm;
     text-align: center;
     line-height: 13px;
     border-top: 2px solid #000;
@@ -78,23 +78,24 @@ tr {
     	font-weight: 400;
     }
 </style>
-<?php if ($main_data['print_invoice_cnt'] > 1): ?>
-    <style>
-        body::before {
-            content: "DUPLICATE";
-            position: fixed;
-            top: 25%;
-            left: 5%;
-            width: 100%;
-            text-align: center;
-            font-size: 100px;
-            color: rgba(200, 0, 0, 0.08);
-            transform: rotate(-45deg);
-            z-index: 9999;
-            pointer-events: none;
-        }
-    </style>
-<?php endif; ?>
+<?php
+$branchOutput = '';
+
+switch ($header['company_branch_id']) {
+    case '1':
+        $branchOutput = 'Head Office - Nittambuwa 0332 286 729'; 
+        break;
+    case '2':
+        $branchOutput = 'BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 220'; 
+        break;
+    case '3':
+        $branchOutput = 'No Branch 3'; 
+        break;
+    default:
+        $branchOutput = 'No Branch defult'; 
+        break;
+}
+?>
 </head>
 <body>
 
@@ -104,18 +105,27 @@ tr {
 			<th>
 				<img style="height:65px;collapse;margin-left:5px" src="<?php echo base_url() ?>assets/img/logo-icon.png" />
 			</th>
-			<th colspan="3" style="width:83%;font-size:14px;font-weight:500;text-align:center;" class="header_th"><span
-					style="margin-left:-55">INVOICE(R)</span>
+			<th colspan="3" style="width:83%;font-size:14px;font-weight:500;" class="header_th">
+				<table style="width:100%;">
+					<tr>
+						<td style="text-align:right;">INVOICE</td>
+						<td style="text-align:right; width:50px;">
+							<?php if ($main_data['print_invoice_cnt'] > 1): ?>
+								<span style="font-size:11px;color: rgba(200, 0, 0, 1);">(DUPLICATE)</span>
+							<?php endif; ?>
+						</td>
+					</tr>
+				</table>
 			</th>
 		</tr>
 		<tr>
 			<th style="width:10%;" class="header_th">Cus. Code</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_name'] ?></th>
+			<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_code'] ?></th>
 			<th style="width:10%;" class="header_th">Invoice No.</th>
 			<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['invoice_number'] ?></th>
 		</tr>
 		<tr>
-			<th style="width:10%;" class="header_th">Cust Name</th>
+			<th style="width:10%;" class="header_th">Cus Name</th>
 			<th style="width:25%;" class="header_th"><span> : </span><?= $main_data['customer_name'] ?></th>
 			<th style="width:10%;" class="header_th">Date</th>
 			<th style="width:10%;" class="header_th"><span> : </span><?= date('d/m/Y',strtotime($main_data['invoice_date'])) ?></th>
@@ -147,7 +157,7 @@ tr {
 <footer>
 	<table>
 		<tr>
-			<td style="width:65%;" class="footer_text">EDIRISINGHA GROUP (PVT.) LTD</td>
+			<td style="width:65%;" class="footer_text">Edirisingha Cushion Works (Pvt) Ltd</td>
 			<td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
 			<td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
 				<i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>
@@ -157,7 +167,7 @@ tr {
 			</td>
 		</tr>
 		<tr>
-			<td class="footer_text">BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 220</td>
+			<td class="footer_text"><?= $branchOutput ?></td>
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
@@ -172,11 +182,11 @@ tr {
 		<thead>
 			<tr>
 				<th class="datatable_td" style="width:3%">#</th>
-				<th class="datatable_td" style="width:46%">DESCRIPTION</th>
-				<th class="datatable_td" style="width:5%">QTY</th>
+				<th class="datatable_td" style="width:43%">DESCRIPTION</th>
+				<th class="datatable_td" style="width:3%">QTY</th>
 				<th class="datatable_td" style="width:10%">UNIT</th>
 				<th class="datatable_td" style="width:13%">RATE</th>
-				<th class="datatable_td" style="width:8%">DISC.</th>
+				<th class="datatable_td" style="width:13%">DISC.</th>
 				<th class="datatable_td" style="width:15%">AMOUNT</th>
 			</tr>
 		</thead>
@@ -265,7 +275,7 @@ tr {
 							<td class="datatable_data_td" style="font-weight:bold;">Total Paid</td>
 							<td class="datatable_data_td" style="text-align:center; font-weight:bold;">:</td>
 							<td class="datatable_data_td" style="text-align:right; font-weight:bold;">
-								<?= number_format($total_paid ?? 0, 2) ?>
+								<?= number_format(($total_paid ?? 0) + ($advance ?? 0), 2) ?>
 							</td>
 						</tr>
 						<tr>

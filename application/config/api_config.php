@@ -79,16 +79,16 @@ $config['api_endpoints'] = [
     'media_library_v1' => '/v1/media_library',
     'media_library_status_v1' => '/v1/media_library_status',
     
+    'invoice_v1' => '/v1/invoice',
     'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
     'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
-    'invoice_v1' => '/v1/invoice',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
     'get_sel2_pay_allocation_receipt_v1' => '/v1/get_sel2_pay_allocation_receipts',
     'approve_invoice_v1' => '/v1/approveInvoice',
     'cancel_invoice_v1' => '/v1/cancelInvoice',
-
     'get_invoice_pdf_v1' => '/v1/get_invoice_pdf',
+    'search_customer_v1' => '/v1/search_customer',
 
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',
@@ -101,7 +101,6 @@ $config['api_endpoints'] = [
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
     'cancel_payment_v1' => '/v1/cancel_payment',
-
 
     'item_v1' => '/v1/item',
 ];

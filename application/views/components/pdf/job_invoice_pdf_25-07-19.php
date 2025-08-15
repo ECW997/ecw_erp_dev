@@ -103,6 +103,24 @@
     	font-weight: 400;
     }
     </style>
+
+<?php if ($main_data['print_invoice_cnt'] > 1): ?>
+    <style>
+        body::before {
+            content: "DUPLICATE";
+            position: fixed;
+            top: 25%;
+            left: 5%;
+            width: 100%;
+            text-align: center;
+            font-size: 100px;
+            color: rgba(200, 0, 0, 0.08);
+            transform: rotate(-45deg);
+            z-index: 9999;
+            pointer-events: none;
+        }
+    </style>
+<?php endif; ?>
 </head>
 <body>
 

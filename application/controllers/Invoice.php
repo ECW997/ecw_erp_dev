@@ -124,8 +124,6 @@ class Invoice extends CI_Controller {
 		}   
     }
 
-	//Delete Invoice
-
 	public function deleteInvoice($id) {
         $api_token = $this->session->userdata('api_token');
         if (!$api_token) {
@@ -143,8 +141,6 @@ class Invoice extends CI_Controller {
             redirect('invoice');
 		}   
     }
-
-	// cancel Invoice
 
 	public function cancelInvoice() {
 
@@ -245,7 +241,8 @@ class Invoice extends CI_Controller {
 
 		$this->load->library('Pdf');
 
-	   	$customPaper = array(0, 0, 382.84, 380.84); 
+	   	// $customPaper = array(0, 0, 382.84, 380.84); 
+		$customPaper = array(0, 0, 396, 396); 
         $this->pdf->setPaper($customPaper);    
 		$this->pdf->set_option('defaultFont', 'Helvetica');           
 		$this->pdf->set_option('isRemoteEnabled', true); 
@@ -281,5 +278,10 @@ class Invoice extends CI_Controller {
 			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
             redirect('Invoice');
 		}
+	}
+
+	public function searchCustomer($id) {
+		$response = $this->Invoiceinfo->searchCustomer($this->api_token, $id);
+		echo json_encode($response);
 	}
 }

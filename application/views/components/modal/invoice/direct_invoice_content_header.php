@@ -239,6 +239,27 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('#customer_contact, #customer_nic').on('keyup change', function () {
+        let value = $(this).val().trim();
+
+        if (value.length >= 8) { 
+            $.ajax({
+                url: '<?php echo base_url() ?>Invoice/searchCustomer/' + value,
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.status) {
+                        $('#customer_name').val(res.data.customer_name);
+                        $('#customer_address').val(res.data.address);
+                        $('#customer_contact').val(res.data.customer_mobile_num);
+                        $('#customer_nic').val(res.data.nic_number);
+                        $('#customer_id').val(res.data.idtbl_customer);
+                    }
+                }
+            });
+        }
+    });
 });
 
 function getDirectSalesItemDetails(item_id) {
@@ -345,12 +366,13 @@ function updateToList() {
     }
 
     const itemId = $('#item').val();
+    const rowId = $('#row_id').val();
 
     let itemExists = false;
 
     $('#tableorder tbody tr').each(function () {
         const existingItemId = $(this).find('.item_id').text().trim();
-        if (existingItemId === itemId) {
+        if (existingItemId === itemId && rowId == '0') {
             itemExists = true;
             return false; 
         }
@@ -381,8 +403,6 @@ function updateToList() {
 
     const tax = 0;
     const totalAfterTax = total - tax;
-
-    const rowId = $('#row_id').val();
 
     const newRow = `
         <tr class="recently-edited-row">

@@ -74,4 +74,10 @@ class Invoiceinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'item_v1', $form_data, $headers);
     }
+
+    public function searchCustomer($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'search_customer_v1', $form_data, $headers);
+    }
+
 }
