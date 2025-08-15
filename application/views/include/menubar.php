@@ -224,31 +224,47 @@ function checkprivilege($arraymenu, $menuID, $type){
         <div class="nav accordion" id="accordionSidenav">
             <div class="sidenav-menu-heading">Core</div>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Auth/Dashboard'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-desktop"></i></div>
-                Dashboard
+                <!-- <div class="nav-link-icon"><i class="fas fa-desktop"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/fowheryq.json" trigger="loop" state="loop-all"
+                        colors="primary:#ffffff,secondary:#3080e8,tertiary:#3080e8,quaternary:#3080e8"
+                        style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Dashboard
             </a>
 
             <?php if(menucheck($menuprivilegearray, 4)==1 || menucheck($menuprivilegearray, 5)==1 || menucheck($menuprivilegearray, 6)==1 || menucheck($menuprivilegearray, 7)==1 || menucheck($menuprivilegearray, 8)==1 || menucheck($menuprivilegearray, 9)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseSales_masterfile" aria-expanded="false" aria-controls="collapseSales_masterfile">
-                <div class="nav-link-icon"><i class="fas fa-user-cog"></i></div>Sales Master Files
+                <div class="nav-link-icon">
+                    <!-- <i class="fas fa-user-cog"></i> -->
+                    <lord-icon src="https://cdn.lordicon.com/oxgyjdir.json" trigger="loop" state="loop-spin"
+                        colors="primary:#000000,secondary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Sales Master Files
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse <?php if($functionmenu=="MainJobCategory" || $functionmenu=="SubJobCategory" || $functionmenu=="JobOptionGroup" || $functionmenu=="JobOption" || $functionmenu=="JobOptionValue" || $functionmenu=="Price_category"){echo 'show';} ?>"
                 id="collapseSales_masterfile" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <?php if(menucheck($menuprivilegearray, 4)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'MainJobCategory'; ?>">Main Jobs Category</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'MainJobCategory'; ?>">Main
+                        Jobs Category</a>
                     <?php } if(menucheck($menuprivilegearray, 5)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'SubJobCategory'; ?>">Sub Jobs Category</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'SubJobCategory'; ?>">Sub
+                        Jobs Category</a>
                     <?php } if(menucheck($menuprivilegearray, 6)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionGroup'; ?>">Job Option Group</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionGroup'; ?>">Job
+                        Option Group</a>
                     <?php } if(menucheck($menuprivilegearray, 7)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOption'; ?>">Job Option</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOption'; ?>">Job
+                        Option</a>
                     <?php } if(menucheck($menuprivilegearray, 8)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionValue'; ?>">Job Option Value</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'JobOptionValue'; ?>">Job
+                        Option Value</a>
                     <?php } if(menucheck($menuprivilegearray, 9)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'Price_category'; ?>">Price Category Type</a>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'Price_category'; ?>">Price
+                        Category Type</a>
                     <?php } ?>
                 </nav>
             </div>
@@ -256,50 +272,95 @@ function checkprivilege($arraymenu, $menuID, $type){
 
             <?php if(menucheck($menuprivilegearray, 10)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Job_price_details'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-id-card"></i></div>Job Price Detail
+                <div class="nav-link-icon">
+                    <!-- <i class="fas fa-id-card"></i> -->
+                    <lord-icon src="https://cdn.lordicon.com/adeleafr.json" trigger="loop" delay="2000"
+                        colors="primary:#000000,secondary:#3080e8,tertiary:#66a1ee" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Job Price Detail
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 11)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Customer'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-user-friends"></i></div>Customer
+                <!-- <div class="nav-link-icon"><i class="fas fa-user-friends"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/daeumrty.json" trigger="loop" delay="2000"
+                        colors="primary:#ffffff,secondary:#3080e8,tertiary:#3080e8,quaternary:#3080e8"
+                        style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
+                Customer
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 12)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'JobCard'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-id-card-alt"></i></div>Job Card
+                <div class="nav-link-icon">
+                    <!-- <i class="fas fa-id-card-alt"></i> -->
+                    <lord-icon src="https://cdn.lordicon.com/tbabdzcy.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Job Card
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 13)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Invoice'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-receipt"></i></div>Invoice
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/jwmqentq.json" trigger="loop" delay="2000"
+                        colors="primary:#000000,secondary:#66a1ee,tertiary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                    <!-- <i class="fas fa-receipt"></i> -->
+                </div>Invoice
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 14)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Payment'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-cash-register"></i></div>Payments
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8,tertiary:#ffffff" style="width:25px;height:25px">
+                    </lord-icon>
+                    <!-- <i class="fas fa-cash-register"></i> -->
+                </div>Payments
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Media_library'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-photo-video"></i></div>Media Library
+                <!-- <div class="nav-link-icon"><i class="fas fa-photo-video"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/wyupmbaf.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8,tertiary:#ffffff,quaternary:#ebe6ef,quinary:#ffffff,senary:#242424,septenary:#f24c00"
+                        style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
+                Media Library
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 16)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Map'; ?>">
-                <div class="nav-link-icon"><i class="fas fa-map-marked-alt"></i></div>Map
+                <!-- <div class="nav-link-icon"><i class="fas fa-map-marked-alt"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/dhmavvpz.json" trigger="loop" delay="2000"
+                        colors="primary:#121331,secondary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
+                Map
             </a>
             <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 17)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
-                <div class="nav-link-icon"><i class="far fa-file-alt"></i></div>
+                <!-- <div class="nav-link-icon"><i class="far fa-file-alt"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/tobsqthh.json" trigger="loop" delay="2000"
+                        colors="primary:#3080e8,secondary:#000000,tertiary:#ffffff" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
@@ -308,7 +369,8 @@ function checkprivilege($arraymenu, $menuID, $type){
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <?php if(menucheck($menuprivilegearray, 17)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
-                        href="<?php echo base_url().'InvoiceOutstandingReport'; ?>">Customer Invoice Outstanding Report</a>
+                        href="<?php echo base_url().'InvoiceOutstandingReport'; ?>">Customer Invoice Outstanding
+                        Report</a>
                     <?php } if(menucheck($menuprivilegearray, 56)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
                         href="<?php echo base_url().'Customer_Inquiry_Summary_Report'; ?>">Customer Inquiry Summary
@@ -319,15 +381,15 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
 
-
-
-
-
-
             <?php if(menucheck($menuprivilegearray, 1)==1 || menucheck($menuprivilegearray, 2)==1 || menucheck($menuprivilegearray, 3)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
-                <div class="nav-link-icon"><i class="fas fa-user"></i></div>
+                <!-- <div class="nav-link-icon"><i class="fas fa-user"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/hroklero.json" trigger="loop" delay="2000"
+                        state="hover-nodding" colors="primary:#3080e8,secondary:#ffffff" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
                 User Account
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
