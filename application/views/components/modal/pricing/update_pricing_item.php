@@ -32,20 +32,28 @@
                     <input type="date" class="form-control text-righ date-input"
                         id="valid_from<?= htmlspecialchars($item['PriceCategoryID']) ?>"
                         name="valid_from<?= htmlspecialchars($item['PriceCategoryID']) ?>"
-						data-original="<?= !empty($item['valid_from']) ? date('Y-m-d', strtotime($item['valid_from'])) : '' ?>"
-                        value="<?= !empty($item['valid_from']) ? date('Y-m-d', strtotime($item['valid_from'])) : '' ?>"
+                        data-original="<?= !empty($item['valid_from']) ? date('Y-m-d', strtotime($item['valid_from'])) : date('Y-m-01') ?>"
+                        value="<?= !empty($item['valid_from']) ? date('Y-m-d', strtotime($item['valid_from'])) : date('Y-m-01') ?>"
                         style="width: 100%">
                 </div>
 
                 <div class="col-3">
-                    <?php $hasValues = !empty($item['valid_from']) && isset($item['price']) && $item['price'] !== ''; ?>
+                    <?php
+                    if (!empty($item['valid_from']) && isset($item['price']) && $item['price'] !== '') {
+                        $statusValue = '1'; 
+                    } elseif (isset($item['status'])) {
+                        $statusValue = $item['status']; 
+                    } else {
+                        $statusValue = '1'; 
+                    }
+                    ?>
                     <select class="form-control form-control-sm status-input"
                         id="status<?= htmlspecialchars($item['PriceCategoryID']) ?>"
                         name="status<?= htmlspecialchars($item['PriceCategoryID']) ?>"
-						data-original="<?= $hasValues ? '1' : '' ?>" required>
+                        data-original="<?= $statusValue ?>" required>
                         <option value="">Select</option>
-                        <option value="1" <?= $hasValues ? 'selected' : '' ?>>Active</option>
-                        <option value="2">DeActive</option>
+                        <option value="1" <?= $statusValue == '1' ? 'selected' : '' ?>>Active</option>
+                        <option value="2" <?= $statusValue == '2' ? 'selected' : '' ?>>DeActive</option>
                     </select>
                 </div>
             </div>

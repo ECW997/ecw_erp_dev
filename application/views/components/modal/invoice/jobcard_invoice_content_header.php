@@ -385,12 +385,22 @@ $(document).ready(function() {
                                     fontWeight: 'bold'
                                 });
                         } else {
+                            if(summary.total_line_discount == 0){
+                                $('#line_discount_approval_status')
+                                    .text('Line Discount Not Applicable')
+                                    .css({
+                                        color: 'gray',
+                                        fontWeight: 'bold'
+                                    });
+                            }
+                            else{
                             $('#line_discount_approval_status')
                                 .text('Line Discount Approval '+ summary.line_discount_status)
                                 .css({
                                     color: 'orange',
                                     fontWeight: 'bold'
                                 });
+                            }
                         }
 
                         if (summary.is_header_discount_approved) {
@@ -401,12 +411,21 @@ $(document).ready(function() {
                                     fontWeight: 'bold'
                                 });
                         } else {
-                            $('#header_discount_approval_status')
-                                .text('Header Discount Approval '+ summary.header_discount_status)
-                                .css({
-                                    color: 'orange',
-                                    fontWeight: 'bold'
-                                });
+                            if (summary.discount_amount == 0) {
+                                $('#header_discount_approval_status')
+                                    .text('Header Discount Not Applicable')
+                                    .css({
+                                        color: 'gray',
+                                        fontWeight: 'bold'
+                                    });
+                            } else {
+                                $('#header_discount_approval_status')
+                                    .text('Header Discount Approval '+ summary.header_discount_status)
+                                    .css({
+                                        color: 'orange',
+                                        fontWeight: 'bold'
+                                    });
+                            }
                         }
 
 

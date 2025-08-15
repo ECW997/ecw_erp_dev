@@ -169,7 +169,8 @@ class Payment extends CI_Controller {
 
 		$this->load->library('Pdf');
 
-	   	$customPaper = array(0, 0, 382.84, 380.84); 
+	   	// $customPaper = array(0, 0, 382.84, 380.84); 
+		$customPaper = array(0, 0, 396, 396); 
         $this->pdf->setPaper($customPaper);    
 		$this->pdf->set_option('defaultFont', 'Helvetica');           
 		$this->pdf->set_option('isRemoteEnabled', true); 

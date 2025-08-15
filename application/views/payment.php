@@ -64,7 +64,7 @@ include "include/v2/topnavbar.php";
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Customer <span class="text-danger">*</span></label>
                                                 <select class="form-select form-select-sm input-highlight" 
-                                                    id="customer" name="customer" onchange="getCustomerJObOrInvoiceDetails();"
+                                                    id="customer" name="customer" onchange="getCustomerJobOrInvoiceDetails();"
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Customer</option>
                                                     <?php if (!empty($payment_main_data['receipt_cus_id'])): ?>
@@ -80,7 +80,7 @@ include "include/v2/topnavbar.php";
                                         		<label class="form-label small fw-bold text-dark">Payment Type</label>
                                         		<select class="form-select form-select-sm input-highlight"
                                         			name="PaymentType" id="PaymentType"
-                                        			onchange="getCustomerJObOrInvoiceDetails();" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
+                                        			onchange="getCustomerJobOrInvoiceDetails();" <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                         			<option value="">Select Type</option>
                                         			<option value="JobCard"
                                         				<?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
@@ -340,7 +340,7 @@ $(document).ready(function () {
     header_id = "<?= $payment_main_data['id'] ?? 0 ?>";
     if(header_id != 0){
         loadingPromises.push(
-            getCustomerJObOrInvoiceDetails().then(function() {
+            getCustomerJobOrInvoiceDetails().then(function() {
                 return loadPayDetail(header_id);
             })
         );
@@ -448,13 +448,21 @@ $('#confirmAllocateBtn').on('click', function() {
     const allocateAmount = parseFloat($('#allocateAmount').val());
     const isEditing = $('#allocatePaymentModal').data('editingRow');
     
-    if (isNaN(allocateAmount) || allocateAmount <= 0) {
-        alert("Please enter a valid amount.");
-        return;
-    }
+        if (isNaN(allocateAmount) || allocateAmount <= 0) {
+            alert("Please enter a valid amount.");
+            return;
+        }
 
         if (!selectedIndex) {
             alert("Please select a payment method.");
+            return;
+        }
+
+        let refBalanceText = selectedTargetRow.find('.ref_balance').text();
+        let Balance = parseFloat(refBalanceText.replace(/,/g, "")) || 0;
+
+        if (allocateAmount > Balance) {
+            alert("Allocated amount cannot exceed the reference balance (" + Balance + ").");
             return;
         }
 
@@ -504,7 +512,6 @@ $('#confirmAllocateBtn').on('click', function() {
             return; 
         }
 
-
         $summaryTable.append(`
             <tr data-ref-id="${refId}">
                 <td class="ref_no">${refNo}</td>
@@ -516,6 +523,11 @@ $('#confirmAllocateBtn').on('click', function() {
                 <td class="d-none pay_details_id">${rowId}</td>
             </tr>
         `);
+
+        var PaymentSeries = $('#PaymentSeries').val();
+        if (PaymentSeries == '' && payment_type == 'Invoice') {
+          $('#PaymentSeries').val(selectedTargetRow.find('.series_type').text().trim());
+        }
 
         selectedTargetRow.addClass('table-success');
         $('#allocatePaymentModal').modal('hide');
@@ -535,6 +547,7 @@ $('#confirmAllocateBtn').on('click', function() {
 });
 
 function addPayment() {
+    let PaymentType = $('#PaymentType').val();
     let PaymentSeries = $('#PaymentSeries').val();
 
     let method = $('#paymentMethod').val();
@@ -545,7 +558,12 @@ function addPayment() {
     let chequeDate = $('input[name="cheque_date"]').val() || '';
     let clearanceDate = $('input[name="cheque_clearance_date"]').val() || '';
     
-     if (PaymentSeries =='' ) {
+    if (PaymentType =='' ) {
+        alert('Please select payment type');
+        return;
+    }
+
+    if (PaymentSeries =='' && PaymentType == 'JobCard') {
         alert('Please select payment series');
         return;
     }
@@ -601,7 +619,9 @@ $(document).on('click', '.allocate-payment-btn', function () {
         }
     });
 
-    $('#allocateAmount').val('');
+    let refBalanceText = selectedTargetRow.find('.ref_balance').text();
+    let Balance = parseFloat(refBalanceText.replace(/,/g, "")) || 0;
+    $('#allocateAmount').val(Balance);
     $('#maxAmountInfo').text('');
     $('#allocatePaymentModal').modal('show');
 });
@@ -616,7 +636,7 @@ $('#paymentMethodDropdown').on('change', function () {
     }
 });
 
-function getCustomerJObOrInvoiceDetails() {
+function getCustomerJobOrInvoiceDetails() {
     return new Promise(function(resolve, reject) {   
         const paymentType = $('#PaymentType').val();
         const customerId = $('#customer').val();
@@ -640,6 +660,7 @@ function getCustomerJObOrInvoiceDetails() {
                     res.data.forEach(entry => {
                         const isJob = paymentType == 'JobCard';
                         const ref_id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
+                        const series_type = isJob ? '' : entry.invoice.series_type;
                         const ref = isJob ? entry.jobcard.job_card_number : entry.invoice.invoice_number;
                         const date = isJob ? entry.jobcard.jobcard_date : entry.invoice.invoice_date;
                         const id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
@@ -686,6 +707,7 @@ function getCustomerJObOrInvoiceDetails() {
                         <td class="text-end ref_balance">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
+                        <td class="text-center d-none series_type">${series_type}</td>
                         </tr>`;
                     });
                     $('#customerOutstandingTable tbody').html(rows);
@@ -892,7 +914,7 @@ function loadPayAllocationDetail(header_id){
                                             <td class="d-none pay_details_id">${pay_details_id}</td>
                                             <td class="d-none row_id">${row_id}</td>
                                             <td class="d-none row_status">${status}</td>
-                                            <td class="text-end"><button type="button" class="btn btn-sm btn-outline-danger delete-allocate-payment-btn" id="${row_id}" onclick="deleteRow(this,2)">
+                                            <td class="text-end ${receipt_status == 'Approved' ? 'd-none' : ''}"><button type="button" class="btn btn-sm btn-outline-danger delete-allocate-payment-btn " id="${row_id}" onclick="deleteRow(this,2)">
                                                 <i class="fas fa-trash"></i>
                                             </button></td>
                                         </tr>
@@ -922,6 +944,10 @@ function loadPayAllocationDetail(header_id){
                                 <tr class="fw-bold table-border-top">
                                     <td colspan="2" class="text-end">Total Paid</td>
                                     <td class="text-end">${totalAllocated.toFixed(2)}</td>
+                                </tr>
+                                <tr class="fw-bold table-border-top">
+                                    <td colspan="2" class="text-end">Balance</td>
+                                    <td class="text-end totalPayBalance"></td>
                                 </tr>
                             `);
                             $tfoot.html($totalRow);
@@ -1016,6 +1042,8 @@ function updateBalances() {
         });
     }
 
+    let totalPayBalance = 0;
+
      $('#paymentDetailsTable tbody tr').each(function () {
         const $row = $(this);
         const methodName = $row.find('td:eq(0)').text().trim(); 
@@ -1034,7 +1062,11 @@ function updateBalances() {
         });
 
         $row.find('.pay_balance').text(newBalance.toFixed(2));
+        totalPayBalance += newBalance;
     });
+
+    $('#allocationSummaryTable tfoot .totalPayBalance').text(totalPayBalance.toFixed(2));
+
 
     if (errorFlag) {
         return false; 
