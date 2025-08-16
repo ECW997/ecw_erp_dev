@@ -260,27 +260,24 @@
         console.log('Adding additional options now that initial load is complete');
     }
 
-    function init() {
-        const jobData = <?php echo json_encode($data); ?>;
-    
-        
-        console.log('Edited data exists:', hasEditedData);
-        
+    function init() { 
         setupEditedSubJobs();
         setupPriceCategory();
-        
-        processInitialData().then(() => {
-            console.log('Initial load complete');
-            isInitialLoadComplete = true;
-            if (hasEditedData) {
-                console.log('Initialization started');
-                showLoadingModal();
-            }
-        }).catch(error => {
-            console.error('Initialization error:', error);
-            isInitialLoadComplete = true;
-            hideLoadingModal();
-        });
+        isInitialLoadComplete = true;
+        hideLoadingModal();
+
+        // processInitialData().then(() => {
+        //     console.log('Initial load complete');
+        //     isInitialLoadComplete = true;
+        //     if (hasEditedData) {
+        //         console.log('Initialization started');
+        //         showLoadingModal();
+        //     }
+        // }).catch(error => {
+        //     console.error('Initialization error:', error);
+        //     isInitialLoadComplete = true;
+        //     hideLoadingModal();
+        // });
     }
 
     function setupEditedSubJobs() {

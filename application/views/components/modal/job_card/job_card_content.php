@@ -322,6 +322,7 @@
 </div>
 
 <input type="hidden" id="recordOption" value="add">
+<input type="hidden" id="edit_line_price_category" value="0">
 <script>
 $(document).ready(function() {
     $('#openEditModalBtn').on('click', function() {
@@ -370,6 +371,7 @@ function showAddJobItemModal(button) {
         }
     });
     $('#jobCardForm').empty();
+    reSetContent('#jobCardForm');
     getSubCategoryListBaseOnMain(MainJobId);
     // Show the modal
     $('#addJobItemModal').modal('show');
@@ -410,6 +412,7 @@ function editJobItems(btn) {
     $('#edit_parent_id').val(parentId);
     $('#edit_job_card_id').val(jobCardId);
     $('#editJobItemModal').modal('show');
+    reSetContent('#editJobItemForm');
     $('#editJobItemForm').empty();
     $('#recordOption').val('edit');
     $.ajax({

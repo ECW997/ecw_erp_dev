@@ -427,6 +427,12 @@
                     //     parentUniqueKey = jobOption.JobSubcategoryID + '_' + jobOption.OptionGroupID + '_' + jobOption.JobOptionID;
                     // }
 
+                    if (jobOption.price_category && jobOption.price_category != '') {
+                        $('#edit_line_price_category').val(jobOption.price_category);
+                    }else{
+                        $('#edit_line_price_category').val($('#price_category').val());
+                    }
+
                     if (jobOption.OptionType === "Conditional" && jobOption.job_details_option_value && Array.isArray(option.option_values)) 
                         {  
                             option.option_values.forEach(valuelist => {
@@ -698,7 +704,7 @@
       
         trackAjaxCall();
         lastRequestedOptionValueId = selectedOptionValue;
-        const price_category = $('#price_category').val();
+        const price_category = $('#edit_line_price_category').val();
         
         const xhr = $.ajax({
             type: "POST",
