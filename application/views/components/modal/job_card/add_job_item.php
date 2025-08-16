@@ -320,7 +320,14 @@ function continueAddToJobCard(inputMethod,btn,OriginalOperationtext){
 
             if (!selectedVal) return;
 
-            var priceCategory = $('#price_category').val();
+            if($('#recordOption').val() == 'add'){
+                var priceCategory = $('#price_category').val();
+            }else{
+                var priceCategory = $('#edit_line_price_category').val();
+            }
+            // console.log("Price Category: ", priceCategory);
+            
+            
             var mainJobID = $('#jobIdLabel').text();
             var discountType = $('#discount_type').val();
             var discountAmount = $('#item_discount').val() || 0;
