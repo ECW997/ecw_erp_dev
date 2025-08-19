@@ -274,28 +274,28 @@ function continueAddToJobCard(inputMethod,btn,OriginalOperationtext){
 
             if (groupHasSelection) {
 
-                if (!priceField.val()?.trim()) {
+                if (!priceField.val()?.trim() || parseFloat(priceField.val()?.trim()) < 0) {
                     priceField.addClass('is-invalid');
                     allValid = false;
                 } else {
                     priceField.removeClass('is-invalid');
                 }
 
-                if (!qtyField.val()?.trim() || qtyField.val().trim() === "0") {
+                if (!qtyField.val()?.trim()) {
                     qtyField.addClass('is-invalid');
                     allValid = false;
                 } else {
                     qtyField.removeClass('is-invalid');
                 }
 
-                if (!netPriceField.val()?.trim() || netPriceField.val().trim() === "0") {
+                if (!netPriceField.val()?.trim() || parseFloat(netPriceField.val()?.trim()) < 0) {
                     netPriceField.addClass('is-invalid');
                     allValid = false;
                 } else {
                     netPriceField.removeClass('is-invalid');
                 }
 
-                if (!finalNetPriceField.val()?.trim() || finalNetPriceField.val().trim() === "0") {
+                if (!finalNetPriceField.val()?.trim() || parseFloat(finalNetPriceField.val()?.trim()) < 0) {
                     finalNetPriceField.addClass('is-invalid');
                     allValid = false;
                 } else {

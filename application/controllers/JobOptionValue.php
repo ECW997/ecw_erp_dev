@@ -49,6 +49,8 @@ class JobOptionValue extends CI_Controller {
             'job_option_id' => $this->input->post('job_option'),
 			'bulk_copy_toggle' => $this->input->post('bulk_copy_toggle'),
 			'copy_value_name_source' => $this->input->post('copy_value_name_source'),
+			'bulk_copy_toggle' => $this->input->post('bulk_copy_toggle'),
+			'bulk_copy_toggle' => $this->input->post('bulk_copy_toggle'),
 			'value_name' => $this->input->post('value_name'),
 			'parent_option_value_id' => $this->input->post('parent_option_value'),
 			'is_active' => $this->input->post('status'),

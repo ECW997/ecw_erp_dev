@@ -74,8 +74,7 @@ include "include/topnavbar.php";
             </div>
         </main>
 
-        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -112,6 +111,12 @@ include "include/topnavbar.php";
                                     </div>
                                    <div class="form-group mb-1">
                                         <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="bulkCopyOptionValueToggle">
+                                            <label class="form-check-label small" for="bulkCopyOptionValueToggle">Enable Option Value Name Bulk Copy</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-1">
+                                        <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="bulkCopyToggle">
                                             <label class="form-check-label small" for="bulkCopyToggle">Enable Value Name Bulk Copy</label>
                                         </div>
@@ -122,6 +127,13 @@ include "include/topnavbar.php";
                                         <input type="text" class="form-control form-control-sm" name="value_name"
                                             id="value_name" data-field="ValueName" onkeyup="checkedDublicate(this)" required>
                                         <div id="ValueName_errorMsg" style="color: red; display: none;font-size: 0.8rem;"></div>
+                                    </div>
+
+                                    <div class="form-group mb-1" id="bulkCopyOptionDropdownGroup" style="display: none;">
+                                        <label class="small font-weight-bold">Select Bulk Copy Option Source*</label>
+                                        <select class="form-control form-control-sm" id="option_bulk_copy_source" name="option_bulk_copy_source">
+                                            <option value="">Select</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group mb-1" id="bulkCopyDropdownGroup" style="display: none;">
@@ -420,15 +432,58 @@ $(document).ready(function() {
         });
     });
 
-    $('#bulkCopyToggle').change(function () {
-        if ($(this).is(':checked')) {
+    $('#bulkCopyToggle, #bulkCopyOptionValueToggle').change(updateBulkCopyUI);
+
+    function updateBulkCopyUI() {
+        let bulkCopyChecked = $('#bulkCopyToggle').is(':checked');
+        let optionValueChecked = $('#bulkCopyOptionValueToggle').is(':checked');
+
+        if (bulkCopyChecked) {
+            $('#bulkCopyOptionValueToggle').prop('checked', false); 
             $('#bulkCopyDropdownGroup').show();
+            $('#bulkCopyOptionDropdownGroup').hide();
+            $('#valueNameGroup').hide();
+            $('#value_name').prop('required', false);
+        } else if (optionValueChecked) {
+            $('#bulkCopyToggle').prop('checked', false);
+            $('#bulkCopyDropdownGroup').hide();
+            $('#bulkCopyOptionDropdownGroup').show();
             $('#valueNameGroup').hide();
             $('#value_name').prop('required', false);
         } else {
             $('#bulkCopyDropdownGroup').hide();
+            $('#bulkCopyOptionDropdownGroup').hide();
             $('#valueNameGroup').show();
             $('#value_name').prop('required', true);
+        }
+    }
+
+    $('#option_bulk_copy_source').select2({
+        dropdownParent: $('#addModal'),
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobOptionValue/getJobOption',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                };
+            },
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.pagination.more
+                        }
+                    };
+                } else {
+                    falseResponse(data);
+                }
+            }
         }
     });
 
@@ -492,7 +547,9 @@ $(document).ready(function() {
 
     $(document).on('click', '#addtolistBtn', function() {
         var job_option = $('#job_option').val();
+        var option_valuebulk_copy_toggle = $('#bulkCopyOptionValueToggle').is(':checked') ? 1 : 0;
         var bulk_copy_toggle = $('#bulkCopyToggle').is(':checked') ? 1 : 0;
+        var option_bulk_copy_source = $('#option_bulk_copy_source').val();
         var copy_value_name_source = $('#bulk_copy_source').val();
         var value_name = $('#value_name').val();
         var parent_option_value = $('#parent_option_value').val();
@@ -507,6 +564,8 @@ $(document).ready(function() {
                 job_option: job_option,
                 bulk_copy_toggle: bulk_copy_toggle,
                 copy_value_name_source: copy_value_name_source,
+                option_valuebulk_copy_toggle: option_valuebulk_copy_toggle,
+                option_bulk_copy_source: option_bulk_copy_source,
                 value_name: value_name,
                 parent_option_value: parent_option_value,
                 status: status,
