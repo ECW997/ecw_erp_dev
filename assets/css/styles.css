@@ -6727,7 +6727,19 @@ input[type=button].btn-block {
 .navbar-dark .navbar-text a:hover, .navbar-dark .navbar-text a:focus {
   color: #fff;
 }
-
+.card-dash{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  background-clip: border-box;
+  border: 1px solid rgba(31, 45, 65, 0.125);
+  border-radius: 18px;
+  box-shadow: 0 0 25px black;
+}
 .card {
   position: relative;
   display: -webkit-box;

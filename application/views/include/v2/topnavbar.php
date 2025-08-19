@@ -107,8 +107,9 @@ if ($response !== false && is_numeric($response)) {
     <a class="navbar-brand d-none d-sm-block" href="#">
 
         <img src="<?php echo base_url() ?>assets/img/logo-icon.png" class="logo-img" alt=""
-            style="width: 40px; height: 40px;">
-            <span style="font-size: 15px; font-weight: bold;">ECW ERP</span>
+            style="width: 60px; height: 60px; align-items: center; margin-left: 60px; margin-top: -10px;">
+
+        <h5 style="align-items: center; margin-left: 50px; color:white; margin-top:-15px"> ECW ERP </h5>
         <!-- <img src="<?php echo base_url('images/santa.png'); ?>" alt="Logo"
             style="height: 35px; margin-left: -9px;"> -->
     </a>
@@ -173,7 +174,8 @@ if ($response !== false && is_numeric($response)) {
         <marquee
                 style="font-size: 20px; color: orange; font-weight: bold;  padding: 10px; text-shadow: 2px 2px 4px #000;">
                 <!-- 🎉 Happy New Year! 🎆 🎇 2025 🎆 🎇🎉 සුභ නව වසරක් වේවා!  🎆 🎇 🎉 -->
-                🎉 EDIRISINGHA CUSHION WORKS ( PVT ) LTD. 🎉
+                <!-- 🎉 EDIRISINGHA CUSHION WORKS ( PVT ) LTD. 🎉 -->
+                 SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER
             </marquee>
             </li>
 

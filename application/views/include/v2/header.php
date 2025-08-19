@@ -40,6 +40,8 @@ function menucheck($arraymenu, $menuID){
     <link href="<?php echo base_url() ?>assets/slick/slick.css" rel="stylesheet">
     <link href="<?php echo base_url() ?>assets/icofont/icofont.min.css" rel="stylesheet">
     <link href="<?php echo base_url() ?>assets/flaticon/flaticon.css" rel="stylesheet">
+
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
     <!-- <link href="<?php echo base_url() ?>assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" /> -->
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 
