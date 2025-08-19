@@ -281,6 +281,48 @@
             orphans: 2;
             widows: 2;
         }
+         table {
+            page-break-inside: auto;
+        }
+        
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        .job-item-content {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .signature-table {
+            page-break-inside: avoid;
+        }
+        
+        .main-info-table {
+            page-break-inside: avoid;
+        }
+        
+        .job-category-container {
+            page-break-inside: avoid;
+        }
+        
+        .job-item {
+            page-break-inside: avoid;
+        }
+        .job-items-container {
+            page-break-inside: avoid;
+        }
+        .signature-section {
+            break-inside: avoid;
+        }
+
+        .job-item-with-signature {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            display: block;
+            margin-bottom: 6px;
+        }
 
         /* Print Optimizations */
         @media print {
@@ -309,9 +351,31 @@
             .image-container {
                 break-inside: avoid;
             }
+
+            .job-item-with-signature {
+                break-inside: avoid;
+                -webkit-break-inside: avoid;
+            }
             
             .signature-section {
                 break-inside: avoid;
+                -webkit-break-inside: avoid;
+            }
+            
+            .job-item + .signature-section {
+                break-before: avoid;
+            }
+
+            .job-item-container {
+                page-break-before: avoid;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+
+             table, tr, .job-item-content, .signature-table, .main-info-table, 
+            .job-category-container, .job-item, .job-items-container {
+                break-inside: avoid;
+                -webkit-break-inside: avoid;
             }
         }
 
@@ -336,7 +400,7 @@
             <!-- Document Header -->
             <div class="document-header">
                 <h1>Job Card</h1>
-                <div class="company-info">ECW Software Solutions</div>
+                <div class="company-info">ECW Software</div>
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
                         <td style="font-size:14px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
@@ -379,7 +443,7 @@
                         <th>Vehicle Type:</th>
                         <td>
                             <?= ($main_data['brand_name'] ?? '') . 
-                               (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?>
+                               (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '').(!empty($main_data['vehicle_year']) ? ', ' . $main_data['vehicle_year'] : '') ?>
                         </td>
                     </tr>
                     <tr>
@@ -439,10 +503,22 @@
                 
                 <div class="job-category-container keep-together">
                     <div class="job-category-header">
-                        <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?></strong>
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="text-align:left; width: 65%;">
+                                    <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?></strong>
+                                </td>
+                                <?php if (($item['job_sub_category_text'] ?? '') === "Seat Cover"): ?>
+                                    <td style="text-align:center; background-color: #ffffff; width: 15%; padding: 5px;border-radius:15px;">
+                                        <img style="height:100px;border-radius:15px;" src="<?= base_url('images/OEM2.jpg') ?>" alt="Job Reference Image" />
+                                    </td>
+                                <?php endif; ?>
+                                <td style="text-align:left; width: 20%;"></td>
+                            </tr>
+                        </table>
                     </div>
                     
-                    <div class="job-items-container">
+                    <div class="job-items-container job-item-with-signature">
                         <?php
                         $joblist_cnt = 1;
                         $totalJobsInCategory = count($item['details']);
@@ -558,7 +634,7 @@
         </table>
        
         <div class="document-footer">
-            <p>This job card was generated on <?= date('d/m/Y H:i:s') ?> | ECW Software Solutions</p>
+            <p>This job card was generated on <?= date('d/m/Y H:i:s') ?> | ECW Software</p>
             <p>Please retain this document for your records</p>
         </div>
     </div>
