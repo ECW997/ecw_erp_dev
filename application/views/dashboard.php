@@ -27,7 +27,7 @@ include "include/topnavbar.php";
                 </div>
             </div>
             <div class="container-fluid mt-3">
-                <div class="card" style="background-color: #5d5d5eff;">
+                <div class="card" style="background-color: #fdfafaff;">
                     <div class="card-body watermarked-card">
                         <div class="card-body p-0 p-2">
                             <div class="row">
@@ -36,7 +36,7 @@ include "include/topnavbar.php";
 
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                                     <div class="card-dash" id="total_inquiryCard"
-                                        style="border-bottom: 3px solid #0061f2; border-radius: 18 18 18px 18px;">
+                                        style="border-bottom: 5px solid #0061f2; border-radius: 18 18 18px 18px;">
                                         <div class="row no-gutters h-100">
                                             <div class="col">
                                                 <div class="card-body p-0 px-3 py-4 text-left">
@@ -64,7 +64,7 @@ include "include/topnavbar.php";
 
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                                     <div class="card-dash" id="lowstockCard"
-                                        style="border-bottom: 3px solid #17a2b8; border-radius: 18 18 18px 18px;">
+                                        style="border-bottom: 5px solid #17a2b8; border-radius: 18 18 18px 18px;">
                                         <div class="row no-gutters h-100">
                                             <div class="col">
                                                 <div class="card-body p-0 px-3 py-4 text-left">
@@ -93,7 +93,7 @@ include "include/topnavbar.php";
 
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                                     <div class="card-dash" id="sparepartsCard"
-                                        style="border-bottom: 3px solid #f4a100; border-radius: 18 18 18px 18px;">
+                                        style="border-bottom: 5px solid #f4a100; border-radius: 18 18 18px 18px;">
                                         <div class="row no-gutters h-100">
                                             <div class="col">
                                                 <div class="card-body p-0 px-3 py-4 text-left">
@@ -118,7 +118,7 @@ include "include/topnavbar.php";
 
                                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
                                     <div class="card-dash" id="matchineCard"
-                                        style="border-bottom: 3px solid #e81500; border-radius: 18 18 18px 18px;">
+                                        style="border-bottom: 5px solid #e81500; border-radius: 18 18 18px 18px;">
                                         <div class="row no-gutters h-100">
                                             <div class="col">
                                                 <div class="card-body p-0 px-3 py-4 text-left">

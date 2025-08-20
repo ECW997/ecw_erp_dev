@@ -198,7 +198,7 @@
         </div>
         <div class="row mb-4 mx-auto">
             <h5>Job Details</h5>
-            <div style="overflow-x: auto; white-space: nowrap; max-height: 42vh;">
+            <div style="overflow-x: auto; white-space: nowrap; max-height: 55vh;">
                 <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
