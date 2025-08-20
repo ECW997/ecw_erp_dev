@@ -6736,9 +6736,9 @@ input[type=button].btn-block {
   background-color: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(8px);
   background-clip: border-box;
-  border: 1px solid rgba(31, 45, 65, 0.125);
+  border: 2px solid rgba(31, 45, 65, 0.125);
   border-radius: 18px;
-  box-shadow: 0 0 25px black;
+  box-shadow: 0 0 25px gray;
 }
 .card {
   position: relative;
