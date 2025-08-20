@@ -5,176 +5,189 @@
                 <?php foreach ($data['data'] as $subJob): ?>
                     <div class="category-card mb-3">
                         <p class="mb-0 category-header">
-                            <a class="jobSubItem btn btn-link w-100 text-start d-flex align-items-center" data-toggle="collapse"
+                            <a class="jobSubItem btn btn-link w-100 text-start d-flex align-items-center" style="background: #00b7bd15;" data-toggle="collapse"
                             href="#collapse<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>"
                             role="button" aria-expanded="false"
                             aria-controls="collapse<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>">
                                 <i class="fas fa-folder-open me-2 text-primary"></i>
                                 <span class="fw-semibold"><?= $subJob['sub_job_category']['sub_job_category'] ?></span>
-                            <i class="fas fa-chevron-down ms-auto transition-all"></i>
+                                <i class="fas fa-chevron-down ms-auto transition-all"></i>
                             </a>
                         </p>
+
                         <div class="collapse sub-job-collapse"
                             id="collapse<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>"
                             data-subjob-id="<?= $subJob['sub_job_category']['idtbl_sub_job_category']; ?>">
-                            <div class="card card-body category-body">
+
+                            <div class="card card-body category-body ">
                                 <?php foreach ($subJob['job_options'] as $jobOptionGroup): ?>
                                     <div class="option-group-card mb-4 border rounded">
-                                        <div class="option-group-header bg-light p-3 border-bottom">
-                                            <h5 class="mb-0 d-flex align-items-center">
+                                        <p class="mb-0 option-group-header bg-light p-2 border-bottom">
+                                            <a class="btn btn-link w-100 text-start d-flex align-items-center"
+                                                data-toggle="collapse"
+                                                href="#collapseGroup<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>_<?= $jobOptionGroup['job_option_group']['id'] ?>"
+                                                role="button" aria-expanded="false"
+                                                aria-controls="collapseGroup<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>_<?= $jobOptionGroup['job_option_group']['id'] ?>">
                                                 <i class="fas fa-tasks me-2 text-secondary"></i>
-                                                <?= $jobOptionGroup['job_option_group']['GroupName']; ?>
-                                            </h5>
-                                        </div>
-                                        <div class="option-group-body p-3">
-                                            <?php foreach ($jobOptionGroup['job_options'] as $jobOption): ?>
-                                                <?php if ($jobOption['job_option']['OptionType'] == 'Primary' || $jobOption['job_option']['OptionType'] == 'Type'): ?>
-                                                <?php
-                                                    $optionType = $jobOption['job_option']['OptionType'];
-                                                    $option = $jobOption['job_option'];
+                                                <span class="fw-semibold"><?= $jobOptionGroup['job_option_group']['GroupName']; ?></span>
+                                                <i class="fas fa-chevron-down ms-auto transition-all"></i>
+                                            </a>
+                                        </p>
 
-                                                    $optionId = $option['JobOptionID'];
-                                                    $optionName = $option['OptionName'];
-                                                    $groupId = $jobOptionGroup['job_option_group']['id'];
-                                                    $GroupName = $jobOptionGroup['job_option_group']['GroupName'];
-                                                    $subJobId = $subJob['sub_job_category']['idtbl_sub_job_category'];
-                                                    $uniqueKey = $subJobId . '_' . $groupId . '_' . $optionId;
-                                                    $isRequired = $option['IsRequired'] == 1 ? 'required' : '';
-                                                    $selectedValue = $option['job_details_option_value'] ?? null;
-                                                    $price = $option['price'] ?? '';
-                                                    $list_price = $option['list_price'] ?? '';
-                                                    $qty = $option['qty'] ?? '';
-                                                    $total = $option['total'] ?? '';
-                                                    $net_amount = $option['net_amount'] ?? '';
-                                                    $line_discount = $option['line_discount'] ?? '';
-                                                    $line_discount_type = $option['line_discount_type'] ?? null;
-                                                    $line_discount_pc = $option['line_discount_pc'] ?? '';
-                                                    $remark = $option['remark'] ?? '';
-                                                ?>
-                                                <div class="option-item mb-4" data-option-container="<?= $uniqueKey ?>">
-                                                    <div class="job-option-row option-row row g-3 align-items-center" data-level="0">
-                                                        <div class="col-md-6">
-                                                            <div class="option-select-container">
-                                                                <label class="form-label fw-medium text-dark mb-1">
-                                                                    <i class="fas fa-cog me-1 text-muted"></i>
-                                                                    <?= $option['OptionName']; ?>
-                                                                </label>
-                                                                <select class="form-select job-option-select job_option_f"
-                                                                    id="job_option_<?= $optionId ?>" 
-                                                                    name="job_option_<?= $optionId ?>"
-                                                                    data-uniq-id="<?= $uniqueKey ?>"
-                                                                    data-option-type="<?= $option['OptionType']; ?>"
-                                                                    data-option-id="<?= $optionId ?>"
-                                                                    data-option-group="<?= $groupId ?>"
-                                                                    data-sub-job-category="<?= $subJobId ?>" 
-                                                                    data-level="0"
-                                                                    data-subjob-name="<?= $subJob['sub_job_category']['sub_job_category'] ?>"
-                                                                    data-option-group-name="<?= $jobOptionGroup['job_option_group']['GroupName'] ?>"
-                                                                    data-option-name="<?= $optionName ?>"
-                                                                    data-option-description="<?= $option['Description']; ?>"
-                                                                    data-pre-value="<?= $selectedValue ?>"
-                                                                    onchange="loadChildOption(this,null,1,'<?= $uniqueKey ?>');"
-                                                                    >
-                                                                    <option value="">Select an option</option>
-                                                                    <?php foreach ($jobOption['option_values'] as $optionValue): ?>
-                                                                    <option value="<?= $optionValue['id'] ?>" data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
-                                                                        <?= $optionValue['ValueName'] ?>
-                                                                    </option>
-                                                                    <?php endforeach; ?>
-                                                                </select>        
-                                                            </div>
-                                                            <div class="child-options-wrapper mt-2"
-                                                                data-parent-option-id="<?= $optionId ?>">
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="col-md-6">
-                                                            <div class="pricing-section bg-light p-2 rounded">
-                                                                <div class="row g-2">
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label small mb-1">Unit Price</label>
-                                                                        <input class="form-control form-control-sm text-end item-price item_price_f"
-                                                                            type="number" step="any"
-                                                                            id="item_price_<?= $uniqueKey ?>"
-                                                                            name="item_price_<?= $uniqueKey ?>"
-                                                                            data-original_price="<?= $price ?>"
+                                        <div class="collapse option-group-collapse"
+                                            id="collapseGroup<?= $subJob['sub_job_category']['idtbl_sub_job_category'] ?>_<?= $jobOptionGroup['job_option_group']['id'] ?>"
+                                            data-group-id="<?= $jobOptionGroup['job_option_group']['id']; ?>">
+
+                                            <div class="option-group-body p-3">
+                                                <?php foreach ($jobOptionGroup['job_options'] as $jobOption): ?>
+                                                    <?php if ($jobOption['job_option']['OptionType'] == 'Primary' || $jobOption['job_option']['OptionType'] == 'Type'): ?>
+                                                        <?php
+                                                            $optionType = $jobOption['job_option']['OptionType'];
+                                                            $option = $jobOption['job_option'];
+
+                                                            $optionId = $option['JobOptionID'];
+                                                            $optionName = $option['OptionName'];
+                                                            $groupId = $jobOptionGroup['job_option_group']['id'];
+                                                            $GroupName = $jobOptionGroup['job_option_group']['GroupName'];
+                                                            $subJobId = $subJob['sub_job_category']['idtbl_sub_job_category'];
+                                                            $uniqueKey = $subJobId . '_' . $groupId . '_' . $optionId;
+                                                            $isRequired = $option['IsRequired'] == 1 ? 'required' : '';
+                                                            $selectedValue = $option['job_details_option_value'] ?? null;
+                                                            $price = $option['price'] ?? '';
+                                                            $list_price = $option['list_price'] ?? '';
+                                                            $qty = $option['qty'] ?? '';
+                                                            $total = $option['total'] ?? '';
+                                                            $net_amount = $option['net_amount'] ?? '';
+                                                            $line_discount = $option['line_discount'] ?? '';
+                                                            $line_discount_type = $option['line_discount_type'] ?? null;
+                                                            $line_discount_pc = $option['line_discount_pc'] ?? '';
+                                                            $remark = $option['remark'] ?? '';
+                                                        ?>
+                                                        <div class="option-item mb-4" data-option-container="<?= $uniqueKey ?>">
+                                                            <div class="job-option-row option-row row g-3 align-items-center" data-level="0">
+                                                                <div class="col-md-6">
+                                                                    <div class="option-select-container">
+                                                                        <label class="form-label fw-medium text-dark mb-1">
+                                                                            <i class="fas fa-cog me-1 text-muted"></i>
+                                                                            <?= $option['OptionName']; ?>
+                                                                        </label>
+                                                                        <select class="form-select job-option-select job_option_f"
+                                                                            id="job_option_<?= $optionId ?>" 
+                                                                            name="job_option_<?= $optionId ?>"
                                                                             data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
-                                                                            onkeyup="schedulePriceUpdate(this);">
+                                                                            data-option-type="<?= $option['OptionType']; ?>"
+                                                                            data-option-id="<?= $optionId ?>"
+                                                                            data-option-group="<?= $groupId ?>"
+                                                                            data-sub-job-category="<?= $subJobId ?>" 
+                                                                            data-level="0"
+                                                                            data-subjob-name="<?= $subJob['sub_job_category']['sub_job_category'] ?>"
+                                                                            data-option-group-name="<?= $jobOptionGroup['job_option_group']['GroupName'] ?>"
+                                                                            data-option-name="<?= $optionName ?>"
+                                                                            data-option-description="<?= $option['Description']; ?>"
+                                                                            data-pre-value="<?= $selectedValue ?>"
+                                                                            onchange="loadChildOption(this,null,1,'<?= $uniqueKey ?>');"
+                                                                            >
+                                                                            <option value="">Select an option</option>
+                                                                            <?php foreach ($jobOption['option_values'] as $optionValue): ?>
+                                                                                <option value="<?= $optionValue['id'] ?>" data-parent-id="<?= $optionValue['ParentOptionValueID'] ?? '0' ?>">
+                                                                                    <?= $optionValue['ValueName'] ?>
+                                                                                </option>
+                                                                            <?php endforeach; ?>
+                                                                        </select>        
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label small mb-1">Qty</label>
-                                                                        <input class="form-control form-control-sm text-end item-qty item_qty_f"
-                                                                            type="number" step="any"
-                                                                            id="item_qty_<?= $uniqueKey ?>"
-                                                                            name="item_qty_<?= $uniqueKey ?>"
-                                                                            data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
-                                                                            onkeyup="schedulePriceUpdate(this);">
-                                                                    </div>
-                                                                    <div class="col-md-5">
-                                                                        <label class="form-label small mb-1">Total</label>
-                                                                        <input class="form-control form-control-sm text-end item-total-price item_total_price_f"
-                                                                            type="number" step="any" readonly
-                                                                            id="item_total_price_<?= $uniqueKey ?>"
-                                                                            name="item_total_price_<?= $uniqueKey ?>"
-                                                                            data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value="">
+                                                                    <div class="child-options-wrapper mt-2"
+                                                                        data-parent-option-id="<?= $optionId ?>">
                                                                     </div>
                                                                 </div>
                                                                 
-                                                                <div class="row g-2 mt-2">
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label small mb-1">Discount Type</label>
-                                                                        <select class="form-select form-select-sm line_discount_type"
-                                                                        id="line_discount_type_<?= $uniqueKey ?>"
-                                                                        name="line_discount_type_<?= $uniqueKey ?>" 
-                                                                        data-uniq-id="<?= $uniqueKey ?>"
-                                                                        onchange="schedulePriceUpdate(this);">
-                                                                            <option value="1">%</option>
-                                                                            <option value="2">Amount</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label small mb-1">Discount</label>
-                                                                        <input class="form-control form-control-sm text-end line_discount" 
-                                                                            type="number" step="any" min="0"
-                                                                            id="line_discount_<?= $uniqueKey ?>"
-                                                                            name="line_discount_<?= $uniqueKey ?>"
-                                                                            data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value=""
-                                                                            onkeyup="schedulePriceUpdate(this);">
-                                                                    </div>
-                                                                    <div class="col-md-5">
-                                                                        <label class="form-label small mb-1">Net Price</label>
-                                                                        <input class="form-control form-control-sm text-end item-net-price" 
-                                                                            type="number" step="any" readonly 
-                                                                            id="item_net_price_<?= $uniqueKey ?>"
-                                                                            name="item_net_price_<?= $uniqueKey ?>"
-                                                                            data-uniq-id="<?= $uniqueKey ?>"
-                                                                            value="">
+                                                                <div class="col-md-6">
+                                                                    <div class="pricing-section bg-light p-2 rounded">
+                                                                        <div class="row g-2">
+                                                                            <div class="col-md-4">
+                                                                                <label class="form-label small mb-1">Unit Price</label>
+                                                                                <input class="form-control form-control-sm text-end item-price item_price_f"
+                                                                                    type="number" step="any"
+                                                                                    id="item_price_<?= $uniqueKey ?>"
+                                                                                    name="item_price_<?= $uniqueKey ?>"
+                                                                                    data-original_price="<?= $price ?>"
+                                                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                                                    value=""
+                                                                                    onkeyup="schedulePriceUpdate(this);">
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <label class="form-label small mb-1">Qty</label>
+                                                                                <input class="form-control form-control-sm text-end item-qty item_qty_f"
+                                                                                    type="number" step="any"
+                                                                                    id="item_qty_<?= $uniqueKey ?>"
+                                                                                    name="item_qty_<?= $uniqueKey ?>"
+                                                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                                                    value=""
+                                                                                    onkeyup="schedulePriceUpdate(this);">
+                                                                            </div>
+                                                                            <div class="col-md-5">
+                                                                                <label class="form-label small mb-1">Total</label>
+                                                                                <input class="form-control form-control-sm text-end item-total-price item_total_price_f"
+                                                                                    type="number" step="any" readonly
+                                                                                    id="item_total_price_<?= $uniqueKey ?>"
+                                                                                    name="item_total_price_<?= $uniqueKey ?>"
+                                                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                                                    value="">
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div class="row g-2 mt-2">
+                                                                            <div class="col-md-4">
+                                                                                <label class="form-label small mb-1">Discount Type</label>
+                                                                                <select class="form-select form-select-sm line_discount_type"
+                                                                                id="line_discount_type_<?= $uniqueKey ?>"
+                                                                                name="line_discount_type_<?= $uniqueKey ?>" 
+                                                                                data-uniq-id="<?= $uniqueKey ?>"
+                                                                                onchange="schedulePriceUpdate(this);">
+                                                                                    <option value="1">%</option>
+                                                                                    <option value="2">Amount</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <label class="form-label small mb-1">Discount</label>
+                                                                                <input class="form-control form-control-sm text-end line_discount" 
+                                                                                    type="number" step="any" min="0"
+                                                                                    id="line_discount_<?= $uniqueKey ?>"
+                                                                                    name="line_discount_<?= $uniqueKey ?>"
+                                                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                                                    value=""
+                                                                                    onkeyup="schedulePriceUpdate(this);">
+                                                                            </div>
+                                                                            <div class="col-md-5">
+                                                                                <label class="form-label small mb-1">Net Price</label>
+                                                                                <input class="form-control form-control-sm text-end item-net-price" 
+                                                                                    type="number" step="any" readonly 
+                                                                                    id="item_net_price_<?= $uniqueKey ?>"
+                                                                                    name="item_net_price_<?= $uniqueKey ?>"
+                                                                                    data-uniq-id="<?= $uniqueKey ?>"
+                                                                                    value="">
+                                                                            </div>
+                                                                        </div>
+
                                                                     </div>
                                                                 </div>
-
+                                                                <div class="col-md-12">
+                                                                    <label class="form-label small mb-1">
+                                                                        Remark 
+                                                                        <span id="remark_save_status_<?= $uniqueKey ?>" class="text-danger"></span>
+                                                                    </label>
+                                                                    <input class="form-control form-control-sm text-left item-price remark_f" 
+                                                                        type="text" id="remark_<?= $uniqueKey ?>" name="remark_<?= $uniqueKey ?>" 
+                                                                        value="" data-uniq-id="<?= $uniqueKey ?>" 
+                                                                        oninput="markRemarkUnsaved(this)" 
+                                                                        onkeydown="if (event.key === 'Enter') handleRemarkEnter(this);">
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <label class="form-label small mb-1">
-                                                                Remark 
-                                                                <span id="remark_save_status_<?= $uniqueKey ?>" class="text-danger"></span>
-                                                            </label>
-                                                            <input class="form-control form-control-sm text-left item-price remark_f" 
-                                                                type="text" id="remark_<?= $uniqueKey ?>" name="remark_<?= $uniqueKey ?>" 
-                                                                value="" data-uniq-id="<?= $uniqueKey ?>" 
-                                                                oninput="markRemarkUnsaved(this)" 
-                                                                onkeydown="if (event.key === 'Enter') handleRemarkEnter(this);">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <hr class="my-3">
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                            <div class="conditional-options-container"></div>
+                                                        <hr class="my-3">
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                                <div class="conditional-options-container"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -192,6 +205,7 @@
         </div>
     <?php endif; ?>
 <?php endif; ?>
+
 
 <script>
     $(document).ready(function() {
@@ -560,7 +574,7 @@
                         return `
                             <div class="ms-2 flex-fill">
                                 <h6 class="mb-1">${escapeHtml(jobOption.OptionName)}</h6>
-                                <img src="https://devapi.ecw.lk/storage/${optionValues[0].ValueName ? escapeHtml(optionValues[0].ValueName) : 'https://via.placeholder.com/50'}"
+                                <img src="https://api.ecw.lk/storage/${optionValues[0].ValueName ? escapeHtml(optionValues[0].ValueName) : 'https://via.placeholder.com/50'}"
                                     id="preview_image_${jobOption.JobOptionID}"
                                     data-option-type="${escapeHtml(jobOption.OptionType)}"
                                     data-option-id="${escapeHtml(jobOption.JobOptionID)}"

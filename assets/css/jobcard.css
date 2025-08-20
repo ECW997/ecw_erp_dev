@@ -184,7 +184,7 @@ button[data-bs-toggle="collapse"]:not(.collapsed)::before {
 }
 
 .collapse .card{
-    padding-top: 0;
+    /* padding-top: 0; */
     box-shadow: none;
     border: 0px solid rgba(31, 45, 65, 0.125);
 }

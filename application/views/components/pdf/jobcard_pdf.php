@@ -534,9 +534,9 @@
                                         </td>
                                         <td class="job-remarks">
                                             <?= $joblist['option_text'] ?? 'N/A' ?> <br>
-                                            <?= $joblist['combined_option'] ?? 'N/A' ?> <?= ($joblist['description'] != 'image') ? ($joblist['child_value_name'] ?? ''):'' ?>
+                                            <?= $joblist['combined_option'] ?? 'N/A' ?> <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>
                                             
-                                            <?php if($joblist['description'] == 'image'): ?>
+                                            <?php if ($joblist['description'] == 'image' || $joblist['description'] == 'dot_image') : ?>
                                                 <div class="image-container">
                                                     <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" alt="Job Reference Image" />
                                                 </div>

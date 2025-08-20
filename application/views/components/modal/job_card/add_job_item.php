@@ -176,6 +176,7 @@ function reSetContent(target) {
 
     var $el = $(target);
     $el.find('input, textarea, select').val('');
+    $el.find('.job_option_f').val('').trigger('change');
     $el.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
     $el.find('.collapse.show').collapse('hide');
 
@@ -562,6 +563,14 @@ function continueAddToJobCard(inputMethod,btn,OriginalOperationtext){
     });
 
 }
+
+$(document).ready(function() {
+    $('#price_category').on('select2:open', function (e) {
+        if (confirm("This will reset the form. Do you want to continue?")) {
+            reSetContent('#jobCardForm');
+        }
+    });
+});
 
 $(document).on('hidden.bs.modal', function () {
     if ($('.modal.show').length > 0) {

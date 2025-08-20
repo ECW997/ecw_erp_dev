@@ -134,6 +134,9 @@ include "include/topnavbar.php";
                                         <select class="form-control form-control-sm" id="option_bulk_copy_source" name="option_bulk_copy_source">
                                             <option value="">Select</option>
                                         </select>
+                                        <select class="form-control form-control-sm" style="margin-top: 5px;" id="begining_parent_id" name="begining_parent_id">
+                                            <option value="">Select Beginning Parent Option</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group mb-1" id="bulkCopyDropdownGroup" style="display: none;">
@@ -230,6 +233,7 @@ include "include/topnavbar.php";
                                 <option value="1">Stitching Design</option>
                                 <option value="2">Marketing</option>
                                 <option value="3">Production</option>
+                                <option value="4">DOT Design</option>
                             </select>
                             <div id="imagePreview" class="mt-3 row"></div>
                             <input type="hidden" id="btn_type" name="btn_type" />
@@ -487,6 +491,35 @@ $(document).ready(function() {
         }
     });
 
+    $('#begining_parent_id').select2({
+        dropdownParent: $('#addModal'),
+        placeholder: 'Select Beginning Parent Option...',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: '<?php echo base_url() ?>JobOptionValue/getJobOption',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                };
+            },
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.pagination.more
+                        }
+                    };
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
+
     $('#bulk_copy_source').select2({
         dropdownParent: $('#addModal'),
         placeholder: 'Select...',
@@ -550,6 +583,7 @@ $(document).ready(function() {
         var option_valuebulk_copy_toggle = $('#bulkCopyOptionValueToggle').is(':checked') ? 1 : 0;
         var bulk_copy_toggle = $('#bulkCopyToggle').is(':checked') ? 1 : 0;
         var option_bulk_copy_source = $('#option_bulk_copy_source').val();
+        var begining_parent_id = $('#begining_parent_id').val();
         var copy_value_name_source = $('#bulk_copy_source').val();
         var value_name = $('#value_name').val();
         var parent_option_value = $('#parent_option_value').val();
@@ -566,6 +600,7 @@ $(document).ready(function() {
                 copy_value_name_source: copy_value_name_source,
                 option_valuebulk_copy_toggle: option_valuebulk_copy_toggle,
                 option_bulk_copy_source: option_bulk_copy_source,
+                begining_parent_id:begining_parent_id,
                 value_name: value_name,
                 parent_option_value: parent_option_value,
                 status: status,
