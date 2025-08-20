@@ -13,7 +13,7 @@ class Media_libraryinfo extends CI_Model{
         ];
         
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://devapi.ecw.lk/api/v1/media_library');
+        curl_setopt($ch, CURLOPT_URL, 'https://api.ecw.lk/api/v1/media_library');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $form_data);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
