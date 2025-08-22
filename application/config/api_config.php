@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$config['api_base_url'] = 'https://devapi.ecw.lk/api';
+$config['api_base_url'] = 'https://api.ecw.lk/api';
 
 $config['api_endpoints'] = [
     'auth_check' => '/v1/auth_check',
@@ -78,6 +78,8 @@ $config['api_endpoints'] = [
 
     'media_library_v1' => '/v1/media_library',
     'media_library_status_v1' => '/v1/media_library_status',
+
+    'sales_order_v1' => '/v1/sales_order',
     
     'invoice_v1' => '/v1/invoice',
     'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',

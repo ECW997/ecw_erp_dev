@@ -177,6 +177,17 @@ else if($functionmenu=='InvoiceOutstandingReport'){
     $approve4check=checkprivilege($menuprivilegearray, 17, 8);
     $cancelcheck=checkprivilege($menuprivilegearray, 17, 9);
 }
+else if($functionmenu=='SalesOrder' || $functionmenu == 'SalesOrder/salesOrderDetailIndex' || strpos($functionmenu, 'SalesOrder/salesOrderDetailIndex/') === 0){
+    $addcheck=checkprivilege($menuprivilegearray, 18, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 18, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 18, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 18, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 18, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 18, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 18, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 18, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 18, 9);
+}
 
 
 function checkprivilege($arraymenu, $menuID, $type){
@@ -302,6 +313,17 @@ function checkprivilege($arraymenu, $menuID, $type){
                         colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
                     </lord-icon>
                 </div>Job Card
+            </a>
+            <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 18)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'SalesOrder'; ?>">
+                <div class="nav-link-icon">
+                    <!-- <i class="fas fa-id-card-alt"></i> -->
+                    <lord-icon src="https://cdn.lordicon.com/tbabdzcy.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Sales Order
             </a>
             <?php }?>
 
