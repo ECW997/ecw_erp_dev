@@ -206,7 +206,7 @@ include "include/topnavbar.php";
                                         <i class="fas fa-car text-warning"></i>
                                     </div>
                                     <div>
-                                        <div class="font-weight-bold">Job Card Invoice</div>
+                                        <div class="font-weight-bold">Sales Order Invoice</div>
                                         <small class="text-muted d-block">For service jobs</small>
                                     </div>
                                 </div>
