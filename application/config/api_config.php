@@ -83,6 +83,7 @@ $config['api_endpoints'] = [
     
     'invoice_v1' => '/v1/invoice',
     'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
+    'get_sel2_jobcard_number_v1' => '/v1/get_sel2_salesorder',
     'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',

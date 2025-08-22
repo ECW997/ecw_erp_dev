@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold">Job Card No <span class="text-danger">*</span></label>
+                        <label class="form-label small fw-bold">Sales Order No <span class="text-danger">*</span></label>
                         <select class="form-select form-select-sm input-field" name="job_card_number"
                             id="job_card_number" <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
                             <option value="">Select</option>
@@ -349,7 +349,7 @@ $(document).ready(function() {
                             section.details.forEach(detail => {
                                 let row = `
                                     <tr>
-                                        <td class="text-center">${index++} ${res.data.line_discount_status}</td>
+                                        <td class="text-center">${index++}</td>
                                         <td class="text-left">${section.job_sub_category_text} - ${detail.option_group_text} (${detail.combined_option})</td>
                                         <td class="text-center">${detail.qty}</td>
                                         <td class="text-right">${(parseFloat(detail.list_price).toFixed(2))}</td>
