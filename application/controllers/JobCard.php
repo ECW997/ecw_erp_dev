@@ -73,10 +73,31 @@ class JobCard extends CI_Controller {
 
 		$this->pdf->loadHtml($html);
 		$this->pdf->render();
-		$this->pdf->stream(
-			$pdf_data['main_data']['job_card_number'] . '.pdf', 
-			['Attachment' => 0]  
-		);
+
+		// $this->pdf->stream(
+		// 	$pdf_data['main_data']['job_card_number'] . '.pdf', 
+		// 	['Attachment' => 1]  
+		// );
+
+		// Check if request is from Electron
+		$user_agent = $this->input->server('HTTP_USER_AGENT');
+		$is_electron = strpos($user_agent, 'Electron') !== false;
+		
+		$filename = $pdf_data['main_data']['job_card_number'] . '.pdf';
+		
+		if ($is_electron) {
+			// For Electron: Set proper headers for download
+			header('Content-Type: application/pdf');
+			header('Content-Disposition: attachment; filename="' . $filename . '"');
+			header('Content-Length: ' . strlen($this->pdf->output()));
+			header('Cache-Control: private, max-age=0, must-revalidate');
+			header('Pragma: public');
+			
+			echo $this->pdf->output();
+		} else {
+			// For regular browsers: Use stream method
+			$this->pdf->stream($filename, ['Attachment' => 1]);
+		}
 	}
 
 	public function jobCardQuotationPDF(){

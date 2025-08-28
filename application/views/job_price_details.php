@@ -234,7 +234,8 @@ include "include/topnavbar.php";
                 dataType: 'json',
                 data: {
                     updatedData: updatedData,
-                    recordID:recordID
+                    recordID:recordID,
+                    bulkCopyOptionValue: $('#bulkCopyOptionValue').is(':checked') ? 1 : 0
                 },
                 url: '<?php echo base_url() ?>Job_price_details/jobOptionPricingUpdate',
                 success: function(result) { 
