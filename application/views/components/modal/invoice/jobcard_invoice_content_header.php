@@ -153,8 +153,8 @@
 
 
 
-                        <!-- <input type="text" name="jobcard_id" class="form-control form-control-sm input-highlight"
-                            id="jobcard_id"> -->
+                        <input type="text" name="jobcard_id" class="form-control form-control-sm input-highlight"
+                            id="jobcard_id">
 
 
                     </div>
@@ -308,7 +308,7 @@ $(document).ready(function() {
 
     jobCardNumber.on('change', function() {
         let selectedId = $(this).val();
-
+alert(selectedId);
         if (selectedId) {
             $.ajax({
                 url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',
@@ -318,8 +318,9 @@ $(document).ready(function() {
                 },
                 dataType: 'json',
                 success: function(res) {
-                    if (res.status && res.data) {
-                        let data = res.data.main_data[0];
+                     console.log(res);
+                    if (res.status && res.salesOrderDetails) {
+                        let data = res.salesOrderDetails.main_data[0];
 
                         $('#jobcarddetailsModal').modal('show');
 
@@ -339,13 +340,12 @@ $(document).ready(function() {
                         $('#modal_Vehicle_brand').val(data.brand_name);
                         $('#modal_Vehicle_model').val(data.model_name);
 
-                        $('#jobcard_id').val(data.idtbl_jobcard);
-
+                        $('#jobcard_id').val(res.relationDetails.jobcard_id);
 
                         let index = 1;
                         $('#jobCardDetailsBody').empty();
 
-                        res.data.details_data.forEach(section => {
+                        res.salesOrderDetails.details_data.forEach(section => {
                             section.details.forEach(detail => {
                                 let row = `
                                     <tr>
@@ -354,12 +354,12 @@ $(document).ready(function() {
                                         <td class="text-center">${detail.qty}</td>
                                         <td class="text-right">${(parseFloat(detail.list_price).toFixed(2))}</td>
                                         <td class="text-right">${(parseFloat(detail.total).toFixed(2))}</td>
-                                        <td class="text-right">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right">${(res.salesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
                                         <td class="text-right">${(parseFloat(0).toFixed(2))}</td>
-                                        <td class="text-right">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.net_amount).toFixed(2)) : (parseFloat(detail.total).toFixed(2))}</td>
+                                        <td class="text-right">${(res.salesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.net_amount).toFixed(2)) : (parseFloat(detail.total).toFixed(2))}</td>
                                         <td class="text-right d-none line_discount_type">${(parseFloat(detail.line_discount_type).toFixed(2))}</td>
-                                        <td class="text-right d-none line_discount_pc">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount_pc).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
-                                        <td class="text-right d-none line_discount">${(res.data.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount_pc">${(res.salesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount_pc).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right d-none line_discount">${(res.salesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
 
                                     </tr>
                                 `;
@@ -367,7 +367,7 @@ $(document).ready(function() {
                             });
                         });
 
-                        let summary = res.data.summary_data[0];
+                        let summary = res.salesOrderDetails.summary_data[0];
                         let approveRequestStatus = data.status;
 
                         $('#modal_sub_total').val(addCommas(parseFloat(summary.sub_total).toFixed(2)));
