@@ -62,5 +62,9 @@
             <h6 class="small font-weight-bold mb-0 mr-2 text-danger" style="width: 60px;">Data Not Loaded!</h6>
             <?php endif; ?>
         </div>
+        <div class="d-flex justify-content-start mt-3">
+            <input class="form-check-input" type="checkbox" id="bulkCopyOptionValue">
+            <label class="form-check-label small" for="bulkCopyOptionValue">Option Values Bulk Copy</label>
+        </div>
     </div>
 </div>

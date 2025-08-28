@@ -263,14 +263,14 @@
                                             <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
                                         </span>
                                     </td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
-                                        <button type="button" title="Edit" class="btn btn-sm btn-primary"
+                                    <td style="width:8%; vertical-align: middle;" class="text-right">
+                                        <button type="button" title="Edit" class="btn btn-sm btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                                 id="<?= $detail['parent_id'] ?>" 
                                                 job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
                                                 onclick="editJobItems(this)">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button type="button" title="Delete" class="btn btn-sm btn-danger"
+                                        <button type="button" title="Delete" class="btn btn-sm btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
                                                 id="<?= $detail['parent_id'] ?>" 
                                                 job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
                                                 onclick="deleteJobItems(this)">

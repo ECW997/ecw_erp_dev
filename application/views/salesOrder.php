@@ -5,7 +5,7 @@ include "include/v2/topnavbar.php";
 
 <style>
 .table-container {
-	max-height: 350px;
+	/* max-height: 350px; */
 	overflow-y: auto;
 }
 
@@ -37,12 +37,12 @@ include "include/v2/topnavbar.php";
 	font-size: 0.75rem;
 }
 
-.control-panel {
-	/* background-color: #fff; */
+/* .control-panel {
+	background-color: #fff;
 	border-radius: 0.375rem;
 	padding: 1.5rem;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 </style>
 
@@ -50,6 +50,10 @@ include "include/v2/topnavbar.php";
     <div id="layoutSidenav_nav">
         <?php include "include/menubar.php"; ?>
     </div>
+    <?php
+    $is_approve = (isset($relationDetails['status']) && $relationDetails['status'] === 'Approved');
+    $is_button_hidden = $is_edit ? $editcheck == 0 : $addcheck == 0;
+    ?>
     <div id="layoutSidenav_content">
         <main>
             <div class="page-header page-header-light bg-gray shadow">
@@ -71,18 +75,23 @@ include "include/v2/topnavbar.php";
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-2 p-2">
+            <div class="container-fluid mt-2 p-0">
                 <div class="card form-card">
-                    <div class="card-body p-2">
+                    <div class="card-body p-3">
                         <div class="row">
                             <div class="col-12 text-right">
-                                 <button type="button"
-                                    class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>" onclick="approve1_confirm();">
-                                    <i class="fas fa-check me-1"></i> Approve
-                                </button>
+                                <?php if ($is_approve): ?>
+                                    <span class="badge bg-success">Approved</span>
+                                <?php else: ?>
+                                    <button type="button"
+                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
+                                        onclick="approveConfirm();">
+                                        <i class="fas fa-check me-1"></i> Approve
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-4">
                              <div class="col-12">
                                 <div class="control-panel">
                                     <div class="row align-items-end">
@@ -99,7 +108,9 @@ include "include/v2/topnavbar.php";
                                         </div>
                                         <div class="col-md-6">
                                             <label for="confirmedOrderValue" class="form-label">Confirmed Order Value (Price)</label>
-                                            <input type="number" class="form-control" id="confirmedOrderValue" value="<?= isset($relationDetails['confirmed_order_value']) ? $relationDetails['confirmed_order_value'] : '' ?>" placeholder="Enter order value/price" min="0" step="0.01" onkeyup="updatePriceSummary()">
+                                            <input type="number" class="form-control" id="confirmedOrderValue" 
+                                            value="<?= isset($relationDetails['confirmed_order_value']) ? $relationDetails['confirmed_order_value'] : '' ?>" 
+                                            placeholder="Enter order value/price" min="0" step="0.01" onkeyup="updatePriceSummary()" <?= $is_approve ? 'disabled' : ''; ?>>
                                         </div>
                                     </div>
                                 </div>
@@ -120,9 +131,9 @@ include "include/v2/topnavbar.php";
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Description</th>
-                                                        <th>QTY</th>
-                                                        <th>Total Price</th>
-                                                        <th>Action</th>
+                                                        <th class="text-center">QTY</th>
+                                                        <th class="text-end">Total Price</th>
+                                                        <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -145,9 +156,9 @@ include "include/v2/topnavbar.php";
                                                     <tr>
                                                         <th>#</th>
                                                         <th>Description</th>
-                                                        <th>QTY</th>
-                                                        <th>Total Price</th>
-                                                        <th>Action</th>
+                                                        <th class="text-center">QTY</th>
+                                                        <th class="text-end">Total Price</th>
+                                                        <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -164,29 +175,36 @@ include "include/v2/topnavbar.php";
                         		<div class="price-summary">
                         			<div class="row text-center">
                         				<div class="col-md-3">
-                        					<h6 class="text-muted">Total Jobs Price</h6>
+                        					<h6 class="text-gray-800">Total Jobs Price</h6>
                         					<h4 class="text-primary" id="totalJobsPrice">0.00</h4>
+                                            <input type="hidden" id="totalJobsPriceHidden">
                         				</div>
                         				<div class="col-md-3">
-                        					<h6 class="text-muted">Confirmed Order Value</h6>
+                        					<h6 class="text-gray-800">Confirmed Order Value</h6>
                         					<h4 class="text-info" id="displayOrderValue">0.00</h4>
                         				</div>
                         				<div class="col-md-3">
-                        					<h6 class="text-muted">Difference</h6>
+                        					<h6 class="text-gray-800">Difference</h6>
                         					<h4 id="priceDifference">0.00</h4>
                         				</div>
                         				<div class="col-md-3">
-                        					<h6 class="text-muted">Status</h6>
+                        					<h6 class="text-gray-800">Status</h6>
                         					<span class="badge status-badge" id="priceStatus">Pending</span>
                         				</div>
                         			</div>
                         		</div>
                         	</div>
+                             <?php if ($is_approve): ?>
+                                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                    <span class="badge bg-success">This order has been approved and cannot be modified.</span>
+                                </div>
+                            <?php else: ?>
                         	<div class="col-md-4 d-flex align-items-center justify-content-end">
-                        		<button class="btn btn-primary btn-sm px-4" id="confirmBtn" onclick="confirmOrder();" disabled>
+                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();" disabled>
                         			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
                         		</button>
                         	</div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -198,7 +216,7 @@ include "include/v2/topnavbar.php";
                     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <h4 class="mt-3">Loading Payment Data...</h4>
+                    <h4 class="mt-3">Loading Sales Order Data...</h4>
                 </div>
             </div>
         <?php include "include/v2/footerbar.php"; ?>
@@ -332,9 +350,14 @@ $(document).ready(function () {
 });
 
 function loadJobCard() {
+    availableJobs = [];
+    selectedJobs = [];
+    renderTables();
+    updatePriceSummary();
 	const selectedCard = $('#job_card_number').val();
 
 	if (selectedCard) {
+         $('#loading-overlay').show();
 		$.ajax({
 			url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',
 			type: 'POST',
@@ -376,6 +399,7 @@ function loadJobCard() {
 					renderTables();
 					updatePriceSummary();
 				}
+                $('#loading-overlay').fadeOut(300);
 			},
 			error: function (xhr) {
 				alert("Error fetching job card details.");
@@ -383,6 +407,7 @@ function loadJobCard() {
 				selectedJobs = [];
 				renderTables();
 				updatePriceSummary();
+                $('#loading-overlay').fadeOut(300);
 			}
 		});
 	}
@@ -406,7 +431,7 @@ function renderAvailableJobs() {
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
-                            <td class="text-center">
+                            <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-primary transfer-btn move-to-selected" data-job-id="${job.jobId}"> <i class="fas fa-arrow-right"></i> </button>
                             </td>
                         </tr>
@@ -433,7 +458,7 @@ function renderSelectedJobs() {
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
-                            <td class="text-center">
+                            <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-danger transfer-btn move-to-available" data-job-id="${job.jobId}">
                                      <i class="fas fa-undo"></i>
                                 </button>
@@ -489,6 +514,7 @@ function updatePriceSummary() {
 	const difference = totalAvailablePrice - orderValue;
 
 	$('#totalJobsPrice').text(`${totalAvailablePrice.toFixed(2)}`);
+    $('#totalJobsPriceHidden').val(totalAvailablePrice.toFixed(2));
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
 
 	const $differenceElement = $('#priceDifference');
@@ -555,21 +581,21 @@ function confirmOrder() {
 		// }, 2000);
 }
 
-function approve1_confirm() {
+function approveConfirm() {
+    var recordID = "<?= $relationDetails ? $relationDetails['id'] : 0; ?>";
     if (confirm("Are you sure you want to approve this?")) {
         $.ajax({
             type: "POST",
             dataType: 'json',
             data: {
-                recordID: "<?= $relationDetails ? $relationDetails['id'] : 0; ?>",
-                recordOption: "<?= $is_edit ? 2 : 1; ?>"
+                recordID: recordID,
             },
-            url: '<?php echo base_url() ?>SalesOrder/approve1',
+            url: '<?php echo base_url() ?>SalesOrder/Approve',
             success: function(result) {
                 if (result.status == true) {
                     success_toastify(result.message);
                     setTimeout(function() {
-                        window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + result.data.relation_id;
+                        window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
                     }, 500)
                 } else {
                     falseResponse(result);
