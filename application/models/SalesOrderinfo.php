@@ -22,6 +22,9 @@ class SalesOrderinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('DELETE', 'sales_order_v1', $id, $headers);
     }
-   
+    public function Approve($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'sales_order_approve_v1', $form_data, $headers);
+    }
 
 }

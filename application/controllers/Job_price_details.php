@@ -59,6 +59,7 @@ class Job_price_details extends CI_Controller {
 		$form_data = [
 			'updatedData' => $this->input->post('updatedData'),
 			'recordID' => $this->input->post('recordID'),
+			'bulkCopyOptionValue' => $this->input->post('bulkCopyOptionValue')
         ];
 
 		$response = $this->Job_price_detailsinfo->jobOptionPricingUpdate($this->api_token,$form_data);

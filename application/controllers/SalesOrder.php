@@ -86,5 +86,22 @@ class SalesOrder extends CI_Controller {
         }
     }
 
+	public function Approve() {
+		$recordID = $this->input->post('recordID');
+		$recordOption = $this->input->post('recordOption');
+
+		$form_data = [
+			'recordID' => $recordID,
+		];
+
+		$response = $this->SalesOrderinfo->Approve($this->api_token,$form_data);
+
+		if ($response) {
+			echo json_encode($response);
+		} else {
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+			redirect('SalesOrder');
+		}
+	}
     
 }
