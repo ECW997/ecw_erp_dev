@@ -445,11 +445,11 @@
                                         <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
-                                    <input type="hidden" name="jobcard_id"
+                                    <input type="text" name="jobcard_id"
                                         class="form-control form-control-sm input-highlight" id="jobcard_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
 
-                                    <input type="hidden" name="approve_id"
+                                    <input type="text" name="approve_id"
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
                                         required>
@@ -598,6 +598,8 @@ $(document).ready(function() {
         // placeholder: 'Select Payment Type',
         // allowClear: true
     });
+    
+console.log('Invoice content script loaded');
 
 
     $('#reciept_no').select2({

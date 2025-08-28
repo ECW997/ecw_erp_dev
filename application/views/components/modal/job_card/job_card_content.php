@@ -186,10 +186,11 @@
                             <?= $job_main_data[0]['handover_date'] ?? '' ?></td>
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">
                             <?= $job_main_data[0]['total_days'] ?? '' ?></td>
-                       <td class="text-left fw-bold text-success">
+                        <td class="text-left fw-bold text-success">
                             <?= $job_main_data[0]['payment_type'] ?? '' ?></td>
                         <td class="text-left"></td>
-                        <td class="text-right"><button type="button" title="Edit Header" class="btn btn-sm btn-warning <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                        <td class="text-right"><button type="button" title="Edit Header"
+                                class="btn btn-sm btn-warning <?= ($editcheck == 0) ? 'd-none' : '' ?>"
                                 data-bs-toggle="modal" data-bs-target="#jobHeaderModal_edit" id="openEditModalBtn"><i
                                     class="fas fa-edit"></i></button></td>
                     </tr>
@@ -202,25 +203,32 @@
                 <?php 
             if($job_detail_data){
             foreach ($job_detail_data as $group): ?>
-        		<div class="details_section mb-2">
+                <div class="details_section mb-2">
                     <table class="w-100 table table-bordered">
                         <thead>
                             <tr>
-                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;"><?php echo $group['job_sub_category_text']; ?></th>
-                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">Description</th>
-                                <th style="width:15%; word-wrap: break-word; word-break: break-word; white-space: normal;">Remark</th>
+                                <th
+                                    style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    <?php echo $group['job_sub_category_text']; ?></th>
+                                <th
+                                    style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    Description</th>
+                                <th
+                                    style="width:15%; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    Remark</th>
                                 <th style="width:8%" class="text-right">Price</th>
                                 <th style="width:6%" class="text-right">QTY</th>
                                 <th style="width:9%" class="text-right">Total</th>
                                 <th style="width:7%" class="text-right">O.Charges</th>
                                 <th style="width:7%" class="text-right">Discount</th>
                                 <th style="width:8%" class="text-right">Sub Total</th>
-                                <th style="width:8%" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">Action</th>
+                                <th style="width:8%" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
+                                    Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($group['details'] as $detail): ?>
-                                <?php
+                            <?php
                                     $isPriceChanged = $detail['list_price'] != $detail['price'];
                                     $priceChangeHighlight = $isPriceChanged ? 'bg-warning text-dark' : '';
                                     $listPrice = $detail['list_price'];
@@ -248,60 +256,73 @@
                                             </div>
                                         </div>';
                                 ?>
-                                <tr>
-                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['option_group_text'] ?> - <?= $detail['option_text'] ?></td>
-                                    <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['combined_option'] ?></td>
-                                    <td style="width:15%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= isset($detail['remark']) ? $detail['remark'] : '-' ?></td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right"><?= number_format($detail['list_price'], 2) ?></td>
-                                    <td style="width:6%; vertical-align: middle;" class="text-right"><?= $detail['qty'] ?></td>
-                                    <td style="width:9%; vertical-align: middle;" class="text-right"><?= number_format($detail['total'], 2) ?></td>
-                                    <td style="width:7%; vertical-align: middle;" class="text-right">-</td>
-                                    <td style="width:7%; vertical-align: middle;" class="text-right"><?= $is_line_discount_approved ? number_format($detail['line_discount'], 2) : number_format(0, 2) ?></td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right">
-                                        <span class="pe-2 ps-2 <?= $priceChangeHighlight ?>"
-                                            <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : '' ?>>
-                                            <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
-                                        </span>
-                                    </td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
-                                        <button type="button" title="Edit" class="btn btn-sm btn-primary"
-                                                id="<?= $detail['parent_id'] ?>" 
-                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
-                                                onclick="editJobItems(this)">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" title="Delete" class="btn btn-sm btn-danger"
-                                                id="<?= $detail['parent_id'] ?>" 
-                                                job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>" 
-                                                onclick="deleteJobItems(this)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td
+                                    style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    <?= $detail['option_group_text'] ?> - <?= $detail['option_text'] ?></td>
+                                <td
+                                    style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    <?= $detail['combined_option'] ?></td>
+                                <td
+                                    style="width:15%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    <?= isset($detail['remark']) ? $detail['remark'] : '-' ?></td>
+                                <td style="width:8%; vertical-align: middle;" class="text-right">
+                                    <?= number_format($detail['list_price'], 2) ?></td>
+                                <td style="width:6%; vertical-align: middle;" class="text-right"><?= $detail['qty'] ?>
+                                </td>
+                                <td style="width:9%; vertical-align: middle;" class="text-right">
+                                    <?= number_format($detail['total'], 2) ?></td>
+                                <td style="width:7%; vertical-align: middle;" class="text-right">-</td>
+                                <td style="width:7%; vertical-align: middle;" class="text-right">
+                                    <?= $is_line_discount_approved ? number_format($detail['line_discount'], 2) : number_format(0, 2) ?>
+                                </td>
+                                <td style="width:8%; vertical-align: middle;" class="text-right">
+                                    <span class="pe-2 ps-2 <?= $priceChangeHighlight ?>"
+                                        <?= $isPriceChanged ? 'data-bs-toggle="tooltip" style="cursor: help;" data-bs-placement="top" data-bs-html="true" title="' . htmlspecialchars($tooltipText, ENT_QUOTES) . '"' : '' ?>>
+                                        <?= $is_line_discount_approved ? number_format($detail['net_amount'], 2) : number_format($detail['total'], 2) ?>
+                                    </span>
+                                </td>
+                                <td style="width:8%; vertical-align: middle;"
+                                    class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
+                                    <button type="button" title="Edit" class="btn btn-sm btn-primary"
+                                        id="<?= $detail['parent_id'] ?>"
+                                        job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>"
+                                        onclick="editJobItems(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" title="Delete" class="btn btn-sm btn-danger"
+                                        id="<?= $detail['parent_id'] ?>"
+                                        job_card_id="<?= $job_main_data[0]['idtbl_jobcard'] ?? '' ?>"
+                                        onclick="deleteJobItems(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-        		<?php endforeach; }else { ?>
-        		<div class="details_section mb-2">
-        			<table class="w-100">
-        				<thead>
-        				</thead>
-        				<tbody>
-        					<tr>
-        						<td colspan="8" class="text-center">Record not found!</td>
-        					</tr>
-        				</tbody>
-        			</table>
-        		</div>
-        		<?php } ?>
-        	</div>
+                <?php endforeach; }else { ?>
+                <div class="details_section mb-2">
+                    <table class="w-100">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8" class="text-center">Record not found!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <?php } ?>
+            </div>
         </div>
 
     </div>
 </div>
 
-<div class="modal fade" id="editJobItemModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="editJobItemModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+    data-bs-keyboard="false">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content rounded-4">
             <div class="modal-header bg-primary">
@@ -315,7 +336,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="updateToJobCardBtn" onclick="addToJobCard(1)">Update</button>
+                <button type="button" class="btn btn-success" id="updateToJobCardBtn"
+                    onclick="addToJobCard(1)">Update</button>
             </div>
         </div>
     </div>
@@ -340,11 +362,13 @@ $(document).ready(function() {
 
 
         $('#edit_price_category').append(
-            new Option(<?= json_encode($job_main_data[0]['price_category_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['price_cat'] ?? '') ?>, true, true)
+            new Option(<?= json_encode($job_main_data[0]['price_category_type'] ?? '') ?>,
+                <?= json_encode($job_main_data[0]['price_cat'] ?? '') ?>, true, true)
         ).trigger('change');
 
         $('#edit_payment_method').append(
-            new Option(<?= json_encode($job_main_data[0]['payment_type'] ?? '') ?>, <?= json_encode($job_main_data[0]['peyment_method'] ?? '') ?>, true, true)
+            new Option(<?= json_encode($job_main_data[0]['payment_type'] ?? '') ?>,
+                <?= json_encode($job_main_data[0]['peyment_method'] ?? '') ?>, true, true)
         ).trigger('change');
 
         // $('#p_category option').each(function() {
@@ -418,7 +442,10 @@ function editJobItems(btn) {
     $.ajax({
         url: '<?= base_url("JobCard/getJobCardEditDetails") ?>',
         type: 'POST',
-        data: { parent_id: parentId, job_card_id: jobCardId },
+        data: {
+            parent_id: parentId,
+            job_card_id: jobCardId
+        },
         success: function(result) {
             if (result) {
                 $('#editJobItemForm').append(result);
@@ -431,29 +458,29 @@ function editJobItems(btn) {
 }
 
 function deleteJobItems(elem) {
-	var r = confirm("Are you sure, You want to Delete this ? ");
-	if (r == true) {
-		var id = $(elem).attr('id');
+    var r = confirm("Are you sure, You want to Delete this ? ");
+    if (r == true) {
+        var id = $(elem).attr('id');
         var job_card_id = $(elem).attr('job_card_id');
-		$.ajax({
-			type: "POST",
-			dataType: 'json',
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
             data: {
-                    id: id,
-                    job_card_id: job_card_id
+                id: id,
+                job_card_id: job_card_id
             },
-			url: '<?php echo base_url() ?>JobCard/jobCardItemDelete',
-			success: function (result) {
-				if (result.status) {
-					success_toastify(result.message);
+            url: '<?php echo base_url() ?>JobCard/jobCardItemDelete',
+            success: function(result) {
+                if (result.status) {
+                    success_toastify(result.message);
                     setTimeout(function() {
-                            location.reload();
-                        }, 200)
-				} else {
-					error_toastify(result.message);
-				}
-			}
-		});
-	}
+                        location.reload();
+                    }, 200)
+                } else {
+                    error_toastify(result.message);
+                }
+            }
+        });
+    }
 }
 </script>

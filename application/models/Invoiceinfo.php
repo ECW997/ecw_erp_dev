@@ -13,7 +13,7 @@ class Invoiceinfo extends CI_Model{
     
    public function fetchJobCardDetails($api_token, $id) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'job_card_v1', $id, $headers);
+        return call_api('GET', 'sales_order_v1', $id, $headers);
     }
     public function getDirectSalesItem($api_token,$form_data) {
         $headers = get_api_headers($api_token);
