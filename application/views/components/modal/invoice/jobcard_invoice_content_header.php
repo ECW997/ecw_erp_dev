@@ -13,16 +13,17 @@
                 </div>
                 <div class="col-md-3">
                     <div class="form-group mb-3">
-                        <label class="form-label small fw-bold">Sales Order No <span class="text-danger">*</span></label>
+                        <label class="form-label small fw-bold">Sales Order No <span
+                                class="text-danger">*</span></label>
                         <select class="form-select form-select-sm input-field" name="job_card_number"
                             id="job_card_number" <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
                             <option value="">Select</option>
                             <?php if (!empty($invoice_main_data[0]['job_card_id'])): ?>
                             <option value="<?= $invoice_main_data[0]['job_card_id'] ?>" selected>
-                            	<?= $invoice_main_data[0]['job_card_no'] ?>
+                                <?= $invoice_main_data[0]['job_card_no'] ?>
                             </option>
                             <?php endif; ?>
-                            </select>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-6 text-md-end">
@@ -233,12 +234,20 @@
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <h6 class="col-form-label me-2 text-nowrap" id="line_discount_approval_status">Discount approve</h6>
+                        <h6 class="col-form-label me-2 text-nowrap" id="line_discount_approval_status">Discount approve
+                        </h6>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-3">
-                        <h6 class="col-form-label me-2 text-nowrap" id="header_discount_approval_status">Discount approve</h6>
+                        <h6 class="col-form-label me-2 text-nowrap" id="header_discount_approval_status">Discount
+                            approve</h6>
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill"
+                            id="showJobDetailsModalBtn">
+                            <i class="fas fa-list-alt me-2"></i>View Exclude Job Details
+                        </button>
                     </div>
                 </div>
 
@@ -255,6 +264,85 @@
         </div>
     </div>
 </div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4">
+            <div class="modal-header bg-secondary">
+                <h5 class="modal-title text-white" id="jobDetailsModalLabel">Exclude Job Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm" id="jobCardDetailshideTable">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-left">Job Description</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-right">Unit Price</th>
+                                <th class="text-right">Total Price</th>
+                                <th class="text-right">Discount</th>
+                                <th class="text-right">Tax</th>
+                                <th class="text-right">Sub Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobCardDetailshideBody">
+                            <?php if (isset($details_data) && !empty($details_data)) : ?>
+                            <?php foreach ($details_data as $index => $item) : ?>
+                            <tr>
+                                <td class="text-center"><?= $index + 1 ?></td>
+                                <td class="text-left"><?= $item['job_sub_category_text'] ?></td>
+                                <td class="text-center"><?= $item['qty'] ?></td>
+                                <td class="text-right"><?= addCommas($item['list_price']) ?></td>
+                                <td class="text-right"><?= addCommas($item['total']) ?></td>
+                                <td class="text-right"><?= addCommas($item['line_discount']) ?></td>
+                                <td class="text-right"><?= addCommas(0.00) ?></td>
+                                <td class="text-right"><?= addCommas($item['net_amount']) ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                            <?php else : ?>
+                            <tr>
+                                <td colspan="8" class="text-center">No job details found.</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <h6 class="col-form-label me-2 text-nowrap">Summary Information</h6>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-3">
+                        <label class="form-label fw-bold">Sub Total</label>
+                        <input type="text" class="form-control mb-2 required-field" id="modal_sub_total_2"
+                            name="modal_sub_total_2" placeholder="Sub Total" readonly>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label fw-bold">Total Line Discount</label>
+                        <input type="text" class="form-control mb-2 required-field" id="modal_line_discount_2"
+                            name="modal_line_discount_2" placeholder="Total Line Discount" readonly>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label fw-bold">Total Header Discount</label>
+                        <input type="text" class="form-control mb-2 required-field" id="modal_header_discount_2"
+                            name="modal_header_discount_2" placeholder="Total Header Discount" readonly>
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label fw-bold">Net Total</label>
+                        <input type="text" class="form-control mb-2 required-field" id="modal_net_total_2"
+                            name="modal_net_total_2" placeholder="Net Total" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script>
@@ -308,7 +396,7 @@ $(document).ready(function() {
 
     jobCardNumber.on('change', function() {
         let selectedId = $(this).val();
-alert(selectedId);
+        alert(selectedId);
         if (selectedId) {
             $.ajax({
                 url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',
@@ -318,7 +406,7 @@ alert(selectedId);
                 },
                 dataType: 'json',
                 success: function(res) {
-                     console.log(res);
+                    console.log(res);
                     if (res.status && res.salesOrderDetails) {
                         let data = res.salesOrderDetails.main_data[0];
 
@@ -366,46 +454,105 @@ alert(selectedId);
                                 $('#jobCardDetailsBody').append(row);
                             });
                         });
+                        // Excluded Sales Order Details
+
+                        $('#jobCardDetailshideBody').empty();
+
+                        if (res.excludeSalesOrderDetails && res.excludeSalesOrderDetails
+                            .details_data) {
+                            let index2 = 1;
+                            res.excludeSalesOrderDetails.details_data.forEach(section => {
+                                section.details.forEach(detail => {
+                                    let row = `
+                                    <tr>
+                                        <td class="text-center">${index2++}</td>
+                                        <td class="text-left">${section.job_sub_category_text} - ${detail.option_group_text} (${detail.combined_option})</td>
+                                        <td class="text-center">${detail.qty}</td>
+                                        <td class="text-right">${(parseFloat(detail.list_price).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(detail.total).toFixed(2))}</td>
+                                        <td class="text-right">${(res.excludeSalesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.line_discount).toFixed(2)) : (parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right">${(parseFloat(0).toFixed(2))}</td>
+                                        <td class="text-right">${(res.excludeSalesOrderDetails.line_discount_status == 'Approved') ? (parseFloat(detail.net_amount).toFixed(2)) : (parseFloat(detail.total).toFixed(2))}</td>
+                                    </tr>
+                                `;
+                                    $('#jobCardDetailshideBody').append(
+                                    row);
+                                });
+                            });
+                        } else {
+                            $('#jobCardDetailshideBody').append(`
+                            <tr>
+                                <td colspan="8" class="text-center">No excluded job details found.</td>
+                            </tr>
+                        `);
+                        }
+
+                        // Summary & Approvals
 
                         let summary = res.salesOrderDetails.summary_data[0];
+                        let summary_2 =res.excludeSalesOrderDetails.summary_data[0];
                         let approveRequestStatus = data.status;
 
-                        $('#modal_sub_total').val(addCommas(parseFloat(summary.sub_total).toFixed(2)));
-                        $('#modal_line_discount').val((summary.line_discount_status == 'Approved') ? addCommas(parseFloat(summary.total_line_discount).toFixed(2)) : addCommas(parseFloat(0).toFixed(2)));
-                        $('#modal_header_discount').val((summary.header_discount_status == 'Approved') ? addCommas(parseFloat(summary.discount_amount).toFixed(2)) : addCommas(parseFloat(0).toFixed(2)));
-                        $('#header_discount_total').val((summary.header_discount_status == 'Approved') ? parseFloat(summary.discount_amount).toFixed(2) : parseFloat(0).toFixed(2));
+                        // Main Summary
+                        $('#modal_sub_total').val(addCommas(parseFloat(summary.sub_total)
+                            .toFixed(2)));
+                        $('#modal_line_discount').val((summary.line_discount_status ==
+                            'Approved') ? addCommas(parseFloat(summary
+                            .total_line_discount).toFixed(2)) : addCommas(
+                            parseFloat(0).toFixed(2)));
+                        $('#modal_header_discount').val((summary.header_discount_status ==
+                            'Approved') ? addCommas(parseFloat(summary
+                            .discount_amount).toFixed(2)) : addCommas(parseFloat(0)
+                            .toFixed(2)));
+                        $('#header_discount_total').val((summary.header_discount_status ==
+                                'Approved') ? parseFloat(summary.discount_amount)
+                            .toFixed(2) : parseFloat(0).toFixed(2));
                         $('#modal_net_total').val(addCommas(parseFloat(summary.net_total)
                             .toFixed(2)));
 
+                        // Summary 2
+                        $('#modal_sub_total_2').val(addCommas(parseFloat(summary_2.sub_total)
+                            .toFixed(2)));
+                        $('#modal_line_discount_2').val((summary_2.line_discount_status ==
+                            'Approved') ? addCommas(parseFloat(summary_2
+                            .total_line_discount).toFixed(2)) : addCommas(  
+                            parseFloat(0).toFixed(2)));
+                        $('#modal_header_discount_2').val((summary_2.header_discount_status ==
+                            'Approved') ? addCommas(parseFloat(summary_2
+                            .discount_amount).toFixed(2)) : addCommas(parseFloat(0)
+                            .toFixed(2)));
+                        $('#modal_net_total_2').val(addCommas(parseFloat(summary_2.net_total)
+                            .toFixed(2)));    
+
                         if (summary.is_line_discount_approved) {
                             $('#line_discount_approval_status')
-                                .text('Line Discount '+ summary.line_discount_status)
+                                .text('Line Discount ' + summary.line_discount_status)
                                 .css({
                                     color: 'green',
                                     fontWeight: 'bold'
                                 });
                         } else {
-                            if(summary.total_line_discount == 0){
+                            if (summary.total_line_discount == 0) {
                                 $('#line_discount_approval_status')
                                     .text('Line Discount Not Applicable')
                                     .css({
                                         color: 'gray',
                                         fontWeight: 'bold'
                                     });
-                            }
-                            else{
-                            $('#line_discount_approval_status')
-                                .text('Line Discount Approval '+ summary.line_discount_status)
-                                .css({
-                                    color: 'orange',
-                                    fontWeight: 'bold'
-                                });
+                            } else {
+                                $('#line_discount_approval_status')
+                                    .text('Line Discount Approval ' + summary
+                                        .line_discount_status)
+                                    .css({
+                                        color: 'orange',
+                                        fontWeight: 'bold'
+                                    });
                             }
                         }
 
                         if (summary.is_header_discount_approved) {
                             $('#header_discount_approval_status')
-                                .text('Header Discount '+ summary.header_discount_status)
+                                .text('Header Discount ' + summary.header_discount_status)
                                 .css({
                                     color: 'green',
                                     fontWeight: 'bold'
@@ -420,7 +567,8 @@ alert(selectedId);
                                     });
                             } else {
                                 $('#header_discount_approval_status')
-                                    .text('Header Discount Approval '+ summary.header_discount_status)
+                                    .text('Header Discount Approval ' + summary
+                                        .header_discount_status)
                                     .css({
                                         color: 'orange',
                                         fontWeight: 'bold'
@@ -459,6 +607,12 @@ alert(selectedId);
         $('#vehicle_no').val($('#modal_Vehicle_number').val());
         $('#vehicle_in_date').val($('#modal_Vehicle_indate').val());
         $('#jobcardid').val($('#job_card_number').val());
+
+        $('#hidden_sub_total').val($('#modal_sub_total_2').val());
+        $('#hidden_line_discount').val($('#modal_line_discount_2').val());
+        $('#hidden_net_total').val($('#modal_net_total_2').val());
+
+
 
         $('#jobcarddetailsModal').modal('hide');
 
@@ -504,9 +658,49 @@ alert(selectedId);
 
             $tableBodyMain.append(newRow);
             allItemsTotalCalculation();
+            
         });
+
+        // Pass excluded job details to new table
+    let $excludedTableBody = $('#excludedJobDetailsBody');
+    $excludedTableBody.empty();
+
+    $('#jobCardDetailshideBody tr').each(function() {
+        const tds = $(this).find('td');
+
+        const item = tds.eq(1).text().trim();
+        const itemId = 0;
+        const qty = parseFloat(tds.eq(2).text()) || 0;
+        const unit = "EA";
+        const price = parseFloat(tds.eq(3).text()) || 0;
+
+        const line_discount_pc = parseFloat(tds.eq(5).text()) || 0;
+        const discountAmount = parseFloat(tds.eq(5).text()) || 0; // Adjust index if needed
+        const subtotal = price * qty;
+        const total = subtotal - discountAmount;
+        const tax = 0;
+        const totalAfterTax = total + tax;
+
+        const newRow = `
+            <tr>
+                <td>${item}</td>
+                <td>${qty}</td>
+                <td>${unit}</td>
+                <td class="text-end">${price.toFixed(2)}</td>
+                <td class="text-end">${line_discount_pc.toFixed(2)}</td>
+                <td class="text-end">${tax.toFixed(2)}</td>
+                <td class="text-end">${totalAfterTax.toFixed(2)}</td>
+            </tr>
+        `;
+
+        $excludedTableBody.append(newRow);
+        // Optionally call a calculation function if needed
+    });
     });
 
+    $('#showJobDetailsModalBtn').on('click', function() {
+        $('#jobDetailsModal').modal('show');
+    });
 });
 
 
@@ -521,4 +715,33 @@ function addCommas(nStr) {
     }
     return x1 + x2;
 }
+</script>
+
+<script>
+$(document).ready(function() {
+    let secret = "ecw"; 
+    let buffer = "";
+    $('#showJobDetailsModalBtn').hide();
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > secret.length) {
+                buffer = buffer.slice(-secret.length);
+            }
+            if (buffer === secret) {
+                $('#showJobDetailsModalBtn').show();
+                buffer = ""; 
+            }
+        }
+    });
+
+    $('#showJobDetailsModalBtn').on('click', function() {
+        $('#jobDetailsModal').modal('show');
+    });
+
+    $('#jobDetailsModal').on('hidden.bs.modal', function () {
+        $('#showJobDetailsModalBtn').hide();
+    });
+});
 </script>

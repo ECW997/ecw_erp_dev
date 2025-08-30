@@ -407,6 +407,7 @@ function createInvoice() {
 
 
     let jobtable_data = [];
+    let hidden_jobtable_data = [];
     let charge_details = [];
     let reciept_details = [];
 
@@ -415,6 +416,26 @@ function createInvoice() {
 
     $('#tableorder tbody tr').each(function() {
         jobtable_data.push({
+            item_id: $(this).find('.item_id').text().trim(),
+            item_name: $(this).find('td:eq(0)').text().trim(),
+            qty: parseFloat($(this).find('td:eq(1)').text()) || 0,
+            unit: $(this).find('td:eq(2)').text().trim(),
+            price: parseFloat($(this).find('td:eq(3)').text()) || 0,
+            sub_total: parseFloat($(this).find('.sub_total').text()) || 0,
+            discount_percent: parseFloat($(this).find('td:eq(5)').text().replace('%', '')) || 0,
+            discount_amount: parseFloat($(this).find('.discount_amount').text().replace('%', '')) || 0,
+            total_after_discount: parseFloat($(this).find('.total_after_discount').text()) || 0,
+            tax: parseFloat($(this).find('td:eq(8)').text()) || 0,
+            total_after_tax: parseFloat($(this).find('.total_after_tax').text()) || 0,
+            insert_status: $(this).find('.insert_status').text().trim(),
+            pre_item_id: $(this).find('.pre_item').text().trim(),
+            pre_qty: $(this).find('.pre_qty').text().trim(),
+            row_id: $(this).find('.row_id').text().trim(),
+        });
+    });
+
+    $('#excludedJobDetailsTable tbody tr').each(function() {
+        hidden_jobtable_data.push({
             item_id: $(this).find('.item_id').text().trim(),
             item_name: $(this).find('td:eq(0)').text().trim(),
             qty: parseFloat($(this).find('td:eq(1)').text()) || 0,
@@ -485,19 +506,24 @@ function createInvoice() {
         advance_total_amount: parseFloat($('#advanceamount').val()) || 0,
         remark: $('#remark').val(),
         company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
-        branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>"
+        branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>",
+
+
+        hide_sub_total: parseFloat($('#hidden_sub_total').val().replace(/,/g, '')) || 0,
+        hide_discount_total: parseFloat($('#hidden_line_discount').val().replace(/,/g, '')) || 0,
+        hide_net_total: parseFloat($('#hidden_net_total').val().replace(/,/g, '')) || 0,
     };
+
 
     let invoiceData = {
         invoice_meta: invoiceMeta,
         items: jobtable_data,
         items_total: $('#hidetotalorder').val(),
+        hidden_items: hidden_jobtable_data,
         charges: charge_details,
         charges_total: $('#hidechargestotal').val(),
         receipts: reciept_details,
         receipts_total: $('#hideadvancetotal').val(),
-
-
     };
 
     console.log(invoiceData);
@@ -506,7 +532,6 @@ function createInvoice() {
         alert('Invoice data is missing.');
         return false;
     }
-
 
 
     const btn = document.getElementById('btncreateorder');
