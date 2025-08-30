@@ -132,6 +132,8 @@ include "include/v2/topnavbar.php";
                                                         <th>#</th>
                                                         <th>Description</th>
                                                         <th class="text-center">QTY</th>
+                                                        <th class="text-end">Sub Total</th>
+                                                        <th class="text-end">Line Discount</th>
                                                         <th class="text-end">Total Price</th>
                                                         <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">Action</th>
                                                     </tr>
@@ -157,6 +159,8 @@ include "include/v2/topnavbar.php";
                                                         <th>#</th>
                                                         <th>Description</th>
                                                         <th class="text-center">QTY</th>
+                                                        <th class="text-end">Sub Total</th>
+                                                        <th class="text-end">Line Discount</th>
                                                         <th class="text-end">Total Price</th>
                                                         <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">Action</th>
                                                     </tr>
@@ -184,13 +188,13 @@ include "include/v2/topnavbar.php";
                         					<h4 class="text-info" id="displayOrderValue">0.00</h4>
                         				</div>
                         				<div class="col-md-3">
-                        					<h6 class="text-gray-800">Difference</h6>
+                        					<h6 class="text-gray-800">Cash</h6>
                         					<h4 id="priceDifference">0.00</h4>
                         				</div>
-                        				<div class="col-md-3">
+                        				<!-- <div class="col-md-3">
                         					<h6 class="text-gray-800">Status</h6>
                         					<span class="badge status-badge" id="priceStatus">Pending</span>
-                        				</div>
+                        				</div> -->
                         			</div>
                         		</div>
                         	</div>
@@ -200,7 +204,7 @@ include "include/v2/topnavbar.php";
                                 </div>
                             <?php else: ?>
                         	<div class="col-md-4 d-flex align-items-center justify-content-end">
-                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();" disabled>
+                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
                         			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
                         		</button>
                         	</div>
@@ -430,6 +434,8 @@ function renderAvailableJobs() {
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
+                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${job.line_discount}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-primary transfer-btn move-to-selected" data-job-id="${job.jobId}"> <i class="fas fa-arrow-right"></i> </button>
@@ -457,6 +463,8 @@ function renderSelectedJobs() {
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
+                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${job.line_discount}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-danger transfer-btn move-to-available" data-job-id="${job.jobId}">
@@ -509,7 +517,7 @@ function updateCounts() {
 }
 
 function updatePriceSummary() {
-    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.total || 0), 0);
+    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
 	const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
 	const difference = totalAvailablePrice - orderValue;
 
@@ -523,19 +531,19 @@ function updatePriceSummary() {
 	if (difference == 0 && totalAvailablePrice > 0 && orderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success');
 		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
-		$('#confirmBtn').prop('disabled', false);
+		// $('#confirmBtn').prop('disabled', false);
 	} else if (difference > 0) {
 		$differenceElement.text(`+${difference.toFixed(2)}`).removeClass().addClass('text-warning');
 		$statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
-		$('#confirmBtn').prop('disabled', true);
+		// $('#confirmBtn').prop('disabled', true);
 	} else if (difference < 0 && orderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger');
 		$statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');
-		$('#confirmBtn').prop('disabled', false);
+		// $('#confirmBtn').prop('disabled', false);
 	} else {
 		$differenceElement.text('0.00').removeClass().addClass('text-muted');
 		$statusElement.text('Pending').removeClass().addClass('badge status-badge bg-secondary');
-		$('#confirmBtn').prop('disabled', true);
+		// $('#confirmBtn').prop('disabled', true);
 	}
 }
 
