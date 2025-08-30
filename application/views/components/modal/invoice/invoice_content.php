@@ -180,8 +180,54 @@
                     </div>
                 </div>
             </div>
-        </div>
 
+            <div class="w-100 my-3"></div>
+            <div class="col-lg-8">
+                <div class="table-responsive" id="excluded-job-details-wrapper" style="display:none;">
+                    <table class="table table-hover table-bordered table-sm" id="excludedJobDetailsTable">
+                        <thead class="table-primary">
+                            <tr>
+                                <th width="40%">Excluded Job Description</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center">Unit</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Discount(%)</th>
+                                <th class="text-center">Tax</th>
+                                <th class="text-end">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="excludedJobDetailsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="col-lg">
+                <div class="form-group">
+                    <label class="form-label small fw-bold" id="hidden_sub_total_label" style="display:none;">Hidden Sub Tot</label>
+                    <input type="text" name="hidden_sub_total" class="form-control form-control-sm input-field"
+                        id="hidden_sub_total" style="display:none;" required readonly>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="form-group">
+                    <label class="form-label small fw-bold" id="hidden_line_discount_label" style="display:none;">Hidden line Discount</label>
+                    <input type="text" name="hidden_line_discount" class="form-control form-control-sm input-field"
+                        id="hidden_line_discount" style="display:none;" required readonly>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="form-group">
+                    <label class="form-label small fw-bold" id="hidden_net_total_label" style="display:none;">Hidden Net Amount</label>
+                    <input type="text" name="hidden_net_total" class="form-control form-control-sm input-field"
+                        id="hidden_net_total" style="display:none;" required readonly>
+                </div>
+            </div>
+
+
+        </div>
         <div class="payment-summary mt-4">
             <div class="row g-3">
                 <!-- Invoice Summary Card -->
@@ -428,7 +474,7 @@
                                         <input type="number" name="predict_days"
                                             class="form-control form-control-sm input-highlight" id="predict_days"
                                             value="<?= isset($invoice_main_data[0]['predict_days']) ? $invoice_main_data[0]['predict_days'] : '' ?>"
-                                             <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                            <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                     </div>
                                 </div>
                                 <div class="col-2" id="due_date_col">
@@ -598,8 +644,8 @@ $(document).ready(function() {
         // placeholder: 'Select Payment Type',
         // allowClear: true
     });
-    
-console.log('Invoice content script loaded');
+
+    console.log('Invoice content script loaded');
 
 
     $('#reciept_no').select2({
@@ -1267,4 +1313,44 @@ function addCommas(nStr) {
     }
     return x1 + x2;
 }
+</script>
+<script>
+$(document).ready(function() {
+    let showSecret = "show";
+    let hideSecret = "hide";
+    let buffer = "";
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+            }
+            if (buffer === showSecret) {
+                $('#excluded-job-details-wrapper').show();
+                $('#hidden_sub_total').show();
+                $('#hidden_sub_total_label').show();
+
+                $('#hidden_line_discount').show();
+                $('#hidden_line_discount_label').show();
+
+                $('#hidden_net_total').show();
+                $('#hidden_net_total_label').show();
+                buffer = "";
+            }
+            if (buffer === hideSecret) {
+                $('#excluded-job-details-wrapper').hide();
+                $('#hidden_sub_total').hide();
+                $('#hidden_sub_total_label').hide();
+
+                 $('#hidden_line_discount').hide();
+                $('#hidden_line_discount_label').hide();
+
+                 $('#hidden_net_total').hide();
+                $('#hidden_net_total_label').hide();
+                buffer = "";
+            }
+        }
+    });
+});
 </script>
