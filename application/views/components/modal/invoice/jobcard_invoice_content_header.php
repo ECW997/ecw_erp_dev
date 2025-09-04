@@ -154,7 +154,7 @@
 
 
 
-                        <input type="text" name="jobcard_id" class="form-control form-control-sm input-highlight"
+                        <input type="hidden" name="jobcard_id" class="form-control form-control-sm input-highlight"
                             id="jobcard_id">
 
 
@@ -396,7 +396,7 @@ $(document).ready(function() {
 
     jobCardNumber.on('change', function() {
         let selectedId = $(this).val();
-        alert(selectedId);
+        // alert(selectedId);
         if (selectedId) {
             $.ajax({
                 url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',

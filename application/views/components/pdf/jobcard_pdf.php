@@ -506,7 +506,7 @@
                         <table style="width:100%;">
                             <tr>
                                 <td style="text-align:left; width: 65%;">
-                                    <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?></strong>
+                                    <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?> (<?= $item['subcategory_price_category'] ?? 'N/A' ?>)</strong>
                                 </td>
                                 <?php if (($item['job_sub_category_text'] ?? '') === "Seat Cover"): ?>
                                     <td style="text-align:center; background-color: #ffffff; width: 15%; padding: 5px;border-radius:15px;">

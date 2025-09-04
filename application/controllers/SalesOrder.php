@@ -103,5 +103,26 @@ class SalesOrder extends CI_Controller {
 			redirect('SalesOrder');
 		}
 	}
+
+	public function getJobcardNumbers(){
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->SalesOrderinfo->getJobcardNumbers($this->api_token,$form_data);
+		echo json_encode($response);
+	}
+	public function getJobCardDetails() {
+        $id = $this->input->post('job_card_id');
+
+        if (!$id) {
+            echo json_encode(['status' => false, 'msg' => 'Missing job card ID or token']);
+            return;
+        }
+
+        $response = $this->SalesOrderinfo->fetchJobCardDetails($this->api_token, $id);
+        echo json_encode($response);
+    }
     
 }

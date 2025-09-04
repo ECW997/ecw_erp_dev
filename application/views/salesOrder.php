@@ -325,7 +325,7 @@ $(document).ready(function () {
         width: '100%',
         allowClear: true,
         ajax: {
-            url: '<?php echo base_url() ?>Invoice/getJobcardNumbers',
+            url: '<?php echo base_url() ?>SalesOrder/getJobcardNumbers',
             dataType: 'json',
             data: function(params) {
                 return {
@@ -363,7 +363,7 @@ function loadJobCard() {
 	if (selectedCard) {
          $('#loading-overlay').show();
 		$.ajax({
-			url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',
+			url: '<?php echo base_url("SalesOrder/getJobCardDetails"); ?>',
 			type: 'POST',
 			data: {
 				job_card_id: selectedCard
@@ -603,7 +603,11 @@ function approveConfirm() {
                 if (result.status == true) {
                     success_toastify(result.message);
                     setTimeout(function() {
-                        window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
+                        if (result.invoice_id) {
+                            window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.invoice_id;
+                        } else {
+                            window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
+                        }
                     }, 500)
                 } else {
                     falseResponse(result);
@@ -612,7 +616,6 @@ function approveConfirm() {
         });
     }
 }
-
 
 renderTables();
 updatePriceSummary();
