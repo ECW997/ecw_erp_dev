@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$config['api_base_url'] = 'https://api.ecw.lk/api';
+$config['api_base_url'] = 'https://devapi.ecw.lk/api';
 
 $config['api_endpoints'] = [
     'auth_check' => '/v1/auth_check',

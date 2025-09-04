@@ -142,7 +142,9 @@ include "include/topnavbar.php";
                                                 <th>Date</th>
                                                 <th>Job Card No</th>
                                                 <th>Customer</th>
-                                                <th>Vehicle</th>
+                                                <th>Vehicle Number</th>
+                                                <th>Vehicle Brand</th>
+                                                <th>Vehicle Model</th>
                                                 <th>Scheduled</th>
                                                 <th>Completed</th>
                                                 <th>Handover</th>
@@ -250,6 +252,12 @@ include "include/topnavbar.php";
                 },
                 {
                     "data": "vehicle_number"
+                },
+                {
+                    "data": "brand_name"
+                },
+                {
+                    "data": "model_name"
                 },
                 {
                     "data": "job_start_date"

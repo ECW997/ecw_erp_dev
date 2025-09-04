@@ -17,7 +17,7 @@ class Welcome extends CI_Controller {
 		$company_text = $this->input->post('company_text');
         $branch_text = $this->input->post('branch_text');
 
-        $api_url = 'https://api.ecw.lk/api/login';
+        $api_url = 'https://devapi.ecw.lk/api/login';
 
         $post_data = [
             'email' => $email,

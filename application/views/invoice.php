@@ -42,13 +42,27 @@ include "include/v2/topnavbar.php";
                                 <h1 class="page-header-title">Invoice</h1>
                             </div>
                             <div class="col-md-8 text-md-end">
-                                <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
-                                    onclick="window.location.href='<?= base_url('Invoice') ?>'">
-                                    <i class="fas fa-arrow-left me-1 text-dark"></i>
-                                    <i class="fas fa-file-invoice me-1 text-dark"></i>
-                                    <span class="text-dark fw-bold">Invoice List</span>
-                                </button>
+                                <div class="d-inline-flex gap-2">
+                                    <button type="button"
+                                        class="btn btn-warning rounded-2 action-btn-fixed px-3 py-2 fs-6"
+                                        style="min-width:180px; height:44px;"
+                                        onclick="window.location.href='<?= base_url('Invoice') ?>'">
+                                        <i class="fas fa-arrow-left me-1 text-dark"></i>
+                                        <i class="fas fa-file-invoice me-1 text-dark"></i>
+                                        <span class="text-dark fw-bold">Invoice List</span>
+                                    </button>
+
+                                    <button type="button"
+                                        class="btn btn-pink rounded-2 action-btn-fixed px-3 py-2 fs-6"
+                                        style="min-width:180px; height:44px;"
+                                        onclick="window.location.href='<?= base_url('Payment/paymentDetailIndex') ?>'">
+                                        <span class="text-white fw-bold me-2">New Payment</span>
+                                        <i class="fas fa-arrow-right me-1 text-white"></i>
+                                        <i class="fas fa-money-check-alt me-1 text-white"></i>
+                                    </button>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
