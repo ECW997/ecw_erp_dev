@@ -8,7 +8,7 @@ class Invoiceinfo extends CI_Model{
 
     public function getJobcardNumbers($api_token,$form_data) {
         $headers = get_api_headers($api_token);
-        return call_api('POST', 'get_sel2_jobcard_number_v1', $form_data, $headers);
+        return call_api('POST', 'get_sel2_salesorder_number_v1', $form_data, $headers);
     }
     
    public function fetchJobCardDetails($api_token, $id) {

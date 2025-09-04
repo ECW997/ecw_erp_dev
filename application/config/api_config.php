@@ -80,11 +80,11 @@ $config['api_endpoints'] = [
     'media_library_status_v1' => '/v1/media_library_status',
 
     'sales_order_v1' => '/v1/sales_order',
+    'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
     'sales_order_approve_v1' => '/v1/approve_sales_order',
     
     'invoice_v1' => '/v1/invoice',
-    'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
-    'get_sel2_jobcard_number_v1' => '/v1/get_sel2_salesorder',
+    'get_sel2_salesorder_number_v1' => '/v1/get_sel2_salesorder',
     'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
     'get_sel2_invoice_number_v1' => '/v1/get_sel2_invoice_number',
