@@ -1030,7 +1030,8 @@ function updateBalances() {
                 const original_ref_paid = parseFloat($row.find('.ref_pre_paid').text().replace(',', '').trim()) || 0;
                 const original_ref_advance_paid = parseFloat($row.find('.ref_advance_paid').text().replace(',', '').trim()) || 0;
                 let totalAllocated = matchedAllocations.reduce((sum, a) => sum + parseFloat(a.allocate_amount), 0);
-                totalAllocated += original_ref_advance_paid;
+                
+                // totalAllocated += original_ref_advance_paid;
                 totalAllocated += original_ref_paid;
                 const new_balance = Math.max(0, original_ref_total - totalAllocated);
 

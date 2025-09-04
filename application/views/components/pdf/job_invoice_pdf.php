@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 33mm 15mm 15mm 5mm;
+	  margin: 36mm 15mm 15mm 1mm;
 }
 
 body {
@@ -20,10 +20,10 @@ body {
 
 header {
     position: fixed;
-    top: -33mm;
+    top: -36mm;
     left: 0;
     right: 0;
-    height: 33mm;
+    height: 36mm;
 }
 
 footer {
@@ -81,7 +81,7 @@ tr {
 <?php
 $branchOutput = '';
 
-switch ($header['company_branch_id']) {
+switch ($main_data['branch_id']) {
     case '1':
         $branchOutput = 'Head Office - Nittambuwa 0332 286 729'; 
         break;
@@ -140,17 +140,24 @@ switch ($header['company_branch_id']) {
 				($main_data['district'] ?? '')
 			: 	($main_data['customer_address'] ?? '') ?>
 			</th>
-        	<th style="width:10%;" class="header_th">Invoice Type</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['invoice_type'] == 'direct' ? 'Direct' : 'JobCard' ?></th>
+			<th style="width:10%;" class="header_th">S.P.Code</th>
+            <th style="width:10%;" class="header_th"><span> : </span><?= $main_data['sales_person_code'] ?? 'N/A' ?></th>
         </tr>
 		<?php if ($main_data['invoice_type'] != 'direct'): ?>
 		<tr>
-			<th style="width:10%;" class="header_th"></th>
-			<th style="width:20%;" class="header_th"></th>
-			<th style="width:10%;" class="header_th" colspan="1" style="vertical-align: bottom;">JobCard No</th>
-			<th style="width:10%; vertical-align: bottom;" class="header_th"><span> : </span><?= $main_data['job_card_no'] ?? '' ?></th>
+			<th style="width:10%;" class="header_th">Vehicle No</th>
+            <th style="width:20%;" class="header_th"><span> : </span><?= $main_data['vehicle_number'] ?? 'N/A' ?></th>
+			<th style="width:10%;" class="header_th">Invoice Type</th>
+        	<th style="width:10%;" class="header_th"><span> : </span><?= $main_data['invoice_type'] == 'direct' ? 'Direct' : 'JobCard' ?></th>
 		</tr>
 		<?php endif; ?>
+		<tr>
+            <th style="width:10%;" class="header_th">Vehicle Type.</th>
+            <th style="width:10%;" class="header_th"><span> : </span><?= ($main_data['brand_name'] ?? '') . 
+                        (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '') ?></th>
+          	<th style="width:10%;" class="header_th" colspan="1" style="vertical-align: bottom;">JobCard No</th>
+			<th style="width:10%; vertical-align: bottom;" class="header_th"><span> : </span><?= $main_data['real_jobcard_no'] ?? '' ?></th>
+        </tr>
 	</table>
 </header>
 
@@ -244,7 +251,7 @@ switch ($header['company_branch_id']) {
 				<td style="width:50%; vertical-align:top; padding-left:10px;">
 					<table style="width:100%;">
 						<tr>
-							<td class="datatable_data_td" style="width:60%;">Gross Total</td>
+							<td class="datatable_data_td" style="width:60%;">Grand Total</td>
 							<td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
 							<td class="datatable_data_td" style="width:30%; text-align:right;">
 								<?= number_format($inv_gross_total ?? 0, 2) ?>
@@ -264,13 +271,13 @@ switch ($header['company_branch_id']) {
 								<?= number_format($advance ?? 0, 2) ?>
 							</td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td class="datatable_data_td">Grand Total</td>
 							<td class="datatable_data_td" style="text-align:center;">:</td>
 							<td class="datatable_data_td" style="text-align:right;">
 								<?= number_format($grand_total ?? 0, 2) ?>
 							</td>
-						</tr>
+						</tr> -->
 						<tr>
 							<td class="datatable_data_td" style="font-weight:bold;">Total Paid</td>
 							<td class="datatable_data_td" style="text-align:center; font-weight:bold;">:</td>

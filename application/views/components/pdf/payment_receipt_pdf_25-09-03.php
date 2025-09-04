@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 32mm 15mm 15mm 1mm;
+	  margin: 33mm 15mm 15mm 5mm;
       /* top right bottom left */
 }
 
@@ -21,10 +21,10 @@ body {
 
 header {
     position: fixed;
-    top: -35mm;
+    top: -33mm;
     left: 0;
     right: 0;
-    height: 35mm;
+    height: 33mm;
 }
 
 footer {
@@ -139,20 +139,7 @@ switch ($header['company_branch_id']) {
                         (!empty($header['city']) ? ', ' . $header['city'] : '') . 
                         (!empty($header['district']) ? ', ' . $header['district'] : '') ?></th>
         	<th style="width:10%;" class="header_th">S.P.Code</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= $header['sales_person_code'] ?></th>
-        </tr>
-        <tr>
-			<th style="width:10%;" class="header_th">Vehicle No</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $header['Vehicle_no'] ?></th>
-			<th style="width:10%;" class="header_th">JobCard No</th>
-			<th style="width:10%;" class="header_th"><span> : </span><?= $header['jobcard_no'] ?></th>
-		</tr>
-        <tr>
-            <th style="width:10%;" class="header_th">Vehicle Type.</th>
-            <th style="width:10%;" class="header_th"><span> : </span><?= ($header['brand_name'] ?? '') . 
-                        (!empty($header['model_name']) ? ', ' . $header['model_name'] : '') ?></th>
-          	<th style="width:10%;" class="header_th" colspan="1" style="vertical-align: bottom;"></th>
-			<th style="width:10%; vertical-align: bottom;" class="header_th"></th>
+        	<th style="width:10%;" class="header_th"><span> : </span>02</th>
         </tr>
 	</table>
 </header>
@@ -215,7 +202,7 @@ switch ($header['company_branch_id']) {
                         <td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'],2) ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= number_format($item['line_discount_amount'],2) ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
+                        <td class="datatable_data_td" style="text-align:right"><?= number_format($item['line_total_after_discount'],2) ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -239,14 +226,14 @@ switch ($header['company_branch_id']) {
                                 <tr>
                                     <td colspan="2" style="height:40px;"></td>
                                 </tr>
-                               <!-- <tr>
+                               <tr>
                                     <td style="width: 50%; text-align: center;" class="datatable_data_td">........................</td>
                                     <td style="width: 50%; text-align: center;" class="datatable_data_td">........................</td>
                                 </tr>
                                 <tr>
                                     <td style="width: 50%; text-align: center;" class="datatable_data_td">Customer</td>
                                     <td style="width: 50%; text-align: center;" class="datatable_data_td">Cashier</td>
-                                </tr> -->
+                                </tr>
                             </table>
                         </td>
 
