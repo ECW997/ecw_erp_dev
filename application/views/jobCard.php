@@ -30,10 +30,10 @@ $is_denied = ($status === 'Cancelled');
                 <div class="container-fluid">
                     <div class="page-header-content py-1">
                         <div class="row d-flex align-items-center">
-                            <div class="col-2">
+                            <div class="col">
                                 <h1 class="page-header-title">Job Card</h1>
                             </div>
-                            <div class="col-2 text-end">
+                            <div class="col text-end">
                                 <h2 class="job-header-title" id="top_nav_customer_name">
                                     <?= $job_main_data[0]['customer_name'] ?? '' ?>
                             </div>
@@ -51,13 +51,33 @@ $is_denied = ($status === 'Cancelled');
                                 <h2 class="job-header-title text-primary" id="top_nav_job_card_no">
                                     <?= $job_main_data[0]['job_card_number'] ?? '' ?></h2>
                             </div>
-                            <div class="col-2 text-end">
+                            <!-- <div class="col-2 text-end">
                                 <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
                                     onclick="window.location.href='<?= base_url('JobCard') ?>'">
                                     <i class="fas fa-arrow-left me-1 text-dark"></i>
                                     <i class="fas fa-file-invoice me-1 text-dark"></i>
                                     <span class="text-dark fw-bold">Job Card List</span>
                                 </button>
+                            </div> -->
+
+                            <div class="col-md-3 text-md-end">
+                                <div class="d-inline-flex gap-2">
+                                    <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
+                                    onclick="window.location.href='<?= base_url('JobCard') ?>'">
+                                    <i class="fas fa-arrow-left me-1 text-dark"></i>
+                                    <i class="fas fa-file-invoice me-1 text-dark"></i>
+                                    <span class="text-dark fw-bold">Job Card List</span>
+                                </button>
+
+                                    <button type="button"
+                                        class="btn btn-pink rounded-2 action-btn-fixed px-3 py-2 fs-6"
+                                        style="min-width:180px; height:44px;"
+                                        onclick="window.location.href='<?= base_url('SalesOrder/salesOrderDetailIndex') ?>'">
+                                        <span class="text-white fw-bold me-2">New Sales Order</span>
+                                        <i class="fas fa-arrow-right me-1 text-white"></i>
+                                        
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
