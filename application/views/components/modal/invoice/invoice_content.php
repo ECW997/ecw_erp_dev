@@ -491,11 +491,15 @@
                                         <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
-                                    <input type="text" name="jobcard_id"
+                                    <input type="hidden" name="jobcard_id"
                                         class="form-control form-control-sm input-highlight" id="jobcard_id"
                                         value="<?= isset($invoice_main_data[0]['job_card_id']) ? $invoice_main_data[0]['job_card_id'] : '' ?>">
 
-                                    <input type="text" name="approve_id"
+                                    <input type="hidden" name="real_jobcard_id"
+                                        class="form-control form-control-sm input-highlight" id="real_jobcard_id"
+                                        value="<?= isset($invoice_main_data[0]['real_jobcard_id']) ? $invoice_main_data[0]['real_jobcard_id'] : '' ?>">
+
+                                    <input type="hidden" name="approve_id"
                                         class="form-control form-control-sm input-highlight" id="approve_id"
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
                                         required>
@@ -657,7 +661,7 @@ $(document).ready(function() {
             dataType: 'json',
             data: function(params) {
                 return {
-                    jobcard_id: $('#jobcard_id').val(),
+                    jobcard_id: $('#real_jobcard_id').val(),
                     page: params.page || 1
                 };
             },

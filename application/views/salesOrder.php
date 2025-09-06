@@ -134,6 +134,8 @@ include "include/v2/topnavbar.php";
                                                         <th>#</th>
                                                         <th>Description</th>
                                                         <th class="text-center">QTY</th>
+                                                        <th class="text-end">Sub Total</th>
+                                                        <th class="text-end">Line Discount</th>
                                                         <th class="text-end">Total Price</th>
                                                         <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                                             Action</th>
@@ -160,6 +162,8 @@ include "include/v2/topnavbar.php";
                                                         <th>#</th>
                                                         <th>Description</th>
                                                         <th class="text-center">QTY</th>
+                                                        <th class="text-end">Sub Total</th>
+                                                        <th class="text-end">Line Discount</th>
                                                         <th class="text-end">Total Price</th>
                                                         <th class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                                             Action</th>
@@ -182,20 +186,27 @@ include "include/v2/topnavbar.php";
                                             <h6 class="text-gray-800">Total Jobs Price</h6>
                                             <h4 class="text-primary" id="totalJobsPrice">0.00</h4>
                                             <input type="hidden" id="totalJobsPriceHidden">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h6 class="text-gray-800">Confirmed Order Value</h6>
-                                            <h4 class="text-info" id="displayOrderValue">0.00</h4>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h6 class="text-gray-800">Difference</h6>
-                                            <h4 id="priceDifference">0.00</h4>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h6 class="text-gray-800">Status</h6>
-                                            <span class="badge status-badge" id="priceStatus">Pending</span>
-                                        </div>
-                                    </div>
+
+                        				        </div>
+                                  </div>
+                        				<div class="col-md-3">
+                        					<h6 class="text-gray-800">Confirmed Order Value</h6>
+                        					<h4 class="text-info" id="displayOrderValue">0.00</h4>
+                        				</div>
+                        				<div class="col-md-3">
+                        					<h6 class="text-gray-800">Cash</h6>
+                        					<h4 id="priceDifference">0.00</h4>
+                        				</div>
+                        				<!-- <div class="col-md-3">
+                        					<h6 class="text-gray-800">Status</h6>
+                        					<span class="badge status-badge" id="priceStatus">Pending</span>
+                        				</div> -->
+                        			</div>
+                        		</div>
+                        	</div>
+                             <?php if ($is_approve): ?>
+                                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                    <span class="badge bg-success">This order has been approved and cannot be modified.</span>
                                 </div>
                             </div>
                             <?php if ($is_approve): ?>
@@ -204,12 +215,11 @@ include "include/v2/topnavbar.php";
                                     modified.</span>
                             </div>
                             <?php else: ?>
-                            <div class="col-md-4 d-flex align-items-center justify-content-end">
-                                <button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>"
-                                    id="confirmBtn" onclick="confirmOrder();" disabled>
-                                    <i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
-                                </button>
-                            </div>
+                        	<div class="col-md-4 d-flex align-items-center justify-content-end">
+                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
+                        			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
+                        		</button>
+                        	</div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -328,7 +338,7 @@ $(document).ready(function() {
         width: '100%',
         allowClear: true,
         ajax: {
-            url: '<?php echo base_url() ?>Invoice/getJobcardNumbers',
+            url: '<?php echo base_url() ?>SalesOrder/getJobcardNumbers',
             dataType: 'json',
             data: function(params) {
                 return {
@@ -361,35 +371,36 @@ function loadJobCard() {
     selectedJobs = [];
     renderTables();
     updatePriceSummary();
-    const selectedCard = $('#job_card_number').val();
 
-    if (selectedCard) {
-        $('#loading-overlay').show();
-        $.ajax({
-            url: '<?php echo base_url("Invoice/getJobCardDetails"); ?>',
-            type: 'POST',
-            data: {
-                job_card_id: selectedCard
-            },
-            dataType: 'json',
-            success: function(res) {
-                if (res.status && res.data) {
-                    let data = res.data.main_data[0];
-                    let index = 1;
-                    const tbody = $('#availableJobsTable tbody');
-                    tbody.empty();
+	const selectedCard = $('#job_card_number').val();
 
-                    res.data.details_data.forEach(section => {
-                        section.details.forEach(detail => {
-                            availableJobs.push({
-                                jobId: detail.parent_id,
-                                subCategory: section.job_sub_category_text,
-                                optionGroup: detail.option_group_text,
-                                option: detail.combined_option,
-                                qty: detail.qty,
-                                price: parseFloat(detail.price).toFixed(2),
-                                list_price: parseFloat(detail.list_price).toFixed(
-                                    2),
+	if (selectedCard) {
+         $('#loading-overlay').show();
+		$.ajax({
+			url: '<?php echo base_url("SalesOrder/getJobCardDetails"); ?>',
+			type: 'POST',
+			data: {
+				job_card_id: selectedCard
+			},
+			dataType: 'json',
+			success: function (res) {
+				if (res.status && res.data) {
+					let data = res.data.main_data[0];
+					let index = 1;
+					const tbody = $('#availableJobsTable tbody');
+					tbody.empty();
+
+					res.data.details_data.forEach(section => {
+						section.details.forEach(detail => {
+							availableJobs.push({
+								jobId: detail.parent_id,
+								subCategory: section.job_sub_category_text,
+								optionGroup: detail.option_group_text,
+								option: detail.combined_option,
+								qty: detail.qty,
+								price: parseFloat(detail.price).toFixed(2),
+                                list_price: parseFloat(detail.list_price).toFixed(2),
+
                                 total: parseFloat(detail.total).toFixed(2),
                                 line_discount: parseFloat(detail.line_discount)
                                     .toFixed(2),
@@ -439,6 +450,8 @@ function renderAvailableJobs() {
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
+                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${job.line_discount}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-primary transfer-btn move-to-selected" data-job-id="${job.jobId}"> <i class="fas fa-arrow-right"></i> </button>
@@ -466,6 +479,8 @@ function renderSelectedJobs() {
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
+                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${job.line_discount}</td>
                             <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-danger transfer-btn move-to-available" data-job-id="${job.jobId}">
@@ -519,34 +534,34 @@ function updateCounts() {
 }
 
 function updatePriceSummary() {
-    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.total || 0), 0);
-    const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
-    const difference = totalAvailablePrice - orderValue;
+    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+	const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
+	const difference = totalAvailablePrice - orderValue;
 
     $('#totalJobsPrice').text(`${totalAvailablePrice.toFixed(2)}`);
     $('#totalJobsPriceHidden').val(totalAvailablePrice.toFixed(2));
-    $('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
+	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
 
-    const $differenceElement = $('#priceDifference');
-    const $statusElement = $('#priceStatus');
+	const $differenceElement = $('#priceDifference');
+	const $statusElement = $('#priceStatus');
 
-    if (difference == 0 && totalAvailablePrice > 0 && orderValue > 0) {
-        $differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success');
-        $statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
-        $('#confirmBtn').prop('disabled', false);
-    } else if (difference > 0) {
-        $differenceElement.text(`+${difference.toFixed(2)}`).removeClass().addClass('text-warning');
-        $statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
-        $('#confirmBtn').prop('disabled', true);
-    } else if (difference < 0 && orderValue > 0) {
-        $differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger');
-        $statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');
-        $('#confirmBtn').prop('disabled', false);
-    } else {
-        $differenceElement.text('0.00').removeClass().addClass('text-muted');
-        $statusElement.text('Pending').removeClass().addClass('badge status-badge bg-secondary');
-        $('#confirmBtn').prop('disabled', true);
-    }
+	if (difference == 0 && totalAvailablePrice > 0 && orderValue > 0) {
+		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success');
+		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
+		// $('#confirmBtn').prop('disabled', false);
+	} else if (difference > 0) {
+		$differenceElement.text(`+${difference.toFixed(2)}`).removeClass().addClass('text-warning');
+		$statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
+		// $('#confirmBtn').prop('disabled', true);
+	} else if (difference < 0 && orderValue > 0) {
+		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger');
+		$statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');
+		// $('#confirmBtn').prop('disabled', false);
+	} else {
+		$differenceElement.text('0.00').removeClass().addClass('text-muted');
+		$statusElement.text('Pending').removeClass().addClass('badge status-badge bg-secondary');
+		// $('#confirmBtn').prop('disabled', true);
+	}
 }
 
 function confirmOrder() {
@@ -612,13 +627,11 @@ function approveConfirm() {
                     success_toastify(result.message);
                     setTimeout(function() {
                         if (result.invoice_id) {
-                            window.location.href = '<?= base_url("Invoice/view/") ?>' + result
-                                .invoice_id;
+                            window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.invoice_id;
                         } else {
-                            window.location.href =
-                                '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
+                            window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
                         }
-                    }, 500);
+                    }, 500)
                 } else {
                     falseResponse(result);
                 }
@@ -626,7 +639,6 @@ function approveConfirm() {
         });
     }
 }
-
 
 renderTables();
 updatePriceSummary();
