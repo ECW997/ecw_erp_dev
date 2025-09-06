@@ -151,6 +151,7 @@ include "include/topnavbar.php";
                                                 <th>Sales Agent</th>
                                                 <th>Job Status</th>
                                                 <th>Status</th>
+                                                <th>Payment Status</th>
         										<th class="text-right">Actions</th>
         									</tr>
         								</thead>
@@ -339,9 +340,31 @@ include "include/topnavbar.php";
                                 style = 'background-color: #4B5563; color: #FFFFFF;'; 
                                 break;
                         }
-
-
                         return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                    }
+                },
+                {
+                    data: "payment_status",
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        let baseClasses = "badge badge-pill";
+                        let style = "";
+                        let status = "";
+
+                        switch (data) {
+                            case '0':
+                                style = 'background-color: #e81500; color: #FFFFFF;'; 
+                                status = 'Payment Pending';
+                                break;
+                            case '1':
+                                style = 'background-color: #00ac69; color: #1F2937;'; 
+                                status = 'Payment Paid';
+                                break;
+                            default:
+                                style = 'background-color: #4B5563; color: #FFFFFF;'; 
+                                break;
+                        }
+                        return `<span class="${baseClasses}" style="${style}">${status}</span>`;
                     }
                 },
                 {

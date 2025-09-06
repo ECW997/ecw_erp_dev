@@ -38,6 +38,10 @@ include "include/v2/topnavbar.php";
                                             onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
                                             <i class="fas fa-cash-register me-1"></i> Print Receipt
                                         </button>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                            onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                            <i class="fas fa-cash-register me-1"></i> Print Receipt
+                                        </button>
                                         <span class="badge bg-secondary">
                                             Receipt No: 
                                             <?= $is_edit 
@@ -333,6 +337,8 @@ let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
 let header_id = 0;
 let paymentData = [];
 
+let approve_btn = document.getElementById('confirmPaymentBtn');
+
 $(document).ready(function () {
     $('#loading-overlay').show();
     let loadingPromises = [];
@@ -444,6 +450,7 @@ function setupAllocationEditHandlers() {
 }
 
 $('#confirmAllocateBtn').on('click', function() {
+    approve_btn.disabled = true;
     const selectedIndex = $('#paymentMethodDropdown').val();
     const allocateAmount = parseFloat($('#allocateAmount').val());
     const isEditing = $('#allocatePaymentModal').data('editingRow');
@@ -539,7 +546,7 @@ $('#confirmAllocateBtn').on('click', function() {
     $summaryTable.find('.allocate_amount').off('keydown').on('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            
+            approve_btn.disabled = true;
             if (!updateBalances()) return false;
             createReceipt();
         }
@@ -642,6 +649,8 @@ function getCustomerJobOrInvoiceDetails() {
         const customerId = $('#customer').val();
         const receipt_status = $('#status').val();
 
+        approve_btn.disabled = true;
+
         if (!paymentType || !customerId) {
             reject('Payment type or customer not selected');
             return;
@@ -725,6 +734,7 @@ function getCustomerJobOrInvoiceDetails() {
 }
 
 function createReceipt(){
+    approve_btn.disabled = true;
     let draft_receipt_no = "<?php echo $is_edit? $payment_main_data['draft_receipt_number'] ?? '' : strtoupper($draft_receipt_no);?>";
     let date = $('#paymentDate').val();
     let customer_id = $('#customer').val();
@@ -778,7 +788,7 @@ function createReceipt(){
                     // success_toastify(result.message);
                     $('#payment_record_id').val(result.pay_header_id);
                     loadPayDetail(result.pay_header_id);
-                    console.log(result.pay_header_id,result.message);
+                    // console.log(result.pay_header_id,result.message);
                 } else {
                     console.log(result.message);
                     // falseResponse(result.message);
@@ -798,6 +808,7 @@ function loadPayDetail(header_id) {
         error_toastify("No header ID provided.");
         return;
     }
+    approve_btn.disabled = true;
     $.ajax({
         type: "GET",
         dataType: 'json',
@@ -925,6 +936,7 @@ function loadPayAllocationDetail(header_id){
                 			$row.find('.allocate_amount').off('keydown').on('keydown', function (e) {
                 				if (e.key === 'Enter') {
                 					e.preventDefault();
+                                    approve_btn.disabled = true;
                 					if (!updateBalances()) return false;
                 					createReceipt();
                 				}
@@ -974,6 +986,7 @@ function deleteRow(button,table) {
                     success_toastify(result.message);
                     if(header_id != 0){
                         loadPayDetail(header_id); 
+                        $('#loading-overlay').show();
                         setTimeout(function() {
                             location.reload();
                         }, 200)
@@ -990,6 +1003,7 @@ function deleteRow(button,table) {
 }
 
 function updateBalances() {
+    approve_btn.disabled = true;
     var isApproved = <?= (isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved') ? 'true' : 'false' ?>;
     let allocations = [];
     let total_allocated_amount = 0;
@@ -1073,17 +1087,17 @@ function updateBalances() {
         return false; 
     }
 
+    approve_btn.disabled = false;
     return true;
 }
 
 function confirmPayment() {
-    const btn = document.getElementById('confirmPaymentBtn');
     let pay_header_id = $('#payment_record_id').val();
     let payment_note = $('#paymentNote').val();
     let Payment_series = $('#PaymentSeries').val();
     if (pay_header_id !='') {
-        btn.disabled = true;
-        btn.innerHTML = `Approving <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
+        approve_btn.disabled = true;
+        approve_btn.innerHTML = `Approving <span class="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true"></span>`;
     }else{
         error_toastify('Please allocate payments first.');
         return false;
@@ -1102,21 +1116,21 @@ function confirmPayment() {
             success: function(result) {
                 if (result.status == true) {
                     success_toastify(result.message);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
+                    approve_btn.disabled = false;
+                    approve_btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
                     setTimeout(function() {
                         window.location.href = '<?= base_url("Payment/paymentDetailIndex/") ?>' + pay_header_id;
                     }, 500)
                 } else {
                     error_toastify(result.message);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
+                    approve_btn.disabled = false;
+                    approve_btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
                 }
             }
         });
     }else{
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
+        approve_btn.disabled = false;
+        approve_btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
     }
 }
 
