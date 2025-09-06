@@ -96,7 +96,7 @@ class JobCard extends CI_Controller {
 			echo $this->pdf->output();
 		} else {
 			// For regular browsers: Use stream method
-			$this->pdf->stream($filename, ['Attachment' => 1]);
+			$this->pdf->stream($filename, ['Attachment' => 0]);
 		}
 	}
 
