@@ -230,7 +230,7 @@
             border: 1px solid #666;
             padding: 1px;
             text-align: center;
-            height: 14px;
+            height: 22px;
             font-size: 10px;
         }
 
@@ -407,12 +407,12 @@
         <div class="header-and-customer-info">
             <!-- Document Header -->
             <div class="document-header">
-                <h1>Job Card</h1>
+                <h1 style="font-size:22px; font-weight:bold;">Job Card</h1>
                 <div class="company-info">ECW Software</div>
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
-                        <td style="font-size:14px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
-                        <td style="font-size:14px; font-weight:bold; text-align:right; padding:0px; width:50%;">Handover Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
+                        <td style="font-size:18px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <td style="font-size:18px; font-weight:bold; text-align:right; padding:0px; width:50%;">Handover Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
                     </tr>
                 </table>
             </div>
@@ -447,11 +447,11 @@
                     </tr>
                     <tr>
                         <th>Vehicle No:</th>
-                        <td><?= $main_data['vehicle_number'] ?? 'N/A' ?></td>
+                        <td><b><?= $main_data['vehicle_number'] ?? 'N/A' ?></b></td>
                         <th>Vehicle Type:</th>
                         <td>
-                            <?= ($main_data['brand_name'] ?? '') . 
-                               (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '').(!empty($main_data['vehicle_year']) ? ', ' . $main_data['vehicle_year'] : '') ?>
+                            <b><?= ($main_data['brand_name'] ?? '') . 
+                               (!empty($main_data['model_name']) ? ', ' . $main_data['model_name'] : '').(!empty($main_data['vehicle_year']) ? ', ' . $main_data['vehicle_year'] : '') ?></b>
                         </td>
                     </tr>
                     <tr>
@@ -631,13 +631,13 @@
     </h1>
 
     <p>
-        <strong>This Agreement</strong> is made on this ______________ day of _______________, by and between:
+        <strong>This Agreement</strong> is made on this <?= date('jS') ?> day of <?= date('F') ?>, <?= date('Y') ?>, by and between:
     </p>
 
     <p>
         <strong>Company Name:</strong> Edirisingha Cushion Works (Pvt) Ltd <br>
-        <strong>Customer Name:</strong> ____________________________________ <br>
-        <strong>Vehicle Registration No:</strong> ______________________________
+        <strong>Customer Name:</strong> <?= $main_data['customer_name'] ?? 'N/A' ?> <br>
+        <strong>Vehicle Registration No:</strong> <?= $main_data['vehicle_number'] ?? 'N/A' ?>
     </p>
 
      <hr style="margin: 30px 0;">
