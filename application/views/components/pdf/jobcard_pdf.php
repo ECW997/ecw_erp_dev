@@ -154,7 +154,7 @@
         }
 
         .job-item-content td {
-            padding: 4px;
+            padding: 15px;
             border: 1px solid #666;
             vertical-align: top;
             font-size: 10px;
@@ -397,6 +397,7 @@
             color: #666;
             page-break-before: avoid;
         }
+        
     </style>
 </head>
 
@@ -493,16 +494,6 @@
         <div class="job-details-section job-details-with-header">
             <div class="section-header">Job Details & Work Instructions</div>
 
-            <table class="job-header-table">
-                <tr>
-                    <th style="width:5%;">No</th>
-                    <th style="width:30%;">Job Description</th>
-                    <th style="width:30%;">Details</th>
-                    <th style="width:30%;">Remarks</th>
-                    <th style="width:5%;">Qty</th>
-                </tr>
-            </table>
-
             <?php 
             $mainJob_cnt = 1;
             $totalCategories = count($details_data);
@@ -527,6 +518,15 @@
                     </div>
                     
                     <div class="job-items-container job-item-with-signature">
+                        <table class="job-header-table">
+                            <tr>
+                                <th style="width:5%;">No</th>
+                                <th style="width:30%;">Job Description</th>
+                                <th style="width:30%;">Details</th>
+                                <th style="width:30%;">Remarks</th>
+                                <th style="width:5%;">Qty</th>
+                            </tr>
+                        </table>
                         <?php
                         $joblist_cnt = 1;
                         $totalJobsInCategory = count($item['details']);
@@ -537,11 +537,8 @@
                                 <table class="job-item-content">
                                     <tr>
                                         <td class="job-number"><?= $joblist_cnt ?></td>
-                                        <td class="job-description">
-                                            <strong><?= $joblist['option_group_text'] ?? 'N/A' ?></strong>
-                                        </td>
-                                        <td class="job-remarks">
-                                            <?= $joblist['option_text'] ?? 'N/A' ?> <br>
+                                        <td colspan="2" class="job-description">
+                                            <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> - </strong>
                                             <?= $joblist['combined_option'] ?? 'N/A' ?> <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>
                                             
                                             <?php if ($joblist['description'] == 'image' || $joblist['description'] == 'dot_image') : ?>
@@ -551,9 +548,9 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="job-remarks">
-                                            <?= $joblist['remark'] ?? 'N/A' ?>
+                                            <?= $joblist['remark'] ?? '' ?><?= (!empty($joblist['list_price']) && $joblist['list_price'] > 0) ? '' : ' (Price Not Included)' ?>
                                         </td>
-                                        <td class="job-quantity">x <?= $joblist['qty'] ?? 0 ?></td>
+                                        <td class="job-quantity"> <?= $joblist['qty'] ?? 0 ?></td>
                                     </tr>
                                 </table>
                                 

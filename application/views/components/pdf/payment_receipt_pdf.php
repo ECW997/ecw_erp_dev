@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 32mm 15mm 15mm 1mm;
+	  margin: 35mm 15mm 15mm 1mm;
       /* top right bottom left */
 }
 
@@ -21,10 +21,10 @@ body {
 
 header {
     position: fixed;
-    top: -35mm;
+    top: -38mm;
     left: 0;
     right: 0;
-    height: 35mm;
+    height: 38mm;
 }
 
 footer {

@@ -123,6 +123,14 @@ include "include/topnavbar.php";
                                     <option value="Cancelled">Cancelled</option>
                                     </select>
                                 </div>
+                                 <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                    <label for="payment_status" class="mb-0 mr-2">Payment Status</label>
+                                    <select id="payment_status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                    <option value="">All Status</option>
+                                    <option value="0">Payment Pending</option>
+                                    <option value="1">Payment Paid</option>
+                                    </select>
+                                </div>
                                 <button class="btn btn-secondary btn-sm" id="filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
                                     <i class="fas fa-filter mr-1"></i> Filter
                                 </button>
@@ -223,6 +231,7 @@ include "include/topnavbar.php";
                     d.sales_agent = $('#sales_agent').val();
                     d.job_status = $('#job_status').val();
                     d.status = $('#status').val();
+                    d.payment_status = $('#payment_status').val();
                 },
                 dataSrc: function (json) {
                     if (json.status === false && json.code === 401) {
@@ -490,7 +499,7 @@ include "include/topnavbar.php";
         });
 
         $('#clearFilterBtn').on('click', function() {
-            $('#date_from, #date_to, #sales_agent, #job_status, #status').val('');
+            $('#date_from, #date_to, #sales_agent, #job_status, #status, #payment_status').val('');
             $('#dataTable').DataTable().ajax.reload();
         });
     });
