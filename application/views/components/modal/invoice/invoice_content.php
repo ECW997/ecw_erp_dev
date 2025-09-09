@@ -241,6 +241,13 @@
                                         <div class="col-lg">
                                             <div class="extra-charges-card border">
                                                 <h6 class="section-title p-2 mb-3 rounded">Advance Payments</h6>
+                                                
+                                                <!-- Advance Receipt Status Label -->
+                                                <div id="advance_receipt_status" class="alert alert-info d-none mb-3" style="padding: 8px 12px; font-size: 14px;">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    <span id="advance_receipt_message">This Jobcard has Advance Receipt</span>
+                                                </div>
+                                                
                                                 <form id="advance_recieptform" autocomplete="off"
                                                     class="mb-3 <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
                                                     <div class="row g-2">
@@ -651,6 +658,8 @@ $(document).ready(function() {
 
     console.log('Invoice content script loaded');
 
+    // Check for advance receipts when page loads
+    checkAdvanceReceipts();
 
     $('#reciept_no').select2({
         placeholder: 'Select...',
@@ -737,6 +746,39 @@ $(document).ready(function() {
     });
 
 });
+
+// Function to check if there are advance receipts for the jobcard
+function checkAdvanceReceipts() {
+    const jobcardId = $('#real_jobcard_id').val();
+    
+    if (jobcardId) {
+        $.ajax({
+            url: '<?php echo base_url() ?>Invoice/getAdvancePayments',
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                jobcard_id: jobcardId,
+                page: 1
+            },
+            success: function(data) {
+                if (data.status === true && data.data.item && data.data.item.length > 0) {
+                    // There are advance receipts available
+                    $('#advance_receipt_status').removeClass('d-none');
+                    $('#advance_receipt_message').text('This Jobcard has Advance Receipt (' + data.data.item.length + ' receipts available)');
+                } else {
+                    // No advance receipts available
+                    $('#advance_receipt_status').addClass('d-none');
+                }
+            },
+            error: function() {
+                // Hide the status on error
+                $('#advance_receipt_status').addClass('d-none');
+            }
+        });
+    } else {
+        $('#advance_receipt_status').addClass('d-none');
+    }
+}
 
 function insertReciept() {
     const form = $("#advance_recieptform")[0];

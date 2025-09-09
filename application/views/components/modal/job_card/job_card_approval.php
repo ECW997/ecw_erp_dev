@@ -35,8 +35,10 @@
                                     <span id="line_discount_show">
                                         Rs. <?= number_format($summary_data[0]['total_line_discount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="hidden" id="line_discount" value="<?= $summary_data[0]['total_line_discount'] ?? 0 ?>">
-                                    <input type="hidden" id="line_discount_status" value="<?= $job_main_data[0]['line_discount_approve'] ?? 'Pending' ?>">
+                                    <input type="text" id="line_discount"
+                                        value="<?= $summary_data[0]['total_line_discount'] ?? 0 ?>">
+                                    <input type="hidden" id="line_discount_status"
+                                        value="<?= $job_main_data[0]['line_discount_approve'] ?? 'Pending' ?>">
                                 </td>
                                 <td class="text-end ">
                                     <?php if(($summary_data[0]['total_line_discount'] ?? 0) > 0): ?>
@@ -44,22 +46,25 @@
                                         <?php 
                                         $lineStatus = $job_main_data[0]['line_discount_approve'] ?? 'Pending';
                                         if($lineStatus === 'Approved'): ?>
-                                            <span class="badge badge-pill text-bg-success"><i class="fas fa-check-circle me-2"></i>Approved</span>
+                                        <span class="badge badge-pill text-bg-success"><i
+                                                class="fas fa-check-circle me-2"></i>Approved</span>
                                         <?php elseif($lineStatus === 'Denied'): ?>
-                                            <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
+                                        <span class="badge badge-pill text-bg-danger"><i
+                                                class="fas fa-times-circle me-2"></i>Denied</span>
                                         <?php else: ?>
-                                            <?php if($approve2check==1){ ?>
-                                                <button type="button" class="btn btn-success btn-sm approve-line-discount" 
-                                                    onclick="approveDiscount('line')">
-                                                    <i class="fas fa-check"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm deny-line-discount"
-                                                    onclick="denyDiscount('line')">
-                                                    <i class="fas fa-times"></i> Deny
-                                                </button>
-                                            <?php } else { ?>
-                                                <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Not Approved</span>
-                                            <?php } ?>
+                                        <?php if($approve2check==1){ ?>
+                                        <button type="button" class="btn btn-success btn-sm approve-line-discount"
+                                            onclick="approveDiscount('line')">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm deny-line-discount"
+                                            onclick="denyDiscount('line')">
+                                            <i class="fas fa-times"></i> Deny
+                                        </button>
+                                        <?php } else { ?>
+                                        <span class="badge badge-pill text-bg-danger"><i
+                                                class="fas fa-times-circle me-2"></i>Not Approved</span>
+                                        <?php } ?>
                                         <?php endif; ?>
                                     </div>
                                     <?php endif; ?>
@@ -77,8 +82,10 @@
                                     <span id="header_discount_show">
                                         Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="hidden" id="header_discount" value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>">
-                                    <input type="hidden" id="header_discount_status" value="<?= $job_main_data[0]['header_discount_approve'] ?? 'Pending' ?>">
+                                    <input type="text" id="header_discount"
+                                        value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>">
+                                    <input type="hidden" id="header_discount_status"
+                                        value="<?= $job_main_data[0]['header_discount_approve'] ?? 'Pending' ?>">
                                 </td>
                                 <td class="text-end ">
                                     <?php if(($job_main_data[0]['discount_amount'] ?? 0) > 0): ?>
@@ -86,22 +93,25 @@
                                         <?php 
                                         $headerStatus = $job_main_data[0]['header_discount_approve'] ?? 'Pending';
                                         if($headerStatus === 'Approved'): ?>
-                                            <span class="badge badge-pill text-bg-success"><i class="fas fa-check-circle me-2"></i>Approved</span>
+                                        <span class="badge badge-pill text-bg-success"><i
+                                                class="fas fa-check-circle me-2"></i>Approved</span>
                                         <?php elseif($headerStatus === 'Denied'): ?>
-                                            <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
+                                        <span class="badge badge-pill text-bg-danger"><i
+                                                class="fas fa-times-circle me-2"></i>Denied</span>
                                         <?php else: ?>
-                                            <?php if($approve2check==1){ ?>
-                                                <button type="button" class="btn btn-success btn-sm approve-header-discount"
-                                                    onclick="approveDiscount('header')">
-                                                    <i class="fas fa-check"></i> Approve
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm deny-header-discount"
-                                                    onclick="denyDiscount('header')">
-                                                    <i class="fas fa-times"></i> Deny
-                                                </button>
-                                            <?php } else { ?>
-                                                <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Not Approved</span>
-                                            <?php } ?>
+                                        <?php if($approve2check==1){ ?>
+                                        <button type="button" class="btn btn-success btn-sm approve-header-discount"
+                                            onclick="approveDiscount('header')">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm deny-header-discount"
+                                            onclick="denyDiscount('header')">
+                                            <i class="fas fa-times"></i> Deny
+                                        </button>
+                                        <?php } else { ?>
+                                        <span class="badge badge-pill text-bg-danger"><i
+                                                class="fas fa-times-circle me-2"></i>Not Approved</span>
+                                        <?php } ?>
                                         <?php endif; ?>
                                     </div>
                                     <?php endif; ?>
@@ -119,13 +129,25 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <label class="small form-label text-dark mb-1 fw-bold">
+                                <i class="fa fa-user-shield me-1 text-primary"></i> Discount Authorized Person
+                            </label>
+                            <select class="form-select form-select-sm select2" name="authorized_person"
+                                id="authorized_person" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>
+                                style="width:100%;">
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="row mt-4">
                         <div class="col-6">
                             <h5>Net Price: </h5>
                         </div>
                         <div class="col-6 text-end">
                             <span class="text-dark fw-bold" id="net_price_show">
-                                Rs. 
+                                Rs.
                             </span>
                             <input type="hidden" id="net_price" value="">
                         </div>
@@ -163,7 +185,7 @@
                             <button type="button" class="btn btn-primary btn-sm" id="logsBtn"
                                 style="border-radius: 12px;" data-bs-toggle="tooltip" data-bs-placement="top"
                                 data-bs-html="true" title="<?= htmlspecialchars($tooltipText, ENT_QUOTES); ?>">
-                                <i class="fa-solid fa-file me-1"></i> Logs
+                                <i class="fas fa-file-alt me-1"></i> Logs
                             </button>
                         </div>
                     </div>
@@ -178,21 +200,24 @@
                     </div>
                     <?php if($approve1check==1): ?>
                     <div class="col-4">
-                        <button type="button" class="btn btn-success w-100 <?= $showApproveBtn ? '' : 'd-none' ?>" id="approveJobcardBtn" style="border-radius: 12px;" onclick="approveJobcard()">
+                        <button type="button" class="btn btn-success w-100 <?= $showApproveBtn ? '' : 'd-none' ?>"
+                            id="approveJobcardBtn" style="border-radius: 12px;" onclick="approveJobcard()">
                             Approve
                         </button>
                     </div>
                     <?php endif; ?>
                     <?php if($cancelcheck==1): ?>
                     <div class="col-4">
-                        <button type="button" class="btn btn-danger w-100 <?= $is_confirmed ? '' : 'd-none' ?>" id="deniedJobcardBtn"
-                            style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
+                        <button type="button" class="btn btn-danger w-100 <?= $is_confirmed ? '' : 'd-none' ?>"
+                            id="deniedJobcardBtn" style="border-radius: 12px;" onclick="deniedJobcard()">Denied</button>
                     </div>
                     <?php endif; ?>
                 </div>
             </div>
             <div class="modal-footer bg-light justify-content-center py-2 border-top">
-                <small class="text-muted"><div id="jobcard_status_message" class="mt-2 fw-bold"></div></small>
+                <small class="text-muted">
+                    <div id="jobcard_status_message" class="mt-2 fw-bold"></div>
+                </small>
             </div>
         </div>
     </div>
@@ -200,15 +225,53 @@
 
 
 <script>
-
 $(document).ready(function() {
     <?php if ($is_edit == '1'): ?>
-        checkDiscountApprovals();
-        recalculateNetPrice();
+    checkDiscountApprovals();
+    recalculateNetPrice();
     <?php endif; ?>
+
+    // $('#authorized_person').select2({
+    //     width: '100%',
+    //     placeholder: "Select authorized person...",
+    //     dropdownParent: $('#jobcardApproveModel')
+    // });
+
+
+
+    let authorized_person = $('#authorized_person');
+    authorized_person.select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        dropdownParent: $('#jobcardApproveModel'), 
+        ajax: {
+            url: '<?php echo base_url() ?>JobCard/getAuthorizedPersons',
+            dataType: 'json',
+            data: function(params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1,
+                }
+            },
+            cache: true,
+            processResults: function(data) {
+                if (data.status == true) {
+                    return {
+                        results: data.data.item,
+                        pagination: {
+                            more: data.data.item.length > 0
+                        }
+                    }
+                } else {
+                    falseResponse(data);
+                }
+            }
+        }
+    });
 });
 
-function approveDiscount(type){
+function approveDiscount(type) {
     if (!confirm(`Are you sure you want to approve the ${type} discount?`)) {
         return;
     }
@@ -219,7 +282,7 @@ function approveDiscount(type){
         url: '<?php echo base_url() ?>JobCard/approveDiscount',
         type: 'POST',
         dataType: 'json',
-         data: {
+        data: {
             jobcard_id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
             discount_type: type,
             action: 'Approved'
@@ -252,7 +315,7 @@ function denyDiscount(type) {
     }
 
     $(`.approve-${type}-discount, .deny-${type}-discount`).prop('disabled', true);
-    
+
     $.ajax({
         url: '<?php echo base_url() ?>JobCard/deniedDiscount',
         type: 'POST',
@@ -263,12 +326,12 @@ function denyDiscount(type) {
             action: 'Denied'
         },
         success: function(result) {
-            if(result.status == true) {
+            if (result.status == true) {
                 success_toastify(result.message);
                 $(`.${type}-discount-actions`).html(`
                     <span class="badge badge-pill text-bg-danger"><i class="fas fa-times-circle me-2"></i>Denied</span>
                 `);
-                
+
                 $(`#${type}_discount_status`).val('Denied');
                 $('#main_status_stage').html('Pending').css('color', '#FB923C');
                 recalculateNetPrice();
@@ -290,22 +353,23 @@ function checkDiscountApprovals() {
     let headerStatus = $('#header_discount_status').val();
     let hasLineDiscount = parseFloat($('#line_discount').val()) > 0;
     let hasHeaderDiscount = parseFloat($('#header_discount').val()) > 0;
-    
-    let is_jobcard_approved = <?= (isset($job_main_data[0]['status']) && $job_main_data[0]['status'] === 'Approved') ? 'true' : 'false' ?>;
+
+    let is_jobcard_approved =
+        <?= (isset($job_main_data[0]['status']) && $job_main_data[0]['status'] === 'Approved') ? 'true' : 'false' ?>;
     let enableApproval = true;
 
-    if(is_jobcard_approved){
+    if (is_jobcard_approved) {
         enableApproval = false;
-    }else{
-        if(hasLineDiscount && lineStatus === 'Pending') {
-                enableApproval = false;
-            }
-        
-        if(hasHeaderDiscount && headerStatus === 'Pending') {
+    } else {
+        if (hasLineDiscount && lineStatus === 'Pending') {
+            enableApproval = false;
+        }
+
+        if (hasHeaderDiscount && headerStatus === 'Pending') {
             enableApproval = false;
         }
     }
-    
+
     $('#approveJobcardBtn').prop('disabled', !enableApproval);
 }
 
@@ -315,14 +379,14 @@ function recalculateNetPrice() {
     let headerDiscount = parseFloat($('#header_discount').val());
     let lineStatus = $('#line_discount_status').val();
     let headerStatus = $('#header_discount_status').val();
-    
+
     let netDiscount = 0;
-    
-    if(lineStatus === 'Approved') netDiscount += lineDiscount;
-    if(headerStatus === 'Approved') netDiscount += headerDiscount;
-    
+
+    if (lineStatus === 'Approved') netDiscount += lineDiscount;
+    if (headerStatus === 'Approved') netDiscount += headerDiscount;
+
     let netPrice = standardPrice - netDiscount;
-    
+
     $('#net_price').val(netPrice.toFixed(2));
     $('#net_price_show').text('Rs. ' + netPrice.toFixed(2));
     $('#net_discount_show').text('Rs. ' + netDiscount.toFixed(2));
@@ -342,19 +406,29 @@ function approveJobcard() {
 
     let lineDiscount = parseFloat($('#line_discount').val());
     let lineStatus = $('#line_discount_status').val();
+    let authorized_person = $('#authorized_person').val();
     let line_discount_price = (lineStatus === 'Approved') ? lineDiscount : 0;
 
     let headerDiscount = parseFloat($('#header_discount').val());
     let headerStatus = $('#header_discount_status').val();
     let header_discount_price = (headerStatus === 'Approved') ? headerDiscount : 0;
 
+    // Require authorized_person if any discount is present
+    if ((line_discount_price > 0 || header_discount_price > 0) && (!authorized_person || authorized_person.length === 0)) {
+        error_toastify('Please select an authorized person before approving.');
+        $('#authorized_person').focus();
+        return;
+    }
+
     const approveData = {
         id: <?= json_encode($job_main_data[0]['idtbl_jobcard'] ?? 0) ?>,
         net_total: $('#net_price').val(),
         header_discount_price: header_discount_price,
-        line_discount_price: line_discount_price
+        line_discount_price: line_discount_price,
+        authorized_person: authorized_person
 
     };
+    // alert(JSON.stringify(approveData));
 
     $.ajax({
         url: '<?php echo base_url() ?>JobCard/approveJobcard',
@@ -417,4 +491,27 @@ function deniedJobcard() {
     });
 
 }
+
+function toggleAuthorizedPersonField() {
+    const lineDiscount = parseFloat($('#line_discount').val()) || 0;
+    const headerDiscount = parseFloat($('#header_discount').val()) || 0;
+    const authorizedPerson = $('#authorized_person');
+
+    if (lineDiscount > 0 || headerDiscount > 0) {
+        authorizedPerson.prop('disabled', false);
+        authorizedPerson.prop('required', true);
+    } else {
+        authorizedPerson.prop('disabled', true);
+        authorizedPerson.prop('required', false);
+        authorizedPerson.val(null).trigger('change');
+    }
+}
+
+$(document).ready(function() {
+    toggleAuthorizedPersonField();
+
+    $('#line_discount, #header_discount').on('input change', function() {
+        toggleAuthorizedPersonField();
+    });
+});
 </script>

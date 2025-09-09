@@ -96,7 +96,7 @@
                             <?= number_format($summlist['total_line_discount'],2) ?></td>
                     </tr>
                     <tr>
-                        <td class="text-left">Hole Discount (<?= number_format($summlist['discount'],0) ?>%)
+                        <td class="text-left">Whole Discount (<?= number_format($summlist['discount'],0) ?>%)
                             <?= $header_approved_check ?></td>
                         <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
