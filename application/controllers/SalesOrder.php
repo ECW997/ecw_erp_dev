@@ -56,6 +56,7 @@ class SalesOrder extends CI_Controller {
 			'tempSelectedJobs' => $this->input->post('tempSelectedJobs'),
             'jobCardId' => $this->input->post('jobCardId'),
 			'confirmedOrderValue' => $this->input->post('confirmedOrderValue'),
+			'headerDiscount' => $this->input->post('headerDiscount'),
 			'recordOption' => $this->input->post('recordOption'),
 			'recordID' => $this->input->post('recordID'),
         ];

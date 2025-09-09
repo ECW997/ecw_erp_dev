@@ -34,14 +34,19 @@ include "include/v2/topnavbar.php";
                             <div class="col-12">
                                 <div class="form-header mb-4">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
-                                            onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
-                                            <i class="fas fa-cash-register me-1"></i> Print Receipt
-                                        </button>
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
-                                            onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
-                                            <i class="fas fa-cash-register me-1"></i> Print Receipt
-                                        </button>
+                                        <div>
+                                        	<button type="button"
+                                        		class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                        		onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                        		<i class="fas fa-cash-register me-1"></i> Print Receipt
+                                        	</button>
+                                        	<button type="button"
+                                        		class="btn btn-info btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                        		onclick="exportPaymentReceiptV2(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                        		<i class="fas fa-cash-register me-1"></i> Print S2 Receipt
+                                        	</button>
+                                        </div>
+                                        
                                         <span class="badge bg-secondary">
                                             Receipt No: 
                                             <?= $is_edit 
@@ -152,6 +157,7 @@ include "include/v2/topnavbar.php";
                                                         <option value="BANK_TRANSFER">Bank Transfer</option>
                                                         <option value="CREDIT_CARD">Credit Card</option>
                                                         <option value="CHEQUE">Cheque</option>
+                                                        <option value="FREE">Free</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -575,7 +581,7 @@ function addPayment() {
         return;
     }
 
-    if (!amount || amount <= 0 || !method) {
+    if (amount < 0 || !method) {
         alert('Please enter a valid amount and select payment method');
         return;
     }
@@ -897,6 +903,7 @@ function loadPayAllocationDetail(header_id){
                 	$tbody.empty();
                     $tfoot.empty();
                 	if (result.data.length === 0) {
+                        approve_btn.disabled = false;
                 		$tbody.html('<tr><td colspan="3" class="text-center text-muted py-3">No payments Allocated yet</td></tr>');
                 	} else {
                 		let totalAllocated = 0;
@@ -1137,6 +1144,13 @@ function confirmPayment() {
 function exportPaymentReceipt(receipt_id) {
     const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptPDF";
     const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}`;
+    window.open(url, '_blank');
+}
+
+function exportPaymentReceiptV2(receipt_id) {
+    const type = "half";
+    const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptV2PDF";
+    const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&type=${encodeURIComponent(type)}`;
     window.open(url, '_blank');
 }
 

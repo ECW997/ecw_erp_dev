@@ -209,9 +209,11 @@ switch ($main_data['branch_id']) {
 				<td class="datatable_data_td" style="text-align:right">
 					<?= number_format($item['unit_price'],2) ?></td>
 				<td class="datatable_data_td" style="text-align:right">
-					<?= number_format($item['line_discount_amount'],2) ?></td>
+					<?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'],0). '%' ?>
+				</td>
 				<td class="datatable_data_td" style="text-align:right">
-					<?= number_format($item['line_total_after_discount'],2) ?></td>
+					<?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'],2) ?>
+				</td>
 			</tr>
 			<?php
 		 	$total_line_discount += (float)$item['line_discount_amount'];

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 <style>
 @page {
-	  margin: 32mm 15mm 15mm 1mm;
+	  margin: 35mm 15mm 15mm 1mm;
       /* top right bottom left */
 }
 
@@ -21,10 +21,10 @@ body {
 
 header {
     position: fixed;
-    top: -35mm;
+    top: -38mm;
     left: 0;
     right: 0;
-    height: 35mm;
+    height: 38mm;
 }
 
 footer {
@@ -214,7 +214,7 @@ switch ($header['company_branch_id']) {
                         <td class="datatable_data_td" style="text-align:center"><?= $item['quantity'] ?></td>
                         <td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'],2) ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= number_format($item['line_discount_amount'],2) ?></td>
+                        <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
                     </tr>
                     <?php endforeach; ?>

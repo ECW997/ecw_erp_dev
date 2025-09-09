@@ -25,11 +25,12 @@
                     <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <td><label class="small fw-bold">Line Change</label></td>
+                                <td><label class="small fw-bold">Total Line Discount</label></td>
                                 <td class="text-danger">
                                     <span id="line_discount_precentage_show">
                                         <?= number_format(($summary_data[0]['sub_total'] ?? 0) > 0 ? (($summary_data[0]['total_line_discount'] ?? 0) / $summary_data[0]['sub_total']) * 100 : 0, 2) ?>%
                                     </span>
+                                    <span>(From Total)</span>
                                 </td>
                                 <td class="text-danger text-end">
                                     <span id="line_discount_show">

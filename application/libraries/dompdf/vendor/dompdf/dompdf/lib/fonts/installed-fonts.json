@@ -1,6 +1,6 @@
 {
     "roboto": {
-        "normal": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_a5fc1441144adab7ff7fd3a2b9c8ceea",
+        "normal": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_normal_af56b6975b0f09866f89c02a03b6e898",
         "500": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_500_dbc341cef1fd80a9ebe6c202433656ea",
         "100_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_italic_7c2ff8216d1967c1e6cfcf725c8c1059",
         "300_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_italic_9f3ff44decebac7a976fa6de1b58f6e8",
@@ -9,9 +9,9 @@
         "bold_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_italic_5ddba0cba992faefdd221738d8dda463",
         "900_italic": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_italic_76dd0e05c7a47a5024fb6fdce98891e6",
         "100": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_100_c9b2c8ecd43e8ae4e6af7d77495ef004",
-        "300": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_67dc12b3f1f113305ec431e641e8a57d",
-        "bold": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_bold_33a1d3e1e3260160834fe00ba212e515",
-        "900": "roboto_900_bef619ac70cdc870b62f0ce9c9958f36"
+        "300": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_300_23de689f4f2d0e3705d63b73cab5ed4c",
+        "bold": "roboto_bold_0e1177c9ffa4690c3cbe09820770580c",
+        "900": "C:\\xampp\\htdocs\\ecw_erp_dev\\application\\libraries\\dompdf\\vendor\\dompdf\\dompdf\/lib\/fonts\/roboto_900_bef619ac70cdc870b62f0ce9c9958f36"
     },
     "font awesome 5 brands": {
         "normal": "font_awesome_5_brands_normal_a76103d897ef2b94cd65e7ef83ea3d57"

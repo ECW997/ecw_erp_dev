@@ -219,7 +219,7 @@
                                 <th style="width:8%" class="text-right">Price</th>
                                 <th style="width:6%" class="text-right">QTY</th>
                                 <th style="width:9%" class="text-right">Total</th>
-                                <th style="width:7%" class="text-right">O.Charges</th>
+                                <!-- <th style="width:7%" class="text-right">O.Charges</th> -->
                                 <th style="width:7%" class="text-right">Discount</th>
                                 <th style="width:8%" class="text-right">Sub Total</th>
                                 <th style="width:8%" class="text-right <?= ($deletecheck == 0) ? 'd-none' : '' ?>">
@@ -262,11 +262,11 @@
                                     <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['option_group_text'] ?> - <?= $detail['option_text'] ?></td>
                                     <td style="width:20%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= $detail['combined_option'] ?></td>
                                     <td style="width:15%; vertical-align: middle; word-wrap: break-word; word-break: break-word; white-space: normal;"><?= isset($detail['remark']) ? $detail['remark'] : '-' ?></td>
-                                    <td style="width:8%; vertical-align: middle;" class="text-right"> <?= (!empty($detail['list_price']) && $detail['list_price'] > 0) ? number_format($detail['list_price'], 2) : 'N/A' ?></td>
+                                    <td style="width:8%; vertical-align: middle;" class="text-right"><?= (!empty($detail['list_price']) && $detail['list_price'] > 0) ? number_format($detail['list_price'], 2) : 'N/A' ?></td>
                                     <td style="width:6%; vertical-align: middle;" class="text-right"><?= $detail['qty'] ?></td>
-                                    <td style="width:9%; vertical-align: middle;" class="text-right"> <?= (!empty($detail['total']) && $detail['total'] > 0) ? number_format($detail['total'], 2) : 'N/A' ?></td>
-                                    <td style="width:7%; vertical-align: middle;" class="text-right">-</td>
-                                    <td style="width:7%; vertical-align: middle;" class="text-right"> <?php if ($is_line_discount_approved && !empty($detail['line_discount']) && $detail['line_discount'] > 0): ?><?= number_format($detail['line_discount'], 2) ?><?php else: ?>N/A<?php endif; ?></td>
+                                    <td style="width:9%; vertical-align: middle;" class="text-right"><?= (!empty($detail['total']) && $detail['total'] > 0) ? number_format($detail['total'], 2) : 'N/A' ?></td>
+                                    <!-- <td style="width:7%; vertical-align: middle;" class="text-right">-</td> -->
+                                    <td style="width:7%; vertical-align: middle;" class="text-right"><?= (!empty($detail['line_discount']) && $detail['line_discount'] > 0) ? number_format($detail['line_discount'], 2) : 'N/A' ?></td>
                                     <td style="width:8%; vertical-align: middle;" class="text-right">
                                         <span class="pe-2 ps-2 <?= $priceChangeHighlight ?>"
                                             <?= $isPriceChanged 

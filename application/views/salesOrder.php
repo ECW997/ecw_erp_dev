@@ -37,6 +37,60 @@ include "include/v2/topnavbar.php";
 	font-size: 0.75rem;
 }
 
+/* Modern Approval Modal */
+.approval-modal {
+    border-radius: 20px;
+    border: none;
+    padding: 20px 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    animation: fadeInScale 0.3s ease-in-out;
+}
+
+.approval-modal .modal-body {
+    padding: 1rem;
+}
+
+.approval-modal .modal-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.approval-modal p {
+    font-size: 0.95rem;
+}
+
+.check-icon {
+    font-size: 3rem;
+    color: #28a745;
+    animation: popIn 0.4s ease;
+}
+
+/* Button styling */
+.approval-modal .btn {
+    border-radius: 30px;
+    padding: 10px 15px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.approval-modal .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Animations */
+@keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+
 /* .control-panel {
 	background-color: #fff;
 	border-radius: 0.375rem;
@@ -122,7 +176,12 @@ include "include/v2/topnavbar.php";
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">Available Jobs</h5>
-                                        <span class="badge bg-primary" id="availableCount">0</span>
+                                         <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-primary" id="availableCount">0</span>
+                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn" onclick="moveAllToSelected()">
+                                                <i class="fas fa-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-container">
@@ -175,19 +234,27 @@ include "include/v2/topnavbar.php";
                         </div>
 
                         <div class="row mb-4">
-                        	<div class="col-md-8">
+                        	<div class="col-md-10">
                         		<div class="price-summary">
                         			<div class="row text-center">
-                        				<div class="col-md-3">
-                        					<h6 class="text-gray-800">Total Jobs Price</h6>
+                                        <div class="col-md-2">
+                        					<h6 class="text-gray-800">Sub Total</h6>
+                        					<h4 class="text-primary" id="subTotal">0.00</h4>
+                        				</div>
+                                        <div class="col-md-2">
+                        					<h6 class="text-gray-800">Header Discount</h6>
+                        					<h4 class="text-warning" id="HeaderDiscountPrice"><?= isset($relationDetails['header_discount']) ? $relationDetails['header_discount'] : '0.00' ?></h4>
+                        				</div>
+                        				<div class="col-md-2">
+                        					<h6 class="text-gray-800">Total Payble Jobs Price</h6>
                         					<h4 class="text-primary" id="totalJobsPrice">0.00</h4>
                                             <input type="hidden" id="totalJobsPriceHidden">
                         				</div>
-                        				<div class="col-md-3">
+                        				<div class="col-md-2">
                         					<h6 class="text-gray-800">Confirmed Order Value</h6>
                         					<h4 class="text-info" id="displayOrderValue">0.00</h4>
                         				</div>
-                        				<div class="col-md-3">
+                        				<div class="col-md-2">
                         					<h6 class="text-gray-800">Cash</h6>
                         					<h4 id="priceDifference">0.00</h4>
                         				</div>
@@ -199,11 +266,11 @@ include "include/v2/topnavbar.php";
                         		</div>
                         	</div>
                              <?php if ($is_approve): ?>
-                                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <div class="col-md-2 d-flex align-items-center justify-content-end">
                                     <span class="badge bg-success">This order has been approved and cannot be modified.</span>
                                 </div>
                             <?php else: ?>
-                        	<div class="col-md-4 d-flex align-items-center justify-content-end">
+                        	<div class="col-md-2 d-flex align-items-center justify-content-end">
                         		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
                         			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
                         		</button>
@@ -223,6 +290,35 @@ include "include/v2/topnavbar.php";
                     <h4 class="mt-3">Loading Sales Order Data...</h4>
                 </div>
             </div>
+
+            <div class="modal fade" id="approveInvoiceModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                <div class="modal-content approval-modal">
+                <div class="modal-body text-center">
+                    <div class="check-icon mb-3">
+                    <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h5 class="modal-title mb-2">Approval Successful</h5>
+                    <p class="text-muted mb-4">The sales order has been approved.<br>What would you like to do next?</p>
+                    <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary d-none" id="btnGoInvoice">
+                        <i class="fas fa-file-invoice me-3"></i> Go to Invoice
+                    </button>
+                    <button type="button" class="btn btn-primary d-none" id="printReceipt">
+                        <i class="fas fa-file-invoice me-3"></i> Print Receipt
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnNewSalesOrder">
+                        <i class="fas fa-plus-circle me-3"></i> Create New Sales Order
+                    </button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">
+                        <i class="fas fa-times me-3"></i> Cancel
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
         <?php include "include/v2/footerbar.php"; ?>
     </div>
 </div>
@@ -352,7 +448,7 @@ $(document).ready(function () {
     $('#job_card_number').on('change', loadJobCard);
 
 });
-
+let totalFullJobPrice = 0;
 function loadJobCard() {
     availableJobs = [];
     selectedJobs = [];
@@ -375,9 +471,9 @@ function loadJobCard() {
 					let index = 1;
 					const tbody = $('#availableJobsTable tbody');
 					tbody.empty();
-
 					res.data.details_data.forEach(section => {
 						section.details.forEach(detail => {
+                            const net_amount = parseFloat(detail.net_amount) || 0;
 							availableJobs.push({
 								jobId: detail.parent_id,
 								subCategory: section.job_sub_category_text,
@@ -390,18 +486,26 @@ function loadJobCard() {
                                 line_discount: parseFloat(detail.line_discount).toFixed(2),
                                 net_amount: parseFloat(detail.net_amount).toFixed(2)
 							});
+                            totalFullJobPrice += net_amount;
 							selectedJobs = [];
 							renderTables();
-							updatePriceSummary();
 						});
 					});
-
+                    
+                 $('#totalJobsPriceHidden').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+                 $('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+                 $('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
+                 $('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
+                 $('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+                 updatePriceSummary();
 				} else {
 					alert("Job card details not found.");
 					availableJobs = [];
 					selectedJobs = [];
 					renderTables();
 					updatePriceSummary();
+                    $('#totalJobsPriceHidden').val(totalFullJobPrice);
+                    $('#confirmedOrderValue').val(totalFullJobPrice);
 				}
                 $('#loading-overlay').fadeOut(300);
 			},
@@ -412,6 +516,8 @@ function loadJobCard() {
 				renderTables();
 				updatePriceSummary();
                 $('#loading-overlay').fadeOut(300);
+                $('#totalJobsPriceHidden').val(totalFullJobPrice);
+                $('#confirmedOrderValue').val(totalFullJobPrice);
 			}
 		});
 	}
@@ -511,6 +617,34 @@ function moveToAvailable(jobId) {
 	}
 }
 
+function moveAllToSelected() {
+    if (availableJobs.length > 0) {
+        selectedJobs = selectedJobs.concat(availableJobs);
+        availableJobs = [];
+
+        renderTables();
+        updatePriceSummary();
+
+        $('#excludeJobsTable tbody tr').addClass('table-success').delay(500).queue(function () {
+            $(this).removeClass('table-success').dequeue();
+        });
+    }
+}
+
+function moveAllToAvailable() {
+    if (selectedJobs.length > 0) {
+        availableJobs = availableJobs.concat(selectedJobs);
+        selectedJobs = [];
+
+        renderTables();
+        updatePriceSummary();
+
+        $('#availableJobsTable tbody tr').addClass('table-warning').delay(500).queue(function () {
+            $(this).removeClass('table-warning').dequeue();
+        });
+    }
+}
+
 function updateCounts() {
 	$('#availableCount').text(availableJobs.length);
 	$('#selectedCount').text(selectedJobs.length);
@@ -518,17 +652,20 @@ function updateCounts() {
 
 function updatePriceSummary() {
     const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+    
+    const headerDiscount = parseFloat($('#HeaderDiscountPrice').text()) || 0;
+    const totalAvailableJobprice = totalAvailablePrice - headerDiscount;
 	const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
-	const difference = totalAvailablePrice - orderValue;
+	const difference = totalAvailableJobprice - orderValue;
 
-	$('#totalJobsPrice').text(`${totalAvailablePrice.toFixed(2)}`);
-    $('#totalJobsPriceHidden').val(totalAvailablePrice.toFixed(2));
+    $('#subTotal').text(`${totalAvailablePrice.toFixed(2)}`);
+	$('#totalJobsPrice').text(`${totalAvailableJobprice.toFixed(2)}`);
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
 
 	const $differenceElement = $('#priceDifference');
 	const $statusElement = $('#priceStatus');
 
-	if (difference == 0 && totalAvailablePrice > 0 && orderValue > 0) {
+	if (difference == 0 && totalAvailableJobprice > 0 && orderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success');
 		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
 		// $('#confirmBtn').prop('disabled', false);
@@ -560,7 +697,8 @@ function confirmOrder() {
                 tempAvailableJobs: tempAvailableJobs,
                 tempSelectedJobs: tempSelectedJobs,
                 jobCardId: $('#job_card_number').val(),
-                confirmedOrderValue: $('#confirmedOrderValue').val()
+                confirmedOrderValue: $('#confirmedOrderValue').val(),
+                headerDiscount: $('#HeaderDiscountPrice').text()
             },
             url: '<?php echo base_url() ?>SalesOrder/SalesOrderInsertUpdate',
             success: function(result) {
@@ -603,8 +741,24 @@ function approveConfirm() {
                 if (result.status == true) {
                     success_toastify(result.message);
                     setTimeout(function() {
-                        if (result.invoice_id) {
-                            window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.invoice_id;
+                        if (result.data) {
+                            $("#approveInvoiceModal").modal("show");
+
+                            if(result.data.invoice_id){
+                                $('#btnGoInvoice').removeClass('d-none');
+                                $("#btnGoInvoice").off("click").on("click", function() {
+                                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data.invoice_id;
+                                 });
+                            }else{
+                                $('#printReceipt').removeClass('d-none');
+                                $("#printReceipt").off("click").on("click", function() {
+                                    exportPaymentReceiptV2(result.data.exclude_invoice_id);
+                                });
+                            }
+                           
+                            $("#btnNewSalesOrder").off("click").on("click", function() {
+                                window.location.href = '<?= base_url('SalesOrder/salesOrderDetailIndex') ?>';
+                            });
                         } else {
                             window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
                         }
@@ -617,6 +771,12 @@ function approveConfirm() {
     }
 }
 
+function exportPaymentReceiptV2(invoice_id) {
+    const type = "full";
+    const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptV2PDF";
+    const url = `${baseUrl}?receipt_id=${encodeURIComponent(invoice_id)}&type=${encodeURIComponent(type)}`;
+    window.open(url, '_blank');
+}
 
 renderTables();
 updatePriceSummary();

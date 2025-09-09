@@ -106,6 +106,7 @@ $config['api_endpoints'] = [
     'get_payment_allocation_details_v1' => '/v1/get_payment_allocation_details',
     'confirm_payment_v1' => '/v1/confirm_payment',
     'get_Receipt_pdf_v1' => '/v1/get_Receipt_pdf',
+    'get_Receipt_v2_pdf_v1' => '/v1/get_Receipt_v2_pdf',
     'delete_payment_v1' => '/v1/delete_payment',
     'cancel_payment_v1' => '/v1/cancel_payment',
 

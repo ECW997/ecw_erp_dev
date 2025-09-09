@@ -56,6 +56,10 @@ class Paymentinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('GET', 'get_Receipt_pdf_v1', $form_data, $headers);
     }
+    public function getReceiptV2PdfDetails($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_Receipt_v2_pdf_v1', $form_data, $headers);
+    }
     public function cancelPayment($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'cancel_payment_v1', $form_data, $headers);
