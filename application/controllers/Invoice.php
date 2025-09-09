@@ -26,7 +26,6 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->getDirectSalesItem($this->api_token,$form_data);
 		echo json_encode($response);
 	}
-
 	public function index(){
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));

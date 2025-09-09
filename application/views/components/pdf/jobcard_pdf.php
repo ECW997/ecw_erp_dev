@@ -612,7 +612,6 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-                
                 <?php if ($categoryIndex < $totalCategories - 1): ?>
                     <div class="category-separator"></div>
                 <?php endif; ?>
@@ -620,8 +619,10 @@
                 <?php $mainJob_cnt++; ?>
             <?php endforeach; ?>
         </div>
-        
-        
+        <br>
+         <p>
+          <strong><?= $main_data['discount'] ?? 'N/A' ?> % Discount Approved By:</strong> <?= $main_data['person_name'] ?? 'N/A' ?> <br>
+ </p>
         <div class="customer-agreement-container" style="font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;">
            <h1 style="text-align:center; margin-bottom: 60px;">
         Customer Agreement for Vehicle Interior Modifications

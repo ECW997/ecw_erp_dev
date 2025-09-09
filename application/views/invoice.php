@@ -32,6 +32,45 @@ include "include/v2/topnavbar.php";
         .swal2-warning-toast .swal2-title {
             color: #f7f3f3ff !important;
         }
+
+
+
+
+        .stylish-invoice-btn {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
+            transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+        }
+
+        .stylish-invoice-btn:hover {
+            background: linear-gradient(90deg, #ffb347 0%, #ffd700 100%);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .stylish-invoice-btn .fa-arrow-left,
+        .stylish-invoice-btn .fa-file-invoice {
+            font-size: 1.1em;
+        }
+
+
+        .stylish-payment-btn {
+            background: linear-gradient(90deg, #ec5b78ff 0%, #f30a35ff 100%);
+            transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 12px rgba(236, 9, 54, 0.15);
+        }
+
+        .stylish-payment-btn:hover {
+            background: linear-gradient(90deg, #ec5b78ff 0%, #f30a35ff 100%);
+            box-shadow: 0 6px 18px rgba(245, 3, 52, 0.25);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .stylish-payment-btn .fa-arrow-right,
+        .stylish-payment-btn .fa-money-check-alt {
+            font-size: 1.1em;
+        }
         </style>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
@@ -44,21 +83,25 @@ include "include/v2/topnavbar.php";
                             <div class="col-md-8 text-md-end">
                                 <div class="d-inline-flex gap-2">
                                     <button type="button"
-                                        class="btn btn-warning rounded-2 action-btn-fixed px-3 py-2 fs-6"
-                                        style="min-width:180px; height:44px;"
+                                        class="btn btn-warning rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-invoice-btn"
+                                        style="min-width:180px; height:44px; font-weight:600; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none;"
                                         onclick="window.location.href='<?= base_url('Invoice') ?>'">
-                                        <i class="fas fa-arrow-left me-1 text-dark"></i>
-                                        <i class="fas fa-file-invoice me-1 text-dark"></i>
-                                        <span class="text-dark fw-bold">Invoice List</span>
+                                        <span class="d-flex align-items-center justify-content-center gap-2">
+                                            <i class="fas fa-arrow-left text-dark"></i>
+                                            <i class="fas fa-file-invoice text-dark"></i>
+                                            <span class="text-dark fw-bold">Invoice List</span>
+                                        </span>
                                     </button>
 
                                     <button type="button"
-                                        class="btn btn-pink rounded-2 action-btn-fixed px-3 py-2 fs-6"
+                                        class="btn rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-payment-btn"
                                         style="min-width:180px; height:44px;"
                                         onclick="window.location.href='<?= base_url('Payment/paymentDetailIndex') ?>'">
-                                        <span class="text-white fw-bold me-2">New Payment</span>
-                                        <i class="fas fa-arrow-right me-1 text-white"></i>
-                                        <i class="fas fa-money-check-alt me-1 text-white"></i>
+                                        <span class="d-flex align-items-center justify-content-center gap-2">
+                                            <span class="fw-bold text-white">New Payment</span>
+                                            <i class="fas fa-arrow-right text-white"></i>
+                                            <i class="fas fa-money-check-alt text-white"></i>
+                                        </span>
                                     </button>
                                 </div>
                             </div>

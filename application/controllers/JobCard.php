@@ -189,6 +189,16 @@ class JobCard extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function getAuthorizedPersons(){
+		$form_data = [
+			'term' => $this->input->get('term'),
+			'page' => $this->input->get('page'),
+		];
+
+		$response = $this->JobCardinfo->getAuthorizedPersons($this->api_token,$form_data);
+		echo json_encode($response);
+	}
+
     public function createJobCard() {
         $form_data = $this->input->post('data');
 
