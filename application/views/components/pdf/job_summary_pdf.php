@@ -270,7 +270,7 @@ switch ($main_data['company_branch_id']) {
                 $subCount = 1; 
                 foreach ($jobs as $joblist): 
                     $line_net_total = $is_line_discount_approved ? number_format(($joblist['total'] ?? 0) -($joblist['line_discount'] ?? 0), 2) : number_format(($joblist['total'] ?? 0), 2);
-                    $line_discount = $is_line_discount_approved ? number_format(($joblist['line_discount'] ?? 0), 2) : number_format((0), 2);
+					$line_discount = $is_line_discount_approved ? number_format($joblist['line_discount_pc'] ?? 0, 0) . '%' : number_format(0, 0) . '%';
                     ?>
                     <tr>
                         <td class="datatable_data_td" style="width:3%; text-align:left;"><?= $mainCount . '.' . $subCount ?></td>

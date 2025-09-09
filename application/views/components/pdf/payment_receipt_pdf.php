@@ -214,7 +214,7 @@ switch ($header['company_branch_id']) {
                         <td class="datatable_data_td" style="text-align:center"><?= $item['quantity'] ?></td>
                         <td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'],2) ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= number_format($item['line_discount_amount'],2) ?></td>
+                        <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
                     </tr>
                     <?php endforeach; ?>
