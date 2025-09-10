@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const discountPercentInput = document.getElementById('discount_precentage');
     const totalDiscountInput = document.getElementById('total_discount');
     const netPriceInput = document.getElementById('net_amount');
-    
+
 
     // console.log("Standard Price loaded:", discountPriceInput);
 
@@ -127,6 +127,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (discountPercent > 5) {
                 alert("Approval request needed: Discount exceeds 5%");
             }
+        } else if (discountPrice === 0 || discountPercent === 0) {
+            discountPriceInput.value = '0';
+            discountPercentInput.value = '0';
+            discount = 0;
         }
 
         const net = standardPrice - discount;
@@ -138,12 +142,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     discountPriceInput.addEventListener('input', () => {
-        discountPercentInput.value = '';
+        if (discountPriceInput.value === '0' || discountPriceInput.value === 0) {
+            discountPercentInput.value = '0';
+        } else {
+            discountPercentInput.value = '';
+        }
         updatePrices();
     });
 
     discountPercentInput.addEventListener('input', () => {
-        discountPriceInput.value = '';
+        if (discountPercentInput.value === '0' || discountPercentInput.value === 0) {
+            discountPriceInput.value = '0';
+        } else {
+            discountPriceInput.value = '';
+        }
         updatePrices();
     });
 });
