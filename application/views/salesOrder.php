@@ -208,7 +208,12 @@ include "include/v2/topnavbar.php";
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">Exclude Jobs</h5>
-                                        <span class="badge bg-success" id="selectedCount">0</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <button title="Receipt" class="btn btn-sm btn-info exclude-receipt-btn" onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
+                                            <span class="badge bg-success" id="selectedCount">0</span>
+                                        </div>
                                     </div>
                                     <div class="card-body p-0">
                                         <div class="table-container">
@@ -292,31 +297,31 @@ include "include/v2/topnavbar.php";
             </div>
 
             <div class="modal fade" id="approveInvoiceModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-                <div class="modal-content approval-modal">
-                <div class="modal-body text-center">
-                    <div class="check-icon mb-3">
-                    <i class="fas fa-check-circle"></i>
+                <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                    <div class="modal-content approval-modal">
+                    <div class="modal-body text-center">
+                        <div class="check-icon mb-3">
+                        <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h5 class="modal-title mb-2">Approval Successful</h5>
+                        <p class="text-muted mb-4">The sales order has been approved.<br>What would you like to do next?</p>
+                        <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary d-none" id="btnGoInvoice">
+                            <i class="fas fa-file-invoice me-3"></i> Go to Invoice
+                        </button>
+                        <button type="button" class="btn btn-primary d-none" id="printReceipt">
+                            <i class="fas fa-file-invoice me-3"></i> Print Receipt
+                        </button>
+                        <button type="button" class="btn btn-success" id="btnNewSalesOrder">
+                            <i class="fas fa-plus-circle me-3"></i> Create New Sales Order
+                        </button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-3"></i> Cancel
+                        </button>
+                        </div>
                     </div>
-                    <h5 class="modal-title mb-2">Approval Successful</h5>
-                    <p class="text-muted mb-4">The sales order has been approved.<br>What would you like to do next?</p>
-                    <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-primary d-none" id="btnGoInvoice">
-                        <i class="fas fa-file-invoice me-3"></i> Go to Invoice
-                    </button>
-                    <button type="button" class="btn btn-primary d-none" id="printReceipt">
-                        <i class="fas fa-file-invoice me-3"></i> Print Receipt
-                    </button>
-                    <button type="button" class="btn btn-success" id="btnNewSalesOrder">
-                        <i class="fas fa-plus-circle me-3"></i> Create New Sales Order
-                    </button>
-                    <button type="button" class="btn btn-light" data-dismiss="modal">
-                        <i class="fas fa-times me-3"></i> Cancel
-                    </button>
                     </div>
                 </div>
-                </div>
-            </div>
             </div>
 
         <?php include "include/v2/footerbar.php"; ?>
