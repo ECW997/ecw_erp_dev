@@ -222,6 +222,16 @@
         }
     });
 
+    function confirmEditCloseBtn() {
+        isEditUnsaved = false;
+        $('#editItemCloseConfirmModal').modal('hide');
+        setTimeout(() => {
+            $('#editJobItemModal').modal('hide');
+            $('.modal-backdrop').remove();
+            $('#editJobItemForm')[0].reset();
+            location.reload();
+        }, 500);
+    }
 
     window.pendingRequests = window.pendingRequests || {};
     window.lastRequestedOptionValueId = window.lastRequestedOptionValueId || null;
