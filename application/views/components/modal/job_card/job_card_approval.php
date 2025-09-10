@@ -36,7 +36,7 @@
                                     <span id="line_discount_show">
                                         Rs. <?= number_format($summary_data[0]['total_line_discount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="text" id="line_discount"
+                                    <input type="hidden" id="line_discount"
                                         value="<?= $summary_data[0]['total_line_discount'] ?? 0 ?>">
                                     <input type="hidden" id="line_discount_status"
                                         value="<?= $job_main_data[0]['line_discount_approve'] ?? 'Pending' ?>">
@@ -83,7 +83,7 @@
                                     <span id="header_discount_show">
                                         Rs. <?= number_format($job_main_data[0]['discount_amount'] ?? 0, 2) ?>
                                     </span>
-                                    <input type="text" id="header_discount"
+                                    <input type="hidden" id="header_discount"
                                         value="<?= $job_main_data[0]['discount_amount'] ?? 0 ?>">
                                     <input type="hidden" id="header_discount_status"
                                         value="<?= $job_main_data[0]['header_discount_approve'] ?? 'Pending' ?>">
