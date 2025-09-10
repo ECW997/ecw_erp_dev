@@ -324,7 +324,7 @@
         <div class="modal-content rounded-4">
             <div class="modal-header bg-primary">
                 <h5 class="modal-title text-white">Edit Job Item</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white editJobItemCloseBtn"></button>
             </div>
             <div class="modal-body">
                 <form id="editJobItemForm" class="jobcard-body">
@@ -340,9 +340,35 @@
     </div>
 </div>
 
+<div class="modal fade" id="editItemCloseConfirmModal" tabindex="-1" aria-labelledby="editItemCloseConfirmModalLabel"
+    aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-confirmation">
+            <div class="modal-header delete-header">
+                <h5 class="delete-title" id="editItemCloseConfirmModalLabel">Unsaved Changes</h5>
+                <button type="button" class="btn-close delete-btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-question-circle delete-warning-icon"></i>
+                <p class="mb-0">Are you sure you want to close this modal?<br>Any unsaved data will be lost.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary delete-btn-cancel" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary delete-btn-confirm" onclick="confirmEditCloseBtn()">
+                    <i class="fas fa-arrow-right me-2"></i>Yes, Close Without Saving
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <input type="hidden" id="recordOption" value="add">
 <input type="hidden" id="edit_line_price_category" value="0">
 <script>
+let isEditUnsaved = false;
 $(document).ready(function() {
     $('#openEditModalBtn').on('click', function() {
 

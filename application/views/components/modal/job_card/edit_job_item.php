@@ -204,6 +204,24 @@
     } else {
         var editedSubJobs = new Set();
     }
+    isEditUnsaved = false;
+
+    $(document).on('change', '#editJobItemForm input, #editJobItemForm select', function() {
+        isEditUnsaved = true;
+    });
+
+    $(document).on('click', '.editJobItemCloseBtn', function(e) {
+
+        if (isEditUnsaved) {
+            e.preventDefault();
+            $('#editItemCloseConfirmModal').modal('show');
+        } else {
+            $('#editJobItemModal').modal('hide');
+            $('#editJobItemForm')[0].reset();
+            isEditUnsaved = false;
+        }
+    });
+
 
     window.pendingRequests = window.pendingRequests || {};
     window.lastRequestedOptionValueId = window.lastRequestedOptionValueId || null;
