@@ -554,90 +554,90 @@
                         $totalJobsInCategory = count($item['details']);
                         
                         foreach ($item['details'] as $jobIndex => $joblist): ?>
-                            
-                            <div class="job-item keep-together">
-                                <table class="job-item-content">
-                                    <tr>
-                                        <td class="job-number"><?= $joblist_cnt ?></td>
-                                        <td colspan="2" class="job-description">
-                                            <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> - <?= $joblist['option_text'] ?? 'N/A' ?> - </strong>
-                                            <?= $joblist['combined_option'] ?? 'N/A' ?> <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>
-                                            
-                                            <?php if ($joblist['description'] == 'image' || $joblist['description'] == 'dot_image') : ?>
-                                                <div class="image-container">
-                                                    <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" alt="Job Reference Image" />
-                                                </div>
-                                            <?php endif; ?>
-                                            <br><br>
-                                            <?php if (empty($joblist['list_price']) || $joblist['list_price'] <= 0): ?>
-                                                <span style="background-color: black; color: white; padding: 4px 4px; border-radius: 3px;">
-                                                    (Price Not Included)
-                                                </span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="job-remarks">
-                                            <?= $joblist['remark'] ?? '' ?>
-                                        </td>
-                                        <td class="job-quantity"> <?= $joblist['qty'] ?? 0 ?></td>
-                                    </tr>
-                                </table>
-                                
-                                <div class="signature-section">
-                                    <table class="signature-table">
-                                        <tr>
-                                            <th style="width:4%;">#</th>
-                                            <th style="width:9%;">EMP CODE</th>
-                                            <th style="width:8%;">RATE</th>
-                                            <th style="width:12%;">EMPLOYEE</th>
-                                            <th style="width:11%;">E-R OFFICER</th>
-                                            <th style="width:11%;">PROD. SUPERVISOR</th>
-                                            <th style="width:11%;">QUALITY SUPERVISOR</th>
-                                            <th style="width:11%;">UPDATED HR</th>
-                                            <th style="width:11%;">CHECKED HR</th>
-                                            <th style="width:12%;">CHECKED ACC</th>
-                                        </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div style="border-bottom: 1px dashed #000;margin_bottom:4px"></div>
-                            <?php $joblist_cnt++; ?>
-                        <?php endforeach; ?>
+
+                    <div class="job-item keep-together">
+                        <table class="job-item-content">
+                            <tr>
+                                <td class="job-number"><?= $joblist_cnt ?></td>
+                                <td colspan="2" class="job-description">
+                                    <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> -
+                                        <?= $joblist['option_text'] ?? 'N/A' ?> - </strong>
+                                    <?= $joblist['combined_option'] ?? 'N/A' ?>
+                                    <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>
+
+                                    <?php if ($joblist['description'] == 'image' || $joblist['description'] == 'dot_image') : ?>
+                                    <div class="image-container">
+                                        <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>"
+                                            alt="Job Reference Image" />
+                                    </div>
+                                    <?php endif; ?>
+                                    <br><br>
+                                    <?php if (empty($joblist['list_price']) || $joblist['list_price'] <= 0): ?>
+                                    <span
+                                        style="background-color: black; color: white; padding: 4px 4px; border-radius: 3px;">
+                                        (Price Not Included)
+                                    </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="job-remarks">
+                                    <?= $joblist['remark'] ?? '' ?>
+                                </td>
+                                <td class="job-quantity"> <?= $joblist['qty'] ?? 0 ?></td>
+                            </tr>
+                        </table>
+
+                        <div class="signature-section">
+                            <table class="signature-table">
+                                <tr>
+                                    <th style="width:4%;">#</th>
+                                    <th style="width:9%;">EMP CODE</th>
+                                    <th style="width:8%;">RATE</th>
+                                    <th style="width:12%;">EMPLOYEE</th>
+                                    <th style="width:11%;">E-R OFFICER</th>
+                                    <th style="width:11%;">PROD. SUPERVISOR</th>
+                                    <th style="width:11%;">QUALITY SUPERVISOR</th>
+                                    <th style="width:11%;">UPDATED HR</th>
+                                    <th style="width:11%;">CHECKED HR</th>
+                                    <th style="width:12%;">CHECKED ACC</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     <div style="border-bottom: 1px dashed #000;margin_bottom:4px"></div>
                     <?php $joblist_cnt++; ?>
@@ -778,7 +778,7 @@
             <p>Please retain this document for your records</p>
         </div>
     </div>
-    
+
 </body>
 
 </html>
