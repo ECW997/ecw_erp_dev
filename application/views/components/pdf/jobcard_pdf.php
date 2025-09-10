@@ -546,9 +546,15 @@
                                                     <img src="<?= htmlspecialchars($joblist['child_value_name'] ?? '') ?>" alt="Job Reference Image" />
                                                 </div>
                                             <?php endif; ?>
+                                            <br><br>
+                                            <?php if (empty($joblist['list_price']) || $joblist['list_price'] <= 0): ?>
+                                                <span style="background-color: black; color: white; padding: 4px 4px; border-radius: 3px;">
+                                                    (Price Not Included)
+                                                </span>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="job-remarks">
-                                            <?= $joblist['remark'] ?? '' ?><?= (!empty($joblist['list_price']) && $joblist['list_price'] > 0) ? '' : ' (Price Not Included)' ?>
+                                            <?= $joblist['remark'] ?? '' ?>
                                         </td>
                                         <td class="job-quantity"> <?= $joblist['qty'] ?? 0 ?></td>
                                     </tr>
