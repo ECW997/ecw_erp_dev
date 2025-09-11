@@ -33,9 +33,6 @@ include "include/v2/topnavbar.php";
             color: #f7f3f3ff !important;
         }
 
-
-
-
         .stylish-invoice-btn {
             background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
             transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
@@ -82,6 +79,16 @@ include "include/v2/topnavbar.php";
                             </div>
                             <div class="col-md-8 text-md-end">
                                 <div class="d-inline-flex gap-2">
+                                    <button type="button"
+                                        class="btn rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-payment-btn"
+                                        style="min-width:180px; height:44px;"
+                                        onclick="window.location.href='<?= base_url('JobCard') ?>'">
+                                        <span class="d-flex align-items-center justify-content-center gap-2">
+                                            <i class="fas fa-file-invoice text-white"></i>
+                                            <i class="fas fa-arrow-left text-white"></i>
+                                            <span class="fw-bold text-white">Job Card List</span>
+                                        </span>
+                                    </button>
                                     <button type="button"
                                         class="btn btn-warning rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-invoice-btn"
                                         style="min-width:180px; height:44px; font-weight:600; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none;"

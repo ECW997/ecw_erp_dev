@@ -90,6 +90,42 @@ include "include/v2/topnavbar.php";
     100% { transform: scale(1); opacity: 1; }
 }
 
+.stylish-invoice-btn {
+            background: linear-gradient(90deg, #ffd700 0%, #ffb347 100%);
+            transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+        }
+
+        .stylish-invoice-btn:hover {
+            background: linear-gradient(90deg, #ffb347 0%, #ffd700 100%);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .stylish-invoice-btn .fa-arrow-left,
+        .stylish-invoice-btn .fa-file-invoice {
+            font-size: 1.1em;
+        }
+
+
+        .stylish-payment-btn {
+            background: linear-gradient(90deg, #ec5b78ff 0%, #f30a35ff 100%);
+            transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 12px rgba(236, 9, 54, 0.15);
+        }
+
+        .stylish-payment-btn:hover {
+            background: linear-gradient(90deg, #ec5b78ff 0%, #f30a35ff 100%);
+            box-shadow: 0 6px 18px rgba(245, 3, 52, 0.25);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .stylish-payment-btn .fa-arrow-right,
+        .stylish-payment-btn .fa-money-check-alt {
+            font-size: 1.1em;
+        }
+
 
 /* .control-panel {
 	background-color: #fff;
@@ -118,13 +154,39 @@ include "include/v2/topnavbar.php";
                                 <h1 class="page-header-title">Sales Order</h1>
                             </div>
                             <div class="col-md-8 text-md-end">
+                                <div class="d-inline-flex gap-2">
+                                    <button type="button"
+                                        class="btn rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-payment-btn"
+                                        style="min-width:180px; height:44px;"
+                                        onclick="window.location.href='<?= base_url('JobCard') ?>'">
+                                        <span class="d-flex align-items-center justify-content-center gap-2">
+                                            <i class="fas fa-file-invoice text-white"></i>
+                                            <i class="fas fa-arrow-left text-white"></i>
+                                            <span class="fw-bold text-white">Job Card List</span>
+                                        </span>
+                                    </button>
+                                    <button type="button"
+                                        class="btn btn-warning rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-invoice-btn"
+                                        style="min-width:180px; height:44px; font-weight:600; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: none;"
+                                        onclick="window.location.href='<?= base_url('SalesOrder') ?>'">
+                                        <span class="d-flex align-items-center justify-content-center gap-2">
+                                            <i class="fas fa-arrow-left text-dark"></i>
+                                            <i class="fas fa-money-check-alt text-dark"></i>
+                                            <span class="text-dark fw-bold">Sales Order List</span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <!-- <div class="col-md-8 text-md-end">
                                 <button type="button" class="btn btn-warning rounded-2 action-btn px-3 py-2 fs-6"
                                     onclick="window.location.href='<?= base_url('SalesOrder') ?>'">
                                     <i class="fas fa-arrow-left me-1 text-dark"></i>
                                     <i class="fas fa-file-invoice me-1 text-dark"></i>
                                     <span class="text-dark fw-bold">Sales Order List</span>
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
