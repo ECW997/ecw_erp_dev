@@ -189,6 +189,18 @@ else if($functionmenu=='SalesOrder' || $functionmenu == 'SalesOrder/salesOrderDe
     $cancelcheck=checkprivilege($menuprivilegearray, 18, 9);
 }
 
+else if($functionmenu=='AssignEmployeeToJob'){
+    $addcheck=checkprivilege($menuprivilegearray, 19, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 19, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 19, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 19, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 19, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 19, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 19, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 19, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 19, 9);
+}
+
 
 function checkprivilege($arraymenu, $menuID, $type){
     foreach($arraymenu as $array){
@@ -313,6 +325,17 @@ function checkprivilege($arraymenu, $menuID, $type){
                         colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
                     </lord-icon>
                 </div>Job Card
+            </a>
+            <?php }?>
+
+            <?php if(menucheck($menuprivilegearray, 19)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'AssignEmployeeToJob'; ?>">
+                <div class="nav-link-icon">
+                    <!-- <i class="fas fa-id-card-alt"></i> -->
+                    <lord-icon src="https://cdn.lordicon.com/tbabdzcy.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>Assign Employee To Job
             </a>
             <?php }?>
 
