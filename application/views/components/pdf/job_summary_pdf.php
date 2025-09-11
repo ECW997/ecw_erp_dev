@@ -286,7 +286,7 @@ switch ($main_data['company_branch_id']) {
                             <?= $line_net_total == 0 ? '' : $line_discount ?>
                         </td>
                         <td class="datatable_data_td" style="width:15%; text-align:right;">
-                            <?= $line_net_total == 0 ? '' : $line_net_total ?>
+                            <?= $line_net_total == 0 ? '' : ($category == 'Exchange' ? "(-$line_net_total)" : $line_net_total) ?>
                         </td>
                     </tr>
                     <?php

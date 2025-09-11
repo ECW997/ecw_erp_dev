@@ -79,17 +79,29 @@
                 <table class="w-100">
                     <?php 
                     $net_total=0;
+                    $deduct_total=0;
                     if($summary_data){
                     foreach ($summary_data as $summlist): 
                         $header_approved_check = $is_header_discount_approved ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
                         $line_approved_check = $is_line_discount_approved ? '<span style="font-size:smaller;color: blue;"></span>' : '<span style="font-size:smaller;color: red;"><i class="fas fa-circle fa-sm"></i></span>';
-                        foreach ($summlist['summary_list'] as $list): ?>
+                        foreach ($summlist['summary_list'] as $list): 
+                        if ($list['job_sub_category_text'] == 'Exchange') {
+                            $deduct_total += $list['sub_total'];
+                        }else{
+                            $net_total += $list['sub_total'];
+                        }
+                        ?>
                     <tr>
                         <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?>
                         </td>
                         <td class="text-right"><?= number_format($list['sub_total'], 2); ?></td>
                     </tr>
                     <?php endforeach; ?>
+                    <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000;">
+                        <td class="text-left fw-bold" style="padding-top: 1px;">Jobs Total Price </td>
+                        <td class="text-right fw-bold" style="padding-top: 1px;">
+                        <?= number_format($net_total - $deduct_total, 2) ?></td>
+                    </tr>
                     <tr>
                         <td class="text-left" style="padding-top: 20px;">Line Discount <?= $line_approved_check ?></td>
                         <td class="text-right" style="padding-top: 20px;">

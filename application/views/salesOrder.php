@@ -139,7 +139,7 @@ include "include/v2/topnavbar.php";
                                 <?php else: ?>
                                     <button type="button"
                                         class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
-                                        onclick="approveConfirm();">
+                                        onclick="approveConfirm();" id="approve-btn">
                                         <i class="fas fa-check me-1"></i> Approve
                                     </button>
                                 <?php endif; ?>
@@ -633,6 +633,8 @@ function moveAllToSelected() {
         $('#excludeJobsTable tbody tr').addClass('table-success').delay(500).queue(function () {
             $(this).removeClass('table-success').dequeue();
         });
+
+        $('#confirmedOrderValue').val('0');
     }
 }
 
@@ -735,6 +737,8 @@ function confirmOrder() {
 function approveConfirm() {
     var recordID = "<?= $relationDetails ? $relationDetails['id'] : 0; ?>";
     if (confirm("Are you sure you want to approve this?")) {
+        $('#approve-btn').prop('disabled', true);
+        $('#confirmBtn').prop('disabled', true);
         $.ajax({
             type: "POST",
             dataType: 'json',
@@ -762,13 +766,16 @@ function approveConfirm() {
                             }
                            
                             $("#btnNewSalesOrder").off("click").on("click", function() {
+                                $('#approve-btn').prop('disabled', false);
                                 window.location.href = '<?= base_url('SalesOrder/salesOrderDetailIndex') ?>';
                             });
                         } else {
+                            $('#approve-btn').prop('disabled', false);
                             window.location.href = '<?= base_url("SalesOrder/salesOrderDetailIndex/") ?>' + recordID;
                         }
                     }, 500)
                 } else {
+                    $('#approve-btn').prop('disabled', false);
                     falseResponse(result);
                 }
             }

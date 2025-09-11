@@ -148,6 +148,7 @@ include "include/topnavbar.php";
                                             <tr>
                                                 <th>#</th>
                                                 <th>Invoice No</th>
+                                                <th>JobCard No</th>
                                                 <th>Customer Name</th>
                                                 <th>Invoice Date</th>
                                                 <th>Invoice Type</th>
@@ -199,7 +200,7 @@ include "include/topnavbar.php";
                                     </div>
                                 </div>
                             </button>
-                            <button type="button" class="btn btn-option btn-light p-3 rounded text-left border"
+                            <button type="button" class="btn btn-option btn-light p-3 rounded text-left border d-none"
                                 id="indirect" onclick="selectInvoiceType('indirect')">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-light-orange p-2 mr-3">
@@ -360,6 +361,9 @@ function loadPaymentListTable(){
                         return '<span class="text-danger">N/A</span>';
                     }
                 }
+            },
+            {
+                "data": "jobcard_no"
             },
             {
                 "data": "customer_name"
