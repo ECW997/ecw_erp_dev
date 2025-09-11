@@ -3,13 +3,35 @@
         <form id="createorderform" autocomplete="off">
             <!-- Header Section -->
             <div class="row invoice-header mb-4">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label class="form-label small fw-bold text-dark">Date <span
                                 class="text-danger">*</span></label>
                         <input type="date" class="form-control form-control-sm input-highlight" name="date" id="date"
                             value="<?= isset($invoice_main_data[0]['invoice_date']) ? $invoice_main_data[0]['invoice_date'] : date('Y-m-d') ?>"
                             required readonly>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label small fw-bold text-dark">Sales Person <span
+                        		class="text-danger">*</span></label>
+                        <select id="sales_person_id" class="custom-select custom-select-sm" style="min-width: 130px;">
+                        	<option value="">All</option>
+                        	<?php if (!empty($sales_agents)) : ?>
+                                  <?php 
+                                    $selectedSalesman = isset($invoice_main_data[0]['salesman_id']) 
+                                        ? $invoice_main_data[0]['salesman_id'] 
+                                        : 0; 
+                                    ?>
+                        	<?php foreach ($sales_agents as $agent) : ?>
+                        	<option value="<?= $agent['idtbl_sales_person']; ?>"
+                                <?= $selectedSalesman == $agent['idtbl_sales_person'] ? 'selected' : ''; ?>>
+                        		<?= htmlspecialchars($agent['sales_person_name']); ?>
+                        	</option>
+                        	<?php endforeach; ?>
+                        	<?php endif; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="col-md-6 text-md-end">
@@ -260,6 +282,8 @@ $(document).ready(function() {
             });
         }
     });
+
+    $('#series_type').val('1').trigger('change');
 });
 
 function getDirectSalesItemDetails(item_id) {

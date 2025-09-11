@@ -197,7 +197,7 @@ include "include/v2/topnavbar.php";
                                     </div>
                                 </div>
                             </button>
-                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start" id="indirect"
+                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start d-none" id="indirect"
                                 onclick="selectInvoiceType('indirect')">
                                 <div class="d-flex align-items-center">
                                     <div class="icon-circle bg-orange-soft me-3">
@@ -409,9 +409,26 @@ function createInvoice() {
     let predictDays = $('#predict_days').val();
     let paymentType = $('#paymenttype').val();
 
-    console.log("Series Type: ", seriesType);
-    console.log("Predict Days: ", predictDays);
-    console.log("Payment Type: ", paymentType);
+    let sales_person_id = $('#sales_person_id').val();
+    // console.log("Series Type: ", seriesType);
+    // console.log("Predict Days: ", predictDays);
+    // console.log("Payment Type: ", paymentType);
+    if (sales_person_id.trim() == '' && <?= json_encode($invoice_type); ?> == 'direct') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Please select "Sales Person".',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-warning-toast'
+            }
+        });
+        $('#sales_person_id').focus();
+        return;
+    }
 
     if (seriesType.trim() === '' || seriesType === ' ') {
         Swal.fire({
@@ -562,6 +579,7 @@ function createInvoice() {
         total_payable_payment: parseFloat($('#modeltotalpayablepayment').val()) || 0,
         advance_total_amount: parseFloat($('#advanceamount').val()) || 0,
         remark: $('#remark').val(),
+        sales_person_id: $('#sales_person_id').val() || 0,
         company_id: "<?php echo ucfirst($_SESSION['company_id']); ?>",
         branch_id: "<?php echo ucfirst($_SESSION['branch_id']); ?>",
 
@@ -631,12 +649,14 @@ function approveInvoice() {
         return;
     }
 
+    $('#approveJobcardBtn').prop('disabled', true);
+
     const approveData = {
         id: $('#invoice_id').val(),
         series_type_id: $('#series_type_id').val()
     };
 
-    console.log("Collected Approve Data:", approveData);
+    // console.log("Collected Approve Data:", approveData);
 
     $.ajax({
         url: '<?php echo base_url() ?>Invoice/approveInvoice',

@@ -118,7 +118,7 @@ include "include/topnavbar.php";
                                             <tr>
                                                 <th>#</th>
                                                 <th>Receipt No</th>
-                                                <th>Draft Receipt No</th>
+                                                <th>JobCard No</th>
                                                 <th>Date</th>
                                                 <th>Customer Name</th>
                                                 <th>Payment Type</th>
@@ -311,10 +311,19 @@ function loadPaymentListTable(){
                 "data": "id"
             },
             {
-                "data": "receipt_number"
+                "data": null,
+                "render": function(data, type, full) {
+                    if (full.receipt_number && full.receipt_number !== "") {
+                        return full.receipt_number;
+                    } else if (full.draft_receipt_number && full.draft_receipt_number !== "") {
+                        return '<span class="text-muted">' + full.draft_receipt_number + '</span>';
+                    } else {
+                        return '<span class="text-danger">N/A</span>';
+                    }
+                }
             },
             {
-                "data": "draft_receipt_number"
+                "data": "jobcard_no"
             },
             {
                 "data": "receipt_date"

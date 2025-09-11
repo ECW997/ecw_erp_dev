@@ -31,6 +31,10 @@ class Invoiceinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'invoice_v1', $form_data, $headers);
     }
+    public function insertDirectInvoice($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'store_direct_invoice_v1', $form_data, $headers);
+    }
     public function getInvoiceById($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('GET', 'invoice_v1', $form_data, $headers);
@@ -38,6 +42,10 @@ class Invoiceinfo extends CI_Model{
     public function updateInvoice($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('PUT', 'invoice_v1', $form_data, $headers);
+    }
+    public function updateDirectInvoice($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('PUT', 'update_direct_invoice_v1', $form_data, $headers);
     }
 
     public function getInvoiceNo($api_token,$form_data) {

@@ -11,6 +11,7 @@ class Invoice extends CI_Controller {
         parent::__construct();
 		$this->load->helper('api_helper');
         $this->load->model('Invoiceinfo');
+		$this->load->model('JobCardinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -33,9 +34,10 @@ class Invoice extends CI_Controller {
 	}
 	
 	public function invoiceDetailIndex($id = null){
+		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
-
+		$result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
         if ($id !== null) {
 			
 			if($id=='direct'){
@@ -196,17 +198,27 @@ class Invoice extends CI_Controller {
 
 	public function insertORUpdateInvoice() {
 		$createOption = $this->input->post('main_insert_status');
+		$invoiceType = $this->input->post('invoiceData')['invoice_meta']['invoice_type'];
+
 		$form_data = [
             'invoiceData' => $this->input->post('invoiceData'),
 			'recordID' => $this->input->post('recordID'),
         ];
-		
-		if($createOption == 'insert'){
-			$response = $this->Invoiceinfo->insertInvoice($this->api_token,$form_data);
+
+		if($invoiceType == "direct"){
+			if($createOption == 'insert'){
+				$response = $this->Invoiceinfo->insertDirectInvoice($this->api_token,$form_data);
+			}else{
+				$response = $this->Invoiceinfo->updateDirectInvoice($this->api_token,$form_data);
+			}
 		}else{
-			$response = $this->Invoiceinfo->updateInvoice($this->api_token,$form_data);
+			if($createOption == 'insert'){
+				$response = $this->Invoiceinfo->insertInvoice($this->api_token,$form_data);
+			}else{
+				$response = $this->Invoiceinfo->updateInvoice($this->api_token,$form_data);
+			}
 		}
- 
+
 		if ($response) {
             echo json_encode($response);
 		}else{

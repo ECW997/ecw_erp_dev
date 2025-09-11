@@ -85,6 +85,8 @@ $config['api_endpoints'] = [
     'sales_order_approve_v1' => '/v1/approve_sales_order',
     
     'invoice_v1' => '/v1/invoice',
+    'store_direct_invoice_v1' => '/v1/store_direct_invoice',
+    'update_direct_invoice_v1' => '/v1/update_direct_invoice',
     'get_sel2_salesorder_number_v1' => '/v1/get_sel2_salesorder',
     'get_direct_sales_item_v1' => '/v1/get_direct_sales_item',
     'getDirectSalesItemDetails_v1' => '/v1/get_direct_sales_item_details',
