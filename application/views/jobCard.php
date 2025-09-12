@@ -97,7 +97,7 @@ $is_denied = ($status === 'Cancelled');
                                     </div>
                                     <div class="col-12 col-sm-6 col-md-2 d-grid">
                                         <button type="button"
-                                            class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal" <?= $is_any_confirmation ? 'disabled' : '' ?>
+                                            class="btn btn-primary btn-sm rounded-2 w-100 openJobCardDiscountModal" <?= $is_any_confirmation ? '' : '' ?>
                                             data-bs-toggle="modal" data-bs-target="#jobcarddiscountModel">
                                             <i class="fa fa-percent me-2"></i> Discounts
                                         </button>

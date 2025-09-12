@@ -562,7 +562,12 @@ function loadJobCard() {
                  $('#totalJobsPriceHidden').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
                  $('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
                  $('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
-                 $('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
+                 if(res.data.header_discount_status == 'Approved'){
+                    $('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
+                 } else {
+                    $('#HeaderDiscountPrice').text('0.00');
+                 }
+
                  $('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
                  updatePriceSummary();
 				} else {

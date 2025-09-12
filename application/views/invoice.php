@@ -416,11 +416,9 @@ function createInvoice() {
     let predictDays = $('#predict_days').val();
     let paymentType = $('#paymenttype').val();
 
-    let sales_person_id = $('#sales_person_id').val();
-    // console.log("Series Type: ", seriesType);
-    // console.log("Predict Days: ", predictDays);
-    // console.log("Payment Type: ", paymentType);
-    if (sales_person_id.trim() == '' && <?= json_encode($invoice_type); ?> == 'direct') {
+    let salesPersonElem = $('#sales_person_id');
+
+    if (salesPersonElem.length && salesPersonElem.val().trim() === '' && <?= json_encode($invoice_type); ?> === 'direct') {
         Swal.fire({
             toast: true,
             position: 'top-end',
@@ -433,7 +431,7 @@ function createInvoice() {
                 popup: 'swal2-warning-toast'
             }
         });
-        $('#sales_person_id').focus();
+        salesPersonElem.focus();
         return;
     }
 
