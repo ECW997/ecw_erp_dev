@@ -113,5 +113,7 @@ $config['api_endpoints'] = [
     'delete_payment_v1' => '/v1/delete_payment',
     'cancel_payment_v1' => '/v1/cancel_payment',
 
+    'getJobList_v1' => '/v1/getJobList',
+
     'item_v1' => '/v1/item',
 ];
