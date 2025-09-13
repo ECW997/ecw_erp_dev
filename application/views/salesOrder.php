@@ -306,24 +306,29 @@ include "include/v2/topnavbar.php";
                         			<div class="row text-center">
                                         <div class="col-md-2">
                         					<h6 class="text-gray-800">Sub Total</h6>
-                        					<h4 class="text-primary" id="subTotal">0.00</h4>
+                        					<h4 class="text-primary d-none" id="subTotal">0.00</h4>
+                                            <h4 class="text-primary" id="subTotalText">0.00</h4>
                         				</div>
                                         <div class="col-md-2">
                         					<h6 class="text-gray-800">Header Discount</h6>
-                        					<h4 class="text-warning" id="HeaderDiscountPrice"><?= isset($relationDetails['header_discount']) ? $relationDetails['header_discount'] : '0.00' ?></h4>
+                        					<h4 class="text-warning d-none" id="HeaderDiscountPrice"><?= isset($relationDetails['header_discount']) ? $relationDetails['header_discount'] : '0.00' ?></h4>
+                                            <h4 class="text-warning" id="HeaderDiscountPriceText"><?= isset($relationDetails['header_discount']) ? number_format($relationDetails['header_discount'], 2) : '0.00' ?></h4>
                         				</div>
                         				<div class="col-md-2">
                         					<h6 class="text-gray-800">Total Payble Jobs Price</h6>
-                        					<h4 class="text-primary" id="totalJobsPrice">0.00</h4>
+                        					<h4 class="text-primary d-none" id="totalJobsPrice">0.00</h4>
+                                            <h4 class="text-primary" id="totalJobsPriceText">0.00</h4>
                                             <input type="hidden" id="totalJobsPriceHidden">
                         				</div>
                         				<div class="col-md-2">
                         					<h6 class="text-gray-800">Confirmed Order Value</h6>
-                        					<h4 class="text-info" id="displayOrderValue">0.00</h4>
+                        					<h4 class="text-info d-none" id="displayOrderValue">0.00</h4>
+                                            <h4 class="text-info" id="displayOrderValueText">0.00</h4>
                         				</div>
                         				<div class="col-md-2">
                         					<h6 class="text-gray-800">Cash</h6>
-                        					<h4 id="priceDifference">0.00</h4>
+                        					<h4 class="d-none" id="priceDifference">0.00</h4>
+                                            <h4 id="priceDifferenceText">0.00</h4>
                         				</div>
                         				<!-- <div class="col-md-3">
                         					<h6 class="text-gray-800">Status</h6>
@@ -562,13 +567,17 @@ function loadJobCard() {
                  $('#totalJobsPriceHidden').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
                  $('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
                  $('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
+                 $('#subTotalText').text(formatCurrency(totalFullJobPrice));
                  if(res.data.header_discount_status == 'Approved'){
                     $('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
+                    $('#HeaderDiscountPriceText').text(formatCurrency(res.data.main_data[0].discount_amount));
                  } else {
                     $('#HeaderDiscountPrice').text('0.00');
+                    $('#HeaderDiscountPriceText').text('0.00');
                  }
 
-                 $('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+                $('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+                $('#totalJobsPriceText').text(formatCurrency(res.data.main_data[0].net_total));
                  updatePriceSummary();
 				} else {
 					alert("Job card details not found.");
@@ -733,26 +742,34 @@ function updatePriceSummary() {
 	const difference = totalAvailableJobprice - orderValue;
 
     $('#subTotal').text(`${totalAvailablePrice.toFixed(2)}`);
+    $('#subTotalText').text(formatCurrency(totalAvailablePrice));
 	$('#totalJobsPrice').text(`${totalAvailableJobprice.toFixed(2)}`);
+    $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
+    $('#displayOrderValueText').text(formatCurrency(orderValue));
 
 	const $differenceElement = $('#priceDifference');
+    const $differenceElementText = $('#priceDifferenceText');
 	const $statusElement = $('#priceStatus');
 
 	if (difference == 0 && totalAvailableJobprice > 0 && orderValue > 0) {
-		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success');
+		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success d-none');
+        $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-success');
 		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
 		// $('#confirmBtn').prop('disabled', false);
 	} else if (difference > 0) {
-		$differenceElement.text(`+${difference.toFixed(2)}`).removeClass().addClass('text-warning');
+		$differenceElement.text(`+${difference.toFixed(2)}`).removeClass().addClass('text-warning d-none');
+        $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-warning');
 		$statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
 		// $('#confirmBtn').prop('disabled', true);
 	} else if (difference < 0 && orderValue > 0) {
-		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger');
+		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger d-none');
+        $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-danger');
 		$statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');
 		// $('#confirmBtn').prop('disabled', false);
 	} else {
-		$differenceElement.text('0.00').removeClass().addClass('text-muted');
+		$differenceElement.text('0.00').removeClass().addClass('text-muted d-none');
+        $differenceElementText.text('0.00').removeClass().addClass('text-muted');
 		$statusElement.text('Pending').removeClass().addClass('badge status-badge bg-secondary');
 		// $('#confirmBtn').prop('disabled', true);
 	}
@@ -859,6 +876,14 @@ function exportPaymentReceiptV2(invoice_id) {
 
 renderTables();
 updatePriceSummary();
+
+function formatCurrency(value) {
+    if (!value || isNaN(value)) return "0.00";
+    return parseFloat(value).toLocaleString(undefined, { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
+}
 
 function deactive_confirm() {
     return confirm("Are you sure you want to deactive this?");
