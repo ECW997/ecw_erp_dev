@@ -369,19 +369,25 @@
                                                 Charges</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="number" step="any" id="total_sub_amount"
-                                                    name="total_sub_amount" class="form-control text-end bg-light"
+                                                <input type="text" id="total_sub_amount_text"
+                                                    name="total_sub_amount_text" class="form-control text-end bg-light"
                                                     readonly>
                                             </div>
+                                                <input type="number" step="any" id="total_sub_amount"
+                                                    name="total_sub_amount" class="form-control text-end bg-light d-none"
+                                                    readonly>
                                         </div>
                                         <div class="col">
                                             <label class="small form-label text-dark mb-1">Total Discount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="number" step="any" id="total_discount"
-                                                    name="total_discount" class="form-control text-end bg-light"
+                                                <input type="text" id="total_discount_text"
+                                                    name="total_discount_text" class="form-control text-end bg-light"
                                                     readonly>
                                             </div>
+                                                <input type="number" step="any" id="total_discount"
+                                                    name="total_discount" class="form-control text-end bg-light d-none"
+                                                    readonly>
                                         </div>
                                         <div class="col d-none">
                                             <label class="small form-label text-dark mb-1">Grand Total</label>
@@ -406,38 +412,50 @@
                                             <label class="small form-label text-dark mb-1">VAT Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="number" id="vatamount" name="vatamount"
+                                                <input type="text" id="vatamount_text" name="vatamount_text"
                                                     class="form-control text-end bg-light" value="0" readonly>
                                             </div>
+                                                <input type="number" id="vatamount" name="vatamount"
+                                                    class="form-control text-end bg-light d-none" value="0" readonly>
                                         </div>
                                         <div class="col">
                                             <label class="small form-label text-dark mb-1">Total Advance Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="number" id="advanceamount" name="advanceamount"
+                                                <input type="text" id="advanceamount_text" name="advanceamount_text"
                                                     class="form-control text-end bg-light" value="0" readonly>
                                             </div>
+                                                <input type="number" id="advanceamount" name="advanceamount"
+                                                    class="form-control text-end bg-light d-none" value="0" readonly>
                                         </div>
                                         <div class="col">
                                             <label class="small form-label text-dark mb-1">Total invoice Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-warning text-white fw-bold">Rs.</span>
-                                                <input type="number" step="any" id="modeltotalpayment"
-                                                    name="modeltotalpayment"
+                                                <input type="text" id="modeltotalpayment_text"
+                                                    name="modeltotalpayment_text"
                                                     class="form-control text-end bg-warning text-white fw-bold"
                                                     readonly>
                                             </div>
+                                                <input type="number" step="any" id="modeltotalpayment"
+                                                    name="modeltotalpayment"
+                                                    class="form-control text-end bg-warning text-white fw-bold d-none"
+                                                    readonly>
                                         </div>
 
                                         <div class="col">
                                             <label class="small form-label text-dark mb-1">Total Payable Amount</label>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text bg-success text-white fw-bold">Rs.</span>
-                                                <input type="number" step="any" id="modeltotalpayablepayment"
-                                                    name="modeltotalpayablepayment"
+                                                <input type="text" id="modeltotalpayablepayment_text"
+                                                    name="modeltotalpayablepayment_text"
                                                     class="form-control text-end bg-success text-white fw-bold"
                                                     readonly>
                                             </div>
+                                                <input type="number" step="any" id="modeltotalpayablepayment"
+                                                    name="modeltotalpayablepayment"
+                                                    class="form-control text-end bg-success text-white fw-bold d-none"
+                                                    readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -1016,6 +1034,7 @@ function alladvancepaymentCalculation() {
 
     $('#hideadvancetotal').val(sum);
     $('#advanceamount').val(sum.toFixed(2));
+    $('#advanceamount_text').val(formatCurrency(showsum));
     finaltotalcalculate();
 }
 
@@ -1255,6 +1274,7 @@ function finaltotalcalculate() {
 
     let subTotal = parseFloat($('#hidetotalorder').val()) + extrachargeTotal;
     $('#total_sub_amount').val(subTotal.toFixed(2));
+    $('#total_sub_amount_text').val(formatCurrency(subTotal));
 
     let totalDiscount = parseFloat($('#total_discount').val()) || 0;
 
@@ -1266,6 +1286,7 @@ function finaltotalcalculate() {
     let vatPercent = parseFloat($('#vat').val()) || 0;
     let vatamount = (lastTotal * vatPercent) / 100;
     $('#vatamount').val(vatamount.toFixed(2));
+    $('#vatamount_text').val(formatCurrency(vatamount));
 
     let totalPayment = lastTotal + vatamount;
     let totalpayblePayment = (lastTotal + vatamount) - totalAdvance;
@@ -1273,7 +1294,9 @@ function finaltotalcalculate() {
     $('#grand-total-amount').text('Rs. ' + showsum);
     $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
     $('#modeltotalpayment').val(totalPayment.toFixed(2));
+    $('#modeltotalpayment_text').val(formatCurrency(totalPayment));
     $('#modeltotalpayablepayment').val(totalpayblePayment.toFixed(2));
+    $('#modeltotalpayablepayment_text').val(formatCurrency(totalpayblePayment));
 
     let advancePayment = parseFloat($('#payment_total_advance_amount').val()) || 0;
 
@@ -1346,6 +1369,14 @@ function highlightEditedRow($row) {
     setTimeout(() => {
         $row.removeClass('highlight-active');
     }, 1500);
+}
+
+function formatCurrency(value) {
+    if (!value || isNaN(value)) return "0.00";
+    return parseFloat(value).toLocaleString(undefined, { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
 }
 
 function addCommas(nStr) {

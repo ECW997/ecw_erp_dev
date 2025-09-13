@@ -56,9 +56,20 @@
         page-break-after: avoid;
     }
 
-    .section-header {
+    .section-header1 {
         background-color: #333;
         color: white;
+        text-align: center;
+        padding: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0;
+        page-break-after: avoid;
+    }
+
+    .section-header2 {
         text-align: center;
         padding: 4px;
         font-size: 11px;
@@ -78,7 +89,7 @@
     }
 
     .main-info-table th {
-        background-color: #f0f0f0;
+        /* background-color: #f0f0f0; */
         font-weight: bold;
         text-align: left;
         padding: 3px 5px;
@@ -109,8 +120,8 @@
     }
 
     .job-header-table th {
-        background-color: #444;
-        color: white;
+        /* background-color: #444; */
+        /* color: white; */
         text-align: center;
         padding: 4px 3px;
         font-size: 10px;
@@ -124,11 +135,11 @@
         margin-bottom: 10px;
         page-break-inside: avoid;
         border: 1px solid #000;
-        background-color: #fafafa;
+        /* background-color: #fafafa; */
     }
 
     .job-category-header {
-        background-color: #e0e0e0;
+        /* background-color: #e0e0e0; */
         border-bottom: 1px solid #000;
         padding: 4px 6px;
         font-weight: bold;
@@ -169,7 +180,7 @@
         width: 5%;
         text-align: center;
         font-weight: bold;
-        background-color: #f5f5f5;
+        /* background-color: #f5f5f5; */
     }
 
     .job-description {
@@ -218,7 +229,7 @@
     }
 
     .signature-table th {
-        background-color: #e8e8e8;
+        /* background-color: #e8e8e8; */
         border: 1px solid #666;
         padding: 1px;
         text-align: center;
@@ -341,7 +352,7 @@
         margin-top: 100px;
         page-break-inside: avoid;
         /*border: 3px solid #000;*/
-        background-color: #fafafa;
+        /* background-color: #fafafa; */
     }
 
     /* Print Optimizations */
@@ -429,9 +440,9 @@
                 <div class="company-info">ECW Software</div>
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
-                        <td style="font-size:18px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card
+                        <td style="font-size:20px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card
                             No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
-                        <td style="font-size:18px; font-weight:bold; text-align:right; padding:0px; width:50%;">Handover
+                        <td style="font-size:20px; font-weight:bold; text-align:right; padding:0px; width:50%;">Delivery
                             Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
                     </tr>
                 </table>
@@ -439,7 +450,7 @@
 
             <!-- Main Information Section -->
             <div class="main-info-section">
-                <div class="section-header">Customer & Job Information</div>
+                <div class="section-header1">Customer & Job Information</div>
                 <table class="main-info-table">
                     <tr>
                         <th>Customer:</th>
@@ -465,7 +476,7 @@
                         <th>Customer PO:</th>
                         <td><?= $main_data['customer_po'] ?? 'None' ?></td>
                     </tr>
-                    <tr>
+                    <tr style="font-size:13px;">
                         <th>Vehicle No:</th>
                         <td><b><?= $main_data['vehicle_number'] ?? 'N/A' ?></b></td>
                         <th>Vehicle Type:</th>
@@ -501,7 +512,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Handover Date:</th>
+                        <th>Delivery Date:</th>
                         <td><?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
                         <th>Print Date:</th>
                         <td><?= date('d/m/Y') ?></td>
@@ -511,7 +522,7 @@
         </div>
 
         <div class="job-details-section job-details-with-header">
-            <div class="section-header">Job Details & Work Instructions</div>
+            <div class="section-header2">Job Details & Work Instructions</div>
 
             <?php 
             $mainJob_cnt = 1;
@@ -574,7 +585,7 @@
                                     <br><br>
                                     <?php if (empty($joblist['list_price']) || $joblist['list_price'] <= 0): ?>
                                     <span
-                                        style="background-color: black; color: white; padding: 4px 4px; border-radius: 3px;">
+                                        style="font-weight: 900;color: black; padding: 4px 4px; border-radius: 3px;">
                                         (Price Not Included)
                                     </span>
                                     <?php endif; ?>

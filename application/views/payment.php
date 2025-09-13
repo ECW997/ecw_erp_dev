@@ -202,8 +202,7 @@ include "include/v2/topnavbar.php";
                                                             class="text-danger">*</span></label>
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text">Rs</span>
-                                                        <input type="number" step="0.01"
-                                                            class="form-control text-end input-highlight"
+                                                        <input type="text" class="form-control text-end input-highlight"
                                                             placeholder="0.00" name="paymentAmount" id="paymentAmount">
                                                     </div>
                                                 </div>
@@ -389,8 +388,7 @@ include "include/v2/topnavbar.php";
                             </div>
                             <div class="mb-3">
                                 <label for="allocateAmount" class="form-label">Enter Amount</label>
-                                <input type="number" class="form-control" id="allocateAmount" step="0.01" min="0"
-                                    required>
+                                <input type="text" class="form-control" id="allocateAmount" required>
                                 <div class="form-text text-muted" id="maxAmountInfo"></div>
                             </div>
                             <input type="hidden" id="targetRowId">
@@ -462,6 +460,25 @@ $(document).ready(function() {
                 </div>
             `);
         });
+
+   $('#paymentAmount').on('input', function () {
+        let value = $(this).val().replace(/,/g, ''); 
+        if (value && !isNaN(value)) {
+            $(this).val(
+                parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0 })
+            );
+        }
+    });
+
+    $('#allocateAmount').on('input', function () {
+        let value = $(this).val().replace(/,/g, ''); 
+        if (value && !isNaN(value)) {
+            $(this).val(
+                parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0 })
+            );
+        }
+    });
+
 });
 
 const customer = $('#customer');
@@ -535,7 +552,7 @@ function setupAllocationEditHandlers() {
 
         $('#allocatePaymentModal').modal('show');
         $('#allocatePaymentModal .modal-title').text('Edit Allocation');
-        $('#allocateAmount').val(allocatedAmount.toFixed(2));
+        $('#allocateAmount').val(formatCurrency(allocatedAmount));
         $('#maxAmountInfo').text(`Max: Rs. ${maxAmount.toFixed(2)}`);
         $('#allocateAmount').attr('max', maxAmount.toFixed(2));
 
@@ -547,7 +564,7 @@ function setupAllocationEditHandlers() {
 $('#confirmAllocateBtn').on('click', function() {
     approve_btn.disabled = true;
     const selectedIndex = $('#paymentMethodDropdown').val();
-    const allocateAmount = parseFloat($('#allocateAmount').val());
+    const allocateAmount = parseFloat($('#allocateAmount').val().replace(/,/g, '')) || 0;
     const isEditing = $('#allocatePaymentModal').data('editingRow');
 
     if (isNaN(allocateAmount) || allocateAmount <= 0) {
@@ -618,7 +635,7 @@ $('#confirmAllocateBtn').on('click', function() {
             <tr data-ref-id="${refId}">
                 <td class="ref_no">${refNo}</td>
                 <td class="">${paymentMethod}</td>
-                <td class="text-end"><input type="number" step="0.01" class="form-control text-end allocate_amount" placeholder="0.00" value="${allocateAmount.toFixed(2)}"></td>
+                <td class="text-end"><input type="text" class="form-control text-end allocate_amount" placeholder="0.00" value="${formatCurrency(allocateAmount)}"></td>
                 <td class="d-none ref_id">${refId}</td>
                 <td class="d-none payment_type">${payment_type}</td>
                 <td class="d-none payment_method_id">${method}</td>
@@ -653,7 +670,7 @@ function addPayment() {
     let PaymentSeries = $('#PaymentSeries').val();
 
     let method = $('#paymentMethod').val();
-    let amount = parseFloat($('#paymentAmount').val()) || 0;
+    let amount = parseFloat( ($('#paymentAmount').val() || '0').replace(/,/g, '') ) || 0;
     let bankName = $('input[name="bank_name"]').val() || '';
     let transactionId = $('input[name="transaction_id"]').val() || '';
     let chequeNumber = $('input[name="cheque_number"]').val() || '';
@@ -708,7 +725,7 @@ $(document).on('click', '.allocate-payment-btn', function() {
             $('#paymentMethodDropdown').append(
                 $('<option>', {
                     value: index,
-                    text: `${methodText} - Rs. ${availableAmount.toFixed(2)}`
+                    text: `${methodText} - Rs. ${formatCurrency(availableAmount)}`
                 })
                 .attr('data-row-id', rowId)
                 .attr('data-method', methodId)
@@ -723,7 +740,7 @@ $(document).on('click', '.allocate-payment-btn', function() {
 
     let refBalanceText = selectedTargetRow.find('.ref_balance').text();
     let Balance = parseFloat(refBalanceText.replace(/,/g, "")) || 0;
-    $('#allocateAmount').val(Balance);
+    $('#allocateAmount').val(formatCurrency(Balance));
     $('#maxAmountInfo').text('');
     $('#allocatePaymentModal').modal('show');
 });
@@ -809,12 +826,15 @@ function getCustomerJobOrInvoiceDetails() {
                         <tr>
                         <td class="ref_no">${ref}</td>
                         <td>${date}</td>
-                        <td class="text-end ref_total">${Number(entry.total || 0).toFixed(2)}</td>
-                        <td class="text-end ref_paid_show">${Number(entry.paid || 0).toFixed(2)}</td>
+                        <td class="text-end ref_total_text">${formatCurrency(entry.total)}</td>
+                        <td class="text-end ref_paid_show_text">${formatCurrency(entry.paid)}</td>
+                        <td class="text-end ref_total d-none">${Number(entry.total || 0).toFixed(2)}</td>
+                        <td class="text-end ref_paid_show d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_pre_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
-                        <td class="text-end ref_balance">${Number(bal || 0).toFixed(2)}</td>
+                        <td class="text-end ref_balance_text">${formatCurrency(bal)}</td>
+                        <td class="text-end ref_balance d-none">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
                         <td class="text-center d-none series_type">${series_type}</td>
@@ -856,7 +876,7 @@ function createReceipt() {
         let PaymentType = $row.find('.payment_type').text().trim() || '';
         let paymentMethod = $row.find('.payment_method_id').text().trim() || '';
         let pay_details_id = $row.find('.pay_details_id').text().trim() || '';
-        let allocateAmount = parseFloat($row.find('.allocate_amount').val()) || 0;
+        let allocateAmount = parseFloat(($row.find('.allocate_amount').val() || '0').replace(/,/g, '')) || 0;
         let row_status = $row.find('.row_status').text().trim() || 1;
 
         allocationData.push({
@@ -950,8 +970,10 @@ function loadPayDetail(header_id) {
                         $newRow.append(
                             $('<td>').text(methodText),
                             $('<td>').text('Payment Received'),
-                            $('<td class="text-end pay_amount">').text(amount.toFixed(2)),
-                            $('<td class="text-end pay_balance">').text(amount.toFixed(2)),
+                            $('<td class="text-end pay_amount_text">').text(formatCurrency(amount)),
+                            $('<td class="text-end pay_balance_text">').text(formatCurrency(amount)),
+                            $('<td class="text-end d-none pay_amount">').text(amount.toFixed(2)),
+                            $('<td class="text-end d-none pay_balance">').text(amount.toFixed(2)),
                             $('<td class="text-end d-none pay_method_id">').text(methodId),
                             $('<td class="text-end d-none pay_bank_name">').text(bankName),
                             $('<td class="text-end d-none pay_transaction_id">').text(
@@ -1034,7 +1056,7 @@ function loadPayAllocationDetail(header_id) {
                                             <td class="ref_no">${refNo}</td>
                                             <td class="">${paymentMethod}</td>
                                             <td class="text-end">
-                                                <input type="number" step="0.01" class="form-control text-end allocate_amount" placeholder="0.00" value="${allocateAmount.toFixed(2)}" ${status != 1 ? 'disabled' : ''} ${editcheck == 0 ? 'disabled' : ''}>
+                                                <input type="text" class="form-control text-end allocate_amount" placeholder="0.00" value="${formatCurrency(allocateAmount)}" ${status != 1 ? 'disabled' : ''} ${editcheck == 0 ? 'disabled' : ''}>
                                             </td>
                                             <td class="d-none ref_id">${refId}</td>
                                             <td class="d-none payment_type">${payment_type}</td>
@@ -1073,7 +1095,7 @@ function loadPayAllocationDetail(header_id) {
                         let $totalRow = $(`
                                 <tr class="fw-bold table-border-top">
                                     <td colspan="2" class="text-end">Total Paid</td>
-                                    <td class="text-end">${totalAllocated.toFixed(2)}</td>
+                                    <td class="text-end">${formatCurrency(totalAllocated)}</td>
                                 </tr>
                                 <tr class="fw-bold table-border-top">
                                     <td colspan="2" class="text-end">Balance</td>
@@ -1132,7 +1154,7 @@ function updateBalances() {
         let $row = $(this);
 
         let paymentMethod = $row.find('td').eq(1).text().trim();
-        let allocateAmountText = $row.find('.allocate_amount').val();
+        let allocateAmountText = $row.find('.allocate_amount').val().replace(/,/g, '');
         let allocateAmount = parseFloat(allocateAmountText) || 0;
         let refNo = $row.find('td').eq(0).text().trim();
         let refId = $row.find('.ref_id').text().trim();
@@ -1174,7 +1196,9 @@ function updateBalances() {
 
                 $row.find('.ref_paid').text(totalAllocated.toFixed(2));
                 $row.find('.ref_balance').text(new_balance.toFixed(2));
+                $row.find('.ref_balance_text').text(formatCurrency(new_balance));
                 $row.find('.ref_paid_show').text(totalAllocated.toFixed(2));
+                $row.find('.ref_paid_show_text').text(formatCurrency(totalAllocated));
 
             }
         });
@@ -1200,6 +1224,7 @@ function updateBalances() {
         });
 
         $row.find('.pay_balance').text(newBalance.toFixed(2));
+        $row.find('.pay_balance_text').text(formatCurrency(newBalance));
         totalPayBalance += newBalance;
     });
 
@@ -1271,6 +1296,14 @@ function exportPaymentReceiptV2(receipt_id) {
     const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&type=${encodeURIComponent(type)}`;
     window.open(url, '_blank');
 }
+
+function formatCurrency(value) {
+    if (!value || isNaN(value)) return "";
+    let parts = parseFloat(value).toFixed(2).split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
 
 function addCommas(nStr) {
     nStr += '';
