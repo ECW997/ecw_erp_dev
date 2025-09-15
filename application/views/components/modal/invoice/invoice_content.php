@@ -1034,7 +1034,7 @@ function alladvancepaymentCalculation() {
 
     $('#hideadvancetotal').val(sum);
     $('#advanceamount').val(sum.toFixed(2));
-    $('#advanceamount_text').val(formatCurrency(showsum));
+    $('#advanceamount_text').val(formatCurrency(sum));
     finaltotalcalculate();
 }
 
@@ -1247,6 +1247,7 @@ function allItemsTotalCalculation() {
     // $('#hide_grand_total').val(grandTotal.toFixed(2));
 
     $('#total_discount').val(totalDiscount.toFixed(2));
+    $('#total_discount_text').val(formatCurrency(totalDiscount));
 
     finaltotalcalculate();
 }

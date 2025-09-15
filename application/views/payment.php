@@ -833,7 +833,7 @@ function getCustomerJobOrInvoiceDetails() {
                         <td class="text-end ref_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_pre_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
-                        <td class="text-end ref_balance_text">${formatCurrency(bal)}</td>
+                        <td class="text-end ref_balance_text">${bal == 0 ? '' : formatCurrency(bal)}</td>
                         <td class="text-end ref_balance d-none">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
@@ -1196,7 +1196,7 @@ function updateBalances() {
 
                 $row.find('.ref_paid').text(totalAllocated.toFixed(2));
                 $row.find('.ref_balance').text(new_balance.toFixed(2));
-                $row.find('.ref_balance_text').text(formatCurrency(new_balance));
+                $row.find('.ref_balance_text').text(new_balance != 0 ? formatCurrency(new_balance) : '0.00');
                 $row.find('.ref_paid_show').text(totalAllocated.toFixed(2));
                 $row.find('.ref_paid_show_text').text(formatCurrency(totalAllocated));
 
@@ -1224,7 +1224,7 @@ function updateBalances() {
         });
 
         $row.find('.pay_balance').text(newBalance.toFixed(2));
-        $row.find('.pay_balance_text').text(formatCurrency(newBalance));
+        $row.find('.pay_balance_text').text(newBalance !== 0 ? formatCurrency(newBalance) : '0.00');
         totalPayBalance += newBalance;
     });
 
