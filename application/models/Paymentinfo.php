@@ -6,9 +6,15 @@ class Paymentinfo extends CI_Model{
         $this->load->helper('api_helper'); 
     }
 
-    public function getPaymentById($api_token,$id) {
+    public function getPaymentById($api_token,$id,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'payment_v1', $id, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+ 
+        return call_api('GET', 'payment_v1', $id . $queryString, $headers);
+        // return call_api('GET', 'payment_v1', $id, $headers);
     }
     public function getDraftReceiptNO($api_token,$form_data) {
         $headers = get_api_headers($api_token);

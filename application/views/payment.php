@@ -101,12 +101,14 @@ include "include/v2/topnavbar.php";
                                         </div>
 
                                         <span class="badge bg-secondary">
-                                            Receipt No:
-                                            <?= $is_edit 
-                                                ? (!empty($payment_main_data['receipt_number']) 
-                                                    ? $payment_main_data['receipt_number'] 
-                                                    : ($payment_main_data['draft_receipt_number'] ?? ''))
-                                                : strtoupper($draft_receipt_no) ?>
+                                            Receipt No: 
+                                                <span id="receiptNumber">
+                                                    <?= $is_edit 
+                                                        ? (!empty($payment_main_data['receipt_number']) 
+                                                            ? $payment_main_data['receipt_number'] 
+                                                            : ($payment_main_data['draft_receipt_number'] ?? ''))
+                                                        : strtoupper($draft_receipt_no) ?>
+                                                </span>
                                         </span>
                                     </div>
                                 </div>
@@ -162,11 +164,11 @@ include "include/v2/topnavbar.php";
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Payment Series</label>
                                                 <select class="form-select form-select-sm input-highlight"
-                                                    name="PaymentSeries" id="PaymentSeries"
+                                                    name="PaymentSeries" id="PaymentSeries" onchange="generateDraftReceiptNo(this.value);"
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Type</option>
                                                     <option value="1"
-                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '1' ? 'selected' : '' ?>>
+                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '1' ? 'selected' : 'selected' ?>>
                                                         Series 01
                                                     </option>
                                                     <option value="2"
@@ -858,8 +860,7 @@ function getCustomerJobOrInvoiceDetails() {
 
 function createReceipt() {
     approve_btn.disabled = true;
-    let draft_receipt_no =
-        "<?php echo $is_edit? $payment_main_data['draft_receipt_number'] ?? '' : strtoupper($draft_receipt_no);?>";
+    let draft_receipt_no = $('#receiptNumber').text();
     let date = $('#paymentDate').val();
     let customer_id = $('#customer').val();
     let payment_note = $('#paymentNote').val();
@@ -1304,6 +1305,20 @@ function formatCurrency(value) {
     return parts.join(".");
 }
 
+function generateDraftReceiptNo(seriesType){
+    $.ajax({
+        type: "GET",
+        dataType: 'json',
+        url: '<?php echo base_url() ?>Payment/generateDraftReceiptNo/'+seriesType,
+        success: function(result) {
+            if (result.status == true) {
+                $('#receiptNumber').text(result.data);
+            } else {
+                error_toastify(result.message);
+            }
+        }
+    });
+}
 
 function addCommas(nStr) {
     nStr += '';

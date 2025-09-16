@@ -369,6 +369,10 @@ include "include/topnavbar.php";
                                 style = 'background-color: #00ac69; color: #1F2937;'; 
                                 status = 'Payment Paid';
                                 break;
+                            case '2':
+                                style = 'background-color: #00ac69; color: #1F2937;'; 
+                                status = 'Payment Pending';
+                                break;
                             default:
                                 style = 'background-color: #4B5563; color: #FFFFFF;'; 
                                 break;

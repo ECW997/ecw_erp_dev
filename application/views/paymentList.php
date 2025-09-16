@@ -376,10 +376,10 @@ function loadPaymentListTable(){
                 "render": function(data, type, full) {
                     var button = '';
                     if(full['status'] != 'Cancelled'){
-                    button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full[
-                            'id'] +
-                        '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
-                        '<i class="fas fa-external-link-alt"></i></a>';
+                        button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full['id'] +
+                            '/' + full['series_type'] + 
+                            '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
+                            '<i class="fas fa-external-link-alt"></i></a>';
                     }
                     if (cancelcheck == 1) {
                         if(full['status'] == 'Approved'){

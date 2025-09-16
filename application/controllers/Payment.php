@@ -23,24 +23,36 @@ class Payment extends CI_Controller {
 		$this->load->view('paymentList', $result);
 	}
 	
-	public function paymentDetailIndex($id = null){
+	public function paymentDetailIndex($id = null, $series_type = null){
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$branch_id = $this->session->userdata('branch_id');
 
         if ($id !== null) {
 			$result['draft_receipt_no'] = null;
-			$result['payment_main_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['header'];
-			$result['payment_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['details'];
-			$result['payment_allocation_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['allocated_details_group'];
+			// $result['payment_main_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['header'];
+			// $result['payment_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['details'];
+			// $result['payment_allocation_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['allocated_details_group'];
 			$result['is_edit'] = true;
         }else{
-			$result['draft_receipt_no'] = $this->Paymentinfo->getDraftReceiptNO($this->api_token,$branch_id)['data'];
+			$result['draft_receipt_no'] = $this->Paymentinfo->getDraftReceiptNO($this->api_token,'1')['data'];
 			$result['payment_main_data'] = null;
             $result['payment_detail_data'] = null;
             $result['is_edit'] = false;
 		}
-		$this->load->view('payment', $result);
+echo json_encode($this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['header']);
+		// $this->load->view('payment', $result);
+	}
+
+	public function generateDraftReceiptNo($seriesType) {
+		$response = $this->Paymentinfo->getDraftReceiptNO($this->api_token,$seriesType);
+		
+		if ($response) {
+			echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+			redirect('Payment');
+		}
 	}
 
 	public function getCustomer(){
