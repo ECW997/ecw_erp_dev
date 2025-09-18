@@ -94,7 +94,7 @@ include "include/v2/topnavbar.php";
                                                 <i class="fas fa-cash-register me-1"></i> Print Receipt
                                             </button>
                                             <button type="button"
-                                                class="btn btn-info btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                                class="btn btn-info btn-sm rounded-2 action-btn d-none print_receipt_v2 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
                                                 onclick="exportPaymentReceiptV2(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
                                                 <i class="fas fa-cash-register me-1"></i> Print S2 Receipt
                                             </button>
@@ -430,6 +430,7 @@ var cancelcheck = '<?php echo $cancelcheck; ?>';
 let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
 let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
 let header_id = 0;
+let series_id = 0;
 let paymentData = [];
 
 let approve_btn = document.getElementById('confirmPaymentBtn');
@@ -439,10 +440,12 @@ $(document).ready(function() {
     let loadingPromises = [];
 
     header_id = "<?= $payment_main_data['id'] ?? 0 ?>";
-    if (header_id != 0) {
+    series_id = "<?= $payment_main_data['series_type'] ?? 0 ?>";
+    
+    if (header_id != 0 && series_id != 0) {
         loadingPromises.push(
             getCustomerJobOrInvoiceDetails().then(function() {
-                return loadPayDetail(header_id);
+                return loadPayDetail(header_id, series_id);
             })
         );
     }
@@ -479,6 +482,21 @@ $(document).ready(function() {
                 parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0 })
             );
         }
+    });
+
+    let typed = "";
+    $(document).on("keydown", function (e) {
+        typed += e.key.toLowerCase();
+
+        if (typed.includes("show")) {
+            $(".print_receipt_v2").removeClass("d-none");
+            typed = ""; 
+        }
+        if (typed.includes("hide")) {
+            $(".print_receipt_v2").addClass("d-none");
+            typed = ""; 
+        }
+        if (typed.length > 10) typed = typed.slice(-10);
     });
 
 });
@@ -760,6 +778,7 @@ $('#paymentMethodDropdown').on('change', function() {
 function getCustomerJobOrInvoiceDetails() {
     return new Promise(function(resolve, reject) {
         const paymentType = $('#PaymentType').val();
+        const PaymentSeries = $('#PaymentSeries').val();
         const customerId = $('#customer').val();
         const receipt_status = $('#status').val();
 
@@ -771,7 +790,7 @@ function getCustomerJobOrInvoiceDetails() {
         }
 
         const url = paymentType == 'JobCard' ?
-            '<?php echo base_url(); ?>Payment/getJobCardsByCustomer/' + customerId :
+            '<?php echo base_url(); ?>Payment/getJobCardsByCustomer/' + customerId + '/' + PaymentSeries :
             '<?php echo base_url(); ?>Payment/getOutstandingInvoicesByCustomer/' + customerId;
 
         $('#customerOutstandingTable tbody').html(
@@ -912,7 +931,7 @@ function createReceipt() {
             if (result.status == true) {
                 // success_toastify(result.message);
                 $('#payment_record_id').val(result.pay_header_id);
-                loadPayDetail(result.pay_header_id);
+                loadPayDetail(result.pay_header_id, payment_series);
                 // console.log(result.pay_header_id,result.message);
             } else {
                 console.log(result.message);
@@ -929,7 +948,7 @@ function createReceipt() {
         .val('');
 }
 
-function loadPayDetail(header_id) {
+function loadPayDetail(header_id,series_id) {
     if (!header_id) {
         error_toastify("No header ID provided.");
         return;
@@ -938,7 +957,7 @@ function loadPayDetail(header_id) {
     $.ajax({
         type: "GET",
         dataType: 'json',
-        url: '<?php echo base_url() ?>Payment/getPayDetails/' + header_id,
+        url: '<?php echo base_url() ?>Payment/getPayDetails/' + header_id+'/'+series_id,
         success: function(result) {
             if (result.status == true) {
                 let $tbody = $('#paymentDetailsTable tbody');
@@ -948,7 +967,7 @@ function loadPayDetail(header_id) {
                     $tbody.html(
                         '<tr><td colspan="5" class="text-center text-muted py-3">No payments added yet</td></tr>'
                     );
-                    loadPayAllocationDetail(header_id);
+                    loadPayAllocationDetail(header_id,series_id);
                 } else {
                     let animationPromises = [];
 
@@ -988,7 +1007,7 @@ function loadPayDetail(header_id) {
                             $('<td class="text-center">').append(
                                 $('<button class="btn btn-sm btn-outline-danger delete-payment ' +
                                     (isApproved ? 'd-none' : '') + '" id="' + rowId +
-                                    '" onclick="deleteRow(this,1)">')
+                                    '" onclick="deleteRow(this,1,'+series_id+')">')
                                 .html('<i class="fas fa-trash"></i>')
                             )
                         );
@@ -999,7 +1018,7 @@ function loadPayDetail(header_id) {
                         }));
                     });
                     Promise.all(animationPromises).then(() => {
-                        loadPayAllocationDetail(header_id);
+                        loadPayAllocationDetail(header_id,series_id);
                     });
                 }
             } else {
@@ -1012,7 +1031,7 @@ function loadPayDetail(header_id) {
     });
 }
 
-function loadPayAllocationDetail(header_id) {
+function loadPayAllocationDetail(header_id,series_id) {
     if (!header_id) {
         error_toastify("No header ID provided.");
         return;
@@ -1021,7 +1040,7 @@ function loadPayAllocationDetail(header_id) {
     $.ajax({
         type: "GET",
         dataType: 'json',
-        url: '<?php echo base_url() ?>Payment/getPayAllocationDetails/' + header_id,
+        url: '<?php echo base_url() ?>Payment/getPayAllocationDetails/' + header_id+'/'+series_id,
         success: function(result) {
             if (result.status == true) {
                 let $tbody = $('#allocationSummaryTable tbody');
@@ -1065,7 +1084,7 @@ function loadPayAllocationDetail(header_id) {
                                             <td class="d-none pay_details_id">${pay_details_id}</td>
                                             <td class="d-none row_id">${row_id}</td>
                                             <td class="d-none row_status">${status}</td>
-                                            <td class="text-end ${receipt_status == 'Approved' ? 'd-none' : ''}"><button type="button" class="btn btn-sm btn-outline-danger delete-allocate-payment-btn " id="${row_id}" onclick="deleteRow(this,2)">
+                                            <td class="text-end ${receipt_status == 'Approved' ? 'd-none' : ''}"><button type="button" class="btn btn-sm btn-outline-danger delete-allocate-payment-btn " id="${row_id}" onclick="deleteRow(this,2,${series_id})">
                                                 <i class="fas fa-trash"></i>
                                             </button></td>
                                         </tr>
@@ -1114,22 +1133,24 @@ function loadPayAllocationDetail(header_id) {
     });
 }
 
-function deleteRow(button, table) {
+function deleteRow(button, table, series_id) {
     const id = button.id;
+    let payment_series = $('#PaymentSeries').val();
     const header_id = $('#payment_record_id').val();
     if (confirm("Are you sure you want to delete this payment?")) {
         $.ajax({
-            url: '<?php echo base_url() ?>Payment/deletePayment/' + id + '/' + table,
+            url: '<?php echo base_url() ?>Payment/deletePayment/' + id + '/' + table + '/' + series_id,
             method: 'POST',
             dataType: 'json',
             success: function(result) {
                 if (result.status == true) {
                     success_toastify(result.message);
                     if (header_id != 0) {
-                        loadPayDetail(header_id);
+                        loadPayDetail(header_id,payment_series);
                         $('#loading-overlay').show();
                         setTimeout(function() {
-                            location.reload();
+                            window.location.href = '<?= base_url("Payment/paymentDetailIndex/") ?>' +
+                            header_id + '/' + series_id;
                         }, 200)
                     }
                 } else {
@@ -1270,7 +1291,7 @@ function confirmPayment() {
                     approve_btn.innerHTML = `<i class="fas fa-check-double me-1"></i> Approve Payment`;
                     setTimeout(function() {
                         window.location.href = '<?= base_url("Payment/paymentDetailIndex/") ?>' +
-                            pay_header_id;
+                            pay_header_id + '/' + Payment_series;
                     }, 500)
                 } else {
                     error_toastify(result.message);
@@ -1287,7 +1308,7 @@ function confirmPayment() {
 
 function exportPaymentReceipt(receipt_id) {
     const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptPDF";
-    const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}`;
+    const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }
 

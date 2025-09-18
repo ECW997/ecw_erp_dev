@@ -29,21 +29,33 @@ class Paymentinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('GET', 'get_outstanding_invoices_v1', $form_data, $headers);
     }
-    public function getJobCardsByCustomer($api_token,$form_data) {
+    public function getJobCardsByCustomer($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_jobcards_by_customer_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_jobcards_by_customer_v1', $form_data. $queryString, $headers);
     }
     public function createReceipt($api_token,$form_data) {
         $headers = get_api_headers($api_token);
         return call_api('POST', 'payment_v1', $form_data, $headers);
     }
-    public function getPayDetails($api_token,$form_data) {
+    public function getPayDetails($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_payment_details_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_payment_details_v1', $form_data. $queryString, $headers);
     }
-    public function getPayAllocationDetails($api_token,$form_data) {
+    public function getPayAllocationDetails($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_payment_allocation_details_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_payment_allocation_details_v1', $form_data. $queryString, $headers);
     }
     public function insertORUpdatePayment($api_token,$form_data) {
         $headers = get_api_headers($api_token);
@@ -58,9 +70,13 @@ class Paymentinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'delete_payment_v1', $form_data, $headers);
     }
-    public function getReceiptPdfDetails($api_token,$form_data) {
+    public function getReceiptPdfDetails($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_Receipt_pdf_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_Receipt_pdf_v1', $form_data. $queryString, $headers);
     }
     public function getReceiptV2PdfDetails($api_token,$form_data) {
         $headers = get_api_headers($api_token);

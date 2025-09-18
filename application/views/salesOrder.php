@@ -274,6 +274,9 @@ include "include/v2/topnavbar.php";
                                             <button title="Receipt" class="btn btn-sm btn-info exclude-receipt-btn" onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
+                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn" onclick="moveAllToAvailable()">
+                                                <i class="fas fa-arrow-left"></i>
+                                            </button>
                                             <span class="badge bg-success" id="selectedCount">0</span>
                                         </div>
                                     </div>
@@ -325,7 +328,7 @@ include "include/v2/topnavbar.php";
                         					<h4 class="text-info d-none" id="displayOrderValue">0.00</h4>
                                             <h4 class="text-info" id="displayOrderValueText">0.00</h4>
                         				</div>
-                        				<div class="col-md-2">
+                        				<div class="col-md-2 d-none">
                         					<h6 class="text-gray-800">Cash</h6>
                         					<h4 class="d-none" id="priceDifference">0.00</h4>
                                             <h4 id="priceDifferenceText">0.00</h4>
@@ -711,6 +714,8 @@ function moveAllToSelected() {
         });
 
         $('#confirmedOrderValue').val('0');
+        $('#displayOrderValue').text('0');
+        $('#displayOrderValueText').text('0.00');
     }
 }
 
@@ -725,6 +730,11 @@ function moveAllToAvailable() {
         $('#availableJobsTable tbody tr').addClass('table-warning').delay(500).queue(function () {
             $(this).removeClass('table-warning').dequeue();
         });
+
+        let totalJobsPrice = parseFloat($('#totalJobsPriceHidden').val()) || 0;
+        $('#confirmedOrderValue').val(totalJobsPrice);
+        $('#displayOrderValue').text(totalJobsPrice);
+        $('#displayOrderValueText').text(formatCurrency(totalJobsPrice));
     }
 }
 
