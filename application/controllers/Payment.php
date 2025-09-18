@@ -23,24 +23,36 @@ class Payment extends CI_Controller {
 		$this->load->view('paymentList', $result);
 	}
 	
-	public function paymentDetailIndex($id = null){
+	public function paymentDetailIndex($id = null, $series_type = null){
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$branch_id = $this->session->userdata('branch_id');
 
         if ($id !== null) {
 			$result['draft_receipt_no'] = null;
-			$result['payment_main_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['header'];
-			$result['payment_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['details'];
-			$result['payment_allocation_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id)['data']['allocated_details_group'];
+			$result['payment_main_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['header'];
+			$result['payment_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['details'];
+			$result['payment_allocation_detail_data'] = $this->Paymentinfo->getPaymentById($this->api_token,$id,['series_type' => $series_type])['data']['allocated_details_group'];
 			$result['is_edit'] = true;
         }else{
-			$result['draft_receipt_no'] = $this->Paymentinfo->getDraftReceiptNO($this->api_token,$branch_id)['data'];
+			$result['draft_receipt_no'] = $this->Paymentinfo->getDraftReceiptNO($this->api_token,'1')['data'];
 			$result['payment_main_data'] = null;
             $result['payment_detail_data'] = null;
             $result['is_edit'] = false;
 		}
+
 		$this->load->view('payment', $result);
+	}
+
+	public function generateDraftReceiptNo($seriesType) {
+		$response = $this->Paymentinfo->getDraftReceiptNO($this->api_token,$seriesType);
+		
+		if ($response) {
+			echo json_encode($response);
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+			redirect('Payment');
+		}
 	}
 
 	public function getCustomer(){
@@ -58,8 +70,8 @@ class Payment extends CI_Controller {
 		echo json_encode($response);
     }
 
-	public function getJobCardsByCustomer($id) {
-        $response = $this->Paymentinfo->getJobCardsByCustomer($this->api_token,$id);
+	public function getJobCardsByCustomer($id, $series_type = null) {
+        $response = $this->Paymentinfo->getJobCardsByCustomer($this->api_token,$id,['series_type' => $series_type]);
 		echo json_encode($response);
     }
 
@@ -88,13 +100,13 @@ class Payment extends CI_Controller {
 		}
     }
 
-	public function getPayDetails($id) {
-        $response = $this->Paymentinfo->getPayDetails($this->api_token,$id);
+	public function getPayDetails($id, $series_type = null) {
+        $response = $this->Paymentinfo->getPayDetails($this->api_token,$id,['series_type' => $series_type]);
 		echo json_encode($response);
     }
 
-	public function getPayAllocationDetails($id) {
-        $response = $this->Paymentinfo->getPayAllocationDetails($this->api_token,$id);
+	public function getPayAllocationDetails($id, $series_type = null) {
+        $response = $this->Paymentinfo->getPayAllocationDetails($this->api_token,$id,['series_type' => $series_type]);
 		echo json_encode($response);
     }
 
@@ -138,10 +150,11 @@ class Payment extends CI_Controller {
 		}
     }
 
-	public function deletePayment($id,$table) {
+	public function deletePayment($id,$table,$series_id) {
 		$form_data = [
 					'id' => $id,
 					'table' => $table,
+					'series_id' => $series_id
 		];
 
 		$response = $this->Paymentinfo->deletePayment($this->api_token,$form_data);
@@ -156,7 +169,8 @@ class Payment extends CI_Controller {
 
 	public function paymentReceiptPDF(){
 		$id=$this->input->get('receipt_id');
-        $response=$this->Paymentinfo->getReceiptPdfDetails($this->api_token,$id);
+		$series_type=$this->input->get('series_id');
+        $response=$this->Paymentinfo->getReceiptPdfDetails($this->api_token,$id,['series_type' => $series_type]);
 
 		if (!$response['status'] || $response['code'] != 200) {
 			show_error('Failed to fetch Payment data');
@@ -176,7 +190,11 @@ class Payment extends CI_Controller {
 			$this->pdf->set_option('defaultFont', 'Helvetica');           
 			$this->pdf->set_option('isRemoteEnabled', true); 
 
-			$html = $this->load->view('components/pdf/advance_receipt_pdf', $pdf_data, TRUE);
+			if($series_type == 1){
+				$html = $this->load->view('components/pdf/advance_receipt_pdf', $pdf_data, TRUE);
+			}else{
+				$html = $this->load->view('components/pdf/advance_receipt_v2_pdf', $pdf_data, TRUE);
+			}
 
 			$this->pdf->loadHtml($html);
 			$this->pdf->render();

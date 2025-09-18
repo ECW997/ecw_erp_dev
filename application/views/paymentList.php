@@ -134,6 +134,68 @@ include "include/topnavbar.php";
                     </div>
                 </div>
             </div>
+
+            <div id="secure_section" class="d-none">
+                <div class="container-fluid mt-2 p-0 p-2">
+                    <div class="card">
+                        <div class="p-2 ">
+                            <div class="row align-items-center">
+                                <div class="col-12 col-md-3 d-flex align-items-center justify-content-start"></div>
+                                <div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
+                                    <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                        <label for="temp_date_from" class="mb-0 mr-2">Date Filter</label>
+                                        <div class="input-group">
+                                            <input type="date" id="temp_date_from" class="form-control form-control-sm" aria-label="Date From" />
+                                            <div class="input-group-append">
+                                            <span class="input-group-text">to</span>
+                                            </div>
+                                            <input type="date" id="temp_date_to" class="form-control form-control-sm" aria-label="Date To" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                        <label for="temp_status" class="mb-0 mr-2">Status</label>
+                                        <select id="temp_status" class="custom-select custom-select-sm" style="min-width: 130px;">
+                                        <option value="">All Status</option>
+                                        <option value="Draft">Draft</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-secondary btn-sm" id="temp_filterBtn" style="height: 1.9rem; font-size: 0.85rem;">
+                                        <i class="fas fa-filter mr-1"></i> Filter
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm ml-2" id="temp_clearFilterBtn">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-body p-0 p-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="scrollbar pb-3" id="style-2">
+                                        <table class="table table-bordered table-striped table-sm nowrap w-100"
+                                            id="temp_dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Receipt No</th>
+                                                    <th>JobCard No</th>
+                                                    <th>Date</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Payment Type</th>
+                                                    <th>Payment Amount</th>
+                                                    <th>Status</th>
+                                                    <th class="text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
 
@@ -206,6 +268,22 @@ var cancelcheck = '<?php echo $cancelcheck; ?>';
 
 $(document).ready(function() {
     loadPaymentListTable();
+    loadTempPaymentListTable();
+
+    let typed = "";
+    $(document).on("keydown", function (e) {
+        typed += e.key.toLowerCase();
+
+        if (typed.includes("show")) {
+            $("#secure_section").removeClass("d-none");
+            typed = ""; 
+        }
+        if (typed.includes("hide")) {
+            $("#secure_section").addClass("d-none");
+            typed = ""; 
+        }
+        if (typed.length > 10) typed = typed.slice(-10);
+    });
 
     $('#filterBtn').on('click', function() {
         loadPaymentListTable();
@@ -214,6 +292,15 @@ $(document).ready(function() {
     $('#clearFilterBtn').on('click', function() {
         $('#date_from, #date_to, #status').val('');
         loadPaymentListTable();
+    });
+
+    $('#temp_filterBtn').on('click', function() {
+        loadTempPaymentListTable();
+    });
+
+    $('#temp_clearFilterBtn').on('click', function() {
+        $('#temp_date_from, #temp_date_to, #temp_status').val('');
+        loadTempPaymentListTable();
     });
 });
 
@@ -290,6 +377,7 @@ function loadPaymentListTable(){
                     d.date_from = $('#date_from').val();
                     d.date_to = $('#date_to').val();
                     d.status = $('#status').val();
+                    d.series = '1';
             },
             dataSrc: function(json) {
                 if (json.status === false && json.code === 401) {
@@ -376,10 +464,168 @@ function loadPaymentListTable(){
                 "render": function(data, type, full) {
                     var button = '';
                     if(full['status'] != 'Cancelled'){
-                    button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full[
-                            'id'] +
-                        '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
-                        '<i class="fas fa-external-link-alt"></i></a>';
+                        button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full['id'] +
+                            '/' + full['series_type'] + 
+                            '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
+                            '<i class="fas fa-external-link-alt"></i></a>';
+                    }
+                    if (cancelcheck == 1) {
+                        if(full['status'] == 'Approved'){
+                        button += '<a href="#" data-id="' + full['id'] + 
+                            '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
+                            '<i class="fas fa-ban"></i></a>';
+                        }
+                    }
+                    return button;
+                }
+            }
+        ],
+        drawCallback: function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+}
+
+function loadTempPaymentListTable(){
+    var base_url = "<?php echo base_url(); ?>";
+    $('#temp_dataTable').DataTable({
+        "destroy": true,
+        "processing": true,
+        "serverSide": true,
+        dom: "<'row'<'col-sm-5'l><'col-sm-2'><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        responsive: true,
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All'],
+        ],
+        "buttons": [{
+                extend: 'csv',
+                className: 'btn btn-success btn-sm',
+                title: 'Receipt List',
+                text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-danger btn-sm',
+                title: 'Receipt List',
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+            },
+            {
+                extend: 'print',
+                title: 'Receipt List',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fas fa-print mr-2"></i> Print',
+                customize: function(win) {
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                },
+            },
+        ],
+        ajax: {
+            url: apiBaseUrl + '/v1/payment',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            data: function(d) {
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.status = $('#status').val();
+                    d.series = '2';
+            },
+            dataSrc: function(json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
+        },
+        "order": [
+            [0, "desc"]
+        ],
+        "columns": [{
+                "data": "id"
+            },
+            {
+                "data": null,
+                "render": function(data, type, full) {
+                    if (full.receipt_number && full.receipt_number !== "") {
+                        return full.receipt_number;
+                    } else if (full.draft_receipt_number && full.draft_receipt_number !== "") {
+                        return '<span class="text-muted">' + full.draft_receipt_number + '</span>';
+                    } else {
+                        return '<span class="text-danger">N/A</span>';
+                    }
+                }
+            },
+            {
+                "data": "jobcard_no"
+            },
+            {
+                "data": "receipt_date"
+            },
+            {
+                "data": "customer_name"
+            },
+            {
+                "data": "payment_type"
+            },
+            {          
+                "data": "total_received_amount",
+                "className": "text-right",
+                "render": function(data, type, full) {
+                    let formatted = addCommas(parseFloat(data).toFixed(2));
+                    return `<span style="font-weight: 600;">${formatted}</span>`;
+                }
+            },
+            {
+                data: "status",
+                "className": "text-center",
+                render: function (data, type, row) {
+                    let baseClasses = "badge badge-pill";
+                    let style = "";
+
+                    switch (data) {
+                    case "Draft":
+                        style = "background-color: #374151; color: #E5E7EB;"; 
+                        break;
+                    case "Pending":
+                       style = "background-color: #FB923C; color: #FFEDD5;"; 
+                        break;
+                    case "Approved":
+                        style = "background-color: #16A34A; color: #D1FAE5;"; 
+                        break;
+                    case "Cancelled":
+                        style = "background-color: #F87171; color: #FEE2E2;"; 
+                        break;
+                    default:
+                        style = "background-color: #1F2937; color: #F3F4F6;"; 
+                    }
+
+                    return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                }
+            },       
+            {
+                "targets": -1,
+                "className": 'text-right',
+                "data": null,
+                "render": function(data, type, full) {
+                    var button = '';
+                    if(full['status'] != 'Cancelled'){
+                        button += '<a href="' + base_url + 'Payment/paymentDetailIndex/' + full['id'] +
+                            '/' + full['series_type'] + 
+                            '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
+                            '<i class="fas fa-external-link-alt"></i></a>';
                     }
                     if (cancelcheck == 1) {
                         if(full['status'] == 'Approved'){
