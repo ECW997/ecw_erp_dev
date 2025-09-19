@@ -23,7 +23,7 @@
                             <?php if (!empty($invoice_detail_data)): ?>
                             <?php foreach ($invoice_detail_data as $item): ?>
                             <tr>
-                                <td><?php echo $item['description']; ?></td>
+                                <td class="description"><?php echo $item['description']; ?></td>
                                 <td class="text-center"><?php echo $item['quantity']; ?></td>
                                 <td class="text-center"><?php echo $item['unit']; ?></td>
                                 <td class="text-end"><?php echo ($item['unit_price']); ?></td>
@@ -1034,7 +1034,7 @@ function alladvancepaymentCalculation() {
 
     $('#hideadvancetotal').val(sum);
     $('#advanceamount').val(sum.toFixed(2));
-    $('#advanceamount_text').val(formatCurrency(showsum));
+    $('#advanceamount_text').val(formatCurrency(sum));
     finaltotalcalculate();
 }
 
@@ -1199,17 +1199,26 @@ function deleteExtraChargeRow(button) {
 function allItemsTotalCalculation() {
     let totalSum = 0;
     let totalLineDiscount = 0;
+    let exchangeTotal = 0; 
 
     $('#tableorder tbody tr').each(function() {
         const insertStatus = $(this).find('.insert_status').text().trim();
-        if (insertStatus !== 'deleted') {
-            const value = parseFloat($(this).find('.sub_total').text()) || 0;
-            totalSum += value;
+        const description = $(this).find('.description').text().trim();
 
-            const discount_value = parseFloat($(this).find('.discount_amount').text()) || 0;
-            totalLineDiscount += discount_value;
+        const value = parseFloat($(this).find('.sub_total').text()) || 0;
+        const discount_value = parseFloat($(this).find('.discount_amount').text()) || 0;
+
+        if (insertStatus !== 'deleted') {
+            if (description.includes('Exchange')) {
+                exchangeTotal += value;
+            }else{
+                totalSum += value;
+                totalLineDiscount += discount_value;
+            }
         }
     });
+    
+    totalSum -= exchangeTotal;
 
     var showsum = addCommas(parseFloat(totalSum).toFixed(2));
     $('#divtotal').text('Rs. ' + showsum);
@@ -1247,6 +1256,7 @@ function allItemsTotalCalculation() {
     // $('#hide_grand_total').val(grandTotal.toFixed(2));
 
     $('#total_discount').val(totalDiscount.toFixed(2));
+    $('#total_discount_text').val(formatCurrency(totalDiscount));
 
     finaltotalcalculate();
 }
