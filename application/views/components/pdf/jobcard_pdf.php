@@ -5,8 +5,13 @@
     <title>ECW Software - Job Card</title>
     <meta charset="UTF-8">
     <style>
-    @page {
+    @page :first {
         margin: 6mm 10mm 6mm 10mm;
+        size: A4 portrait;
+    }
+    
+    @page {
+        margin: 20mm 10mm 6mm 10mm; 
         size: A4 portrait;
     }
 
@@ -33,7 +38,7 @@
         margin-bottom: 8px;
         padding: 6px 0;
         border-bottom: 2px solid #000;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .document-header h1 {
@@ -53,7 +58,7 @@
     /* Main Information Section */
     .main-info-section {
         margin-bottom: 8px;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .section-header1 {
@@ -66,7 +71,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 0;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .section-header2 {
@@ -77,7 +82,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 0;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .main-info-table {
@@ -108,7 +113,7 @@
     /* Job Details Section */
     .job-details-section {
         margin-top: 8px;
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
     }
 
     .job-header-table {
@@ -116,7 +121,7 @@
         border-collapse: collapse;
         margin-bottom: 6px;
         border: 1px solid #000;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .job-header-table th {
@@ -133,7 +138,7 @@
     /* Job Category Containers */
     .job-category-container {
         margin-bottom: 10px;
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
         border: 1px solid #000;
         /* background-color: #fafafa; */
     }
@@ -144,7 +149,7 @@
         padding: 4px 6px;
         font-weight: bold;
         font-size: 10px;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     .job-items-container {
@@ -156,7 +161,7 @@
         border: 1px solid #ccc;
         margin-bottom: 6px;
         background-color: white;
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
     }
 
     .job-item-content {
@@ -205,7 +210,7 @@
         text-align: center;
         max-height: 80px;
         overflow: hidden;
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
     }
 
     .image-container img {
@@ -219,7 +224,7 @@
     .signature-section {
         margin-top: -4px;
         padding-top: 3px;
-        page-break-inside: avoid;
+        /* page-break-inside: avoid; */
     }
 
     .signature-table {
@@ -242,12 +247,12 @@
         border: 1px solid #666;
         padding: 1px;
         text-align: center;
-        height: 22px;
+        height: 30px;
         font-size: 10px;
     }
 
     /* Page Break Controls */
-    .page-break-before {
+    /* .page-break-before {
         page-break-before: always;
     }
 
@@ -263,14 +268,14 @@
         page-break-inside: avoid;
         orphans: 3;
         widows: 3;
-    }
+    } */
 
     /* Category Separators */
     .category-separator {
         border-bottom: 2px dashed #000;
         margin: 8px 0;
         height: 1px;
-        page-break-after: avoid;
+        /* page-break-after: avoid; */
     }
 
     /* Utility Classes */
@@ -287,7 +292,7 @@
     }
 
     /* Enhanced Page Break Controls */
-    .header-and-customer-info {
+    /* .header-and-customer-info {
         page-break-inside: avoid;
         page-break-after: avoid;
     }
@@ -300,9 +305,9 @@
         page-break-inside: avoid;
         orphans: 2;
         widows: 2;
-    }
+    } */
 
-    table {
+    /* table {
         page-break-inside: auto;
     }
 
@@ -338,11 +343,11 @@
 
     .signature-section {
         break-inside: avoid;
-    }
+    } */
 
     .job-item-with-signature {
-        page-break-inside: avoid;
-        break-inside: avoid;
+        /* page-break-inside: avoid;
+        break-inside: avoid; */
         display: block;
         margin-bottom: 6px;
     }
@@ -356,7 +361,7 @@
     }
 
     /* Print Optimizations */
-    @media print {
+    /* @media print {
         body {
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
@@ -414,7 +419,8 @@
             break-inside: avoid;
             -webkit-break-inside: avoid;
         }
-    }
+    } */
+        
 
     /* Footer Space */
     .document-footer {
@@ -530,7 +536,7 @@
             
             foreach ($details_data as $categoryIndex => $item): ?>
 
-            <div class="job-category-container keep-together">
+            <div style="" class="job-category-container keep-together">
                 <div class="job-category-header">
                     <table style="width:100%;">
                         <tr>
@@ -567,7 +573,7 @@
                         foreach ($item['details'] as $jobIndex => $joblist): ?>
 
                     <div class="job-item keep-together">
-                        <table class="job-item-content">
+                        <table style="page-break-inside: avoid;" class="job-item-content">
                             <tr>
                                 <td class="job-number"><?= $joblist_cnt ?></td>
                                 <td colspan="2" class="job-description">
@@ -598,18 +604,18 @@
                         </table>
 
                         <div class="signature-section">
-                            <table class="signature-table">
+                            <table style="page-break-inside: avoid;" class="signature-table">
                                 <tr>
-                                    <th style="width:4%;">#</th>
-                                    <th style="width:9%;">EMP CODE</th>
+                                    <th style="width:3%;">#</th>
+                                    <th style="width:10%;">EMP CODE</th>
                                     <th style="width:8%;">RATE</th>
-                                    <th style="width:12%;">EMPLOYEE</th>
-                                    <th style="width:11%;">E-R OFFICER</th>
-                                    <th style="width:11%;">PROD. SUPERVISOR</th>
-                                    <th style="width:11%;">QUALITY SUPERVISOR</th>
-                                    <th style="width:11%;">UPDATED HR</th>
-                                    <th style="width:11%;">CHECKED HR</th>
-                                    <th style="width:12%;">CHECKED ACC</th>
+                                    <th style="width:19%;">EMPLOYEE</th>
+                                    <th style="width:10%;">E-R OFFICER</th>
+                                    <th style="width:10%;">PROD. SUPERVISOR</th>
+                                    <th style="width:10%;">QUALITY SUPERVISOR</th>
+                                    <th style="width:10%;">UPDATED HR</th>
+                                    <th style="width:10%;">CHECKED HR</th>
+                                    <th style="width:10%;">CHECKED ACC</th>
                                 </tr>
                                 <tr>
                                     <td>1</td>
@@ -654,6 +660,7 @@
                     <?php $joblist_cnt++; ?>
                     <?php endforeach; ?>
                 </div>
+                
             </div>
             <?php if ($categoryIndex < $totalCategories - 1): ?>
             <div class="category-separator"></div>

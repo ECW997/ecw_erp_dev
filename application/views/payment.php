@@ -488,7 +488,7 @@ $(document).ready(function() {
     $(document).on("keydown", function (e) {
         typed += e.key.toLowerCase();
 
-        if (typed.includes("show")) {
+        if (typed.includes("boom")) {
             $(".print_receipt_v2").removeClass("d-none");
             typed = ""; 
         }
