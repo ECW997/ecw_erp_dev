@@ -271,7 +271,7 @@ include "include/v2/topnavbar.php";
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">Exclude Jobs</h5>
                                         <div class="d-flex align-items-center gap-2">
-                                            <button title="Receipt" class="btn btn-sm btn-info exclude-receipt-btn" onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
+                                            <button title="Receipt" id="excludeReceiptBtn" class="btn btn-sm btn-info exclude-receipt-btn" style="display:none;"onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
                                             <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn" onclick="moveAllToAvailable()">
@@ -907,5 +907,30 @@ function delete_confirm() {
     return confirm("Are you sure you want to remove this?");
 }
 
+</script>
+
+<script>
+$(document).ready(function() {
+    let showSecret = "boom";
+    let hideSecret = "hide";
+    let buffer = "";
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+            }
+            if (buffer === showSecret) {
+                $('#excludeReceiptBtn').show();
+                buffer = "";
+            }
+            if (buffer === hideSecret) {
+                $('#excludeReceiptBtn').hide();
+                buffer = "";
+            }
+        }
+    });
+});
 </script>
 <?php include "include/footer.php"; ?>

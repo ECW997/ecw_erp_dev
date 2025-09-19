@@ -212,6 +212,51 @@ class JobCard extends CI_Controller {
 		}
     }
 
+
+
+
+	// public function exportJobCardExcelData() {
+    // $form_data = [
+    //     'date_from' => $this->input->post('date_from'),
+	// 	'date_to' => $this->input->post('date_to'),
+    // ];
+
+    // if (empty($form_data['date_from']) || empty($form_data['date_to'])) {
+    //     echo json_encode(['error' => 'No form data received']);
+    //     return;
+    // }
+
+    // $response = $this->JobCardinfo->exportJobCardExcelData($this->api_token, $form_data);
+    // echo json_encode($response);
+	// }
+
+
+	public function exportJobCardExcelData() {
+
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $date_from = $data['date_from'] ?? null;
+    $date_to = $data['date_to'] ?? null;
+
+    if (empty($date_from) || empty($date_to)) {
+        echo json_encode(['status' => false, 'error' => 'No date range received']);
+        return;
+    }
+
+    $form_data = [
+        'date_from' => $date_from,
+        'date_to' => $date_to
+    ];
+
+    // Call your API (adjust this as needed for your integration)
+    $response = $this->JobCardinfo->exportJobCardExcelData($this->api_token, $form_data);
+    echo json_encode($response);
+}
+
+
+
+
 	public function insertJobCardDetail() {
 		$form_data = [
             'jobData' => $this->input->post('jobData'),
