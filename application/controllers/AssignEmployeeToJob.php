@@ -34,8 +34,6 @@ class AssignEmployeeToJob extends CI_Controller {
 	}
 
 
-	
-
 	public function getJobcardJobs() {
     $form_data = [
         'recordID' => $this->input->post('recordID')
