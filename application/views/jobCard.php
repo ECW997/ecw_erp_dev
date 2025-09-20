@@ -72,8 +72,8 @@ $is_denied = ($status === 'Cancelled');
                                     <button type="button"
                                         class="btn btn-pink rounded-2 action-btn-fixed px-3 py-2 fs-6"
                                         style="min-width:180px; height:44px;"
-                                        onclick="window.location.href='<?= base_url('SalesOrder/salesOrderDetailIndex') ?>'">
-                                        <span class="text-white fw-bold me-2">New Sales Order</span>
+                                        onclick="window.location.href='<?= base_url('SalesOrder/salesOrderDetailIndex/?jobcard_id=' . ($job_main_data[0]['idtbl_jobcard'] ?? '') . '&jobcard_no=' . ($job_main_data[0]['job_card_number'] ?? '')) ?>'">
+                                        <span class="text-white fw-bold me-2">Create Sales Order</span>
                                         <i class="fas fa-arrow-right me-1 text-white"></i>
                                         
                                     </button>

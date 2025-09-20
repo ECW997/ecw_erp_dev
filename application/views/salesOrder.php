@@ -412,6 +412,9 @@ var cancelcheck = '<?php echo $cancelcheck; ?>';
 let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
 let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
 
+let realJobCardId = "<?php echo $jobCardId ?? ''; ?>";
+let realJobCardNo = "<?php echo $jobCardNo ?? ''; ?>";
+
 let availableJobs = [];
 let selectedJobs = [];
 
@@ -473,6 +476,21 @@ $(document).ready(function () {
         );
     }
 
+    let jobCardNumber = $('#job_card_number');
+
+    if (realJobCardId && realJobCardNo) {
+        loadingPromises.push(
+            new Promise(function(resolve) {
+                let jobCardNumber = $('#job_card_number');
+                var option = new Option(realJobCardNo, realJobCardId, true, true);
+                jobCardNumber.append(option).trigger('change');
+                resolve(); 
+            }).then(function() {
+                return loadJobCard();
+            })
+        );
+    }
+
     Promise.all(loadingPromises)
         .then(function() {
             $('#loading-overlay').fadeOut(300);
@@ -488,8 +506,6 @@ $(document).ready(function () {
                 </div>
             `);
     });
-
-    let jobCardNumber = $('#job_card_number');
 
     jobCardNumber.select2({
         placeholder: 'Select...',
@@ -525,14 +541,18 @@ $(document).ready(function () {
 });
 let totalFullJobPrice = 0;
 function loadJobCard() {
-    availableJobs = [];
-    selectedJobs = [];
-    renderTables();
-    updatePriceSummary();
-	const selectedCard = $('#job_card_number').val();
+	return new Promise(function (resolve, reject) {
+		availableJobs = [];
+		selectedJobs = [];
+		renderTables();
+		updatePriceSummary();
+		const selectedCard = $('#job_card_number').val();
 
-	if (selectedCard) {
-         $('#loading-overlay').show();
+		if (!selectedCard) {
+			resolve();
+			return;
+		}
+		//  $('#loading-overlay').show();
 		$.ajax({
 			url: '<?php echo base_url("SalesOrder/getJobCardDetails"); ?>',
 			type: 'POST',
@@ -548,7 +568,7 @@ function loadJobCard() {
 					tbody.empty();
 					res.data.details_data.forEach(section => {
 						section.details.forEach(detail => {
-                            const net_amount = parseFloat(detail.net_amount) || 0;
+							const net_amount = parseFloat(detail.net_amount) || 0;
 							availableJobs.push({
 								jobId: detail.parent_id,
 								subCategory: section.job_sub_category_text,
@@ -556,42 +576,44 @@ function loadJobCard() {
 								option: detail.combined_option,
 								qty: detail.qty,
 								price: parseFloat(detail.price).toFixed(2),
-                                list_price: parseFloat(detail.list_price).toFixed(2),
-                                total: parseFloat(detail.total).toFixed(2),
-                                line_discount: parseFloat(detail.line_discount).toFixed(2),
-                                net_amount: parseFloat(detail.net_amount).toFixed(2)
+								list_price: parseFloat(detail.list_price).toFixed(2),
+								total: parseFloat(detail.total).toFixed(2),
+								line_discount: parseFloat(detail.line_discount).toFixed(2),
+								net_amount: parseFloat(detail.net_amount).toFixed(2)
 							});
-                            totalFullJobPrice += net_amount;
+							totalFullJobPrice += net_amount;
 							selectedJobs = [];
 							renderTables();
 						});
 					});
-                    
-                 $('#totalJobsPriceHidden').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
-                 $('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
-                 $('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
-                 $('#subTotalText').text(formatCurrency(totalFullJobPrice));
-                 if(res.data.header_discount_status == 'Approved'){
-                    $('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
-                    $('#HeaderDiscountPriceText').text(formatCurrency(res.data.main_data[0].discount_amount));
-                 } else {
-                    $('#HeaderDiscountPrice').text('0.00');
-                    $('#HeaderDiscountPriceText').text('0.00');
-                 }
 
-                $('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
-                $('#totalJobsPriceText').text(formatCurrency(res.data.main_data[0].net_total));
-                 updatePriceSummary();
+					$('#totalJobsPriceHidden').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+					$('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+					$('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
+					$('#subTotalText').text(formatCurrency(totalFullJobPrice));
+					if (res.data.header_discount_status == 'Approved') {
+						$('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
+						$('#HeaderDiscountPriceText').text(formatCurrency(res.data.main_data[0].discount_amount));
+					} else {
+						$('#HeaderDiscountPrice').text('0.00');
+						$('#HeaderDiscountPriceText').text('0.00');
+					}
+
+					$('#totalJobsPrice').text(parseFloat(res.data.main_data[0].net_total).toFixed(2));
+					$('#totalJobsPriceText').text(formatCurrency(res.data.main_data[0].net_total));
+					updatePriceSummary();
+					resolve(res);
 				} else {
 					alert("Job card details not found.");
 					availableJobs = [];
 					selectedJobs = [];
 					renderTables();
 					updatePriceSummary();
-                    $('#totalJobsPriceHidden').val(totalFullJobPrice);
-                    $('#confirmedOrderValue').val(totalFullJobPrice);
+					$('#totalJobsPriceHidden').val(totalFullJobPrice);
+					$('#confirmedOrderValue').val(totalFullJobPrice);
+					resolve();
 				}
-                $('#loading-overlay').fadeOut(300);
+				// $('#loading-overlay').fadeOut(300);
 			},
 			error: function (xhr) {
 				alert("Error fetching job card details.");
@@ -599,12 +621,13 @@ function loadJobCard() {
 				selectedJobs = [];
 				renderTables();
 				updatePriceSummary();
-                $('#loading-overlay').fadeOut(300);
-                $('#totalJobsPriceHidden').val(totalFullJobPrice);
-                $('#confirmedOrderValue').val(totalFullJobPrice);
+				// $('#loading-overlay').fadeOut(300);
+				$('#totalJobsPriceHidden').val(totalFullJobPrice);
+				$('#confirmedOrderValue').val(totalFullJobPrice);
+				reject(new Error('Failed to load job card details'));
 			}
 		});
-	}
+	});
 
 }
 
