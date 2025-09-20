@@ -27,15 +27,22 @@ class SalesOrder extends CI_Controller {
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$branch_id = $this->session->userdata('branch_id');
+		$jobcard_id = $this->input->get('jobcard_id'); 
+		$jobcard_no = $this->input->get('jobcard_no');
 
         if ($id !== null) {
-			$result['relationDetails'] = $this->SalesOrderinfo->getSalesOrderById($this->api_token,$id)['relationDetails'];
-			$result['salesOrderHeader'] = $this->SalesOrderinfo->getSalesOrderById($this->api_token,$id)['salesOrderDetails']['main_data'];
-			$result['salesOrderDetails'] = $this->SalesOrderinfo->getSalesOrderById($this->api_token,$id)['salesOrderDetails']['details_data'];
-			$result['excludeSalesOrderHeader'] = $this->SalesOrderinfo->getSalesOrderById($this->api_token,$id)['excludeSalesOrderDetails']['main_data'];
-			$result['excludeSalesOrderDetails'] = $this->SalesOrderinfo->getSalesOrderById($this->api_token,$id)['excludeSalesOrderDetails']['details_data'];
+			$result['jobCardId'] = null;
+			$result['jobCardNo'] = null;
+			$salesOrderData = $this->SalesOrderinfo->getSalesOrderById($this->api_token, $id);
+			$result['relationDetails'] = $salesOrderData['relationDetails'] ?? null;
+			$result['salesOrderHeader'] = $salesOrderData['salesOrderDetails']['main_data'] ?? null;
+			$result['salesOrderDetails'] = $salesOrderData['salesOrderDetails']['details_data'] ?? null;
+			$result['excludeSalesOrderHeader'] = $salesOrderData['excludeSalesOrderDetails']['main_data'] ?? null;
+			$result['excludeSalesOrderDetails'] = $salesOrderData['excludeSalesOrderDetails']['details_data'] ?? null;
 			$result['is_edit'] = true;
         }else{
+			$result['jobCardId'] = $jobcard_id;
+			$result['jobCardNo'] = $jobcard_no;
 			$result['relationDetails'] = null;
 			$result['salesOrderHeader'] = null;
 			$result['salesOrderDetails'] = null;
