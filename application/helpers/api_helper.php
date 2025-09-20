@@ -73,33 +73,33 @@ if (!function_exists('call_api')) {
 
         return json_decode($response, true);
     }
+}
 
-    if (!function_exists('auth_check')) {
-        function auth_check() {
-            $CI =& get_instance();
-            $api_token = $CI->session->userdata('api_token');
 
-            if (!$api_token) {
-                $CI->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-                redirect('Welcome/Logout');
-                exit;
-            }
+if (!function_exists('auth_check')) {
+    function auth_check() {
+        $CI =& get_instance();
+        $api_token = $CI->session->userdata('api_token');
 
-            $CI->load->model('Authinfo');
-            $response = $CI->Authinfo->validateToken($api_token);
-
-            if (!$response || !$response['status']) {
-                $CI->session->set_flashdata(['res' => '401', 'msg' => 'Session expired or invalid token']);
-                redirect('Welcome/Logout');
-                exit;
-            }
-            return [
-                'api_token' => $api_token,
-                'user' => $response['user'] ?? null, 
-            ];
+        if (!$api_token) {
+            $CI->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+            redirect('Welcome/Logout');
+            exit;
         }
-    }
 
+        $CI->load->model('Authinfo');
+        $response = $CI->Authinfo->validateToken($api_token);
+
+        if (!$response || !$response['status']) {
+            $CI->session->set_flashdata(['res' => '401', 'msg' => 'Session expired or invalid token']);
+            redirect('Welcome/Logout');
+            exit;
+        }
+        return [
+            'api_token' => $api_token,
+            'user' => $response['user'] ?? null, 
+        ];
+    }
 }
 
 

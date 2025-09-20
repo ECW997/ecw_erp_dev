@@ -31,11 +31,13 @@ class JobCard extends CI_Controller {
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 
         if ($id !== null) {
-            $result['job_main_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['main_data'];
-			$result['job_detail_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['details_data'];
-			$result['summary_data'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['summary_data'];
-			$result['is_line_discount_approved'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['is_line_discount_approved'];
-			$result['is_header_discount_approved'] = $this->JobCardinfo->getJobById($this->api_token,$id)['data']['is_header_discount_approved'];
+			$jobData = $this->JobCardinfo->getJobById($this->api_token, $id)['data'];
+			
+            $result['job_main_data'] = $jobData['main_data'] ?? null;
+			$result['job_detail_data'] = $jobData['details_data'] ?? null;
+			$result['summary_data'] = $jobData['summary_data'] ?? null;
+			$result['is_line_discount_approved'] = $jobData['is_line_discount_approved'] ?? null;
+			$result['is_header_discount_approved'] = $jobData['is_header_discount_approved'] ?? null;
             $result['is_edit'] = true;
         } else {
             $result['job_main_data'] = null;
