@@ -34,9 +34,9 @@ class Auth extends CI_Controller {
                 'emp_no' => $loginData['emp_no'],
                 'last_login_at' => $loginData['last_login_at'],
                 'last_login_user_id' => $loginData['last_login_user_id'],
-                'company_id' => $this->input->post('company_id'),
+                'company_id' => $loginData['company_id'],
                 'companyname' => $this->input->post('company_text'),
-                'branch_id' => $this->input->post('branch_id'),
+                'branch_id' => $loginData['branch_id'],
                 'branchname' => $this->input->post('branch_text'),
                 'api_status' => $response['status'],
                 'loggedin' => true
