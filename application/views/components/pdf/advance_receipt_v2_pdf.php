@@ -99,7 +99,7 @@ $district = $header['district'] ?? '';
 			<th colspan="2" style="height:20px;width:83%;font-size:14px;font-weight:500;" class="header_th">
 				<table style="width:100%;">
 					<tr>
-						<td style="text-align:right; width:55%;">RECEIPT</td>
+						<td style="text-align:right; width:55%;">ADVANCE PAYMENT RECEIPT</td>
 						<td style="text-align:right; width:45%;"><span style="font-size:11px;color: rgba(200, 0, 0, 1);"></span></td>
 					</tr>
 				</table>
