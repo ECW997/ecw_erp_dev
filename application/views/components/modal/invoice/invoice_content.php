@@ -426,7 +426,7 @@
                                                     class="form-control text-end bg-light" value="0" readonly>
                                             </div>
                                                 <input type="number" id="advanceamount" name="advanceamount"
-                                                    class="form-control text-end bg-light d-none" value="0" readonly>
+                                                    class="form-control text-end bg-light d-none" value="0" readonly> 
                                         </div>
                                         <div class="col">
                                             <label class="small form-label text-dark mb-1">Total invoice Amount</label>
@@ -487,7 +487,7 @@
                                             <option value=" " <?= $selected_payment_type == ' ' ? 'selected' : '' ?>>
                                                 Select Payment Method</option>
                                             <option value="1" <?= $selected_payment_type == '1' ? 'selected' : '' ?>>
-                                                Cash</option>
+                                                Non-Credit</option>
                                             <option value="2" <?= $selected_payment_type == '2' ? 'selected' : '' ?>>
                                                 Credit</option>
                                         </select>
