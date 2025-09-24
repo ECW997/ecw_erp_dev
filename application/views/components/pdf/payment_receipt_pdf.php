@@ -88,13 +88,31 @@ switch ($header['company_branch_id']) {
         $branchOutput = 'Head Office - Nittambuwa 0332 286 729'; 
         break;
     case '2':
-        $branchOutput = 'BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 220'; 
+        $branchOutput = 'BRANCH COLOMBO ROAD, KURANA, NEGOMBO 0312 224 225'; 
         break;
     case '3':
         $branchOutput = 'No Branch 3'; 
         break;
     default:
         $branchOutput = 'No Branch defult'; 
+        break;
+}
+?>
+<?php
+$companyOutput = '';
+
+switch ($header['company_branch_id']) {
+    case '1':
+        $companyOutput = 'Edirisingha Cushion Works (Pvt) Ltd'; 
+        break;
+    case '2':
+        $companyOutput = 'Edirisingha Cushion Works'; 
+        break;
+    case '3':
+        $companyOutput = 'No Branch 3'; 
+        break;
+    default:
+        $companyOutput = 'No Branch defult'; 
         break;
 }
 ?>
@@ -160,7 +178,7 @@ switch ($header['company_branch_id']) {
 <footer>
 	<table>
 		<tr>
-			<td style="width:65%;" class="footer_text">Edirisingha Cushion Works (Pvt) Ltd</td>
+			<td style="width:65%;" class="footer_text"><?= $companyOutput ?></td>
 			<td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
 			<td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
 				<i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>
@@ -174,8 +192,7 @@ switch ($header['company_branch_id']) {
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
-			<td colspan="3;" class="footer_text" style="letter-spacing: 2.8px;">THE PRIME OF VEHICLE INTERIOR &
-				EXTERIOR MODIFICATION</td>
+			<td colspan="3;" class="footer_text" style="letter-spacing: 2.8px; text-align:center;">SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER</td>
 		</tr>
 	</table>
 </footer>
