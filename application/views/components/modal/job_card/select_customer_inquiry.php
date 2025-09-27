@@ -1,5 +1,5 @@
 <div class="modal fade" id="selectCustomerInquiryModal" tabindex="-1" aria-labelledby="selectCustomerInquiryModalLabel" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content rounded-4">
       <div class="modal-header bg-primary">
         <h5 class="modal-title text-white" id="selectCustomerInquiryModalLabel">New Job Card - Select Customer Inquiry</h5>

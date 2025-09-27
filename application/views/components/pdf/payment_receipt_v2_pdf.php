@@ -150,8 +150,8 @@ $district = $header['district'] ?? '';
 							<td class="datatable_data_td" style="text-align:center"><?= $item['quantity'] ?? '' ?></td>
 							<td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?? '' ?></td>
 							<td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'] ?? 0,2) ?></td>
-							<td class="datatable_data_td" style="text-align:right"><?= isset($item['line_discount_pc']) ? number_format($item['line_discount_pc'],0) . '%' : '' ?></td>
-							<td class="datatable_data_td" style="text-align:right"><?= !empty($item['line_total_after_discount']) ? number_format($item['line_total_after_discount'],2) : '' ?></td>
+							<td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
+							<td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>

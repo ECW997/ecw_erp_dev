@@ -240,7 +240,7 @@ include "include/v2/topnavbar.php";
                                         <h5 class="mb-0">Available Jobs</h5>
                                          <div class="d-flex align-items-center gap-2">
                                             <span class="badge bg-primary" id="availableCount">0</span>
-                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn" onclick="moveAllToSelected()">
+                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn <?= $is_approve ? 'd-none' : '' ?>" onclick="moveAllToSelected()">
                                                 <i class="fas fa-arrow-right"></i>
                                             </button>
                                         </div>
@@ -261,6 +261,15 @@ include "include/v2/topnavbar.php";
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
+                                                <tfoot class="table-group-divider">
+                                                    <tr>
+                                                        <th colspan="3" class="text-end">Total</th>
+                                                        <th class="text-end" id="availableJobsSubTotal">0.00</th>
+                                                        <th class="text-end" id="availableJobsLineDiscount">0.00</th>
+                                                        <th class="text-end" id="availableJobsTotalPrice">0.00</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -274,7 +283,7 @@ include "include/v2/topnavbar.php";
                                             <button title="Receipt" id="excludeReceiptBtn" class="btn btn-sm btn-info exclude-receipt-btn" style="display:none;"onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
-                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn" onclick="moveAllToAvailable()">
+                                            <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn <?= $is_approve ? 'd-none' : '' ?>" onclick="moveAllToAvailable()">
                                                 <i class="fas fa-arrow-left"></i>
                                             </button>
                                             <span class="badge bg-success" id="selectedCount">0</span>
@@ -296,6 +305,15 @@ include "include/v2/topnavbar.php";
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
+                                                <tfoot class="table-group-divider">
+                                                    <tr>
+                                                        <th colspan="3" class="text-end">Total</th>
+                                                        <th class="text-end" id="selectedJobsSubTotal">0.00</th>
+                                                        <th class="text-end" id="selectedJobsLineDiscount">0.00</th>
+                                                        <th class="text-end" id="selectedJobsTotalPrice">0.00</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -316,7 +334,7 @@ include "include/v2/topnavbar.php";
                         					<h6 class="text-gray-800">Header Discount</h6>
                         					<h4 class="text-warning d-none" id="HeaderDiscountPrice"><?= isset($relationDetails['header_discount']) ? $relationDetails['header_discount'] : '0.00' ?></h4>
                                             <h4 class="text-warning" id="HeaderDiscountPriceText"><?= isset($relationDetails['header_discount']) ? number_format($relationDetails['header_discount'], 2) : '0.00' ?></h4>
-                        				</div>
+                        				</div> 
                         				<div class="col-md-2">
                         					<h6 class="text-gray-800">Total Payble Jobs Price</h6>
                         					<h4 class="text-primary d-none" id="totalJobsPrice">0.00</h4>
@@ -351,6 +369,27 @@ include "include/v2/topnavbar.php";
                         		</button>
                         	</div>
                             <?php endif; ?>
+                        </div>
+                        <div class="col-md-2">
+                        	<h6 class="text-gray-800">Advance Payment</h6>
+                        	<h4 class="text-warning d-none" id="HeaderAdvancepaymentPrice">
+                                <?= isset($relationDetails['advance_payment_series']) 
+                                    ? ($relationDetails['advance_payment_series'] == 1 
+                                        ? $relationDetails['advance_total_s1'] 
+                                        : $relationDetails['advance_total_s2']) 
+                                    : '0.00' ?>
+                            </h4>
+                            <h4 class="<?= (isset($relationDetails['advance_payment_series']) && $relationDetails['advance_payment_series'] == 2) ? 'text-danger' : 'text-warning' ?>" 
+                                id="HeaderAdvancepaymentPriceText">
+                                <?= isset($relationDetails['advance_payment_series']) 
+                                    ? number_format(
+                                        $relationDetails['advance_payment_series'] == 1 
+                                            ? $relationDetails['advance_total_s1'] 
+                                            : $relationDetails['advance_total_s2'], 
+                                        2
+                                    ) 
+                                    : '0.00' ?>
+                            </h4>
                         </div>
                     </div>
                 </div>
@@ -563,6 +602,8 @@ function loadJobCard() {
 			success: function (res) {
 				if (res.status && res.data) {
 					let data = res.data.main_data[0];
+                    let summary_data = res.data.summary_data[0];
+                    
 					let index = 1;
 					const tbody = $('#availableJobsTable tbody');
 					tbody.empty();
@@ -591,6 +632,18 @@ function loadJobCard() {
 					$('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
 					$('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
 					$('#subTotalText').text(formatCurrency(totalFullJobPrice));
+
+                    $('#HeaderAdvancepaymentPrice').text(summary_data.advance);
+                    $('#HeaderAdvancepaymentPriceText').text(formatCurrency(summary_data.advance));
+                    if (summary_data.advance_payment_series === 2) {
+                        $('#HeaderAdvancepaymentPriceText')
+                            .removeClass('text-warning')
+                            .addClass('text-danger');
+                    } else {
+                        $('#HeaderAdvancepaymentPriceText')
+                            .removeClass('text-danger')
+                            .addClass('text-warning');
+                    }
 					if (res.data.header_discount_status == 'Approved') {
 						$('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
 						$('#HeaderDiscountPriceText').text(formatCurrency(res.data.main_data[0].discount_amount));
@@ -641,6 +694,11 @@ function renderAvailableJobs() {
 	const tbody = $('#availableJobsTable tbody');
 	tbody.empty();
 	let rowCnt = 1;
+
+    let subTotalSum = 0;
+    let lineDiscountSum = 0;
+    let totalPriceSum = 0;
+
 	$.each(availableJobs, function (index, job) {
 		const row = $(`
                         <tr class="job-row" data-job-id="${job.jobId}">
@@ -656,7 +714,15 @@ function renderAvailableJobs() {
                         </tr>
                     `);
 		tbody.append(row);
+
+        subTotalSum += parseFloat(job.total) || 0;
+        lineDiscountSum += parseFloat(job.line_discount) || 0;
+        totalPriceSum += parseFloat(job.net_amount) || 0;
 	});
+
+    $('#availableJobsSubTotal').text(formatCurrency(subTotalSum));
+    $('#availableJobsLineDiscount').text(formatCurrency(lineDiscountSum));
+    $('#availableJobsTotalPrice').text(formatCurrency(totalPriceSum));
     
 }
 
@@ -669,6 +735,10 @@ function renderSelectedJobs() {
 	const tbody = $('#excludeJobsTable tbody');
 	tbody.empty();
     let rowCnt = 1;
+
+    let subTotalSum = 0;
+    let lineDiscountSum = 0;
+    let totalPriceSum = 0;
     
 	$.each(selectedJobs, function (index, job) {
 		const row = $(`
@@ -687,7 +757,15 @@ function renderSelectedJobs() {
                         </tr>
                     `);
 		tbody.append(row);
+
+        subTotalSum += parseFloat(job.total) || 0;
+        lineDiscountSum += parseFloat(job.line_discount) || 0;
+        totalPriceSum += parseFloat(job.net_amount) || 0;
 	});
+
+    $('#selectedJobsSubTotal').text(formatCurrency(subTotalSum));
+    $('#selectedJobsLineDiscount').text(formatCurrency(lineDiscountSum));
+    $('#selectedJobsTotalPrice').text(formatCurrency(totalPriceSum));
 }
 
 $(document).on('click', '.move-to-available', function () {
@@ -780,6 +858,7 @@ function updatePriceSummary() {
     $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
     $('#displayOrderValueText').text(formatCurrency(orderValue));
+    $('#confirmedOrderValue').val(`${totalAvailableJobprice}`);
 
 	const $differenceElement = $('#priceDifference');
     const $differenceElementText = $('#priceDifferenceText');
