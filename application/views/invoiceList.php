@@ -89,6 +89,19 @@ include "include/topnavbar.php";
         border-left: 0;
         }
         </style>
+
+       <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift_response['status']) && $check_cashier_shift_response['status']) {
+                if ($check_cashier_shift_response['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
+
         <main>
             <div class="page-header page-header-light bg-white shadow">
         	    <div class="container-fluid">
@@ -97,11 +110,13 @@ include "include/topnavbar.php";
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Invoice List</span>
         				</h1>
-                        <button
-                            class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>"
-                            data-toggle="modal" data-target="#invoiceTypeModal">
-                            <i class="fas fa-plus mr-3"></i>Create New Invoice
-                        </button>
+                        <?php if ($shift_status === 'current_user'): ?>
+                            <button
+                                class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if ($addcheck == 0) echo 'd-none'; ?>"
+                                data-toggle="modal" data-target="#invoiceTypeModal">
+                                <i class="fas fa-plus mr-3"></i>Create New Invoice
+                            </button>
+                        <?php endif; ?>
         			</div>
         		</div>
         	</div>
@@ -235,6 +250,7 @@ var approve2check = '<?php echo $approve2check; ?>';
 var approve3check = '<?php echo $approve3check; ?>';
 var approve4check = '<?php echo $approve4check; ?>';
 var cancelcheck = '<?php echo $cancelcheck; ?>';
+var shift_status = '<?php echo $shift_status; ?>';
 
 $(document).ready(function() {
     loadPaymentListTable();
@@ -447,7 +463,7 @@ function loadPaymentListTable(){
                         '<i class="fas fa-external-link-alt"></i></a>';
 
 
-                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3") {
+                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3" && shift_status === "current_user") {
                         button +=
                             '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
                             full['id'] + '">' +

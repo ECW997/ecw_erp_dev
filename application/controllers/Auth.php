@@ -92,14 +92,17 @@ class Auth extends CI_Controller {
          }
     }
 
-	public function Dashboard(){
+    public function Dashboard(){
         $this->load->helper('api_helper');
         $auth_info = auth_check();
 		$api_token = $auth_info['api_token'];
 		$auth_user = $auth_info['user'];
 
 		$this->load->model('Commeninfo');
+        $this->load->model('Cashierinfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($api_token,'')['data'] ?? []));
+        $result['check_cashier_shift'] = $this->Cashierinfo->checkCashierShift($api_token,[]);
+
 		$this->load->view('dashboard', $result);
 	}
 

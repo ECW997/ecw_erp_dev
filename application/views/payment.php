@@ -854,7 +854,7 @@ function getCustomerJobOrInvoiceDetails() {
                         <td class="text-end ref_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_pre_paid d-none">${Number(entry.paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
-                        <td class="text-end ref_balance_text">${bal == 0 ? '' : formatCurrency(bal)}</td>
+                        <td class="text-end ref_balance_text">${bal == 0 ? '0.00' : formatCurrency(bal)}</td>
                         <td class="text-end ref_balance d-none">${Number(bal || 0).toFixed(2)}</td>
                         <td class="text-center">${actionBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
@@ -990,8 +990,8 @@ function loadPayDetail(header_id,series_id) {
                         $newRow.append(
                             $('<td>').text(methodText),
                             $('<td>').text('Payment Received'),
-                            $('<td class="text-end pay_amount_text">').text(formatCurrency(amount)),
-                            $('<td class="text-end pay_balance_text">').text(formatCurrency(amount)),
+                            $('<td class="text-end pay_amount_text">').text(amount == 0 ? '0.00' : formatCurrency(amount)),
+                            $('<td class="text-end pay_balance_text">').text(amount == 0 ? '0.00' : formatCurrency(amount)),
                             $('<td class="text-end d-none pay_amount">').text(amount.toFixed(2)),
                             $('<td class="text-end d-none pay_balance">').text(amount.toFixed(2)),
                             $('<td class="text-end d-none pay_method_id">').text(methodId),
@@ -1115,7 +1115,7 @@ function loadPayAllocationDetail(header_id,series_id) {
                         let $totalRow = $(`
                                 <tr class="fw-bold table-border-top">
                                     <td colspan="2" class="text-end">Total Paid</td>
-                                    <td class="text-end">${formatCurrency(totalAllocated)}</td>
+                                    <td class="text-end">${totalAllocated == 0 ? '0.00' : formatCurrency(totalAllocated)}</td>
                                 </tr>
                                 <tr class="fw-bold table-border-top">
                                     <td colspan="2" class="text-end">Balance</td>

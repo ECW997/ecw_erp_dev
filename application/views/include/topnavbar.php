@@ -115,78 +115,36 @@ if ($response !== false && is_numeric($response)) {
     <button class="btn btn-icon btn-transparent-light order-1 order-lg-0 mr-lg-2" id="sidebarToggle" href="#">
         <i data-feather="menu"></i>
     </button>
+
+    <?php if (in_array($_SESSION['typename'], ['Cashier', 'Super Administrator'])): ?>
+        <?php if (isset($check_cashier_shift['status']) && $check_cashier_shift['status']): ?>
+            <?php if ($check_cashier_shift['code'] == 200): ?>
+                <button class="btn btn-warning ml-3" id="cashierShiftBtn">Cashier Shift Open</button>
+            <?php elseif ($check_cashier_shift['code'] == 403): ?>
+                <span class="ml-3 text-white bg-danger p-2 rounded">
+                    <?= $check_cashier_shift['message']; ?>
+                </span>
+            <?php endif; ?>
+        <?php else: ?>
+            <button class="btn btn-danger ml-3" id="cashierShiftOpenBtn" data-toggle="modal" data-target="#startShiftModal">Cashier Shift Closed</button>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <ul class="navbar-nav align-items-center ml-auto">
-        <?php if (in_array($_SESSION['typename'], ['Sales Person'])) { ?>
-        <li class="mr-5 nav-item dropdown no-caret mr-3 dropdown-user d-none" id="today_active_alert_bar"
-            title="Today Active Second Followups"
-            style="font-weight: 600; margin-right: 1rem; color: #00ac69;font-size: x-large;">
-            <a class="btn-icon dropdown-toggle text-success" id="navbarDropdownAlert" href="javascript:void(0);"
-                role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                <i class="fas fa-bell shake"></i>
-            </a> <span id="today_active_secondfollowup_count"></span>
-            <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" style="min-width: 0rem;"
-                aria-labelledby="navbarDropdownAlert">
-                <h6 class="dropdown-header d-flex align-items-center">
-                    <div class="dropdown-user-details" id="today_active_second_inquiry-list"
-                        style="padding-right: 10px;max-height: 500px; overflow-y: auto;scrollbar-width: thin;scrollbar-color: #888 #f1f1f1;">
-
-                    </div>
-                </h6>
-            </div>
-        </li>
-        <li class="mr-5 nav-item dropdown no-caret mr-3 dropdown-user d-none" id="today_active_first_alert_bar"
-            title="Today Active First Followups"
-            style="font-weight: 600; margin-right: 1rem; color:hsl(46, 93.10%, 54.50%);font-size: x-large;">
-            <a class="btn-icon dropdown-toggle text-warning" id="navbarDropdownAlert" href="javascript:void(0);"
-                role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                <i class="fas fa-bell shake"></i>
-            </a> <span id="today_active_firstfollowup_count"></span>
-            <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" style="min-width: 0rem;"
-                aria-labelledby="navbarDropdownAlert">
-                <h6 class="dropdown-header d-flex align-items-center">
-                    <div class="dropdown-user-details" id="today_active_first_inquiry-list"
-                        style="padding-right: 10px;max-height: 500px; overflow-y: auto;scrollbar-width: thin;scrollbar-color: #888 #f1f1f1;">
-
-                    </div>
-                </h6>
-            </div>
-        </li>
-        <li class="mr-5 nav-item dropdown no-caret mr-3 dropdown-user d-none" id="alert_bar" title="Re-Second Followups"
-            style="font-weight: 600; margin-right: 1rem; color: red;font-size: x-large;">
-            <a class="btn-icon dropdown-toggle text-danger" id="navbarDropdownAlert" href="javascript:void(0);"
-                role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                <i class="fas fa-bell shake"></i>
-            </a> <span id="followup-count"></span>
-            <div class="dropdown-menu dropdown-menu-right border-0 shadow animated--fade-in-up" style="min-width: 0rem;"
-                aria-labelledby="navbarDropdownAlert">
-                <h6 class="dropdown-header d-flex align-items-center">
-                    <div class="dropdown-user-details" id="inquiry-list"
-                        style="padding-right: 10px;max-height: 500px; overflow-y: auto;scrollbar-width: thin;scrollbar-color: #888 #f1f1f1;">
-
-                    </div>
-                </h6>
-            </div>
-        </li>
-        <?php } ?>
         <li class="mr-5">
-        <marquee
+            <marquee
                 style="font-size: 20px; color: orange; font-weight: bold;  padding: 10px; text-shadow: 2px 2px 4px #000;">
                 <!-- 🎉 Happy New Year! 🎆 🎇 2025 🎆 🎇🎉 සුභ නව වසරක් වේවා!  🎆 🎇 🎉 -->
                 <!-- 🎉 EDIRISINGHA CUSHION WORKS ( PVT ) LTD. 🎉 -->
                  SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER
             </marquee>
-            </li>
-
-
+        </li>
         <?php if (in_array($_SESSION['typename'], ['Super Administrator', 'Administrator', 'Coordinator', 'Showroom Coordinator'])) { ?>
         <li id="sms_balance" style="font-weight: 600; margin-right: 2rem; <?php echo $balanceColor; ?>">
             SMS Balance :- Rs <?php echo $formattedSMSBalanceResponse; ?>
         </li>
         <?php } ?>
-
-
         <!-- <div id="snow"></div> -->
-
         <li id="live_date_time" style="font-weight: 600; margin-right: 1rem; color: #00aaff;">
         </li>
         <div class="background background--light">
@@ -305,6 +263,9 @@ if ($response !== false && is_numeric($response)) {
         </div>
     </div>
 </div>
+
+<?php include __DIR__ . "/../components/modal/cashier/cashier_shift_dashboard.php"; ?>
+
 <script src="<?php echo base_url() ?>assets/js/logout.js"></script>
 <script>
 function updateDateTime() {

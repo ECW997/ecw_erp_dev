@@ -602,6 +602,8 @@ function loadJobCard() {
 			success: function (res) {
 				if (res.status && res.data) {
 					let data = res.data.main_data[0];
+                    let summary_data = res.data.summary_data[0];
+                    
 					let index = 1;
 					const tbody = $('#availableJobsTable tbody');
 					tbody.empty();
@@ -630,6 +632,18 @@ function loadJobCard() {
 					$('#confirmedOrderValue').val(parseFloat(res.data.main_data[0].net_total).toFixed(2));
 					$('#subTotal').text(parseFloat(totalFullJobPrice).toFixed(2));
 					$('#subTotalText').text(formatCurrency(totalFullJobPrice));
+
+                    $('#HeaderAdvancepaymentPrice').text(summary_data.advance);
+                    $('#HeaderAdvancepaymentPriceText').text(formatCurrency(summary_data.advance));
+                    if (summary_data.advance_payment_series === 2) {
+                        $('#HeaderAdvancepaymentPriceText')
+                            .removeClass('text-warning')
+                            .addClass('text-danger');
+                    } else {
+                        $('#HeaderAdvancepaymentPriceText')
+                            .removeClass('text-danger')
+                            .addClass('text-warning');
+                    }
 					if (res.data.header_discount_status == 'Approved') {
 						$('#HeaderDiscountPrice').text(parseFloat(res.data.main_data[0].discount_amount).toFixed(2));
 						$('#HeaderDiscountPriceText').text(formatCurrency(res.data.main_data[0].discount_amount));
@@ -844,6 +858,7 @@ function updatePriceSummary() {
     $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
     $('#displayOrderValueText').text(formatCurrency(orderValue));
+    $('#confirmedOrderValue').val(`${totalAvailableJobprice}`);
 
 	const $differenceElement = $('#priceDifference');
     const $differenceElementText = $('#priceDifferenceText');

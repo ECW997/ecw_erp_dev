@@ -11,6 +11,7 @@ class Payment extends CI_Controller {
         parent::__construct();
 		$this->load->helper('api_helper');
         $this->load->model('Paymentinfo');
+		$this->load->model('Cashierinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -19,13 +20,38 @@ class Payment extends CI_Controller {
 
 	public function index(){
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
-		$this->load->view('paymentList', $result);
+		$result['check_cashier_shift'] = $check_cashier_shift_response;
+
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
+		// $is_opening_approved = $check_cashier_shift_response['shift']['opening_approved_at'] == null ? false : true;
+
+		if ($status === true && $code == 200) {
+			// if($is_opening_approved){
+			// 	$this->load->view('paymentList', $result);
+			// }else{
+			// 	$this->load->view('components/modal/cashier/background_layout', $result);
+			// }
+			$this->load->view('paymentList', $result);
+		} elseif ($status === true && $code == 403) {
+			$this->load->view('components/modal/cashier/background_layout', $result);
+		} else {
+			$this->load->view('components/modal/cashier/background_layout', $result);
+		}
 	}
 	
 	public function paymentDetailIndex($id = null, $series_type = null){
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
+ 		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
+		// $is_opening_approved = $check_cashier_shift_response['shift']['opening_approved_at'] == null ? false : true;
 		$branch_id = $this->session->userdata('branch_id');
 
         if ($id !== null) {
@@ -41,7 +67,19 @@ class Payment extends CI_Controller {
             $result['is_edit'] = false;
 		}
 
-		$this->load->view('payment', $result);
+		if ($status === true && $code == 200) {
+			// if($is_opening_approved){
+			// 	$this->load->view('payment', $result);
+			// }else{
+			// 	$this->load->view('components/modal/cashier/background_layout', $result);
+			// }
+
+			$this->load->view('payment', $result);
+		} elseif ($status === true && $code == 403) {
+			$this->load->view('components/modal/cashier/background_layout', $result);
+		} else {
+			$this->load->view('components/modal/cashier/background_layout', $result);
+		}
 	}
 
 	public function generateDraftReceiptNo($seriesType) {
