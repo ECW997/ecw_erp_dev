@@ -72,6 +72,8 @@ $config['api_endpoints'] = [
     'get_jobcard_edit_details_v1' => '/v1/get_jobcard_edit_details',
     'exportJobCardExcelData_v1' => '/v1/exportJobCardExcelData',
 
+    'quickSearchJobDetails_v1' => '/v1/quickSearchJobDetails',
+
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
     'job_option_pricing_v1' => '/v1/job_option_pricing',
@@ -103,6 +105,7 @@ $config['api_endpoints'] = [
     'get_outstanding_invoices_v1' => '/v1/get_outstanding_invoices',
 
     'get_all_outstanding_invoices_v1' => '/v1/get_all_outstanding_invoices',
+    'invoiceAmountSummary_v1' => '/v1/invoiceAmountSummary',
 
     'get_jobcards_by_customer_v1' => '/v1/get_jobcards_by_customer',
     'get_draft_receiptno_v1' => '/v1/get_draft_receiptno',
