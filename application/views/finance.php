@@ -199,7 +199,7 @@ include "include/topnavbar.php";
                                     </tbody>
                                 </table>
 
-                                <div class="action-section">
+                                <div class="action-section" id="opening_approve_section">
                                     <button type="button" class="btn btn-success btn-sm d-flex align-items-center" id="btnApproveOpening">
                                         <i class="fas fa-check-circle mr-2"></i> Approve Opening
                                     </button>
@@ -269,7 +269,7 @@ include "include/topnavbar.php";
                                 </div>
                             </div>
                         </div>
-                        <input type="text" id="recordId" name="recordId"/>
+                        <input type="hidden" id="recordId" name="recordId"/>
                     </div>
                     
                     <!-- Footer -->
@@ -513,7 +513,6 @@ $(document).on('click', '#btnApproveOpening', function () {
             success: function(result) {
                 if(result.status) {
                     success_toastify(result.message);
-
                     $('.detail-card').addClass('d-none');
                     $('.spinner-grow').removeClass('d-none');
                     showViewModal(id);
@@ -549,15 +548,21 @@ function showViewModal(id) {
                     $('#modal_opening_balance_slips').text(data.opening_balance_slips != null ? parseFloat(data.opening_balance_slips).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#modal_opening_balance_cheques').text(data.opening_balance_cheques != null ? parseFloat(data.opening_balance_cheques).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#modal_opening_approved_at').text(data.opening_approved_at ?? '-');
+                    $('#modal_opening_approved_by').text(data.opening_approver);
                     $('#modal_closed_at').text(data.closed_at ?? '-');
                     $('#modal_closing_balance_cash').text(data.closing_balance_cash != null ? parseFloat(data.closing_balance_cash).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#modal_closing_balance_slips').text(data.closing_balance_slips != null ? parseFloat(data.closing_balance_slips).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#modal_closing_balance_cheques').text(data.closing_balance_cheques != null ? parseFloat(data.closing_balance_cheques).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#modal_closing_verified_at').text(data.closing_verified_at ?? '-');
+                    $('#modal_closing_verified_by').text(data.verifier_name);
                     $('#modal_status').text(data.status_text);
                     $('#modal_remarks').text(data.remarks);
                     $('#modal_shift_sales_amount').text(data.shift_total_sales != null ? parseFloat(data.shift_total_sales).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00');
                     $('#recordId').val(data.id);
+
+                    console.log(data.opening_approved_at);
+                    
+                    data.opening_approved_at == null ? $('#opening_approve_section').removeClass('d-none') : $('#opening_approve_section').addClass('d-none');
                     
                 } else {
                     falseResponse(res.message || "Unexpected error checking shift");

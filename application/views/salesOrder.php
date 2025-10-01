@@ -280,6 +280,17 @@ include "include/v2/topnavbar.php";
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">Exclude Jobs</h5>
                                         <div class="d-flex align-items-center gap-2">
+                                            <div class="input-group input-group-sm">
+                                                <select class="form-control form-control-sm selecter2 px-2 d-none" name="paymenttype"
+                                                    id="paymenttype" required>
+                                                    <option value="1" <?= (isset($relationDetails['payment_type']) && $relationDetails['payment_type'] == '1') ? 'selected' : '' ?>>
+                                                        Non-Credit
+                                                    </option>
+                                                    <option value="2" <?= (isset($relationDetails['payment_type']) && $relationDetails['payment_type'] == '2') ? 'selected' : '' ?>>
+                                                        Credit
+                                                    </option>
+                                                </select>
+                                            </div>
                                             <button title="Receipt" id="excludeReceiptBtn" class="btn btn-sm btn-info exclude-receipt-btn" style="display:none;"onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
@@ -901,7 +912,8 @@ function confirmOrder() {
                 tempSelectedJobs: tempSelectedJobs,
                 jobCardId: $('#job_card_number').val(),
                 confirmedOrderValue: $('#confirmedOrderValue').val(),
-                headerDiscount: $('#HeaderDiscountPrice').text()
+                headerDiscount: $('#HeaderDiscountPrice').text(),
+                paymenttype: $('#paymenttype').val()
             },
             url: '<?php echo base_url() ?>SalesOrder/SalesOrderInsertUpdate',
             success: function(result) {
@@ -952,13 +964,20 @@ function approveConfirm() {
                             if(result.data.invoice_id){
                                 $('#btnGoInvoice').removeClass('d-none');
                                 $("#btnGoInvoice").off("click").on("click", function() {
-                                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data.invoice_id;
+                                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data.invoice_id + '/1';
                                  });
                             }else{
-                                $('#printReceipt').removeClass('d-none');
-                                $("#printReceipt").off("click").on("click", function() {
-                                    exportPaymentReceiptV2(result.data.exclude_invoice_id);
-                                });
+                                if(result.data.payment_type == '1'){
+                                    $('#printReceipt').removeClass('d-none');
+                                    $("#printReceipt").off("click").on("click", function() {
+                                        exportPaymentReceiptV2(result.data.exclude_invoice_id);
+                                    });
+                                }else{
+                                    $('#btnGoInvoice').removeClass('d-none');
+                                    $("#btnGoInvoice").off("click").on("click", function() {
+                                        window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result.data.exclude_invoice_id + '/2';
+                                    });
+                                }
                             }
                            
                             $("#btnNewSalesOrder").off("click").on("click", function() {
@@ -1025,10 +1044,12 @@ $(document).ready(function() {
             }
             if (buffer === showSecret) {
                 $('#excludeReceiptBtn').show();
+                $('#paymenttype').removeClass('d-none');
                 buffer = "";
             }
             if (buffer === hideSecret) {
                 $('#excludeReceiptBtn').hide();
+                $('#paymenttype').addClass('d-none');
                 buffer = "";
             }
         }

@@ -44,6 +44,17 @@ include "include/v2/topnavbar.php";
             font-size: 1.1em;
         }
         </style>
+        <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+                if ($check_cashier_shift['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -88,16 +99,18 @@ include "include/v2/topnavbar.php";
                                 <div class="form-header mb-4">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <button type="button"
-                                                class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
-                                                onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
-                                                <i class="fas fa-cash-register me-1"></i> Print Receipt
-                                            </button>
-                                            <button type="button"
-                                                class="btn btn-info btn-sm rounded-2 action-btn d-none print_receipt_v2 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
-                                                onclick="exportPaymentReceiptV2(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
-                                                <i class="fas fa-cash-register me-1"></i> Print S2 Receipt
-                                            </button>
+                                            <?php if ($shift_status === 'current_user'): ?>
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                                    onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                                    <i class="fas fa-cash-register me-1"></i> Print Receipt
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-info btn-sm rounded-2 action-btn d-none print_receipt_v2 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                                    onclick="exportPaymentReceiptV2(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                                    <i class="fas fa-cash-register me-1"></i> Print S2 Receipt
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
 
                                         <span class="badge bg-secondary">
@@ -225,11 +238,13 @@ include "include/v2/topnavbar.php";
                                                 </div>
                                             </div>
                                             <div class="col-md-4 d-flex align-items-end">
-                                                <button type="button"
-                                                    class="btn btn-primary btn-sm w-100 action-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                                    id="addPaymentBtn" onclick="addPayment()">
-                                                    <i class="fas fa-plus me-1"></i> Add Payment
-                                                </button>
+                                                <?php if ($shift_status === 'current_user'): ?>
+                                                    <button type="button"
+                                                        class="btn btn-primary btn-sm w-100 action-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                                        id="addPaymentBtn" onclick="addPayment()">
+                                                        <i class="fas fa-plus me-1"></i> Add Payment
+                                                    </button>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                         <div id="bankTransferDetails" class="row g-3 mt-2 d-none">
@@ -367,6 +382,16 @@ include "include/v2/topnavbar.php";
                                         <i class="fas fa-check-double me-1"></i> Approve Payment
                                     </button>
                                 </div>
+                                <!-- <div class="form-actions d-flex justify-content-end gap-2 mt-4">
+                                    <?php if ($shift_status === 'current_user' && $approve1check && (!isset($payment_main_data['status']) || $payment_main_data['status'] !== 'Approved')): ?>
+                                        <button type="button"
+                                            class="btn btn-success btn-sm action-btn"
+                                            id="confirmPaymentBtn"
+                                            onclick="confirmPayment()">
+                                            <i class="fas fa-check-double me-1"></i> Approve Payment
+                                        </button>
+                                    <?php endif; ?>
+                                </div> -->
                             </div>
                         </div>
                     </div>

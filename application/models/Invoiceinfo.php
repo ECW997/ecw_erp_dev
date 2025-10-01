@@ -35,9 +35,13 @@ class Invoiceinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('POST', 'store_direct_invoice_v1', $form_data, $headers);
     }
-    public function getInvoiceById($api_token,$form_data) {
+    public function getInvoiceById($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'invoice_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'invoice_v1', $form_data. $queryString, $headers);
     }
     public function updateInvoice($api_token,$form_data) {
         $headers = get_api_headers($api_token);
@@ -73,9 +77,13 @@ class Invoiceinfo extends CI_Model{
         return call_api('POST', 'get_sel2_pay_allocation_receipt_v1', $form_data, $headers);
     }
 
-    public function getInvoicePdfDetails($api_token,$form_data) {
+    public function getInvoicePdfDetails($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_invoice_pdf_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_invoice_pdf_v1', $form_data. $queryString, $headers);
     }
 
     public function insertNewItem($api_token,$form_data) {
