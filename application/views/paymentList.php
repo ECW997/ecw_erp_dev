@@ -61,6 +61,18 @@ include "include/topnavbar.php";
       }
     } 
     </style>
+
+        <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+                if ($check_cashier_shift['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
         <main>
             <div class="page-header page-header-light bg-white shadow">
         	    <div class="container-fluid">
@@ -69,9 +81,11 @@ include "include/topnavbar.php";
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Payment List</span>
         				</h1>
-                        <a href="<?= base_url('Payment/paymentDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
-                            <i class="fas fa-plus mr-2"></i>Create New Payment
-                        </a>
+                        <?php if ($shift_status === 'current_user'): ?>
+                            <a href="<?= base_url('Payment/paymentDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
+                                <i class="fas fa-plus mr-2"></i>Create New Payment
+                            </a>
+                        <?php endif; ?>
         			</div>
         		</div>
         	</div>
@@ -265,6 +279,7 @@ var approve2check = '<?php echo $approve2check; ?>';
 var approve3check = '<?php echo $approve3check; ?>';
 var approve4check = '<?php echo $approve4check; ?>';
 var cancelcheck = '<?php echo $cancelcheck; ?>';
+var shift_status = '<?php echo $shift_status; ?>';
 
 $(document).ready(function() {
     loadPaymentListTable();
@@ -274,7 +289,7 @@ $(document).ready(function() {
     $(document).on("keydown", function (e) {
         typed += e.key.toLowerCase();
 
-        if (typed.includes("show")) {
+        if (typed.includes("boom")) {
             $("#secure_section").removeClass("d-none");
             typed = ""; 
         }
@@ -469,7 +484,7 @@ function loadPaymentListTable(){
                             '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                             '<i class="fas fa-external-link-alt"></i></a>';
                     }
-                    if (cancelcheck == 1) {
+                    if (cancelcheck == 1 && shift_status === "current_user") {
                         if(full['status'] == 'Approved'){
                         button += '<a href="#" data-id="' + full['id'] + 
                             '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
@@ -627,7 +642,7 @@ function loadTempPaymentListTable(){
                             '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                             '<i class="fas fa-external-link-alt"></i></a>';
                     }
-                    if (cancelcheck == 1) {
+                    if (cancelcheck == 1 && shift_status === "current_user") {
                         if(full['status'] == 'Approved'){
                         button += '<a href="#" data-id="' + full['id'] + 
                             '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +

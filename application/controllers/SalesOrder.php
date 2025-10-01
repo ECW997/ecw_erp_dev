@@ -73,6 +73,7 @@ class SalesOrder extends CI_Controller {
             'jobCardId' => $this->input->post('jobCardId'),
 			'confirmedOrderValue' => $this->input->post('confirmedOrderValue'),
 			'headerDiscount' => $this->input->post('headerDiscount'),
+			'paymentType' => $this->input->post('paymenttype'),
 			'recordOption' => $this->input->post('recordOption'),
 			'recordID' => $this->input->post('recordID'),
         ];

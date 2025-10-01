@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cashier extends CI_Controller {
+class CashMovements extends CI_Controller {
     protected $api_token;
     protected $auth_user;
 

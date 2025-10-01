@@ -419,7 +419,74 @@ function checkprivilege($arraymenu, $menuID, $type){
                 renderNavLink(13, "Invoice", "https://cdn.lordicon.com/jwmqentq.json", "primary:#000000,secondary:#66a1ee,tertiary:#3080e8", $check_cashier_shift, $menuprivilegearray);
                 renderNavLink(14, "Payment", "https://cdn.lordicon.com/kkdnopsh.json", "primary:#242424,secondary:#3080e8,tertiary:#ffffff", $check_cashier_shift, $menuprivilegearray);
             ?> -->
-            
+
+            <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" 
+                data-toggle="collapse" data-target="#collapseCashier" aria-expanded="false" aria-controls="collapseCashier">
+                    <div class="nav-link-icon">
+                        <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
+                            colors="primary:#3080e8,secondary:#000000,tertiary:#ffffff" style="width:25px;height:25px">
+                        </lord-icon>
+                    </div>
+                    Cashier
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="collapse <?php if(in_array($functionmenu, [
+                    "CashierShift","CashHandover","CashierSummary","CashierAdjustments",
+                    "CashLedger","CashMovements","IOUSettlements"
+                ])){echo 'show';} ?>" 
+                id="collapseCashier" data-parent="#accordionSidenav">
+
+                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                        
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierShift'; ?>">
+                            Cashier Shift</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashHandover'; ?>">
+                            Cash Handover</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierSummary'; ?>">
+                            Shift Summary</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierAdjustments'; ?>">
+                            Adjustments</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashLedger'; ?>">
+                            Transaction Ledger</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashMovements'; ?>">
+                            Cash Movements</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'IOUSettlements'; ?>">
+                            IOU Settlements</a>
+                        <?php } ?>
+
+                    </nav>
+                </div>
+            <?php } ?>
+
+
             <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Finance'; ?>">
                 <!-- <div class="nav-link-icon"><i class="fas fa-photo-video"></i></div> -->

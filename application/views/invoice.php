@@ -69,6 +69,19 @@ include "include/v2/topnavbar.php";
             font-size: 1.1em;
         }
         </style>
+
+        <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+                if ($check_cashier_shift['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
+
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -122,25 +135,27 @@ include "include/v2/topnavbar.php";
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button"
-                                    class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                    data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                    <i class="fas fa-plus me-1"></i> New Invoice
-                                </button>
-
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
 
-                                <button type="button"
-                                    class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
-                                    data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
-                                    <i class="fas fa-check me-1"></i> Approve
-                                </button>
+                                <?php if ($shift_status === 'current_user'): ?>
+                                    <button type="button"
+                                        class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                        data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
+                                        <i class="fas fa-plus me-1"></i> New Invoice
+                                    </button>
 
-                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
-                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
-                                    onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
-                                    <i class="fas fa-print me-1"></i> Print Invoice
-                                </button>
+                                    <button type="button"
+                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
+                                        data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
+                                        <i class="fas fa-check me-1"></i> Approve
+                                    </button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                        <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                        onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                        <i class="fas fa-print me-1"></i> Print Invoice
+                                    </button>
+                                <?php endif; ?>
 
                                 <input type="text" name="invoice_id"
                                     class="form-control form-control-sm input-highlight d-none" id="invoice_id"
@@ -409,6 +424,8 @@ var approve2check = '<?php echo $approve2check; ?>';
 var approve3check = '<?php echo $approve3check; ?>';
 var approve4check = '<?php echo $approve4check; ?>';
 var cancelcheck = '<?php echo $cancelcheck; ?>';
+
+let series_id = "<?= $invoice_main_data[0]['series_type'] ?? 0 ?>";
 
 function createInvoice() {
 
@@ -716,7 +733,7 @@ function cancelInvoice() {
 
 function exportInvoicePDF(invoice_id) {
     const baseUrl = "<?php echo base_url(); ?>Invoice/invoicePDF";
-    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}`;
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }
 
