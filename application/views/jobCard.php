@@ -127,6 +127,10 @@ $is_denied = ($status === 'Cancelled');
                                         </button>
                                     </div>
                                 </div>
+                                  <div class="col-12 col-sm-6 col-md-2 d-grid">
+                                    <input type="text" id="JobSearch" class="form-control"
+                                        placeholder="Quick search ...">
+                                </div>
                             </div>
                         </div>
                         <div class="row mb-3">

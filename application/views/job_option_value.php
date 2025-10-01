@@ -160,6 +160,17 @@ include "include/topnavbar.php";
                                             <option value="0">Deactive</option>
                                         </select>
                                     </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="small font-weight-bold">Branch*</label>
+                                        <select class="form-control form-control-sm " name="branch_id" id="branch_id">
+                                            <option value="">Select</option>
+                                            <option value="0">Both</option>
+                                            <option value="1">Nittambuwa</option>
+                                            <option value="2">Negombo</option>
+                                        </select>
+                                    </div>
+
                                     <div class="form-group mb-1">
                                         <button type="button" id="addtolistBtn"
                                             class="btn btn-primary btn-sm px-4 mt-auto p-2">
@@ -588,8 +599,11 @@ $(document).ready(function() {
         var value_name = $('#value_name').val();
         var parent_option_value = $('#parent_option_value').val();
         var status = $('#status').val();
+        var branch_id = $('#branch_id').val();
         var recordID = $('#recordID').val();
         var recordOption = $('#recordOption').val();
+
+        alert(branch_id);
 
         $.ajax({
             type: "POST",
@@ -604,6 +618,7 @@ $(document).ready(function() {
                 value_name: value_name,
                 parent_option_value: parent_option_value,
                 status: status,
+                branch_id: branch_id,
                 recordOption: recordOption,
                 recordID: recordID
             },
@@ -636,6 +651,7 @@ $(document).ready(function() {
                         setSelect2Value(parent_option_value, result.data
                             .ParentOptionValueID, result.data.parent_value_name);
                         $('#status').val(result.data.IsActive);
+                        $('#branch_id').val(result.data.branch_id);
 
                         $('#recordOption').val('2');
                         $('#addtolistBtn').html('<i class="far fa-save"></i>&nbsp;Update');

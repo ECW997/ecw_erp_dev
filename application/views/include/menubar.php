@@ -201,6 +201,18 @@ else if($functionmenu=='AssignEmployeeToJob'){
     $cancelcheck=checkprivilege($menuprivilegearray, 19, 9);
 }
 
+else if($functionmenu=='DailySalesSummaryReport'){
+    $addcheck=checkprivilege($menuprivilegearray, 20, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 20, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 20, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 20, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 20, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 20, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 20, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 20, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 20, 9);
+}
+
 
 function checkprivilege($arraymenu, $menuID, $type){
     foreach($arraymenu as $array){
@@ -397,7 +409,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
             <?php }?>
 
-            <?php if(menucheck($menuprivilegearray, 17)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 17)==1 || menucheck($menuprivilegearray, 20)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
                 <!-- <div class="nav-link-icon"><i class="far fa-file-alt"></i></div> -->
@@ -409,17 +421,16 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($functionmenu=="InvoiceOutstandingReport" | $functionmenu=="Appointment_Report" | $functionmenu=="Cancel_Appointment_Report" | $functionmenu=="Coordinator_wise_inquiry_Report" | $functionmenu=="Followup_report" | $functionmenu=="Inquiry_transfer_report" | $functionmenu=="Job_Done_Inquiry_Report" | $functionmenu=="Inquiry_Source_Report" | $functionmenu=="SalesPerson_wise_callcenter_inquiry_Report" | $functionmenu=="Customer_Inquiry_Summary_Report"){echo 'show';} ?>"
+            <div class="collapse <?php if($functionmenu=="InvoiceOutstandingReport" | $functionmenu=="DailySalesSummaryReport" | $functionmenu=="Cancel_Appointment_Report" | $functionmenu=="Coordinator_wise_inquiry_Report" | $functionmenu=="Followup_report" | $functionmenu=="Inquiry_transfer_report" | $functionmenu=="Job_Done_Inquiry_Report" | $functionmenu=="Inquiry_Source_Report" | $functionmenu=="SalesPerson_wise_callcenter_inquiry_Report" | $functionmenu=="Customer_Inquiry_Summary_Report"){echo 'show';} ?>"
                 id="collapseReport" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <?php if(menucheck($menuprivilegearray, 17)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
                         href="<?php echo base_url().'InvoiceOutstandingReport'; ?>">Customer Invoice Outstanding
                         Report</a>
-                    <?php } if(menucheck($menuprivilegearray, 56)==1){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 20)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light"
-                        href="<?php echo base_url().'Customer_Inquiry_Summary_Report'; ?>">Customer Inquiry Summary
-                        Report</a>
+                        href="<?php echo base_url().'DailySalesSummaryReport'; ?>">Daily Sales Summary Report</a>
                     <?php } ?>
                 </nav>
             </div>

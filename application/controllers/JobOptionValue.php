@@ -55,6 +55,7 @@ class JobOptionValue extends CI_Controller {
 			'value_name' => $this->input->post('value_name'),
 			'parent_option_value_id' => $this->input->post('parent_option_value'),
 			'is_active' => $this->input->post('status'),
+			'branch_id' => $this->input->post('branch_id'),
 			'recordID' => $this->input->post('recordID'),
         ];
 
