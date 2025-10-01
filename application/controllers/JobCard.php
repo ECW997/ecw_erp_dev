@@ -11,6 +11,7 @@ class JobCard extends CI_Controller {
         parent::__construct();
 		$this->load->helper('api_helper');
         $this->load->model('JobCardinfo');
+		$this->load->model('Cashierinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -20,6 +21,10 @@ class JobCard extends CI_Controller {
 	public function index(){
 		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
 
@@ -28,6 +33,10 @@ class JobCard extends CI_Controller {
 
     public function jobCardDetailIndex($id = null){
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 
         if ($id !== null) {

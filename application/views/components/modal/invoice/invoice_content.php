@@ -111,20 +111,22 @@
                                 <input type="number" step="any" name="chargeamount"
                                     class="form-control form-control-sm text-end" id="chargeamount" required>
                             </div>
-                            <div class="col-12 mt-2">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" title="Insert" id="secondformsubmit"
-                                        class="btn btn-success btn-sm add-extra-charge-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                        onclick="insertExtraCharge();">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                    <button type="button" title="Update" id="secondupdateformsubmit"
-                                        class="btn btn-warning btn-sm d-none update-extra-charge-btn <?= ($editcheck == 0) ? 'd-none' : '' ?>"
-                                        onclick="updateExtraCharge();">
-                                        <i class="fas fa-sync"></i>
-                                    </button>
+                            <?php if ($shift_status === 'current_user'): ?>
+                                <div class="col-12 mt-2">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" title="Insert" id="secondformsubmit"
+                                            class="btn btn-success btn-sm add-extra-charge-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                            onclick="insertExtraCharge();">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button type="button" title="Update" id="secondupdateformsubmit"
+                                            class="btn btn-warning btn-sm d-none update-extra-charge-btn <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                            onclick="updateExtraCharge();">
+                                            <i class="fas fa-sync"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </form>
 
@@ -147,18 +149,20 @@
                                     <td class="text-end d-none insert_status">existing</td>
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
                                     <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" title="Edit"
-                                                class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
-                                                id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
-                                                <i class="fas fa-pen"></i>
-                                            </button>
-                                            <button type="button" title="Delete"
-                                                class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
-                                                id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                                        <?php if ($shift_status === 'current_user'): ?>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" title="Edit"
+                                                    class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                                    id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
+                                                    <i class="fas fa-pen"></i>
+                                                </button>
+                                                <button type="button" title="Delete"
+                                                    class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
+                                                    id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -265,6 +269,7 @@
                                                                 class="small form-label text-dark d-none">Reciepts</label>
                                                         </div>
 
+                                                        <?php if ($shift_status === 'current_user'): ?>
                                                         <div class="col-4 mt-2">
                                                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                                                 <button type="button" title="Insert"
@@ -280,6 +285,7 @@
                                                                 </button>
                                                             </div>
                                                         </div>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </form>
 
@@ -529,16 +535,18 @@
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
                                         required>
                                 </div>
-                                <div class="col-md-2 d-flex align-items-end">
-                                    <?php
-                                    $is_button_hidden = ($is_confirmed != 0) || ($is_edit ? $editcheck == 0 : $addcheck == 0);
-                                    ?>
-                                    <button type="button" id="btncreateorder"
-                                        class="btn btn-primary w-100 fw-bold <?= $is_button_hidden ? 'd-none' : '' ?>"
-                                        onclick="createInvoice();">
-                                        <i class="fas fa-save me-2"></i><?= $is_edit ? 'Update' : 'Create'; ?> Invoice
-                                    </button>
-                                </div>
+                                <?php if ($shift_status === 'current_user'): ?>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <?php
+                                        $is_button_hidden = ($is_confirmed != 0) || ($is_edit ? $editcheck == 0 : $addcheck == 0);
+                                        ?>
+                                        <button type="button" id="btncreateorder"
+                                            class="btn btn-primary w-100 fw-bold <?= $is_button_hidden ? 'd-none' : '' ?>"
+                                            onclick="createInvoice();">
+                                            <i class="fas fa-save me-2"></i><?= $is_edit ? 'Update' : 'Create'; ?> Invoice
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

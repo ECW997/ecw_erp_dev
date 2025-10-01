@@ -122,3 +122,5 @@ function menucheck($arraymenu, $menuID){
             <div class="inner"> <img style="width: 30px;" src="<?php echo base_url('images/s3.png'); ?>"></div>
         </div>
     </div> -->
+
+    <?php include __DIR__ . "/../components/modal/cashier/start_cashier_shift.php"; ?>

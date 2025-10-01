@@ -11,6 +11,7 @@ class SalesOrder extends CI_Controller {
         parent::__construct();
 		$this->load->helper('api_helper');
         $this->load->model('SalesOrderinfo');
+		$this->load->model('Cashierinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -19,12 +20,20 @@ class SalesOrder extends CI_Controller {
 
     public function index(){
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$this->load->view('salesOrderList', $result);
 	}
 
 	public function salesOrderDetailIndex($id = null){
 		$this->load->model('Commeninfo');
+		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
+		$code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$branch_id = $this->session->userdata('branch_id');
 		$jobcard_id = $this->input->get('jobcard_id'); 
@@ -64,6 +73,7 @@ class SalesOrder extends CI_Controller {
             'jobCardId' => $this->input->post('jobCardId'),
 			'confirmedOrderValue' => $this->input->post('confirmedOrderValue'),
 			'headerDiscount' => $this->input->post('headerDiscount'),
+			'paymentType' => $this->input->post('paymenttype'),
 			'recordOption' => $this->input->post('recordOption'),
 			'recordID' => $this->input->post('recordID'),
         ];

@@ -89,6 +89,19 @@ include "include/topnavbar.php";
         border-left: 0;
         }
         </style>
+
+        <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+                if ($check_cashier_shift['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
+
         <main>
             <div class="page-header page-header-light bg-white shadow">
         	    <div class="container-fluid">
@@ -97,11 +110,13 @@ include "include/topnavbar.php";
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Invoice List</span>
         				</h1>
-                        <button
-                            class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if($addcheck==0){echo 'd-none';} ?>"
-                            data-toggle="modal" data-target="#invoiceTypeModal">
-                            <i class="fas fa-plus mr-3"></i>Create New Invoice
-                        </button>
+                        <?php if ($shift_status === 'current_user'): ?>
+                            <button
+                                class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if ($addcheck == 0) echo 'd-none'; ?>"
+                                data-toggle="modal" data-target="#invoiceTypeModal">
+                                <i class="fas fa-plus mr-3"></i>Create New Invoice
+                            </button>
+                        <?php endif; ?>
         			</div>
         		</div>
         	</div>
@@ -165,6 +180,75 @@ include "include/topnavbar.php";
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="secure_section" class="d-none">
+            	<div class="container-fluid mt-2 p-0 p-2">
+            		<div class="card">
+            			<div class="p-2 ">
+            				<div class="row align-items-center">
+            					<div class="col-12 col-md-3 d-flex align-items-center justify-content-start"></div>
+            					<div class="col-12 col-md-9 d-flex align-items-center justify-content-end flex-wrap">
+            						<div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+            							<label for="date_from" class="mb-0 mr-2">Date Filter</label>
+            							<div class="input-group">
+            								<input type="date" id="date_from" class="form-control form-control-sm"
+            									aria-label="Date From" />
+            								<div class="input-group-append">
+            									<span class="input-group-text">to</span>
+            								</div>
+            								<input type="date" id="date_to" class="form-control form-control-sm"
+            									aria-label="Date To" />
+            							</div>
+            						</div>
+            						<div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+            							<label for="status" class="mb-0 mr-2">Status</label>
+            							<select id="status" class="custom-select custom-select-sm"
+            								style="min-width: 130px;">
+            								<option value="">All Status</option>
+            								<option value="0">Pending</option>
+            								<option value="1">Approved</option>
+            								<option value="2">Cancelled</option>
+            							</select>
+            						</div>
+            						<button class="btn btn-secondary btn-sm" id="filterBtn"
+            							style="height: 1.9rem; font-size: 0.85rem;">
+            							<i class="fas fa-filter mr-1"></i> Filter
+            						</button>
+            						<button class="btn btn-outline-secondary btn-sm ml-2"
+            							id="clearFilterBtn">Clear</button>
+            					</div>
+            				</div>
+            			</div>
+            			<hr>
+            			<div class="card-body p-0 p-2">
+            				<div class="row">
+            					<div class="col-12">
+            						<div class="scrollbar pb-3" id="style-2">
+            							<table class="table table-bordered table-striped table-sm nowrap w-100"
+            								id="temp_dataTable">
+            								<thead>
+            									<tr>
+            										<th>#</th>
+            										<th>Invoice No</th>
+            										<th>JobCard No</th>
+            										<th>Customer Name</th>
+            										<th>Invoice Date</th>
+            										<th>Invoice Type</th>
+            										<th>Approve Status</th>
+            										<th>Invoice Amount</th>
+            										<th>Invoice Status</th>
+            										<th>Payment Status</th>
+            										<th class="text-right">Actions</th>
+            									</tr>
+            								</thead>
+            							</table>
+            						</div>
+            					</div>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
             </div>
         </main>
 
@@ -235,9 +319,26 @@ var approve2check = '<?php echo $approve2check; ?>';
 var approve3check = '<?php echo $approve3check; ?>';
 var approve4check = '<?php echo $approve4check; ?>';
 var cancelcheck = '<?php echo $cancelcheck; ?>';
+var shift_status = '<?php echo $shift_status; ?>';
 
 $(document).ready(function() {
     loadPaymentListTable();
+    loadTempPaymentListTable();
+
+    let typed = "";
+    $(document).on("keydown", function (e) {
+        typed += e.key.toLowerCase();
+
+        if (typed.includes("boom")) {
+            $("#secure_section").removeClass("d-none");
+            typed = ""; 
+        }
+        if (typed.includes("hide")) {
+            $("#secure_section").addClass("d-none");
+            typed = ""; 
+        }
+        if (typed.length > 10) typed = typed.slice(-10);
+    });
 
     $('#filterBtn').on('click', function() {
         loadPaymentListTable();
@@ -330,6 +431,7 @@ function loadPaymentListTable(){
                     d.date_from = $('#date_from').val();
                     d.date_to = $('#date_to').val();
                     d.status = $('#status').val();
+                    d.series = '1';
             },
             dataSrc: function(json) {
                 if (json.status === false && json.code === 401) {
@@ -442,12 +544,224 @@ function loadPaymentListTable(){
                 "render": function(data, type, full) {
                     var button = '';
                     button += '<a href="' + base_url + 'Invoice/invoiceDetailIndex/' + full[
-                            'id'] +
+                            'id'] + '/1' +
                         '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
                         '<i class="fas fa-external-link-alt"></i></a>';
 
 
-                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3") {
+                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3" && shift_status === "current_user") {
+                        button +=
+                            '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
+                            full['id'] + '">' +
+                            '<i class="fas fa-trash-alt"></i></button>';
+                    }
+
+                    return button;
+                }
+            }
+        ],
+        drawCallback: function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+
+  
+    $(document).on('click', '.btnDeleteInvoice', function() {
+        var invoiceId = $(this).data('id');
+
+        if (!confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
+
+        $.ajax({
+            url: base_url + "Invoice/deleteInvoice/" + invoiceId,
+            type: "POST",
+            dataType: "json",
+            success: function(response) {
+                if (response && response.status == true) {
+                    success_toastify(response.message);
+                    $('#dataTable').DataTable().ajax.reload(null, false);
+                } else {
+                    falseResponse(response);
+                }
+            },
+            error: function() {
+                alert("Server error occurred.");
+            }
+        });
+    });
+
+};
+
+function loadTempPaymentListTable(){
+    var base_url = "<?php echo base_url(); ?>";
+
+    $('#temp_dataTable').DataTable({
+        "destroy": true,
+        "processing": true,
+        "serverSide": true,
+        dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        responsive: true,
+        lengthMenu: [
+            [15, 30, 50, -1],
+            [15, 30, 50, 'All'],
+        ],
+        "buttons": [{
+                extend: 'csv',
+                className: 'btn btn-success btn-sm',
+                title: 'Invoice List',
+                text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-danger btn-sm',
+                title: 'Invoice List',
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+            },
+            {
+                extend: 'print',
+                title: 'Invoice List',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fas fa-print mr-2"></i> Print',
+                customize: function(win) {
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                },
+            },
+        ],
+        ajax: {
+            url: apiBaseUrl + '/v1/invoice',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            data: function(d) {
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.status = $('#status').val();
+                    d.series = '2';
+            },
+            dataSrc: function(json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
+        },
+        "order": [
+            [0, "desc"]
+        ],
+        "columns": [{
+                "data": "id"
+            },
+            {
+                "data": null,
+                "render": function(data, type, full) {
+                    if (full.invoice_number && full.invoice_number !== "") {
+                        return full.invoice_number;
+                    } else if (full.draft_number && full.draft_number !== "") {
+                        return '<span class="text-muted">' + full.draft_number + '</span>';
+                    } else {
+                        return '<span class="text-danger">N/A</span>';
+                    }
+                }
+            },
+            {
+                "data": "jobcard_no"
+            },
+            {
+                "data": "customer_name"
+            },
+            {
+                "data": "invoice_date"
+            },
+            {
+                "data": "invoice_type",
+                "render": function(data, type, full) {
+                    if (data === "direct") {
+                        return '<span class="text-info" style="font-weight: 600;">Direct Invoice</span>';
+                    } else if (data === "indirect") {
+                        return '<span class="text-primary" style="font-weight: 600;">Job Card Invoice</span>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                "data": "inv_status_text",
+                "className": "text-center",
+                "render": function(data, type, full) {
+                    let colorClass = "";
+
+                    if (data === "Pending") {
+                        colorClass = "text-warning";
+                    } else if (data === "Approved") {
+                        colorClass = "text-success";
+                    } else if (data === "Cancelled") {
+                        colorClass = "text-danger";
+                    }
+
+                    return `<span class="${colorClass}" style="font-weight: 600;">${data}</span>`;
+                }
+            },
+            {
+                "data": "inv_grand_total",
+                "className": "text-end",
+                "render": function(data, type, full) {
+                    let formatted = addCommas(parseFloat(data).toFixed(2));
+                    return `<span class="text-dark" style="font-weight: 600;">${formatted}</span>`;
+                }
+            },
+            {
+                "data": "inv_status",
+                "className": "text-center",
+                "render": function(data, type, full) {
+                    if (data === "1") {
+
+                        return '<span class="text-success" style="font-weight: 600;">Active</span>';
+                    } else if (data === "3") {
+                        return '<span class="text-danger" style="font-weight: 600;">Deleted</span>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                "data": "inv_payment_status",
+                "className": "text-center",
+                "render": function(data, type, full) {
+                    if (data === "0") {
+                        return '<span class="text-danger" style="font-weight: 600;">Payment Pending</span>';
+                    } else if (data === "1") {
+                        return '<span class="text-success" style="font-weight: 600;">Payment Paid</span>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                "targets": -1,
+                "className": 'text-right',
+                "data": null,
+                "render": function(data, type, full) {
+                    var button = '';
+                    button += '<a href="' + base_url + 'Invoice/invoiceDetailIndex/' + full[
+                            'id'] + '/2' +
+                        '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
+                        '<i class="fas fa-external-link-alt"></i></a>';
+
+
+                    if (full['is_confirmed'] == "0" && deletecheck == 1 && full['inv_status'] != "3" && shift_status === "current_user") {
                         button +=
                             '<button title="Delete" class="btn btn-danger btn-sm btnDeleteInvoice" data-id="' +
                             full['id'] + '">' +

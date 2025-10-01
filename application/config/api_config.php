@@ -120,4 +120,8 @@ $config['api_endpoints'] = [
     'getJobList_v1' => '/v1/getJobList',
 
     'item_v1' => '/v1/item',
+
+    'cashier_v1' => '/v1/cashier',
+    'update_shift_opening_balance_v1' => '/v1/update_shift_opening_balance',
+    'approve_shift_opening_balance_v1' => '/v1/approve_shift_opening_balance',
 ];

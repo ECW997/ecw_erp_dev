@@ -92,7 +92,16 @@
                         }
                         ?>
                     <tr>
-                        <td class="text-left"><?= $list['job_sub_category_text']; ?> x <?= $list['total_job_cnt']; ?>
+                        <td class="text-left">
+                            <?php 
+                                $sub = $list['job_sub_category_text'];
+                                $main = $list['job_main_category_text'];
+
+                                echo (strpos($sub, $main) !== false) 
+                                    ? $sub 
+                                    : $sub . ' ' . $main;
+                            ?> 
+                            x <?= $list['total_job_cnt']; ?>
                         </td>
                         <td class="text-right"><?= number_format($list['sub_total'], 2); ?></td>
                     </tr>
@@ -219,9 +228,16 @@
                     <table class="w-100 table table-bordered">
                         <thead>
                             <tr>
-                                <th
-                                    style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">
-                                    <?php echo $group['job_sub_category_text']; ?></th>
+                                <th style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">
+                                    <?php 
+                                        $sub  = $group['job_sub_category_text'];
+                                        $main = $group['job_main_category_text'];
+
+                                        echo (stripos($sub, $main) !== false) 
+                                            ? $sub 
+                                            : $sub . ' ' . $main;
+                                    ?>
+                                </th>
                                 <th
                                     style="width:20%; word-wrap: break-word; word-break: break-word; white-space: normal;">
                                     Description</th>

@@ -201,6 +201,7 @@ else if($functionmenu=='AssignEmployeeToJob'){
     $cancelcheck=checkprivilege($menuprivilegearray, 19, 9);
 }
 
+
 else if($functionmenu=='DailySalesSummaryReport'){
     $addcheck=checkprivilege($menuprivilegearray, 20, 1);
     $editcheck=checkprivilege($menuprivilegearray, 20, 2);
@@ -212,6 +213,21 @@ else if($functionmenu=='DailySalesSummaryReport'){
     $approve4check=checkprivilege($menuprivilegearray, 20, 8);
     $cancelcheck=checkprivilege($menuprivilegearray, 20, 9);
 }
+
+
+else if($functionmenu=='Finance'){
+    $addcheck=checkprivilege($menuprivilegearray, 15, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 15, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 15, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 15, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 15, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 15, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 15, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 15, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 15, 9);
+}
+
+
 
 
 function checkprivilege($arraymenu, $menuID, $type){
@@ -354,7 +370,6 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php if(menucheck($menuprivilegearray, 18)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'SalesOrder'; ?>">
                 <div class="nav-link-icon">
-                    <!-- <i class="fas fa-id-card-alt"></i> -->
                     <lord-icon src="https://cdn.lordicon.com/tbabdzcy.json" trigger="loop" delay="2000"
                         colors="primary:#242424,secondary:#3080e8" style="width:25px;height:25px">
                     </lord-icon>
@@ -381,6 +396,122 @@ function checkprivilege($arraymenu, $menuID, $type){
                     </lord-icon>
                     <!-- <i class="fas fa-cash-register"></i> -->
                 </div>Payments
+            </a>
+            <?php }?>
+
+            <!-- <?php
+                function renderNavLink($menuId, $page, $iconSrc, $iconColors, $check_cashier_shift, $menuprivilegearray) {
+                    if (!menucheck($menuprivilegearray, $menuId)) {
+                        return;
+                    }
+
+                    // $isApproved = isset($check_cashier_shift['status']) && $check_cashier_shift['status'] && $check_cashier_shift['shift']['opening_approved_at'] !== null; 
+                    $isApproved = isset($check_cashier_shift['status']) && $check_cashier_shift['status'];
+
+                    if ($isApproved) {
+                        $href = base_url() . $page;
+                        $extraClass = '';
+                        $dataAttr = '';
+                    } else {
+                        $href = 'javascript:void(0)';
+                        $extraClass = ' start-shift-link';
+                        $dataAttr = ' data-page="'.$page.'"';
+                    }
+                    ?>
+                    <a class="nav-link p-0 px-3 py-2 text-light<?= $extraClass ?>" href="<?= $href ?>"<?= $dataAttr ?>>
+                        <div class="nav-link-icon">
+                            <lord-icon src="<?= $iconSrc ?>" trigger="loop" delay="2000"
+                                colors="<?= $iconColors ?>" style="width:25px;height:25px">
+                            </lord-icon>
+                        </div>
+                        <?= $page ?>
+                    </a>
+            <?php 
+                } 
+                $check_cashier_shift = isset($check_cashier_shift) ? $check_cashier_shift : [];
+                $menuprivilegearray = isset($menuprivilegearray) ? $menuprivilegearray : [];
+
+                renderNavLink(13, "Invoice", "https://cdn.lordicon.com/jwmqentq.json", "primary:#000000,secondary:#66a1ee,tertiary:#3080e8", $check_cashier_shift, $menuprivilegearray);
+                renderNavLink(14, "Payment", "https://cdn.lordicon.com/kkdnopsh.json", "primary:#242424,secondary:#3080e8,tertiary:#ffffff", $check_cashier_shift, $menuprivilegearray);
+            ?> -->
+
+            <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" 
+                data-toggle="collapse" data-target="#collapseCashier" aria-expanded="false" aria-controls="collapseCashier">
+                    <div class="nav-link-icon">
+                        <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
+                            colors="primary:#3080e8,secondary:#000000,tertiary:#ffffff" style="width:25px;height:25px">
+                        </lord-icon>
+                    </div>
+                    Cashier
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="collapse <?php if(in_array($functionmenu, [
+                    "CashierShift","CashHandover","CashierSummary","CashierAdjustments",
+                    "CashLedger","CashMovements","IOUSettlements"
+                ])){echo 'show';} ?>" 
+                id="collapseCashier" data-parent="#accordionSidenav">
+
+                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                        
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierShift'; ?>">
+                            Cashier Shift</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashHandover'; ?>">
+                            Cash Handover</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierSummary'; ?>">
+                            Shift Summary</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashierAdjustments'; ?>">
+                            Adjustments</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashLedger'; ?>">
+                            Transaction Ledger</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'CashMovements'; ?>">
+                            Cash Movements</a>
+                        <?php } ?>
+
+                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                        <a class="nav-link p-0 px-3 py-1 text-light"
+                            href="<?php echo base_url().'IOUSettlements'; ?>">
+                            IOU Settlements</a>
+                        <?php } ?>
+
+                    </nav>
+                </div>
+            <?php } ?>
+
+
+            <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Finance'; ?>">
+                <!-- <div class="nav-link-icon"><i class="fas fa-photo-video"></i></div> -->
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
+                        colors="primary:#242424,secondary:#3080e8,tertiary:#ffffff,quaternary:#ebe6ef,quinary:#ffffff,senary:#242424,septenary:#f24c00"
+                        style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
+                Finance
             </a>
             <?php }?>
 
