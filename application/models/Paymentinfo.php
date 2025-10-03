@@ -25,9 +25,13 @@ class Paymentinfo extends CI_Model{
         return call_api('POST', 'get_sel2_customer_v1', $form_data, $headers);
     }
 
-    public function getOutstandingInvoicesByCustomer($api_token,$form_data) {
+    public function getOutstandingInvoicesByCustomer($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);
-        return call_api('GET', 'get_outstanding_invoices_v1', $form_data, $headers);
+        $queryString = '';
+        if (!empty($params)) {
+            $queryString = '?' . http_build_query($params);
+        }
+        return call_api('GET', 'get_outstanding_invoices_v1', $form_data. $queryString, $headers);
     }
     public function getJobCardsByCustomer($api_token,$form_data,$params = []) {
         $headers = get_api_headers($api_token);

@@ -690,7 +690,7 @@ function approveInvoice() {
                 success_toastify(result.message);
                 setTimeout(function() {
                     window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' +
-                        approveData.id;
+                        approveData.id + '/1';
                 }, 1000);
             } else {
                 falseResponse(result);

@@ -107,8 +107,8 @@ class Payment extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function getOutstandingInvoicesByCustomer($id) {
-        $response = $this->Paymentinfo->getOutstandingInvoicesByCustomer($this->api_token,$id);
+	public function getOutstandingInvoicesByCustomer($id, $series_type = null) {
+        $response = $this->Paymentinfo->getOutstandingInvoicesByCustomer($this->api_token,$id,['series_type' => $series_type]);
 		echo json_encode($response);
     }
 
@@ -253,9 +253,12 @@ class Payment extends CI_Controller {
 			$this->pdf->set_option('defaultFont', 'Helvetica');           
 			$this->pdf->set_option('isRemoteEnabled', true); 
 
-			
 			// $this->load->view('components/pdf/payment_receipt_pdf', $pdf_data);
-			$html = $this->load->view('components/pdf/payment_receipt_pdf', $pdf_data, TRUE);
+			if($series_type == 1){
+				$html = $this->load->view('components/pdf/payment_receipt_pdf', $pdf_data, TRUE);
+			}else{
+				$html = $this->load->view('components/pdf/payment_receipt_v2_1_pdf', $pdf_data, TRUE);
+			}
 
 			$this->pdf->loadHtml($html);
 			$this->pdf->render();
