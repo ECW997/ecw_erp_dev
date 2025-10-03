@@ -177,7 +177,7 @@ include "include/v2/topnavbar.php";
                                             <div class="form-group">
                                                 <label class="form-label small fw-bold text-dark">Payment Series</label>
                                                 <select class="form-select form-select-sm input-highlight"
-                                                    name="PaymentSeries" id="PaymentSeries" onchange="generateDraftReceiptNo(this.value);"
+                                                    name="PaymentSeries" id="PaymentSeries" onchange="generateDraftReceiptNo(this.value); getCustomerJobOrInvoiceDetails();"
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Type</option>
                                                     <option value="1"
@@ -816,7 +816,7 @@ function getCustomerJobOrInvoiceDetails() {
 
         const url = paymentType == 'JobCard' ?
             '<?php echo base_url(); ?>Payment/getJobCardsByCustomer/' + customerId + '/' + PaymentSeries :
-            '<?php echo base_url(); ?>Payment/getOutstandingInvoicesByCustomer/' + customerId;
+            '<?php echo base_url(); ?>Payment/getOutstandingInvoicesByCustomer/' + customerId + '/' + PaymentSeries;
 
         $('#customerOutstandingTable tbody').html(
             '<tr><td colspan="6" class="text-center text-muted">Loading...</td></tr>');
