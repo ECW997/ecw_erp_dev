@@ -216,15 +216,28 @@ else if($functionmenu=='DailySalesSummaryReport'){
 
 
 else if($functionmenu=='Finance'){
-    $addcheck=checkprivilege($menuprivilegearray, 15, 1);
-    $editcheck=checkprivilege($menuprivilegearray, 15, 2);
-    $statuscheck=checkprivilege($menuprivilegearray, 15, 3);
-    $deletecheck=checkprivilege($menuprivilegearray, 15, 4);
-    $approve1check=checkprivilege($menuprivilegearray, 15, 5);
-    $approve2check=checkprivilege($menuprivilegearray, 15, 6);
-    $approve3check=checkprivilege($menuprivilegearray, 15, 7);
-    $approve4check=checkprivilege($menuprivilegearray, 15, 8);
-    $cancelcheck=checkprivilege($menuprivilegearray, 15, 9);
+    $addcheck=checkprivilege($menuprivilegearray, 21, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 21, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 21, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 21, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 21, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 21, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 21, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 21, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 21, 9);
+}
+
+
+else if($functionmenu=='SalesTarget'){
+    $addcheck=checkprivilege($menuprivilegearray, 22, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 22, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 22, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 22, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 22, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 22, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 22, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 22, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 22, 9);
 }
 
 
@@ -436,75 +449,69 @@ function checkprivilege($arraymenu, $menuID, $type){
             ?> -->
 
             <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" 
-                data-toggle="collapse" data-target="#collapseCashier" aria-expanded="false" aria-controls="collapseCashier">
-                    <div class="nav-link-icon">
-                        <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
-                            colors="primary:#3080e8,secondary:#000000,tertiary:#ffffff" style="width:25px;height:25px">
-                        </lord-icon>
-                    </div>
-                    Cashier
-                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
+            <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
+                data-target="#collapseCashier" aria-expanded="false" aria-controls="collapseCashier">
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
+                        colors="primary:#3080e8,secondary:#000000,tertiary:#ffffff" style="width:25px;height:25px">
+                    </lord-icon>
+                </div>
+                Cashier
+                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
 
-                <div class="collapse <?php if(in_array($functionmenu, [
+            <div class="collapse <?php if(in_array($functionmenu, [
                     "CashierShift","CashHandover","CashierSummary","CashierAdjustments",
                     "CashLedger","CashMovements","IOUSettlements"
-                ])){echo 'show';} ?>" 
-                id="collapseCashier" data-parent="#accordionSidenav">
+                ])){echo 'show';} ?>" id="collapseCashier" data-parent="#accordionSidenav">
 
-                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                        
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashierShift'; ?>">
-                            Cashier Shift</a>
-                        <?php } ?>
+                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashHandover'; ?>">
-                            Cash Handover</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashierShift'; ?>">
+                        Cashier Shift</a>
+                    <?php } ?>
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashierSummary'; ?>">
-                            Shift Summary</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashHandover'; ?>">
+                        Cash Handover</a>
+                    <?php } ?>
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashierAdjustments'; ?>">
-                            Adjustments</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashierSummary'; ?>">
+                        Shift Summary</a>
+                    <?php } ?>
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashLedger'; ?>">
-                            Transaction Ledger</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashierAdjustments'; ?>">
+                        Adjustments</a>
+                    <?php } ?>
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashMovements'; ?>">
-                            Cash Movements</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashLedger'; ?>">
+                        Transaction Ledger</a>
+                    <?php } ?>
 
-                        <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'IOUSettlements'; ?>">
-                            IOU Settlements</a>
-                        <?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'CashMovements'; ?>">
+                        Cash Movements</a>
+                    <?php } ?>
 
-                    </nav>
-                </div>
+                    <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'IOUSettlements'; ?>">
+                        IOU Settlements</a>
+                    <?php } ?>
+
+                </nav>
+            </div>
             <?php } ?>
 
 
-            <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
-            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Finance'; ?>">
-                <!-- <div class="nav-link-icon"><i class="fas fa-photo-video"></i></div> -->
+           
+            <?php if(menucheck($menuprivilegearray, 21)==1 || menucheck($menuprivilegearray, 22)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
+                data-target="#collapseFinance" aria-expanded="false" aria-controls="collapseFinance">
+                <!-- <div class="nav-link-icon"><i class="far fa-file-alt"></i></div> -->
                 <div class="nav-link-icon">
                     <lord-icon src="https://cdn.lordicon.com/kkdnopsh.json" trigger="loop" delay="2000"
                         colors="primary:#242424,secondary:#3080e8,tertiary:#ffffff,quaternary:#ebe6ef,quinary:#ffffff,senary:#242424,septenary:#f24c00"
@@ -512,8 +519,25 @@ function checkprivilege($arraymenu, $menuID, $type){
                     </lord-icon>
                 </div>
                 Finance
+                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <?php }?>
+            <div class="collapse <?php if($functionmenu=="Finance" | $functionmenu=="SalesTarget"){echo 'show';} ?>"
+                id="collapseFinance" data-parent="#accordionSidenav">
+                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                    <?php if(menucheck($menuprivilegearray, 21)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light"
+                        href="<?php echo base_url().'Finance'; ?>">Cashier Shift Management</a>
+                    <?php } if(menucheck($menuprivilegearray, 22)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light"
+                        href="<?php echo base_url().'SalesTarget'; ?>">Sales Target </a>
+                    <?php } ?>
+                </nav>
+            </div>
+            <?php } ?>
+
+
+
+
 
             <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'Media_library'; ?>">
