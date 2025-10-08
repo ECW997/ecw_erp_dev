@@ -306,6 +306,43 @@ class Payment extends CI_Controller {
 		
 	}
 
+
+	public function paymentReceiptV3PDF(){
+		$id=$this->input->get('receipt_id');
+		$type=$this->input->get('type');
+
+		$form_data = [
+			'id' => $id,
+			'type' => $type,
+		];
+        $response=$this->Paymentinfo->getReceiptV2PdfDetails($this->api_token,$form_data);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch Payment data');
+		}
+
+		$pdf_data = [
+			'header' => $response['data']['pay_header'],  
+    		'invoices' => $response['data']['details'], 		
+		];
+
+			$this->load->library('Pdf');
+
+			$customPaper = array(0, 0, 382.84, 380.84); 
+			// $customPaper = array(0, 0, 396, 396); 
+			$this->pdf->setPaper($customPaper);    
+			$this->pdf->set_option('defaultFont', 'Helvetica');           
+			$this->pdf->set_option('isRemoteEnabled', true); 
+
+			$html = $this->load->view('components/pdf/payment_receipt_v3_pdf', $pdf_data, TRUE);
+
+			$this->pdf->loadHtml($html);
+			$this->pdf->render();
+			$this->pdf->stream('receipt.pdf', ['Attachment' => 0]  
+			);
+		
+	}
+
 	public function cancelPayment($id) {
 		$form_data = [
 			'id' => $id,
