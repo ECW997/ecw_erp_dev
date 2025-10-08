@@ -58,11 +58,11 @@ include "include/topnavbar.php";
                                                 <input type="text" class="form-control form-control-sm"
                                                     name="monthlyTarget" id="monthlyTarget" required>
                                             </div>
-                                            <div class="col-md-3">
+                                            <!-- <div class="col-md-3">
                                                 <button type="submit" class="btn btn-success mt-4 px-4">
                                                     <i class="fas fa-save"></i>&nbsp; Save Target
                                                 </button>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </form>
                                 </div>
@@ -96,10 +96,12 @@ include "include/topnavbar.php";
                                                         <div class="col-12 col-md-6 mb-2">
                                                             <label class="small font-weight-bold text-dark">Assign
                                                                 Target*</label>
-                                                            <input type="text" class="form-control form-control-sm"
+                                                            <input type="number" class="form-control form-control-sm"
                                                                 name="personTarget" id="personTarget" required>
                                                         </div>
-                                                        <div class="col-12">
+                                                        <div class="col-9">
+                                                        </div>
+                                                        <div class="col-3">
                                                             <button type="button" id="formsubmit"
                                                                 class="btn btn-primary btn-sm mt-2 px-4"
                                                                 <?php if($addcheck==0){echo 'disabled';} ?>>
@@ -117,20 +119,24 @@ include "include/topnavbar.php";
                                                 </form>
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <table class="table_1 table-bordered table-striped table-sm nowrap w-100"
+                                                <table
+                                                    class="table_1 table-bordered table-striped table-sm nowrap w-100"
                                                     id="tempTargetTable">
                                                     <thead>
                                                         <tr>
                                                             <th>Sales Agent</th>
-                                                            <th>Assigned Target</th>
-                                                            <th>Actions</th>
+                                                            <th class="text-center">Assigned Target</th>
+                                                            <th class="text-center">Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     </tbody>
                                                 </table>
-                                                <button id="saveAllBtn" class="btn btn-success mt-2">Save All
-                                                    Targets</button>
+                                                <div id="targetSummary"></div>
+                                                <div class="d-flex justify-content-end mt-4">
+                                                    <button id="saveAllBtn" class="btn btn-success">Save All
+                                                        Targets</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -145,27 +151,16 @@ include "include/topnavbar.php";
                                                 <div class="col-12">
                                                     <div class="scrollbar pb-3" id="style-2">
                                                         <table
-                                                            class="table table-bordered table-striped table-sm nowrap w-100"
+                                                            class="table_1 table-bordered table-striped table-sm nowrap w-100"
                                                             id="dataTable">
                                                             <thead>
                                                                 <tr>
                                                                     </th>
-                                                                    <th>Inquiry Number</th>
-                                                                    <th>Inquiry Date</th>
-                                                                    <!-- <th>Inquiry Source </th> -->
-                                                                    <th>Customer Name</th>
-                                                                    <th>Mobile Number</th>
-                                                                    <!-- <th>Mobile Number 2</th> -->
-                                                                    <th>Vehicle Number</th>
-                                                                    <th>Vehicle Brand</th>
-                                                                    <th>Vehicle Model</th>
-                                                                    <th>Vehicle Year</th>
-                                                                    <th>Sales Person</th>
-                                                                    <!-- <th>Coordinator</th> -->
-                                                                    <th>Appointment</th>
-                                                                    <th>Appointment Date</th>
-                                                                    <!-- <th>Image Delivery</th> -->
-                                                                    <th>Job Done</th>
+                                                                    <th>Month</th>
+                                                                    <th>Month Target</th>
+                                                                    <th>Sales Agent</th>
+                                                                    <th>Agent Target</th>
+                                                                    <th>Target Percentage</th>
                                                                     <th class="text-right">Actions</th>
                                                                 </tr>
                                                             </thead>
@@ -191,60 +186,32 @@ include "include/topnavbar.php";
 <?php include "include/footerscripts.php"; ?>
 <script>
 $(document).ready(function() {
-    var addcheck = '<?php echo $addcheck; ?>';
-    var editcheck = '<?php echo $editcheck; ?>';
-    var statuscheck = '<?php echo $statuscheck; ?>';
-    var deletecheck = '<?php echo $deletecheck; ?>';
+    let addcheck = '<?php echo $addcheck; ?>';
 
-    let main_job_category = $('#main_job_category');
-
-    // main_job_category.select2({
-    //     placeholder: 'Select...',
-    //     width: '100%',
-    //     allowClear: true,
-    //     ajax: {
-    //         url: '<?php echo base_url() ?>SubJobCategory/getMainJob',
-    //         dataType: 'json',
-    //         data: function(params) {
-    //             return {
-    //                 term: params.term || '',
-    //                 page: params.page || 1,
-    //             }
-    //         },
-    //         cache: true,
-    //         processResults: function(data) {
-    //             if (data.status == true) {
-    //                 return {
-    //                     results: data.data.item,
-    //                     pagination: {
-    //                         more: data.data.item.length > 0
-    //                     }
-    //                 }
-    //             } else {
-    //                 falseResponse(data);
-    //             }
-    //         }
-    //     }
-    // });
-
-
-
-
-
+    function updateTargetSummary() {
+        let monthlyTarget = parseFloat($('#monthlyTarget').val()) || 0;
+        let allocated = 0;
+        $('#tempTargetTable tbody tr').each(function() {
+            allocated += parseFloat($(this).find('td.target').text()) || 0;
+        });
+        let toBeAllocated = monthlyTarget - allocated;
+        $('#targetSummary').html(
+            `<div class="mt-2">
+                <span class="badge badge-success">Allocated Target: ${allocated.toFixed(2)}</span>
+                <span class="badge badge-warning ml-2">Remaining Target: ${toBeAllocated.toFixed(2)}</span>
+            </div>`
+        );
+    }
 
     $("#formsubmit").click(function() {
         if (!$("#assignTargetForm")[0].checkValidity()) {
             $("#submitBtn").click();
         } else {
-
             var agentId = $('#sales_agent').val();
             var agentName = $('#sales_agent option:selected').text();
             var target = $('#personTarget').val();
+            var monthlyTarget = parseFloat($('#monthlyTarget').val()) || 0;
 
-
-            // alert(agentId, target, agentName);
-
-            // Validate
             if (!agentId || !target) {
                 Swal.fire({
                     icon: 'error',
@@ -271,183 +238,64 @@ $(document).ready(function() {
                     text: 'This sales agent has already been added to the table.',
                 });
             } else {
+                // Validate total allocation
+                let allocated = 0;
+                $('#tempTargetTable tbody tr').each(function() {
+                    allocated += parseFloat($(this).find('td.target').text()) || 0;
+                });
+                let newTotal = allocated + parseFloat(target);
+                if (monthlyTarget > 0 && newTotal > monthlyTarget) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Allocation Exceeded',
+                        text: 'Allocated targets exceed the monthly target!',
+                    });
+                    return;
+                }
+
                 $('#tempTargetTable > tbody').append(
-                    '<tr>' +
-                    '<td>' + agentName + '</td>' +
-                    '<td class="agentid d-none">' + agentId + '</td>' +
-                    '<td>' + target + '</td>' +
-                    '<td><button type="button" onclick="targetDelete(this);" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button></td>' +
-                    '</tr>'
+                    `<tr>
+                        <td>${agentName}</td>
+                        <td class="agentid d-none">${agentId}</td>
+                        <td class="target text-right">${target}</td>
+                        <td class="target text-center">
+                            <button type="button" onclick="targetDelete(this);" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>`
                 );
                 $('#sales_agent').val('');
                 $('#personTarget').val('');
                 $('#sales_agent').focus();
+                updateTargetSummary();
             }
         }
     });
 
+    // Update summary when monthly target changes
+    $('#monthlyTarget').on('input', updateTargetSummary);
 
-    // $('#dataTable').DataTable({
-    //     "destroy": true,
-    //     "processing": true,
-    //     "serverSide": true,
-    //     dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
-    //         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-    //     responsive: true,
-    //     lengthMenu: [
-    //         [10, 25, 50, -1],
-    //         [10, 25, 50, 'All'],
-    //     ],
-    //     "buttons": [{
-    //             extend: 'csv',
-    //             className: 'btn btn-success btn-sm',
-    //             title: 'Sub Job Category Information',
-    //             text: '<i class="fas fa-file-csv mr-2"></i> CSV',
-    //         },
-    //         {
-    //             extend: 'pdf',
-    //             className: 'btn btn-danger btn-sm',
-    //             title: 'Sub Job Category Information',
-    //             text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
-    //         },
-    //         {
-    //             extend: 'print',
-    //             title: 'Sub Job Category Information',
-    //             className: 'btn btn-primary btn-sm',
-    //             text: '<i class="fas fa-print mr-2"></i> Print',
-    //             customize: function(win) {
-    //                 $(win.document.body).find('table')
-    //                     .addClass('compact')
-    //                     .css('font-size', 'inherit');
-    //             },
-    //         },
-    //         // 'copy', 'csv', 'excel', 'pdf', 'print'
-    //     ],
-    //     ajax: {
-    //         url: apiBaseUrl + '/v1/sub_job_category',
-    //         type: "GET",
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'Authorization': 'Bearer ' + api_token
-    //         },
-    //         dataSrc: function(json) {
-    //             ;
-    //             if (json.status === false && json.code === 401) {
-    //                 falseResponse(errorObj);
-    //             } else {
-    //                 return json.data;
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             if (xhr.status === 401) {
-    //                 falseResponse(errorObj);
-    //             }
-    //         }
-    //     },
-    //     "order": [
-    //         [0, "desc"]
-    //     ],
-    //     "columns": [{
-    //             "data": "idtbl_sub_job_category"
-    //         },
-    //         {
-    //             "data": "main_job_category"
-    //         },
-    //         {
-    //             "data": "sub_job_category"
-    //         },
-    //         {
-    //             "targets": -1,
-    //             "className": 'text-right',
-    //             "data": null,
-    //             "render": function(data, type, full) {
-    //                 var button = '';
-    //                 button +=
-    //                     '<button title="Edit" class="btn btn-primary btn-sm btnEdit mr-1 ';
-    //                 if (editcheck != 1) {
-    //                     button += 'd-none';
-    //                 }
-    //                 button += '" id="' + full['idtbl_sub_job_category'] +
-    //                     '"><i class="fas fa-pen"></i></button>';
-    //                 if (full['status'] == 1) {
-    //                     button +=
-    //                         '<a title="Deactive" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryStatus/' +
-    //                         full['idtbl_sub_job_category'] +
-    //                         '/2" onclick="return deactive_confirm()" target="_self" class="btn btn-success btn-sm mr-1 ';
-    //                     if (statuscheck != 1) {
-    //                         button += 'd-none';
-    //                     }
-    //                     button += '"><i class="fas fa-check"></i></a>';
-    //                 } else {
-    //                     button +=
-    //                         '<a title="Active" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryStatus/' +
-    //                         full['idtbl_sub_job_category'] +
-    //                         '/1" onclick="return active_confirm()" target="_self" class="btn btn-warning btn-sm mr-1 ';
-    //                     if (statuscheck != 1) {
-    //                         button += 'd-none';
-    //                     }
-    //                     button += '"><i class="fas fa-times"></i></a>';
-    //                 }
-    //                 button +=
-    //                     '<a title="Delete" href="<?php echo base_url() ?>SubJobCategory/subJobCategoryDelete/' +
-    //                     full['idtbl_sub_job_category'] +
-    //                     '" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
-    //                 if (deletecheck != 1) {
-    //                     button += 'd-none';
-    //                 }
-    //                 button += '"><i class="fas fa-trash-alt"></i></a>';
+    // Update summary after delete
+    window.targetDelete = function(btn) {
+        if (confirm("Are you sure you want to delete this Sales Agent Target?")) {
+            btn.closest('tr').remove();
+            updateTargetSummary();
+            Toastify({
+                text: "Sales Agent Target Deleted Successfully",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#4CAF50",
+                stopOnFocus: true,
+            }).showToast();
+        }
+    };
 
-    //                 return button;
-    //             }
-    //         }
-    //     ],
-    //     drawCallback: function(settings) {
-    //         $('[data-toggle="tooltip"]').tooltip();
-    //     }
-    // });
-
-
-    // $('#dataTable tbody').on('click', '.btnEdit', function() {
-    //     var r = confirm("Are you sure, You want to Edit this?");
-    //     if (r == true) {
-    //         var id = $(this).attr('id');
-    //         $.ajax({
-    //             type: "GET",
-    //             dataType: 'json',
-    //             url: '<?php echo base_url() ?>SubJobCategory/subJobCategoryEdit/' + id,
-    //             success: function(result) {
-    //                 if (result.status == true) {
-    //                     $('#recordID').val(result.data.id);
-
-    //                     var Main_job = new Option(result.data.main_job_name, result.data
-    //                         .main_jobid, true, true);
-    //                     $('#main_job_category').append(Main_job).trigger('change');
-
-    //                     $('#sub_job_category').val(result.data.name);
-    //                     $('#recordOption').val('2');
-    //                     $('#submitBtn').html('<i class="far fa-save"></i>&nbsp;Update');
-    //                 } else {
-    //                     falseResponse(result);
-    //                 }
-    //             }
-    //         });
-    //     }
-    // });
-
+    // Initial summary
+    updateTargetSummary();
 });
-
-function deactive_confirm() {
-    return confirm("Are you sure you want to deactive this?");
-}
-
-function active_confirm() {
-    return confirm("Are you sure you want to active this?");
-}
-
-function delete_confirm() {
-    return confirm("Are you sure you want to remove this?");
-}
 </script>
 
 <script>
