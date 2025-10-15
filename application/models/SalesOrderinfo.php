@@ -34,4 +34,8 @@ class SalesOrderinfo extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('GET', 'job_card_v1', $id, $headers);
     }
+    public function getSalesOrderHeader($api_token,$id) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_sales_order_header_v1', $id, $headers);
+    }
 }

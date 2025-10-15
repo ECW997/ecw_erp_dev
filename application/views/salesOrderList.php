@@ -135,6 +135,39 @@ include "include/topnavbar.php";
                             </div>
                         </div>
                     </div>
+                    <hr>
+                    <div class="card-body p-0 p-2 secure_section d-none">
+                        <h3>Sales Job Card</h3>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="scrollbar pb-3" id="style-2">
+                                    <table class="table table-bordered table-striped table-sm nowrap w-100"
+                                        id="dataTable2">
+                                        <thead>
+                                            <tr>
+                                               <th>#</th>
+                                                <th>Date</th>
+                                                <th>Sales Order No</th>
+                                                <th>Job Card No</th>
+                                                <th>Customer</th>
+                                                <th>Vehicle Number</th>
+                                                <th>Vehicle Brand</th>
+                                                <th>Vehicle Model</th>
+                                                <th>Scheduled</th>
+                                                <th>Completed</th>
+                                                <th>Handover</th>
+                                                <th>Sales Agent</th>
+                                                <th>Job Status</th>
+                                                <th>Status</th>
+                                                <th>Payment Status</th>
+                                                <th class="text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -210,6 +243,22 @@ var base_url = "<?php echo base_url(); ?>";
 
 $(document).ready(function() {
     loadPaymentListTable();
+    loadSalesOrderListTable();
+
+    let typed = "";
+    $(document).on("keydown", function (e) {
+        typed += e.key.toLowerCase();
+
+        if (typed.includes("boom")) {
+            $(".secure_section").removeClass("d-none");
+            typed = ""; 
+        }
+        if (typed.includes("hide")) {
+            $(".secure_section").addClass("d-none");
+            typed = ""; 
+        }
+        if (typed.length > 10) typed = typed.slice(-10);
+    });
 
     $('#filterBtn').on('click', function() {
         loadPaymentListTable();
@@ -432,6 +481,234 @@ function loadPaymentListTable(){
     });
 }
 
+function loadSalesOrderListTable(){
+     $('#dataTable2').DataTable({
+        "destroy": true,
+        "processing": true,
+        "serverSide": true,
+        dom: "<'row'<'col-sm-5'l><'col-sm-2'><'col-sm-5'f>>" + "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        responsive: true,
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All'],
+        ],
+        "buttons": [{
+                extend: 'csv',
+                className: 'btn btn-success btn-sm',
+                title: 'Job Card List',
+                text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-danger btn-sm',
+                title: 'Job Card List',
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+            },
+            {
+                extend: 'print',
+                title: 'Job Card List',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fas fa-print mr-2"></i> Print',
+                customize: function(win) {
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                },
+            },
+        ],
+        ajax: {
+            url: apiBaseUrl + '/v1/get_sales_order_header',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            data: function(d) {
+                d.date_from = $('#date_from').val();
+                d.date_to = $('#date_to').val();
+                d.sales_agent = $('#sales_agent').val();
+                d.job_status = $('#job_status').val();
+                d.status = $('#status').val();
+                d.payment_status = $('#payment_status').val();
+            },
+            dataSrc: function(json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
+        },
+        "order": [
+            [1, "desc"]
+        ],
+        "columns": [{
+                "data": "id"
+            },
+            {
+                "data": "jobcard_date"
+            },
+            {
+                "data": "salesorder_no"
+            },
+            {
+                "data": "job_card_number"
+            },
+            {
+                "data": "customer_name"
+            },
+            {
+                "data": "vehicle_number"
+            },
+            {
+                "data": "brand_name"
+            },
+            {
+                "data": "model_name"
+            },
+            {
+                "data": "job_start_date"
+            },
+            {
+                data: "complete_date",
+                className: "text-center",
+                render: function(data, type, row) {
+                    if (row.job_progress_status_text !== "Completed") {
+                        return `<i class="fas fa-hourglass-half text-muted" title="In Progress"></i>`;
+                    }
+
+                    return `<span class="text-success">${data}</span>`;
+                }
+            },
+            {
+                "data": "handover_date"
+            },
+            {
+                "data": "sales_person_name"
+            },
+            {
+                data: "job_progress_status_text",
+                className: "text-center",
+                render: function(data, type, row) {
+                    let baseClasses = "badge badge-pill";
+                    let style = "";
+
+                    switch (data) {
+                        case "Not Started":
+                            style = "background-color: #D9D9D9; color: #6B7280;";
+                            break;
+                        case "In Progress":
+                            style = "background-color: #BBF7D0; color: #15803D;";
+                            break;
+                        case "Completed":
+                            style = "background-color: #22C55E; color: #D1FAE5;";
+                            break;
+                        case "On Hold":
+                            style = "background-color: #DC2626; color: #FEE2E2;";
+                            break;
+                        case "Pending RM":
+                            style = "background-color: #FB923C; color: #FFEDD5;";
+                            break;
+                        default:
+                            style = "background-color: #1F2937; color: #F3F4F6;";
+                    }
+
+                    return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                }
+            },
+            {
+                data: "status",
+                className: "text-center",
+                render: function(data, type, row) {
+                    let baseClasses = "badge badge-pill";
+                    let style = "";
+
+                    switch (data) {
+                        case 'Draft':
+                            style = 'background-color: #6B7280; color: #FFFFFF;';
+                            break;
+                        case 'Pending':
+                            style = 'background-color: #F59E0B; color: #1F2937;';
+                            break;
+                        case 'Approved':
+                            style = 'background-color: #10B981; color: #FFFFFF;';
+                            break;
+                        case 'Cancelled':
+                            style = 'background-color: #EF4444; color: #FFFFFF;';
+                            break;
+                        case 'Re-Approve Pending':
+                            style = 'background-color: #F97316; color: #FFFFFF;';
+                            break;
+                        case 'Re-Approved':
+                            style = 'background-color: #059669; color: #FFFFFF;';
+                            break;
+                        default:
+                            style = 'background-color: #4B5563; color: #FFFFFF;';
+                            break;
+                    }
+                    return `<span class="${baseClasses}" style="${style}">${data}</span>`;
+                }
+            },
+            {
+                    data: "payment_status",
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        let baseClasses = "badge badge-pill";
+                        let style = "";
+                        let status = "";
+
+                        switch (data) {
+                            case '0':
+                                style = 'background-color: #e81500; color: #FFFFFF;'; 
+                                status = 'Payment Pending';
+                                break;
+                            case '1':
+                                style = 'background-color: #00ac69; color: #1F2937;'; 
+                                status = 'Payment Paid';
+                                break;
+                            case '2':
+                                style = 'background-color: #00ac69; color: #1F2937;'; 
+                                status = 'Payment Pending';
+                                break;
+                            default:
+                                style = 'background-color: #4B5563; color: #FFFFFF;'; 
+                                break;
+                        }
+                    return `<span class="${baseClasses}" style="${style}">${status}</span>`;
+                }
+            },
+            {
+                "targets": -1,
+                "className": 'text-right',
+                "data": null,
+                "render": function(data, type, full) {
+                    var button = '';
+
+                    button += '<a href="' + base_url + 'SalesOrder/salesOrderDetailIndex2/' + full['relation_id'] + '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
+        				'<i class="fas fa-external-link-alt"></i></a>';
+                        
+                    button +=
+                        '<button onclick="exportJobCardPDF(' + full['relation_id'] + ')" ' +
+                        'title="Job Card Print" class="btn btn-dark btn-sm btnPrint mr-1">' +
+                            '<i class="fas fa-print"></i>' +
+                        '</button>';
+                    return button;
+                }
+            }
+        ],
+        drawCallback: function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+}
+
 $(document).on('click', '.btnDelete', function () {
  	var mainId = $(this).data('id');
 
@@ -467,6 +744,12 @@ function addCommas(nStr) {
         x1 = x1.replace(rgx, '$1' + ',' + '$2');
     }
     return x1 + x2;
+}
+
+function exportJobCardPDF(relation_id) {
+    const baseUrl = "<?php echo base_url(); ?>SalesOrder/salesOrderPDF";
+    const url = `${baseUrl}?relation_id=${encodeURIComponent(relation_id)}`;
+    window.open(url, '_blank');
 }
 
 function deactive_confirm() {

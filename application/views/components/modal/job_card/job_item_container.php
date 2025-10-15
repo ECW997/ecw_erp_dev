@@ -177,8 +177,7 @@
                                                                     </label>
                                                                     <input class="form-control form-control-sm text-left item-price remark_f" 
                                                                         type="text" id="remark_<?= $uniqueKey ?>" name="remark_<?= $uniqueKey ?>" 
-                                                                        value="" data-uniq-id="<?= $uniqueKey ?>" 
-                                                                        oninput="markRemarkUnsaved(this)" 
+                                                                        value="" data-uniq-id="<?= $uniqueKey ?>"  
                                                                         onkeydown="if (event.key === 'Enter') handleRemarkEnter(this);">
                                                                 </div>
                                                             </div>
@@ -759,22 +758,22 @@
     }
 
 
-    $('.remark_f').on('input', function () {
-        let remarkTimeouts = {};
-        const inputElement = this;
-        const uniqId = $(inputElement).data('uniq-id');
+    // $('.remark_f').on('input', function () {
+    //     let remarkTimeouts = {};
+    //     const inputElement = this;
+    //     const uniqId = $(inputElement).data('uniq-id');
 
-        clearTimeout(remarkTimeouts[uniqId]);
+    //     clearTimeout(remarkTimeouts[uniqId]);
 
-        remarkTimeouts[uniqId] = setTimeout(function () {
-            addToJobCard(2); 
+    //     remarkTimeouts[uniqId] = setTimeout(function () {
+    //         addToJobCard(2); 
             
-            $('#remark_save_status_' + uniqId)
-                .text('Saved')
-                .removeClass('text-danger')
-                .addClass('text-success');
-        }, 1500);
-    });
+    //         $('#remark_save_status_' + uniqId)
+    //             .text('Saved')
+    //             .removeClass('text-danger')
+    //             .addClass('text-success');
+    //     }, 1500);
+    // });
 
     function clearRowData(parentUniqueKey){
         $('#item_price_' + parentUniqueKey).val('').removeClass('is-invalid');

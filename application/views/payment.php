@@ -454,80 +454,19 @@ var cancelcheck = '<?php echo $cancelcheck; ?>';
 
 let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
 let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
+
+let realcustomerId = "<?php echo $customerId ?? ''; ?>";
+let realcustomerName = "<?php echo $customerName ?? ''; ?>";
+let realJobCardNo = "<?php echo $jobCardNo ?? ''; ?>";
+
 let header_id = 0;
 let series_id = 0;
 let paymentData = [];
 
 let approve_btn = document.getElementById('confirmPaymentBtn');
-
-$(document).ready(function() {
-    $('#loading-overlay').show();
-    let loadingPromises = [];
-
-    header_id = "<?= $payment_main_data['id'] ?? 0 ?>";
-    series_id = "<?= $payment_main_data['series_type'] ?? 0 ?>";
-    
-    if (header_id != 0 && series_id != 0) {
-        loadingPromises.push(
-            getCustomerJobOrInvoiceDetails().then(function() {
-                return loadPayDetail(header_id, series_id);
-            })
-        );
-    }
-
-    Promise.all(loadingPromises)
-        .then(function() {
-            $('#loading-overlay').fadeOut(300);
-        })
-        .catch(function(error) {
-            console.error("Error loading data:", error);
-            $('#loading-overlay').html(`
-                <div class="text-center text-danger">
-                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                    <h4>Error loading data</h4>
-                    <p>${error.message || 'Please try again'}</p>
-                    <button class="btn btn-primary mt-2" onclick="location.reload()">Reload Page</button>
-                </div>
-            `);
-        });
-
-   $('#paymentAmount').on('input', function () {
-        let value = $(this).val().replace(/,/g, ''); 
-        if (value && !isNaN(value)) {
-            $(this).val(
-                parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0 })
-            );
-        }
-    });
-
-    $('#allocateAmount').on('input', function () {
-        let value = $(this).val().replace(/,/g, ''); 
-        if (value && !isNaN(value)) {
-            $(this).val(
-                parseFloat(value).toLocaleString(undefined, { minimumFractionDigits: 0 })
-            );
-        }
-    });
-
-    let typed = "";
-    $(document).on("keydown", function (e) {
-        typed += e.key.toLowerCase();
-
-        if (typed.includes("boom")) {
-            $(".print_receipt_v2").removeClass("d-none");
-            typed = ""; 
-        }
-        if (typed.includes("hide")) {
-            $(".print_receipt_v2").addClass("d-none");
-            typed = ""; 
-        }
-        if (typed.length > 10) typed = typed.slice(-10);
-    });
-
-});
+let loadingPromises = [];
 
 const customer = $('#customer');
-
 customer.select2({
     placeholder: 'Select...',
     width: '100%',
@@ -558,6 +497,83 @@ customer.select2({
         }
     }
 });
+
+$(document).ready(function() {
+    $('#loading-overlay').show();
+
+    header_id = "<?= $payment_main_data['id'] ?? 0 ?>";
+    series_id = "<?= $payment_main_data['series_type'] ?? 0 ?>";
+    
+    if (header_id != 0 && series_id != 0) {
+        loadingPromises.push(
+            getCustomerJobOrInvoiceDetails().then(function() {
+                return loadPayDetail(header_id, series_id);
+            })
+        );
+    }
+
+    if (realcustomerId && realcustomerName && realJobCardNo) {
+        loadingPromises.push(new Promise(function(resolve) {
+            var option = new Option((realcustomerName +' | '+realJobCardNo), realcustomerId, true, true);
+            customer.append(option).trigger('change');
+            resolve();
+        }));
+
+        $('#PaymentType').val('Invoice').trigger('change');
+    }
+
+    Promise.all(loadingPromises)
+        .then(function() {
+            $('#loading-overlay').fadeOut(300);
+        })
+        .catch(function(error) {
+            console.error("Error loading data:", error);
+            $('#loading-overlay').html(`
+                <div class="text-center text-danger">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h4>Error loading data</h4>
+                    <p>${error.message || 'Please try again'}</p>
+                    <button class="btn btn-primary mt-2" onclick="location.reload()">Reload Page</button>
+                </div>
+            `);
+        });
+
+        $('#paymentAmount, #allocateAmount').on("input", function() {
+            let value = $(this).val().replace(/,/g, "");
+            if (!isNaN(value) && value !== "") {
+                let parts = value.split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                $(this).val(parts.join("."));
+            }
+        });
+
+        $('#paymentAmount, #allocateAmount').on('blur', function () {
+            let val = $(this).val().replace(/,/g, '');
+            if (val && !isNaN(val)) {
+                $(this).val(parseFloat(val).toLocaleString(undefined, { 
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2 
+                }));
+            }
+        });
+
+    let typed = "";
+    $(document).on("keydown", function (e) {
+        typed += e.key.toLowerCase();
+
+        if (typed.includes("boom")) {
+            $(".print_receipt_v2").removeClass("d-none");
+            typed = ""; 
+        }
+        if (typed.includes("hide")) {
+            $(".print_receipt_v2").addClass("d-none");
+            typed = ""; 
+        }
+        if (typed.length > 10) typed = typed.slice(-10);
+    });
+
+});
+
 
 $('#paymentMethod').on('change', function() {
     const method = $(this).val();
@@ -612,7 +628,7 @@ $('#confirmAllocateBtn').on('click', function() {
     const allocateAmount = parseFloat($('#allocateAmount').val().replace(/,/g, '')) || 0;
     const isEditing = $('#allocatePaymentModal').data('editingRow');
 
-    if (isNaN(allocateAmount) || allocateAmount <= 0) {
+    if (isNaN(allocateAmount) || allocateAmount < 0) {
         alert("Please enter a valid amount.");
         return;
     }
@@ -790,6 +806,45 @@ $(document).on('click', '.allocate-payment-btn', function() {
     $('#allocatePaymentModal').modal('show');
 });
 
+// for full payment advance & 100% discount invoices
+$(document).on('click', '.direct-allocate-btn', function() {
+    selectedTargetRow = $(this).closest('tr');
+    selectedTargetRow.data('allocatedFrom', null);
+
+    $('#paymentMethodDropdown').empty();
+    paymentMap = {};
+
+    $('#paymentDetailsTable tbody tr').each(function(index) {
+        let methodId = $(this).find('.pay_method_id').text();
+        let rowId = $(this).find('.row_id').text();
+        let methodText = $(this).find('td:eq(0)').text();
+        let availableAmount = parseFloat($(this).find('.pay_balance').text());
+
+        if (methodId && availableAmount >= 0) {
+            availableAmount = parseFloat(availableAmount);
+            $('#paymentMethodDropdown').append(
+                $('<option>', {
+                    value: index,
+                    text: `${methodText} - Rs. ${availableAmount == 0 ? '0.00' : formatCurrency(availableAmount)}`
+                })
+                .attr('data-row-id', rowId)
+                .attr('data-method', methodId)
+            );
+            paymentMap[index] = {
+                methodId,
+                amount: availableAmount,
+                row: $(this)
+            };
+        }
+    });
+
+    let refBalanceText = selectedTargetRow.find('.ref_balance').text();
+    let Balance = parseFloat(refBalanceText.replace(/,/g, "")) || 0;
+    $('#allocateAmount').val(formatCurrency(Balance));
+    $('#maxAmountInfo').text('');
+    $('#allocatePaymentModal').modal('show');
+});
+
 $('#paymentMethodDropdown').on('change', function() {
     let selectedIndex = $(this).val();
     let data = paymentMap[selectedIndex];
@@ -829,19 +884,18 @@ function getCustomerJobOrInvoiceDetails() {
                         const isJob = paymentType == 'JobCard';
                         const ref_id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
                         const series_type = isJob ? '' : entry.invoice.series_type;
-                        const ref = isJob ? entry.jobcard.job_card_number : entry.invoice
-                            .invoice_number;
-                        const date = isJob ? entry.jobcard.jobcard_date : entry.invoice
-                            .invoice_date;
+                        const ref = isJob ? entry.jobcard.job_card_number : entry.invoice.invoice_number;
+                        const date = isJob ? entry.jobcard.jobcard_date : entry.invoice.invoice_date;
                         const id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
-                        const advance_paid = parseFloat(isJob ? 0 : entry.invoice
-                            .inv_advance_total);
+                        const total_discount = parseFloat(isJob ? 0 : entry.invoice.inv_discount_amount);
+                        const advance_paid = parseFloat(isJob ? 0 : entry.invoice.inv_advance_total);
                         const total = parseFloat(isJob ? entry.total : entry.total);
                         const paid = parseFloat(isJob ? entry.paid : entry.paid);
 
                         const bal = parseFloat(isJob ? entry.balance : entry.outstanding);
-
+                                         
                         let actionBtn = '';
+                        let directAllocateBtn = '';
                         if (bal > 0) {
                             if (receipt_status != 'Approved' && addcheck == 1) {
                                 actionBtn = `<button type="button" class="btn btn-sm btn-primary allocate-payment-btn">
@@ -853,6 +907,11 @@ function getCustomerJobOrInvoiceDetails() {
                             }
                         } else {
                             actionBtn = `<span class="badge bg-success">Paid</span>`;
+                            if (receipt_status != 'Approved' && addcheck == 1 && (total_discount == total || advance_paid == total)) {
+                                directAllocateBtn = `<button type="button" class="btn btn-sm btn-primary direct-allocate-btn ml-2">
+                                                <i class="fas fa-money-check-alt"></i>
+                                            </button>`;
+                            }
                         }
 
                         let allocated_details =
@@ -881,7 +940,7 @@ function getCustomerJobOrInvoiceDetails() {
                         <td class="text-end ref_advance_paid d-none">${Number(advance_paid || 0).toFixed(2)}</td>
                         <td class="text-end ref_balance_text">${bal == 0 ? '0.00' : formatCurrency(bal)}</td>
                         <td class="text-end ref_balance d-none">${Number(bal || 0).toFixed(2)}</td>
-                        <td class="text-center">${actionBtn}</td>
+                        <td class="text-center">${actionBtn}${directAllocateBtn}</td>
                         <td class="text-center d-none ref_id">${ref_id}</td>
                         <td class="text-center d-none series_type">${series_type}</td>
                         </tr>`;

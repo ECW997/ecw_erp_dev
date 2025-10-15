@@ -30,7 +30,7 @@ class User extends CI_Controller {
 			'recordID' => $this->input->post('recordID'),
 		];
 
-		$method = $recordOption == '1' ? 'userTypeInsert' : 'userTypeUpdate';
+		$method = $recordOption == 1 ? 'userTypeInsert' : 'userTypeUpdate';
 		$response = $this->Userinfo->$method($this->api_token, $form_data);
 		$redirect_url = 'User/Usertype';
 		$this->handleResponse($reredirect_url,$response);
@@ -86,7 +86,7 @@ class User extends CI_Controller {
 			'recordID' => $this->input->post('recordID')
 		];
 
-		$method = $recordOption == '1' ? 'privilegeInsert' : 'privilegeUpdate';
+		$method = $recordOption == 1 ? 'privilegeInsert' : 'privilegeUpdate';
 		$response = $this->Userinfo->$method($this->api_token, $form_data);
 		
 		$redirect_url = 'User/Userprivilege';
@@ -138,7 +138,7 @@ class User extends CI_Controller {
 			'usertype' => $this->input->post('usertype')
 		];
 
-		$method = $recordOption == '1' ? 'userAccountInsert' : 'userAccountUpdate';
+		$method = $recordOption == 1 ? 'userAccountInsert' : 'userAccountUpdate';
 		$response = $this->Userinfo->$method($this->api_token, $form_data);
 		
 		$redirect_url = 'User/Useraccount';

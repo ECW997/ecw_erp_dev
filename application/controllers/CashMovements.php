@@ -8,7 +8,7 @@ class CashMovements extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->helper('api_helper');
-        $this->load->model('Cashierinfo');
+        $this->load->model('CashMovementsinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -17,7 +17,7 @@ class CashMovements extends CI_Controller {
 
     public function index(){
 		$this->load->model('Commeninfo');
-		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$check_cashier_shift_response = $this->CashMovementsinfo->checkCashierShift($this->api_token, []);
 
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$result['check_cashier_shift'] = $check_cashier_shift_response;

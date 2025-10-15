@@ -116,7 +116,7 @@ include "include/v2/topnavbar.php";
                                     <button type="button"
                                         class="btn rounded-3 action-btn-fixed px-4 py-2 fs-6 stylish-payment-btn"
                                         style="min-width:180px; height:44px;"
-                                        onclick="window.location.href='<?= base_url('Payment/paymentDetailIndex') ?>'">
+                                        onclick="window.location.href='<?= base_url('Payment/paymentDetailIndex/?customer_id=' . ($invoice_main_data[0]['customer_id'] ?? '') . '&customer_name=' . ($invoice_main_data[0]['customer_name'] ?? '') . '&jobcard_no=' . ($invoice_main_data[0]['real_jobcard_no'] ?? '')) ?>'">
                                         <span class="d-flex align-items-center justify-content-center gap-2">
                                             <span class="fw-bold text-white">New Payment</span>
                                             <i class="fas fa-arrow-right text-white"></i>
@@ -652,7 +652,7 @@ function createInvoice() {
                 btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                 setTimeout(function() {
                     window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result
-                        .data;
+                        .data + '/1';
                 }, 500)
             } else {
                 falseResponse(result);
@@ -666,6 +666,14 @@ function createInvoice() {
 // Approve invoice
 
 function approveInvoice() {
+    let customer_id = "<?= $invoice_main_data[0]['customer_id'] ?? 0 ?>";
+    let customer_name = "<?= $invoice_main_data[0]['customer_name'] ?? 0 ?>";
+    let real_jobcard_no = "<?= $invoice_main_data[0]['real_jobcard_no'] ?? 0 ?>";
+    
+    var paymentDetailUrl = "<?= base_url('Payment/paymentDetailIndex/') ?>?customer_id=" 
+    + encodeURIComponent(customer_id) 
+    + "&customer_name=" + encodeURIComponent(customer_name) 
+    + "&jobcard_no=" + encodeURIComponent(real_jobcard_no);
 
     if (!confirm(`Are you sure you want to approve invoice?`)) {
         return;
@@ -689,8 +697,10 @@ function approveInvoice() {
             if (result.status == true) {
                 success_toastify(result.message);
                 setTimeout(function() {
-                    window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' +
-                        approveData.id + '/1';
+                    // window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' +
+                    //     approveData.id + '/1';
+
+                    window.location.href = paymentDetailUrl;
                 }, 1000);
             } else {
                 falseResponse(result);

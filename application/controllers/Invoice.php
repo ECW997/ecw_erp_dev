@@ -12,7 +12,7 @@ class Invoice extends CI_Controller {
 		$this->load->helper('api_helper');
         $this->load->model('Invoiceinfo');
 		$this->load->model('JobCardinfo');
-		$this->load->model('Cashierinfo');
+		$this->load->model('CashierShiftinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -31,7 +31,7 @@ class Invoice extends CI_Controller {
 	
 	public function index(){
 		$this->load->model('Commeninfo');
-		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
 
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$result['check_cashier_shift'] = $check_cashier_shift_response;
@@ -59,7 +59,7 @@ class Invoice extends CI_Controller {
 	public function invoiceDetailIndex($id = null, $series_type = null){
 		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
-		$check_cashier_shift_response = $this->Cashierinfo->checkCashierShift($this->api_token, []);
+		$check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
 
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
 		$result['check_cashier_shift'] = $check_cashier_shift_response;

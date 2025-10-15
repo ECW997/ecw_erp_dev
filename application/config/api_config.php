@@ -121,7 +121,39 @@ $config['api_endpoints'] = [
 
     'item_v1' => '/v1/item',
 
-    'cashier_v1' => '/v1/cashier',
+    'cashier_shift_v1' => '/v1/cashier_shift',
     'update_shift_opening_balance_v1' => '/v1/update_shift_opening_balance',
     'approve_shift_opening_balance_v1' => '/v1/approve_shift_opening_balance',
+
+    'cashier_handover_v1' => '/v1/cashier_handover',
+
+    'cashier_shift_summary_v1' => '/v1/cashier_shift_summary',
+
+    'cashier_shift_transaction_ledger_v1' => '/v1/cashier_shift_transaction_ledger',
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------V2------------------------------------------------------------------
+
+    'roles_v2' => '/v2/roles',
+    'roles_permissions_v2' => '/v2/roles_permissions',
+    'roles_permissions_update_v2' => '/v2/roles_permissions_update',
+
+    'users_v2' => '/v2/users',
+    'users_active_v2' => '/v2/users_active',
+    'users_deactive_v2' => '/v2/users_deactive',
+    'user_permisson_v2' => '/v2/user_permisson',
+
+    'permissions_v2' => '/v2/permissions',
+    'all_permissions_v2' => '/v2/all_permissions',
 ];

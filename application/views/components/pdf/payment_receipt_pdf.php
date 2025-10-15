@@ -123,7 +123,7 @@ switch ($header['company_branch_id']) {
 	<table>
 		<tr>
 			<th>
-				<img style="height:65px;collapse;margin-left:5px" src="<?php echo base_url() ?>assets/img/logo-icon.png" />
+				<img style="height:65px;margin-left:5px" src="<?php echo base_url() ?>assets/img/logo-icon.png" />
 			</th>
             <th colspan="3" style="width:83%;font-size:14px;font-weight:500;" class="header_th">
 				<table style="width:100%;">
@@ -192,7 +192,7 @@ switch ($header['company_branch_id']) {
 			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
 		</tr>
 		<tr>
-			<td colspan="3;" class="footer_text" style="letter-spacing: 2.8px; text-align:center;">SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER</td>
+			<td colspan="3" class="footer_text" style="letter-spacing: 2.8px; text-align:center;">SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER</td>
 		</tr>
 	</table>
 </footer>

@@ -119,14 +119,16 @@ if ($response !== false && is_numeric($response)) {
     <?php if (in_array($_SESSION['typename'], ['Cashier', 'Super Administrator'])): ?>
         <?php if (isset($check_cashier_shift['status']) && $check_cashier_shift['status']): ?>
             <?php if ($check_cashier_shift['code'] == 200): ?>
-                <button class="btn btn-warning ml-3" id="cashierShiftBtn">Cashier Shift Open</button>
+                <span class="ml-3 text-white bg-success p-2 rounded">Cashier Shift Open</span>
+                <!-- <button class="btn btn-warning ml-3" id="cashierShiftBtn">Cashier Shift Open</button> -->
             <?php elseif ($check_cashier_shift['code'] == 403): ?>
-                <span class="ml-3 text-white bg-danger p-2 rounded">
+                <span class="ml-3 text-white bg-warning p-2 rounded">
                     <?= $check_cashier_shift['message']; ?>
                 </span>
             <?php endif; ?>
         <?php else: ?>
-            <button class="btn btn-danger ml-3" id="cashierShiftOpenBtn" data-toggle="modal" data-target="#startShiftModal">Cashier Shift Closed</button>
+            <span class="ml-3 text-white bg-danger p-2 rounded">Cashier Shift Closed</span>
+            <!-- <button class="btn btn-danger ml-3" id="cashierShiftOpenBtn" data-toggle="modal" data-target="#startShiftModal">Cashier Shift Closed</button> -->
         <?php endif; ?>
     <?php endif; ?>
 
@@ -263,8 +265,6 @@ if ($response !== false && is_numeric($response)) {
         </div>
     </div>
 </div>
-
-<?php include __DIR__ . "/../components/modal/cashier/cashier_shift_dashboard.php"; ?>
 
 <script src="<?php echo base_url() ?>assets/js/logout.js"></script>
 <script>

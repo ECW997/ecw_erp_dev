@@ -229,7 +229,6 @@ else if($functionmenu=='Finance'){
 
 
 
-
 function checkprivilege($arraymenu, $menuID, $type){
     foreach($arraymenu as $array){
         if($array->menuid==$menuID){
@@ -463,7 +462,7 @@ function checkprivilege($arraymenu, $menuID, $type){
 
                         <?php if(menucheck($menuprivilegearray, 15)==1){ ?>
                         <a class="nav-link p-0 px-3 py-1 text-light"
-                            href="<?php echo base_url().'CashHandover'; ?>">
+                            href="<?php echo base_url().'CashierHandover'; ?>">
                             Cash Handover</a>
                         <?php } ?>
 
@@ -596,6 +595,10 @@ function checkprivilege($arraymenu, $menuID, $type){
                 </nav>
             </div>
             <?php } ?>
+
+            <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'User_v2'; ?>">User</a>
+            <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'UserRole'; ?>">User Role</a>
+            <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'UserPermission'; ?>">Permission</a>
         </div>
     </div>
     <div class="sidenav-footer">
