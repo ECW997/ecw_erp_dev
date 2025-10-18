@@ -27,86 +27,50 @@ class SalesTarget extends CI_Controller {
 		$this->load->view('sales_target', $result);
 	}
 
-	public function getMainJob(){
+	public function salesTargetInsert() {
+		$recordOption = $this->input->post('recordOption');
+
 		$form_data = [
-			'term' => $this->input->get('term'),
-			'page' => $this->input->get('page'),
+			'sales_agent_id' => $this->input->post('sales_agent_id'),
+			'month' => $this->input->post('month'),
+			'year' => $this->input->post('year'),
+			'target_amount' => $this->input->post('target_amount'),
+			'recordID' => $this->input->post('recordID'),
 		];
 
-		$response = $this->SubJobCategoryinfo->getMainJob($this->api_token,$form_data);
+		$response='';
+		if($recordOption == '1'){
+			$response = $this->SalesTargetinfo->salesTargetInsert($this->api_token,$form_data);
+		}else{
+			$response = $this->SalesTargetinfo->salesTargetUpdate($this->api_token,$form_data);
+		}
+
+		if ($response) {
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+			redirect('SalesTarget');   
+		}else{
+			$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
+			redirect('SalesTarget');
+		}
+	}
+
+	public function salesTargetEdit($id) {
+		$response = $this->SalesTargetinfo->salesTargetEdit($this->api_token,$id);
 		echo json_encode($response);
 	}
 
-	// public function getSubJob(){
-	// 	$form_data = [
-	// 		'term' => $this->input->get('term'),
-	// 		'page' => $this->input->get('page'),
-	// 		'mainJob' => $this->input->get('mainJob'),
-	// 	];
+	public function salesTargetDelete($id) {
+		$response = $this->SalesTargetinfo->salesTargetDelete($this->api_token, $id);
 
-	// 	$response = $this->SubJobCategoryinfo->getSubJob($this->api_token,$form_data);
-
-	// 	echo json_encode($response);
-	// }
-
-	// public function salesTargetInsert() {
-	// 	$recordOption = $this->input->post('recordOption');
-
-    //     $form_data = [
-    //         'main_job_category' => $this->input->post('main_job_category'),
-	// 		'sub_job_category' => $this->input->post('sub_job_category'),
-	// 		'recordID' => $this->input->post('recordID'),
-    //     ];
-
-	// 	$response='';
-	// 	if($recordOption == '1'){
-	// 		$response = $this->SubJobCategoryinfo->subJobCategoryInsert($this->api_token,$form_data);
-	// 	}else{
-	// 		$response = $this->SubJobCategoryinfo->subJobCategoryUpdate($this->api_token,$form_data);
-	// 	}
-
-	// 	if ($response) {
-	// 		$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-    //     	redirect('SubJobCategory');   
-	// 	}else{
-	// 		$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
-    //         redirect('SubJobCategory');
-	// 	}
-    // }
+		if ($response && $response['code'] == 200) {
+			$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
+		} else {
+			$this->session->set_flashdata(['res' => $response['code'] ?? '204', 'msg' => $response['message'] ?? 'Delete failed!']);
+		}
+		redirect('SalesTarget');
+	}
 
 
-	// public function subJobCategoryEdit($id) {
-    //     $response = $this->SubJobCategoryinfo->subJobCategoryEdit($this->api_token,$id);
-	// 	echo json_encode($response);
-    // }
 
-
-    // public function subJobCategoryStatus($id, $status) {
-    //     $form_data = [
-    //         'recordID' => $id,
-	// 		'status' => $status,
-    //     ];
-
-    //     $response = $this->SubJobCategoryinfo->subJobCategoryStatus($this->api_token,$form_data);
-
-    //     if ($response) {
-	// 		$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-	// 		redirect('SubJobCategory');      
-    //     } else {
-	// 		$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
-    //         redirect('SubJobCategory');
-    //     }
-    // }
 	
-	// public function subJobCategoryDelete($id) {
-    //     $response = $this->SubJobCategoryinfo->subJobCategoryDelete($this->api_token,$id);
-
-    //     if ($response) {
-	// 		$this->session->set_flashdata(['res' => $response['code'], 'msg' => $response['message']]);
-	// 		redirect('SubJobCategory');      
-    //     } else {
-	// 		$this->session->set_flashdata(['res' => '204', 'msg' => 'Not Response Server!']);
-    //         redirect('SubJobCategory');
-    //     }
-    // }
 }
