@@ -37,7 +37,7 @@ class Report_info extends CI_Model {
 
 
 
-      public function getDailySalesSummary($api_token, $form_data) {
+    public function getDailySalesSummary($api_token, $form_data) {
         $filters = [];
         if (!empty($form_data['date_from'])) {
             $filters['date_from'] = $form_data['date_from'];
@@ -47,6 +47,20 @@ class Report_info extends CI_Model {
         }
         $headers = get_api_headers($api_token);
         return call_api('POST', 'invoiceAmountSummary_v1', $filters, $headers);
+    }
+
+
+
+      public function getInvoiceDetailSummary($api_token, $form_data) {
+        $filters = [];
+        if (!empty($form_data['date_from'])) {
+            $filters['date_from'] = $form_data['date_from'];
+        }
+        if (!empty($form_data['date_to'])) {
+            $filters['date_to'] = $form_data['date_to'];
+        }
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'invoiceDetailsSummary_v1', $filters, $headers);
     }
 }
 

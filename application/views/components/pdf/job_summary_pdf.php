@@ -235,22 +235,27 @@ switch ($main_data['company_branch_id']) {
     <footer>
         <table>
             <tr>
-                <td style="width:65%;" class="footer_text"><?= $companyOutput ?></td>
-                <td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
-                <td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
+                <td style="width:35%;font-size:8px;" class="footer_text"><?= $companyOutput ?></td>
+                <td style="width:15%;text-align:left; font-size:8px;" class="footer_text">FIND US</td>
+                <td rowspan="2" style="width:20%;text-align:left;" class="footer_text">
                     <i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>
                     <i class="fab fa-tiktok" style="margin-right:2px;font-size:14px;"></i>
                     <i class="fab fa-instagram-square" style="margin-right:2px;font-size:14px;"></i>
                     <i class="fab fa-youtube" style="margin-right:2px;font-size:14px;"></i>
                 </td>
+                <td rowspan="2" style="width:10%;text-align:right;">
+                     <img style="height:30px;collapse;margin-left:-10px"
+                        src="<?php echo base_url() ?>assets/img/3M.png" />
+                </td>
             </tr>
             <tr>
-                <td class="footer_text"><?= $branchOutput ?></td>
-                <td style="text-align:center;" class="footer_text">FOLLOW US</td>
+                <td style="width:35%; font-size:8px;" class="footer_text"><?= $branchOutput ?></td>
+                <td style="width:15%; text-align:left; font-size:8px;" class="footer_text">FOLLOW US</td>
             </tr>
             <tr>
-                <td colspan="3;" class="footer_text" style="letter-spacing: 2.8px; text-align:center;">SOUTH ASIA'S
-                    LARGEST INTERIOR MODIFICATION CENTER</td>
+                <td colspan="4;" class="footer_text" style="letter-spacing: 2.2px; text-align:center; font-size:8px;">
+                    SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER
+                </td>
             </tr>
         </table>
     </footer>

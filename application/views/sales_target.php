@@ -44,7 +44,9 @@ include "include/topnavbar.php";
                                     <i class="fas fa-bullseye"></i>&nbsp; Month Sales Target
                                 </div>
                                 <div class="card-body">
-                                    <form id="salesTargetForm" autocomplete="off">
+                                    <form id="salesTargetForm"
+                                        action="<?php echo base_url() ?>SalesTarget/salesTargetInsertUpdate"
+                                        method="post" autocomplete="off">
                                         <div class="row g-3 align-items-center">
                                             <div class="col-md-3">
                                                 <label class="small font-weight-bold text-dark">Month*</label>
@@ -185,6 +187,10 @@ include "include/topnavbar.php";
 
 <?php include "include/footerscripts.php"; ?>
 <script>
+var addcheck = '<?php echo $addcheck; ?>';
+var editcheck = '<?php echo $editcheck; ?>';
+var statuscheck = '<?php echo $statuscheck; ?>';
+var deletecheck = '<?php echo $deletecheck; ?>';
 $(document).ready(function() {
     let addcheck = '<?php echo $addcheck; ?>';
 
@@ -197,9 +203,9 @@ $(document).ready(function() {
         let toBeAllocated = monthlyTarget - allocated;
         $('#targetSummary').html(
             `<div class="mt-2">
-                <span class="badge badge-success">Allocated Target: ${allocated.toFixed(2)}</span>
-                <span class="badge badge-warning ml-2">Remaining Target: ${toBeAllocated.toFixed(2)}</span>
-            </div>`
+                    <span class="badge badge-success">Allocated Target: ${allocated.toFixed(2)}</span>
+                    <span class="badge badge-warning ml-2">Remaining Target: ${toBeAllocated.toFixed(2)}</span>
+                </div>`
         );
     }
 
@@ -255,15 +261,15 @@ $(document).ready(function() {
 
                 $('#tempTargetTable > tbody').append(
                     `<tr>
-                        <td>${agentName}</td>
-                        <td class="agentid d-none">${agentId}</td>
-                        <td class="target text-right">${target}</td>
-                        <td class="target text-center">
-                            <button type="button" onclick="targetDelete(this);" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>`
+                            <td>${agentName}</td>
+                            <td class="agentid d-none">${agentId}</td>
+                            <td class="target text-right">${target}</td>
+                            <td class="target text-center">
+                                <button type="button" onclick="targetDelete(this);" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`
                 );
                 $('#sales_agent').val('');
                 $('#personTarget').val('');
@@ -273,10 +279,8 @@ $(document).ready(function() {
         }
     });
 
-    // Update summary when monthly target changes
     $('#monthlyTarget').on('input', updateTargetSummary);
 
-    // Update summary after delete
     window.targetDelete = function(btn) {
         if (confirm("Are you sure you want to delete this Sales Agent Target?")) {
             btn.closest('tr').remove();
@@ -293,9 +297,269 @@ $(document).ready(function() {
         }
     };
 
-    // Initial summary
     updateTargetSummary();
+
+
+    $('#dataTable').DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: false, // We'll handle everything client-side
+        dom: "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        responsive: true,
+        lengthMenu: [
+            [10, 25, 50, -1],
+            [10, 25, 50, 'All'],
+        ],
+        buttons: [{
+                extend: 'csv',
+                className: 'btn btn-success btn-sm',
+                title: 'Sales Target Information',
+                text: '<i class="fas fa-file-csv mr-2"></i> CSV'
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-danger btn-sm',
+                title: 'Sales Target Information',
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF'
+            },
+            {
+                extend: 'print',
+                title: 'Sales Target Information',
+                className: 'btn btn-primary btn-sm',
+                text: '<i class="fas fa-print mr-2"></i> Print',
+                customize: function(win) {
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                }
+            }
+        ],
+        ajax: {
+            url: apiBaseUrl + '/v1/sales_target',
+            type: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            dataSrc: function(json) {
+                if (json.status === false && json.code === 401) {
+                    falseResponse(errorObj);
+                    return [];
+                } else {
+                    return json.data;
+                }
+            },
+            error: function(xhr, status, error) {
+                if (xhr.status === 401) {
+                    falseResponse(errorObj);
+                }
+            }
+        },
+        order: [
+            [0, "desc"]
+        ],
+        columns: [{
+                data: "target_name",
+                render: function(data, type, full) {
+                    return `${data} <br><small>(${full.target_date_from} to ${full.target_date_to})</small>`;
+                }
+            },
+            {
+                data: "monthly_target_amount",
+                className: "text-right",
+                render: function(data) {
+                    return "Rs. " + parseFloat(data).toLocaleString();
+                }
+            },
+            {
+                data: "details",
+                className: "text-right",
+                render: function(details) {
+                    if (!details || details.length === 0) return '-';
+                    return details.map(d => `<div>${d.sales_agent_name}</div>`).join('') +
+                        `<div class='fw-bold text-primary border-top mt-1 pt-1'><b>Remaining Target</b></div>`;
+                }
+            },
+            {
+                data: null,
+                className: "text-right",
+                render: function(data) {
+                    const monthlyTarget = parseFloat(data.monthly_target_amount);
+                    const totalAssigned = data.details.reduce((sum, d) => sum + parseFloat(d
+                        .amount), 0);
+                    const remaining = monthlyTarget - totalAssigned;
+
+                    let html = data.details.map(d =>
+                        `<div class="text-right">Rs. ${parseFloat(d.amount).toLocaleString()}</div>`
+                    ).join('');
+
+                    html +=
+                        `<div class='fw-bold text-primary border-top mt-1 pt-1 text-right'><b>Rs. ${remaining.toLocaleString()}</b></div>`;
+                    return html;
+                }
+            },
+            {
+                data: null,
+                className: "text-right",
+                render: function(data) {
+                    const monthlyTarget = parseFloat(data.monthly_target_amount);
+                    const totalAssigned = data.details.reduce((sum, d) => sum + parseFloat(d
+                        .amount), 0);
+                    const remaining = monthlyTarget - totalAssigned;
+
+                    let html = data.details.map(d => {
+                        const percentage = ((parseFloat(d.amount) / monthlyTarget) *
+                            100).toFixed(2);
+                        return `<div>${percentage}%</div>`;
+                    }).join('');
+
+                    html += `<div class='fw-bold text-primary border-top mt-1 pt-1'>–</div>`;
+                    return html;
+                }
+            },
+            {
+                data: null,
+                className: 'text-right',
+                render: function(data, type, full) {
+                    let button = `
+                        <button title="Edit" class="btn btn-primary btn-sm mr-1" 
+                            onclick="showEditModal(${full.id});">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    `;
+                    button +=
+                        '<a title="Delete" href="<?php echo base_url() ?>SalesTarget/salesTargetDelete/' +
+                        full['id'] +
+                        '" onclick="return delete_confirm()" target="_self" class="btn btn-danger btn-sm ';
+                    if (deletecheck != 1) {
+                        button += 'd-none';
+                    }
+                    button += '"><i class="fas fa-trash-alt"></i></a>';
+                    return button;
+                }
+            }
+        ],
+        drawCallback: function(settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+
+
+
+    $(document).on('click', '#saveAllBtn', function() {
+        var targetMonth = $('#targetMonth').val();
+        var monthlyTarget = parseFloat($('#monthlyTarget').val()) || 0;
+
+        if (!targetMonth || !monthlyTarget) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Missing Data',
+                text: 'Please select a month and enter the total monthly target.',
+            });
+            return;
+        }
+
+        // Parse target month into start and end dates
+        var monthParts = targetMonth.split("-");
+        var targetYear = monthParts[0];
+        var targetMonthNum = monthParts[1];
+        var firstDay = `${targetYear}-${targetMonthNum}-01`;
+        var lastDay = new Date(targetYear, targetMonthNum, 0).getDate();
+        var endDate = `${targetYear}-${targetMonthNum}-${lastDay}`;
+
+        // Collect agent target data
+        var agentTargets = [];
+        $('#tempTargetTable tbody tr').each(function() {
+            var agentId = $(this).find('td.agentid').text();
+            var agentName = $(this).find('td:first').text();
+            var target = parseFloat($(this).find('td.target').first().text()) || 0;
+
+            agentTargets.push({
+                type: "Agent",
+                sales_agent_name: agentName,
+                sales_agent_id: parseInt(agentId),
+                amount: target
+            });
+        });
+
+        if (agentTargets.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'No Targets Added',
+                text: 'Please add at least one sales agent target before saving.',
+            });
+            return;
+        }
+
+        // Create target name like "October Target"
+        var monthName = new Date(firstDay).toLocaleString('default', {
+            month: 'long'
+        });
+        var targetName = monthName + " Target";
+
+        // Build JSON payload
+        var payload = {
+            type: "1",
+            target_name: targetName,
+            target_date_from: firstDay,
+            target_date_to: endDate,
+            monthly_target_amount: monthlyTarget,
+            details: agentTargets
+        };
+
+        console.log("Sending payload:", payload);
+
+        $.ajax({
+            url: apiBaseUrl + '/v1/sales_target',
+            type: "POST",
+            data: JSON.stringify(payload),
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            success: function(result) {
+                if (result.status === true) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: result.message || 'Sales target saved successfully!'
+                    });
+                    $('#tempTargetTable tbody').empty();
+                    $('#sales_agent').val('');
+                    $('#personTarget').val('');
+                    $('#monthlyTarget').val('');
+                    updateTargetSummary();
+                    $('#dataTable').DataTable().ajax.reload(null, false);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message || 'Failed to save target.'
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: xhr.responseJSON?.message || 'Unable to save target.'
+                });
+            }
+        });
+    });
+
+
+
+
 });
+function delete_confirm() {
+    return confirm("Are you sure you want to remove this?");
+}
 </script>
 
 <script>

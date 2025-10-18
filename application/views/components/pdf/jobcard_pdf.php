@@ -542,7 +542,7 @@
                         <tr>
                             <td style="text-align:left; width: 65%;">
                                 <strong><?= $mainJob_cnt ?>. <?= $item['job_sub_category_text'] ?? 'N/A' ?>
-                                    (<?= $item['subcategory_price_category'] ?? 'N/A' ?>)</strong>
+                                    </strong>
                             </td>
                             <?php if (($item['job_sub_category_text'] ?? '') === "Seat Cover"): ?>
                             <td
@@ -580,7 +580,7 @@
                                     <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> -
                                         <?= $joblist['option_text'] ?? 'N/A' ?> - </strong>
                                     <?= $joblist['combined_option'] ?? 'N/A' ?>
-                                    <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>
+                                    <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>(<?= $joblist['price_category'] ?? 'N/A' ?>)
 
                                     <?php if ($joblist['description'] == 'image' || $joblist['description'] == 'dot_image') : ?>
                                     <div class="image-container">
