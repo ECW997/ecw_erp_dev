@@ -14,8 +14,13 @@ class InvoiceDetailsSummaryReport extends CI_Controller {
     $form_data = $this->input->post(); 
     $result = $this->Report_info->getInvoiceDetailSummary($this->api_token, $form_data);
 
+    $date_from = $form_data['date_from'] ?? null;
+    $date_to   = $form_data['date_to'] ?? null;
+
     $pdf_data = [
-        'report' => $result['data'] ?? []
+        'report' => $result['data'] ?? [],
+        'date_from' => $date_from,
+        'date_to' => $date_to
     ];
 
     //  echo '<pre>'; print_r($pdf_data); exit;
