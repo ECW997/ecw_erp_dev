@@ -282,52 +282,55 @@ $(document).ready(function() {
 
     var table = $('#outstandingTable').DataTable();
     var extraButtons = [{
-        extend: 'excelHtml5',
-        className: 'btn btn-success btn-sm',
-        text: '<i class="fas fa-file-excel mr-2"></i> Excel',
-        exportOptions: {
-            columns: ':visible'
+            extend: 'excelHtml5',
+            className: 'btn btn-success btn-sm',
+            text: '<i class="fas fa-file-excel mr-2"></i> Excel',
+            exportOptions: {
+                columns: ':visible'
+            },
+            customize: function(xlsx) {
+                // Set sheet name
+                var sheetName = $('#f_branch_name').val() || 'Invoice Summary Report';
+                xlsx.xl['workbook.xml'].getElementsByTagName('sheet')[0].setAttribute('name',
+                sheetName);
+
+                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+                // Set column widths
+                $('col', sheet).attr('width', 25);
+
+                // Add custom title row
+                var header = '<row r="1">' +
+                    '<c t="inlineStr" r="A1"><is><t>Invoice Summary Report</t></is></c>' +
+                    '</row>';
+                sheet.childNodes[0].childNodes[1].innerHTML = header + sheet.childNodes[0].childNodes[1]
+                    .innerHTML;
+
+                // Style the title row
+                $('row:eq(0) c', sheet).attr('s', '51');
+
+                // Calculate total for Invoice Amount
+                var totalInvoiceAmount = 0;
+                $('#outstandingTable tbody tr').each(function() {
+                    var amount = parseFloat($(this).find('td:eq(4)').text().replace(/,/g,
+                        '')) || 0;
+                    totalInvoiceAmount += amount;
+                });
+
+                // Add totals row at the end
+                var lastRow = $('sheetData row', sheet).length + 1;
+                var totalsRow =
+                    '<row r="' + lastRow + '">' +
+                    '<c t="inlineStr" r="A' + lastRow + '"><is><t>Total</t></is></c>' +
+                    '<c r="B' + lastRow + '"/>' +
+                    '<c r="C' + lastRow + '"/>' +
+                    '<c r="D' + lastRow + '"/>' +
+                    '<c t="n" r="E' + lastRow + '"><v>' + totalInvoiceAmount.toFixed(2) + '</v></c>' +
+                    '</row>';
+
+                $('sheetData', sheet).append(totalsRow);
+            }
         },
-        customize: function(xlsx) {
-            // Set sheet name
-            var sheetName = $('#f_branch_name').val() || 'Invoice Summary Report';
-            xlsx.xl['workbook.xml'].getElementsByTagName('sheet')[0].setAttribute('name', sheetName);
-
-            var sheet = xlsx.xl.worksheets['sheet1.xml'];
-
-            // Set column widths
-            $('col', sheet).attr('width', 25);
-
-            // Add custom title row
-            var header = '<row r="1">' +
-                '<c t="inlineStr" r="A1"><is><t>Invoice Summary Report</t></is></c>' +
-                '</row>';
-            sheet.childNodes[0].childNodes[1].innerHTML = header + sheet.childNodes[0].childNodes[1].innerHTML;
-
-            // Style the title row
-            $('row:eq(0) c', sheet).attr('s', '51');
-
-            // Calculate total for Invoice Amount
-            var totalInvoiceAmount = 0;
-            $('#outstandingTable tbody tr').each(function() {
-                var amount = parseFloat($(this).find('td:eq(4)').text().replace(/,/g, '')) || 0;
-                totalInvoiceAmount += amount;
-            });
-
-            // Add totals row at the end
-            var lastRow = $('sheetData row', sheet).length + 1;
-            var totalsRow =
-                '<row r="' + lastRow + '">' +
-                '<c t="inlineStr" r="A' + lastRow + '"><is><t>Total</t></is></c>' +
-                '<c r="B' + lastRow + '"/>' +
-                '<c r="C' + lastRow + '"/>' +
-                '<c r="D' + lastRow + '"/>' +
-                '<c t="n" r="E' + lastRow + '"><v>' + totalInvoiceAmount.toFixed(2) + '</v></c>' +
-                '</row>';
-
-            $('sheetData', sheet).append(totalsRow);
-        }
-    },
         {
             text: '<i class="fas fa-print me-2"></i> All Summary PDF',
             className: 'btn btn-primary btn-sm rounded-2',
@@ -387,4 +390,3 @@ $(document).ready(function() {
     // });
 });
 </script>
-

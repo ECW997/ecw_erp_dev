@@ -79,7 +79,12 @@ label {
                             <span>Job Card List</span>
                         </h1>
                         <div>
-                            <button type="button" id="exportExcelBtn" class="btn btn-success btn-sm px-4 p-2 ml-2 mr-3" style="display:none;">
+                            <button type="button" id="exportExcelBtn" class="btn btn-success btn-sm px-4 p-2 ml-2 mr-3"
+                                style="display:none;">
+                                <i class="fas fa-file-excel mr-2"></i>Export Excel
+                            </button>
+                            <button type="button" id="exportExcelBtn2" class="btn btn-sm px-4 p-2 ml-2 mr-3"
+                                style="display:none; background-color:#e83e8c; color:#ffffff; border-color:#e83e8c;">
                                 <i class="fas fa-file-excel mr-2"></i>Export Excel
                             </button>
                             <a href="<?= base_url('JobCard/jobCardDetailIndex') ?>"
@@ -408,30 +413,30 @@ $(document).ready(function() {
                 }
             },
             {
-                    data: "payment_status",
-                    className: "text-center",
-                    render: function (data, type, row) {
-                        let baseClasses = "badge badge-pill";
-                        let style = "";
-                        let status = "";
+                data: "payment_status",
+                className: "text-center",
+                render: function(data, type, row) {
+                    let baseClasses = "badge badge-pill";
+                    let style = "";
+                    let status = "";
 
-                        switch (data) {
-                            case '0':
-                                style = 'background-color: #e81500; color: #FFFFFF;'; 
-                                status = 'Payment Pending';
-                                break;
-                            case '1':
-                                style = 'background-color: #00ac69; color: #1F2937;'; 
-                                status = 'Payment Paid';
-                                break;
-                            case '2':
-                                style = 'background-color: #00ac69; color: #1F2937;'; 
-                                status = 'Payment Pending';
-                                break;
-                            default:
-                                style = 'background-color: #4B5563; color: #FFFFFF;'; 
-                                break;
-                        }
+                    switch (data) {
+                        case '0':
+                            style = 'background-color: #e81500; color: #FFFFFF;';
+                            status = 'Payment Pending';
+                            break;
+                        case '1':
+                            style = 'background-color: #00ac69; color: #1F2937;';
+                            status = 'Payment Paid';
+                            break;
+                        case '2':
+                            style = 'background-color: #00ac69; color: #1F2937;';
+                            status = 'Payment Pending';
+                            break;
+                        default:
+                            style = 'background-color: #4B5563; color: #FFFFFF;';
+                            break;
+                    }
                     return `<span class="${baseClasses}" style="${style}">${status}</span>`;
                 }
             },
@@ -578,70 +583,283 @@ $(document).ready(function() {
         }
 
         fetch('<?php echo base_url(); ?>JobCard/exportJobCardExcelData', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ date_from, date_to })
-        })
-        .then(response => response.json())
-        .then(data => {
-        if (data.status && Array.isArray(data.data)) {
-            // Convert numeric fields
-            const numericFields = [
-                'qty', 'standard_price', 'jobcard_price', 'subtotal', 'nettotal', 'line_discount'
-            ];
-            data.data.forEach(row => {
-                numericFields.forEach(field => {
-                    if (row[field] !== undefined && row[field] !== null && row[field] !== '') {
-                        row[field] = Number(row[field]);
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+
+                },
+                body: JSON.stringify({
+                    date_from,
+                    date_to
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status && Array.isArray(data.data)) {
+                    // Convert numeric fields
+                    const numericFields = [
+                        'qty', 'standard_price', 'jobcard_price', 'subtotal', 'nettotal',
+                        'line_discount'
+                    ];
+                    data.data.forEach(row => {
+                        numericFields.forEach(field => {
+                            if (row[field] !== undefined && row[field] !== null &&
+                                row[field] !== '') {
+                                row[field] = Number(row[field]);
+                            }
+                        });
+                    });
+
+                    const ws = XLSX.utils.json_to_sheet(data.data);
+                    ws['!cols'] = [{
+                            wch: 18
+                        }, //Date
+                        {
+                            wch: 16
+                        }, //Invoice Number
+                        {
+                            wch: 16
+                        }, //Invoice Date
+                        {
+                            wch: 15
+                        }, //Sales Person Code
+                        {
+                            wch: 15
+                        }, //Sales Person Name
+                        {
+                            wch: 15
+                        }, //Vehicle No
+                        {
+                            wch: 16
+                        }, //Job card No
+                        {
+                            wch: 10
+                        }, //Receipt No
+                        {
+                            wch: 10
+                        }, //Bank/Cash
+                        {
+                            wch: 150
+                        }, //Job Item Name
+                        {
+                            wch: 10
+                        }, //Qty
+                        {
+                            wch: 20
+                        }, //Standard Price
+                        {
+                            wch: 16
+                        }, //Open Price
+                        {
+                            wch: 10
+                        }, //Discount%
+                        {
+                            wch: 16
+                        }, //Discount Amount
+                        {
+                            wch: 16
+                        }, //Net Total
+                        {
+                            wch: 15
+                        }, //Approve by
+                    ];
+
+                    // Bold header row
+                    const range = XLSX.utils.decode_range(ws['!ref']);
+                    for (let C = range.s.c; C <= range.e.c; ++C) {
+                        const cell = ws[XLSX.utils.encode_cell({
+                            r: 0,
+                            c: C
+                        })];
+                        if (cell && !cell.s) cell.s = {};
+                        if (cell) cell.s.font = {
+                            bold: true
+                        };
                     }
-                });
+
+                    // Create workbook and export
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "JobCards");
+                    XLSX.writeFile(wb, "JobCardsInformation.xlsx");
+                } else {
+                    alert('No data found for the selected date range.');
+                }
+            })
+            .catch(err => {
+                alert('Error fetching data: ' + err);
             });
-
-            const ws = XLSX.utils.json_to_sheet(data.data);
-            ws['!cols'] = [
-                { wch: 18 }, //Date
-                { wch: 16 }, //Invoice Number
-                { wch: 16 }, //Invoice Date
-                { wch: 15 }, //Sales Person Code
-                { wch: 15 }, //Sales Person Name
-                { wch: 15 }, //Vehicle No
-                { wch: 16 }, //Job card No
-                { wch: 10 }, //Receipt No
-                { wch: 10 }, //Bank/Cash
-                { wch: 150 }, //Job Item Name
-                { wch: 10 }, //Qty
-                { wch: 20 }, //Standard Price
-                { wch: 16 }, //Open Price
-                { wch: 10 }, //Discount%
-                { wch: 16 }, //Discount Amount
-                { wch: 16 }, //Net Total
-                { wch: 15 }, //Approve by
-            ];
-
-            // Bold header row
-            const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let C = range.s.c; C <= range.e.c; ++C) {
-                const cell = ws[XLSX.utils.encode_cell({ r: 0, c: C })];
-                if (cell && !cell.s) cell.s = {};
-                if (cell) cell.s.font = { bold: true };
-            }
-
-            // Create workbook and export
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "JobCards");
-            XLSX.writeFile(wb, "JobCardsInformation.xlsx");
-        } else {
-                alert('No data found for the selected date range.');
-            }
-        })
-        .catch(err => {
-            alert('Error fetching data: ' + err);
-        });
     });
 
 
+
+
+
+ document.getElementById('exportExcelBtn2').addEventListener('click', function() {
+    const date_from = document.getElementById('date_from').value;
+    const date_to = document.getElementById('date_to').value;
+    const type = 'both';
+
+    if (!date_from || !date_to) {
+        alert('Please select both Dates.');
+        return;
+    }
+
+    const requestData = { date_from, date_to, type };
+
+    fetch('<?php echo base_url(); ?>JobCard/exportJobCardExcelData', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status && Array.isArray(data.data) && data.data.length > 0) {
+            // --- Group by Invoice Number ---
+            const groupedByInvoice = {};
+            data.data.forEach(row => {
+                if (!groupedByInvoice[row['Invoice Number']]) {
+                    groupedByInvoice[row['Invoice Number']] = {
+                        items: [],
+                        invoiceData: {
+                            'Invoice Number': row['Invoice Number'],
+                            'Invoice Date': row['Invoice Date'],
+                            'Sales Person Code': row['Sales Person Code'],
+                            'Sales Person Name': row['Sales Person Name'],
+                            'Vehicle Number': row['Vehicle Number'],
+                            'Job Card Number': row['Job Card Number'],
+                            'Jobcard Date': row['Jobcard Date']
+                        }
+                    };
+                }
+                groupedByInvoice[row['Invoice Number']].items.push(row);
+            });
+
+            const excelData = [];
+
+            // --- Process Each Invoice Group ---
+            Object.values(groupedByInvoice).forEach(invoiceGroup => {
+                const items = invoiceGroup.items;
+                let invoiceSubtotal = 0;
+                let invoiceDiscount = 0;
+
+                items.forEach(item => {
+                    // Convert numeric fields
+                    const numericFields = ['Qty', 'Standard (System) Price', 'Open Price', 'Discount Amount', 'Net Total Amount'];
+                    numericFields.forEach(field => {
+                        if (item[field] !== undefined && item[field] !== null && item[field] !== '') {
+                            item[field] = Number(item[field]);
+                        }
+                    });
+
+                    excelData.push({
+                        'Jobcard Date': item['Jobcard Date'] || '',
+                        'Invoice Number': item['Invoice Number'] || '',
+                        'Invoice Date': item['Invoice Date'] || '',
+                        'Sales Person Code': item['Sales Person Code'] || '',
+                        'Sales Person Name': item['Sales Person Name'] || '',
+                        'Vehicle Number': item['Vehicle Number'] || '',
+                        'Job Card Number': item['Job Card Number'] || '',
+                        'Receipt No': item['Receipt No'] || '',
+                        'Bank / Cash': item['Bank / Cash'] || '',
+                        'Job Item Name': item['Job Item Name'] || '',
+                        'Qty': item['Qty'] || 0,
+                        'Standard (System) Price': item['Standard (System) Price'] || '',
+                        'Open Price': item['Open Price'] || 0,
+                        'Discount %': item['Discount %'] || '',
+                        'Discount Amount': item['Discount Amount'] || 0,
+                        'Net Total Amount': item['Net Total Amount'] || 0,
+                        'Discount Approved By': item['Discount Approved By'] || ''
+                        
+                    });
+
+                    invoiceSubtotal += Number(item['Net Total Amount'] || 0);
+                    invoiceDiscount += Number(item['Discount Amount'] || 0);
+                });
+
+                // --- Add Discount Row ---
+                excelData.push({
+                    'Job Item Name': 'INVOICE DISCOUNT',
+                    'Discount Amount': invoiceDiscount,
+                    'Net Total Amount': -invoiceDiscount
+                });
+
+                // --- Add Total Row ---
+                const invoiceTotal = invoiceSubtotal - invoiceDiscount;
+                excelData.push({
+                    'Job Item Name': 'INVOICE TOTAL',
+                    'Net Total Amount': invoiceSubtotal
+                });
+
+                // Add empty row for separation
+                excelData.push({});
+            });
+
+            // Remove last empty row if exists
+            if (excelData.length > 0 && Object.keys(excelData[excelData.length - 1]).length === 0) {
+                excelData.pop();
+            }
+
+            if (excelData.length === 0) {
+                alert('No data available to export.');
+                return;
+            }
+
+            const ws = XLSX.utils.json_to_sheet(excelData);
+
+            // --- Apply Styling ---
+            if (ws['!ref']) {
+                const range = XLSX.utils.decode_range(ws['!ref']);
+                for (let R = range.s.r; R <= range.e.r; R++) {
+                    const cell = ws[XLSX.utils.encode_cell({ r: R, c: 9 })]; // Job Item Name column
+                    if (cell && cell.v && (cell.v === 'INVOICE DISCOUNT' || cell.v === 'INVOICE TOTAL')) {
+                        for (let C = range.s.c; C <= range.e.c; C++) {
+                            const rowCell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+                            if (rowCell) {
+                                if (!rowCell.s) rowCell.s = {};
+                                rowCell.s.font = { bold: true };
+                                rowCell.s.fill = {
+                                    fgColor: { rgb: cell.v === 'INVOICE TOTAL' ? 'FFCCFFCC' : 'FFFFCCCC' }
+                                };
+                            }
+                        }
+                    }
+
+                    // Bold header row
+                    if (R === 0) {
+                        for (let C = range.s.c; C <= range.e.c; C++) {
+                            const headerCell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+                            if (headerCell) {
+                                if (!headerCell.s) headerCell.s = {};
+                                headerCell.s.font = { bold: true };
+                            }
+                        }
+                    }
+                }
+
+                // --- Set Column Widths ---
+                ws['!cols'] = [
+                    { wch: 18 }, { wch: 16 }, { wch: 16 },
+                    { wch: 15 }, { wch: 15 }, { wch: 15 },
+                    { wch: 16 }, { wch: 10 }, { wch: 10 },
+                    { wch: 150 }, { wch: 10 }, { wch: 20 },
+                    { wch: 16 }, { wch: 10 }, { wch: 16 },
+                    { wch: 16 }, { wch: 15 }
+                ];
+            }
+
+            // --- Export Excel File ---
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "JobCards");
+            XLSX.writeFile(wb, "JobCardsInformation_Direct_Indirect.xlsx");
+        } else {
+            alert('No data found for the selected date range.');
+        }
+    })
+    .catch(err => {
+        console.error('Error fetching data:', err);
+        alert('Error fetching data: ' + err.message);
+    });
+});
 
 
 });
@@ -759,6 +977,30 @@ $(document).ready(function() {
             }
             if (buffer === hideSecret) {
                 $('#exportExcelBtn').hide();
+                buffer = "";
+            }
+        }
+    });
+});
+
+
+$(document).ready(function() {
+    let showSecret = "finance";
+    let hideSecret = "hide";
+    let buffer = "";
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+            }
+            if (buffer === showSecret) {
+                $('#exportExcelBtn2').show();
+                buffer = "";
+            }
+            if (buffer === hideSecret) {
+                $('#exportExcelBtn2').hide();
                 buffer = "";
             }
         }
