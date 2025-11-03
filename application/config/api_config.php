@@ -131,7 +131,8 @@ $config['api_endpoints'] = [
 
     'cashier_shift_transaction_ledger_v1' => '/v1/cashier_shift_transaction_ledger',
 
-
+    'cashier_debitor_v1' => '/v1/cashier_debitor',
+    'cashier_debitor_transfer_v1' => '/v1/cashier_debitor_transfer',
 
 
 
@@ -153,6 +154,7 @@ $config['api_endpoints'] = [
     'users_active_v2' => '/v2/users_active',
     'users_deactive_v2' => '/v2/users_deactive',
     'user_permisson_v2' => '/v2/user_permisson',
+    'users_update_overrides_v2' => '/v2/users_update_overrides',
 
     'permissions_v2' => '/v2/permissions',
     'all_permissions_v2' => '/v2/all_permissions',

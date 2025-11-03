@@ -297,6 +297,8 @@ function openEditModal(userId) {
     });
 }
 
+let currentPermissionsData = null;
+
 function openPermissionsModal(userId) {
     $.ajax({
         url: '<?= base_url("User_v2/permissions/") ?>' + userId,
@@ -308,42 +310,70 @@ function openPermissionsModal(userId) {
                 return;
             }
 
-            const data = result.data;
+            currentPermissionsData = result.data;
+
+            // Parse overrides if stored as JSON string
+            if (typeof currentPermissionsData.overrides === 'string') {
+                try {
+                    currentPermissionsData.overrides = JSON.parse(currentPermissionsData.overrides);
+                } catch (e) {
+                    currentPermissionsData.overrides = { allow: [], deny: [] };
+                }
+            }
+
             let html = '';
 
-            $.each(data.modules, function(module, permissions) {
+            $.each(currentPermissionsData.modules, function(module, permissions) {
                 html += `
                     <h6 class="mt-3 text-primary fw-bold border-bottom pb-1">${module}</h6>
                     <div class="row">
                 `;
 
                 permissions.forEach(p => {
-                    const isRolePermission = data.role_permissions.includes(p.name);
-                    const allowChecked = data.overrides.allow.includes(p.name);
-                    const denyChecked = data.overrides.deny.includes(p.name);
+                    const isRolePermission = currentPermissionsData.role_permissions.includes(p.name);
+                    const allowOverride = currentPermissionsData.overrides.allow.includes(p.name);
+                    const denyOverride = currentPermissionsData.overrides.deny.includes(p.name);
 
-                    const isOverridden = allowChecked || denyChecked;
-                    const disabled = !isRolePermission ? 'disabled' : '';
+                    let allowChecked = false;
+                    let denyChecked = false;
+                    let inherited = false;
+
+                    if (allowOverride) {
+                        allowChecked = true;
+                    } else if (denyOverride) {
+                        denyChecked = true;
+                    } else if (isRolePermission) {
+                        allowChecked = true;
+                        inherited = true;
+                    } else {
+                        denyChecked = true;
+                        inherited = false;
+                    }
+
+                    const isOverridden = allowOverride || denyOverride;
 
                     html += `
-                        <div class="col-md-3 mb-2">
-                            <div class="border rounded p-2 ${isOverridden ? 'bg-warning-subtle border-warning' : 'bg-light'} position-relative permission-box">
+                        <div class="col-md-3 mb-2 border-secondary">
+                            <div class="border ${denyChecked ? 'border-danger' : 'border-secondary'} rounded p-2 position-relative permission-box 
+                                ${isOverridden ? 'bg-warning-subtle border-warning' : inherited ? 'bg-light' : 'bg-white'}">
+                                
                                 <strong class="d-block text-dark">${p.label}</strong>
                                 <small class="text-muted">${p.name}</small>
 
                                 <div class="mt-1">
                                     <label class="text-success me-3">
-                                        <input type="checkbox" class="allow-check" name="allow_permissions[]" value="${p.name}" ${allowChecked ? 'checked' : ''} ${disabled}> Allow
+                                        <input type="checkbox" class="allow-check" name="allow_permissions[]" value="${p.name}" ${allowChecked ? 'checked' : ''}> Allow
                                     </label>
                                     <label class="text-danger me-3">
-                                        <input type="checkbox" class="deny-check" name="deny_permissions[]" value="${p.name}" ${denyChecked ? 'checked' : ''} ${disabled}> Deny
+                                        <input type="checkbox" class="deny-check" name="deny_permissions[]" value="${p.name}" ${denyChecked ? 'checked' : ''}> Deny
                                     </label>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary reset-btn" data-name="${p.name}" style="padding: 1px 6px; font-size: 12px;" title="Reset this permission">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary reset-btn" data-name="${p.name}" style="padding:1px 6px;font-size:12px;" title="Reset this permission">
                                         <i class="fas fa-undo"></i>
                                     </button>
                                 </div>
 
                                 ${isOverridden ? `<span class="badge bg-warning text-dark position-absolute top-0 end-0 m-1">Overridden</span>` : ''}
+                                ${inherited && !isOverridden ? `<span class="badge bg-secondary text-white position-absolute bottom-0 end-0 m-1" style="font-size:10px;">Defult</span>` : ''}
                             </div>
                         </div>
                     `;
@@ -356,48 +386,54 @@ function openPermissionsModal(userId) {
             $('#userPermissionsForm').attr('action', '<?= base_url("User_v2/updateOverrides/") ?>' + userId);
             $('#userPermissionsModal').modal('show');
 
-            // --- Toggle Allow/Deny mutually ---
+            // --- Toggle mutually exclusive checkboxes ---
             $('#permissionsContainer').on('change', '.allow-check', function() {
                 const name = $(this).val();
-                if ($(this).is(':checked')) {
-                    $(`.deny-check[value="${name}"]`).prop('checked', false);
-                }
-                highlightOverride(name);
+                if ($(this).is(':checked')) $(`.deny-check[value="${name}"]`).prop('checked', false);
+                updateHighlight(name);
             });
 
             $('#permissionsContainer').on('change', '.deny-check', function() {
                 const name = $(this).val();
-                if ($(this).is(':checked')) {
-                    $(`.allow-check[value="${name}"]`).prop('checked', false);
-                }
-                highlightOverride(name);
+                if ($(this).is(':checked')) $(`.allow-check[value="${name}"]`).prop('checked', false);
+                updateHighlight(name);
             });
 
-            // --- Reset Button ---
+            // --- Reset individual permission ---
             $('#permissionsContainer').on('click', '.reset-btn', function() {
                 const name = $(this).data('name');
+                const box = $(`.allow-check[value="${name}"]`).closest('.permission-box');
+                const inRole = currentPermissionsData.role_permissions.includes(name);
+
                 $(`.allow-check[value="${name}"], .deny-check[value="${name}"]`).prop('checked', false);
-                removeHighlight(name);
+                if (inRole) $(`.allow-check[value="${name}"]`).prop('checked', true);
+                else $(`.deny-check[value="${name}"]`).prop('checked', true);
+
+                box.removeClass('bg-warning-subtle border-warning').addClass('bg-light');
+                box.find('.badge.bg-warning').remove();
+                if (inRole && !box.find('.badge.bg-secondary').length) {
+                    box.append(`<span class="badge bg-secondary text-white position-absolute bottom-0 end-0 m-1" style="font-size:10px;">Defult</span>`);
+                }
             });
 
-            // --- Highlight logic ---
-            function highlightOverride(name) {
+            // --- Highlight overridden permissions ---
+            function updateHighlight(name) {
                 const box = $(`.allow-check[value="${name}"]`).closest('.permission-box');
-                const isChecked = $(`.allow-check[value="${name}"]`).is(':checked') || $(`.deny-check[value="${name}"]`).is(':checked');
-                if (isChecked) {
-                    box.addClass('bg-warning-subtle border-warning');
-                    if (!box.find('.badge').length) {
-                        box.append(`<span class="badge bg-warning text-dark position-absolute top-0 end-0 m-1">Overridden</span>`);
-                    }
-                } else {
-                    removeHighlight(name);
-                }
-            }
+                const allowOverride = $(`.allow-check[value="${name}"]`).is(':checked') && !currentPermissionsData.role_permissions.includes(name);
+                const denyOverride = $(`.deny-check[value="${name}"]`).is(':checked') && currentPermissionsData.role_permissions.includes(name);
 
-            function removeHighlight(name) {
-                const box = $(`.allow-check[value="${name}"]`).closest('.permission-box');
-                box.removeClass('bg-warning-subtle border-warning').addClass('bg-light');
+                box.removeClass('bg-light bg-white bg-warning-subtle border-warning');
                 box.find('.badge').remove();
+
+                if (allowOverride || denyOverride) {
+                    box.addClass('bg-warning-subtle border-warning');
+                    box.append(`<span class="badge bg-warning text-dark position-absolute top-0 end-0 m-1">Overridden</span>`);
+                } else {
+                    box.addClass('bg-light');
+                    if (currentPermissionsData.role_permissions.includes(name)) {
+                        box.append(`<span class="badge bg-secondary text-white position-absolute bottom-0 end-0 m-1" style="font-size:10px;">Defult</span>`);
+                    }
+                }
             }
         },
         error: function() {
@@ -406,15 +442,80 @@ function openPermissionsModal(userId) {
     });
 }
 
-
-$('#userPermissionsForm').on('submit', function(e){
+// --- Submit only manual overrides ---
+$('#userPermissionsForm').on('submit', function(e) {
     e.preventDefault();
-    const formData = $(this).serialize();
-    $.post($(this).attr('action'), formData, function(res){
+    if (!currentPermissionsData) return alert('Permissions data not loaded');
+
+    const allow = [];
+    const deny = [];
+
+    $('#permissionsContainer .permission-box').each(function() {
+        const name = $(this).find('.allow-check, .deny-check').first().val();
+        const isAllowChecked = $(this).find('.allow-check').is(':checked');
+        const isDenyChecked = $(this).find('.deny-check').is(':checked');
+
+        if (isAllowChecked && !currentPermissionsData.role_permissions.includes(name)) allow.push(name);
+        if (isDenyChecked && !currentPermissionsData.role_permissions.includes(name)) deny.push(name);
+    });
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        dataType: 'json',
+        data: { allow, deny }, 
+        success: function (res) {
+            if (res.status && res.user_id) {
+                success_toastify(res.message);
+                openPermissionsModal(res.user_id);
+            } else {
+                error_toastify(res.message || 'Something went wrong.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            error_toastify('Failed to update permissions.');
+        }
+    });
+});
+// --- Submit only overridden permissions ---
+$('#userPermissionsForm').on('submit', function(e) {
+    e.preventDefault();
+
+    const allow = [];
+    const deny = [];
+
+    $('#permissionsContainer .permission-box').each(function() {
+        const name = $(this).find('.allow-check, .deny-check').first().val();
+        const isAllowChecked = $(this).find('.allow-check').is(':checked');
+        const isDenyChecked = $(this).find('.deny-check').is(':checked');
+        const isInRole = $(this).find('.allow-check').is(':checked') && $(this).find('.allow-check').val() === name;
+
+        // Only include overrides (not inherited role permissions)
+        if (isAllowChecked && !$(this).find('.allow-check').val() in data.role_permissions) allow.push(name);
+        if (isDenyChecked && !$(this).find('.deny-check').val() in data.role_permissions) deny.push(name);
+    });
+
+    $.post($(this).attr('action'), { allow, deny }, function(res) {
         alert(res.message);
+        if (res.status) {
+            // Optionally reload modal to reflect updated overrides
+            openPermissionsModal(res.data.user_id || <?= $user_id ?? 0 ?>);
+        }
         $('#userPermissionsModal').modal('hide');
     });
 });
+
+
+
+// $('#userPermissionsForm').on('submit', function(e){
+//     e.preventDefault();
+//     const formData = $(this).serialize();
+//     $.post($(this).attr('action'), formData, function(res){
+//         alert(res.message);
+//         $('#userPermissionsModal').modal('hide');
+//     });
+// });
 
 $('#resetPermissionsBtn').on('click', function(){
     const userId = $('#userPermissionsForm').attr('action').split('/').pop();

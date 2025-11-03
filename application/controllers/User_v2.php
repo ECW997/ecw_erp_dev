@@ -96,6 +96,21 @@ class User_v2 extends CI_Controller {
 		echo json_encode($response);
 	}
 
+	public function updateOverrides($id) {
+		$allow = $this->input->post('allow_permissions') ?? [];
+		$deny = $this->input->post('deny_permissions') ?? [];
+
+		$form_data = [
+			'recordID' => $id,
+			'allow' => $allow,
+			'deny' => $deny,
+		];
+
+		$response = $this->User_v2_info->updateOverrides($this->api_token,$form_data);
+		$redirect_url = 'User_v2/index';
+		$this->handleResponse($redirect_url,$response);
+	}
+
 	private function handleResponse($redirect_url,$response) {
 		if (!$response) {
 			$this->setFlashResponse('204', 'Not Response Server!', $redirect_url);

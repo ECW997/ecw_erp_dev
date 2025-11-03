@@ -44,5 +44,10 @@ class User_v2_info extends CI_Model{
         $headers = get_api_headers($api_token);
         return call_api('GET', 'user_permisson_v2', $id, $headers);
     }
+
+    public function updateOverrides($api_token,$id){
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'users_update_overrides_v2', $id, $headers);
+    }
 }
 ?>
