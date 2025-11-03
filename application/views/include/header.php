@@ -123,4 +123,4 @@ function menucheck($arraymenu, $menuID){
         </div>
     </div> -->
 
-    <?php include __DIR__ . "/../components/modal/cashier/start_cashier_shift.php"; ?>
+    

@@ -72,7 +72,7 @@ $(document).ready(function(){
             return false;
         }
 
-        if(!confirm("Are you sure you want to start your cashier shift?")) {
+        if(!confirm("Are you sure you want to start your cashier shift1?")) {
             return false; 
         }
 

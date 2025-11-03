@@ -23,7 +23,7 @@ $is_denied = ($status === 'Cancelled');
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
+        }    
         </style>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
@@ -206,69 +206,88 @@ const customerData = {
 };
 
 $(document).ready(function() {
+    const categoryMenu = <?= json_encode($category_menu ?? []) ?>;
 
-    $.ajax({
-        url: apiBaseUrl + '/v1/main_category_group',
-        type: "GET",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + api_token
-        },
-        success: function(json) {
-            $('#mainCategoryGroupMenu').empty();
-            json.data.forEach(group => {
-                const groupId = group.id;
-                const groupName = group.group_name;
+    const $menu = $('#mainCategoryGroupMenu');
+    $menu.empty();
 
-                const groupHtml = `
+    categoryMenu.forEach(group => {
+        const groupId = group.id;
+        const groupName = group.group_name;
+
+        let dropdownHtml = '';
+        if (group.categories && group.categories.length > 0) {
+            group.categories.forEach(cat => {
+                dropdownHtml += `
                     <li>
-                        <a href="#">
-                            <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
-                                style="cursor:pointer; font-size:1rem;">
-                                ${groupName}
-                            </span>
+                        <a href="#" class="job-category-item" data-id="${cat.idtbl_main_job_category}">
+                            ${cat.main_job_category}
                         </a>
-                        <ul class="dropdown" id="dropdown-${groupId}">
-                            <li><a href="#">Loading...</a></li>
-                        </ul>
                     </li>
                 `;
-                $('#mainCategoryGroupMenu').append(groupHtml);
-
-                $.ajax({
-                    url: apiBaseUrl + '/v1/main_group_assigned_job_categories/' +
-                        groupId,
-                    type: "GET",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + api_token
-                    },
-                    success: function(res) {
-                        const $dropdown = $(`#dropdown-${groupId}`);
-                        $dropdown.empty();
-                        if (res.status && res.main_job_categories.length > 0) {
-                            res.main_job_categories.forEach(cat => {
-                                $dropdown.append(`
-                                <li>
-                                    <a href="#" class="job-category-item" data-id="${cat.idtbl_main_job_category}">
-                                        ${cat.main_job_category}
-                                    </a>
-                                </li>
-                            `);
-                            });
-                        } else {
-                            $dropdown.append(
-                                `<li><a href="#" class="text-muted">No Categories</a></li>`
-                            );
-                        }
-                    }
-                });
             });
+        } else {
+            dropdownHtml = `<li><a href="#" class="text-muted">No Categories</a></li>`;
         }
+
+        const groupHtml = `
+            <li>
+                <a href="#">
+                    <span class="main-group-menu badge bg-dark text-white px-3 py-2 rounded-pill pointer"
+                        style="cursor:pointer; font-size:1rem;">
+                        ${groupName}
+                    </span>
+                </a>
+                <ul class="dropdown" id="dropdown-${groupId}">
+                    ${dropdownHtml}
+                </ul>
+            </li>
+        `;
+
+        $menu.append(groupHtml);
     });
 
+
+    const categoryMenu = <?= json_encode($category_menu ?? []) ?>;
+
+    const $menu = $('#mainCategoryGroupMenu');
+    $menu.empty();
+
+    categoryMenu.forEach(group => {
+        const groupId = group.id;
+        const groupName = group.group_name;
+
+        let dropdownHtml = '';
+        if (group.categories && group.categories.length > 0) {
+            group.categories.forEach(cat => {
+                dropdownHtml += `
+                    <li>
+                        <a href="#" class="job-category-item" data-id="${cat.idtbl_main_job_category}">
+                            ${cat.main_job_category}
+                        </a>
+                    </li>
+                `;
+            });
+        } else {
+            dropdownHtml = `<li><a href="#" class="text-muted">No Categories</a></li>`;
+        }
+
+        const groupHtml = `
+            <li>
+                <a href="#">
+                    <span class="main-group-menu badge bg-dark text-white px-2 py-1 rounded-pill pointer"
+                        style="cursor:pointer; font-size:0.875rem;">
+                        ${groupName}
+                    </span>
+                </a>
+                <ul class="dropdown custom-dropdown-scroll" id="dropdown-${groupId}">
+                    ${dropdownHtml}
+                </ul>
+            </li>
+        `;
+
+        $menu.append(groupHtml);
+    });
 
     $(document).on('click', '.job-category-item', function() {
         showAddJobItemModal(this);

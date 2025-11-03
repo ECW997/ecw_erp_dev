@@ -16,11 +16,14 @@ include "include/topnavbar.php";
                 <div class="container-fluid">
                     <div class="page-header-content py-3">
                         <div class="row">
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                <h1 class="page-header-title ">
-                                    <div class="page-header-icon"><i class="fas fa-laptop"></i></div>
+                            <div class="col-12 d-flex justify-content-between align-items-center">
+                                <h1 class="page-header-title d-flex align-items-center mb-0">
+                                    <div class="page-header-icon me-2"><i class="fas fa-laptop"></i></div>
                                     <span>Dashboard</span>
                                 </h1>
+                                <button type="button" id="btnBackup" class="btn btn-primary secure_section d-none">
+                                    <i class="fas fa-database mr-2"></i> Backup
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -368,6 +371,56 @@ var salesChart = new Chart(ctx, {
         }
     }
 });
+</script>
+
+<script>
+    $(document).ready(function() {
+        let typed = "";
+        $(document).on("keydown", function (e) {
+            typed += e.key.toLowerCase();
+
+            if (typed.includes("show")) {
+                $(".secure_section").removeClass("d-none");
+                typed = ""; 
+            }
+            if (typed.includes("hide")) {
+                $(".secure_section").addClass("d-none");
+                typed = ""; 
+            }
+            if (typed.length > 10) typed = typed.slice(-10);
+        });
+    });
+
+    $('#btnBackup').on('click', function() {
+        if (!confirm('⚠️ Are you sure you want to back up the database?')) {
+            return; 
+        }
+        var $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Backing up...');
+
+        $.ajax({
+            url: apiBaseUrl + '/v1/backup_database',
+            type: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + api_token
+            },
+            success: function(response) {
+                if (response.status) {
+                    success_toastify(response.message || 'Database backup completed successfully.');
+                } else {
+                    error_toastify(response.message || 'Backup failed.');
+                }
+            },
+            error: function(xhr, status, error) {
+                error_toastify('Backup request failed: ' + error);
+            },
+            complete: function() {
+                $btn.prop('disabled', false).html('<i class="fas fa-database me-1"></i> Backup');
+            }
+        });
+    });
 </script>
 
 <?php include "include/footer.php"; ?>

@@ -872,7 +872,7 @@ function updatePriceSummary() {
     $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
 	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
     $('#displayOrderValueText').text(formatCurrency(orderValue));
-    $('#confirmedOrderValue').val(`${totalAvailableJobprice}`);
+    $('#confirmedOrderValue').val(totalAvailableJobprice < 0 ? 0 : totalAvailableJobprice);
 
 	const $differenceElement = $('#priceDifference');
     const $differenceElementText = $('#priceDifferenceText');
