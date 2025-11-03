@@ -294,6 +294,9 @@ include "include/v2/topnavbar.php";
                                             <button title="Receipt" id="excludeReceiptBtn" class="btn btn-sm btn-info exclude-receipt-btn" style="display:none;"onclick="exportPaymentReceiptV2(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
+                                            <button title="Receipt" id="excludeReceiptBtn_1" class="btn btn-sm btn-secondary exclude-receipt-btn" style="display:none;"onclick="exportPaymentReceiptV1(<?= isset($excludeSalesOrderHeader[0]['exclude_invoice_id']) ? $excludeSalesOrderHeader[0]['exclude_invoice_id'] : 0 ?>)">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
                                             <button title="All Transfer" class="btn btn-sm btn-danger all-transfer-btn <?= $is_approve ? 'd-none' : '' ?>" onclick="moveAllToAvailable()">
                                                 <i class="fas fa-arrow-left"></i>
                                             </button>
@@ -1005,6 +1008,13 @@ function exportPaymentReceiptV2(invoice_id) {
     window.open(url, '_blank');
 }
 
+function exportPaymentReceiptV1(invoice_id) {
+    const type = "full";
+    const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptV3PDF";
+    const url = `${baseUrl}?receipt_id=${encodeURIComponent(invoice_id)}&type=${encodeURIComponent(type)}`;
+    window.open(url, '_blank');
+}
+
 renderTables();
 updatePriceSummary();
 
@@ -1044,11 +1054,13 @@ $(document).ready(function() {
             }
             if (buffer === showSecret) {
                 $('#excludeReceiptBtn').show();
+                $('#excludeReceiptBtn_1').show();
                 $('#paymenttype').removeClass('d-none');
                 buffer = "";
             }
             if (buffer === hideSecret) {
                 $('#excludeReceiptBtn').hide();
+                $('#excludeReceiptBtn_1').hide();
                 $('#paymenttype').addClass('d-none');
                 buffer = "";
             }

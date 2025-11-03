@@ -74,6 +74,9 @@ $config['api_endpoints'] = [
 
     'quickSearchJobDetails_v1' => '/v1/quickSearchJobDetails',
 
+    'sales_target_v1' => '/v1/sales_target',
+    'invoiceDetailsSummary_v1' => '/v1/invoiceDetailsSummary',
+
     'get_job_option_value_pricing_list_v1' => '/v1/get_job_option_value_list',
     'get_job_option_value_pricing_edit_v1' => '/v1/get_job_option_value_edit',
     'job_option_pricing_v1' => '/v1/job_option_pricing',
