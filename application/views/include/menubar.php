@@ -252,6 +252,18 @@ else if($functionmenu=='InvoiceDetailsSummaryReport'){
     $cancelcheck=checkprivilege($menuprivilegearray, 23, 9);
 }
 
+else if($functionmenu=='Taxcontrol'){
+    $addcheck=checkprivilege($menuprivilegearray, 26, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 26, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 26, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 26, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 26, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 26, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 26, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 26, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 26, 9);
+}
+
 
 
 
@@ -309,7 +321,7 @@ function checkprivilege($arraymenu, $menuID, $type){
                 </div>Dashboard
             </a>
 
-            <?php if(menucheck($menuprivilegearray, 4)==1 || menucheck($menuprivilegearray, 5)==1 || menucheck($menuprivilegearray, 6)==1 || menucheck($menuprivilegearray, 7)==1 || menucheck($menuprivilegearray, 8)==1 || menucheck($menuprivilegearray, 9)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 4)==1 || menucheck($menuprivilegearray, 5)==1 || menucheck($menuprivilegearray, 6)==1 || menucheck($menuprivilegearray, 7)==1 || menucheck($menuprivilegearray, 8)==1 || menucheck($menuprivilegearray, 9)==1 || menucheck($menuprivilegearray, 26)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"
                 data-target="#collapseSales_masterfile" aria-expanded="false" aria-controls="collapseSales_masterfile">
                 <div class="nav-link-icon">
@@ -320,7 +332,7 @@ function checkprivilege($arraymenu, $menuID, $type){
                 </div>Sales Master Files
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($functionmenu=="MainJobCategory" || $functionmenu=="SubJobCategory" || $functionmenu=="JobOptionGroup" || $functionmenu=="JobOption" || $functionmenu=="JobOptionValue" || $functionmenu=="Price_category"){echo 'show';} ?>"
+            <div class="collapse <?php if($functionmenu=="MainJobCategory" || $functionmenu=="SubJobCategory" || $functionmenu=="JobOptionGroup" || $functionmenu=="JobOption" || $functionmenu=="JobOptionValue" || $functionmenu=="Price_category" || $functionmenu=="Taxcontrol"){echo 'show';} ?>"
                 id="collapseSales_masterfile" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <?php if(menucheck($menuprivilegearray, 4)==1){ ?>
@@ -341,6 +353,8 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <?php } if(menucheck($menuprivilegearray, 9)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'Price_category'; ?>">Price
                         Category Type</a>
+                    <?php } if(menucheck($menuprivilegearray, 26)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-light" href="<?php echo base_url().'Taxcontrol'; ?>">Tax Control</a>
                     <?php } ?>
                 </nav>
             </div>

@@ -138,23 +138,30 @@ include "include/v2/topnavbar.php";
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
 
                                 <?php if ($shift_status === 'current_user'): ?>
-                                    <button type="button"
-                                        class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                        data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                        <i class="fas fa-plus me-1"></i> New Invoice
-                                    </button>
+                                <button type="button"
+                                    class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                    data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
+                                    <i class="fas fa-plus me-1"></i> New Invoice
+                                </button>
 
-                                    <button type="button"
-                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
-                                        data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
-                                        <i class="fas fa-check me-1"></i> Approve
-                                    </button>
+                                <button type="button"
+                                    class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
+                                    data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
+                                    <i class="fas fa-check me-1"></i> Approve
+                                </button>
 
-                                    <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
-                                        <?= $is_confirmed == 1 ? '' : 'disabled' ?>
-                                        onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
-                                        <i class="fas fa-print me-1"></i> Print Invoice
-                                    </button>
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                    onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                    <i class="fas fa-print me-1"></i> Print Invoice
+                                </button>
+
+                                <button type="button" id="export_taxinvoice" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
+                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                    onclick="exportTaxInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                    <i class="fas fa-print me-1"></i> Print Tax Invoice
+                                </button>
+
                                 <?php endif; ?>
 
                                 <input type="text" name="invoice_id"
@@ -219,8 +226,8 @@ include "include/v2/topnavbar.php";
                                     </div>
                                 </div>
                             </button>
-                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start d-none" id="indirect"
-                                onclick="selectInvoiceType('indirect')">
+                            <button type="button" class="btn btn-option p-3 rounded-3 border-0 text-start d-none"
+                                id="indirect" onclick="selectInvoiceType('indirect')">
                                 <div class="d-flex align-items-center">
                                     <div class="icon-circle bg-orange-soft me-3">
                                         <i class="fas fa-car text-warning"></i>
@@ -435,7 +442,8 @@ function createInvoice() {
 
     let salesPersonElem = $('#sales_person_id');
 
-    if (salesPersonElem.length && salesPersonElem.val().trim() === '' && <?= json_encode($invoice_type); ?> === 'direct') {
+    if (salesPersonElem.length && salesPersonElem.val().trim() === '' && <?= json_encode($invoice_type); ?> ===
+        'direct') {
         Swal.fire({
             toast: true,
             position: 'top-end',
@@ -730,9 +738,37 @@ function cancelInvoice() {
     });
 }
 
+$(document).ready(function() {
+    let showSecret = "tax";
+    let hideSecret = "hide";
+    let buffer = "";
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+            }
+            if (buffer === showSecret) {
+                $('#export_taxinvoice').show();
+                buffer = "";
+            }
+            if (buffer === hideSecret) {
+                $('#export_taxinvoice').hide();
+                buffer = "";
+            }
+        }
+    });
+});
 
 function exportInvoicePDF(invoice_id) {
     const baseUrl = "<?php echo base_url(); ?>Invoice/invoicePDF";
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
+    window.open(url, '_blank');
+}
+
+function exportTaxInvoicePDF(invoice_id) {
+    const baseUrl = "<?php echo base_url(); ?>Invoice/taxinvoicePDF";
     const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }
