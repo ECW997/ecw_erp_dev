@@ -780,7 +780,7 @@ $(document).ready(function() {
                 excelData.push({
                     'Job Item Name': 'INVOICE DISCOUNT',
                     'Discount Amount': invoiceDiscount,
-                    'Net Total Amount': -invoiceDiscount
+                    // 'Net Total Amount': -invoiceDiscount
                 });
 
                 // --- Add Total Row ---
