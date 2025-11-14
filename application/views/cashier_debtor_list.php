@@ -8,7 +8,7 @@
             <div class="page-header bg-white shadow-sm border-bottom">
                 <div class="container-fluid py-3 d-flex justify-content-between align-items-center">
                     <h1 class="mb-0">
-                        <i class="fa fa-users mr-2 text-primary"></i>Debtor List
+                        <i class="fa fa-users mr-2 text-primary"></i>Debtor List <span class="ml-2 text-danger" id="headerTag"></span>
                     </h1>
                     <button class="btn btn-primary" id="addDebtorBtn"><i class="fa fa-plus"></i> Add Debtor</button>
                 </div>
@@ -18,13 +18,37 @@
             <div class="container-fluid mt-3">
                 <div class="card shadow-sm">
                     <div class="card-body">
+                        
+                        <div class="col-12 col-md-12 d-flex align-items-center justify-content-end flex-wrap">
+                            <div class="d-flex align-items-center mr-3 mb-2 mb-md-0">
+                                <label for="sales_agent" class="mb-0 mr-2 " style="white-space: nowrap;">Sales Agent</label>
+                                <select id="sales_agent" class="custom-select custom-select-sm"
+                                    style="min-width: 130px;">
+                                     <option value="">All</option>
+                                    <?php if (!empty($sales_agents)) : ?>
+                                    <?php foreach ($sales_agents as $agent) : ?>
+                                    <option value="<?= $agent['idtbl_sales_person']; ?>">
+                                        <?= htmlspecialchars($agent['sales_person_name']); ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="filterBtn"
+                                style="height: 1.9rem; font-size: 0.85rem;">
+                                <i class="fas fa-filter mr-1"></i> Filter
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm ml-2" id="clearFilterBtn">Clear</button>
+                        </div>
+
                          <div class="scrollbar pb-3" id="style-2">
-                            <table id="debtorTable" class="table table-bordered w-100" style="white-space: nowrap;">
+                            <table id="debtorTable" class="table table-bordered table-sm w-100" style="white-space: nowrap;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Date</th>
                                         <th>Job No</th>
+                                        <th>Sale Person Code</th>
                                         <th>Sale Person</th>
                                         <th>Customer Name</th>
                                         <th>Phone No</th>
@@ -38,6 +62,15 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="9" class="text-right">Total:</th>
+                                        <th id="total_inv" class="text-right"></th>
+                                        <th id="total_advance" class="text-right"></th>
+                                        <th id="total_balance" class="text-right"></th>
+                                        <th colspan="3"></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -54,12 +87,13 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="scrollbar pb-3" id="style-2">
-                            <table id="creditTable" class="table table-bordered w-100" style="white-space: nowrap;">
+                            <table id="creditTable" class="table table-bordered table-sm w-100" style="white-space: nowrap;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Credited Date</th>
                                         <th>Job No</th>
+                                        <th>Sale Person Code</th>
                                         <th>Sale Person</th>
                                         <th>Customer Name</th>
                                         <th>Phone No</th>
@@ -72,6 +106,15 @@
                                         <th>Payment Details</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="9" class="text-right">Total:</th>
+                                        <th id="total_inv2" class="text-right"></th>
+                                        <th id="total_advance2" class="text-right"></th>
+                                        <th id="total_balance2" class="text-right"></th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -100,19 +143,44 @@
                         $fields = [
                             ['Date', 'date', 'date', true],
                             ['Job No', 'job_no', 'text', true],
-                            ['Sale Person', 'sale_person', 'text', false],
+                            ['Sale Person', 'sale_person', 'text', true], // We'll replace this manually
                             ['Customer Name', 'customer_name', 'text', true],
                             ['Phone No', 'phone_no', 'text', false],
                             ['Vehicle No', 'vehicle_no', 'text', false],
                             ['Vehicle Type', 'vehicle_type', 'text', false],
-                            ['Inv Amount', 'inv_amount', 'number', false],
+                            ['Inv Amount', 'inv_amount', 'number', true],
                             ['Advance Amount', 'advance_amount', 'number', false],
                             ['Balance Amount', 'balance_amount', 'number', false],
                             ['Number Of Days', 'number_of_days', 'number', false],
+                            ['Series', 'series', 'number', true],
                         ];
+
                         foreach ($fields as [$label, $id, $type, $req]) {
-                            $readonly = ($id === 'balance_amount') ? 'readonly' : '';
-                            echo "<div class='col-md-4 mb-2'><label>$label</label><input type='$type' step='0.01' class='form-control' id='$id' name='$id' $readonly ".($req?'required':'')."></div>";
+                            echo "<div class='col-md-4 mb-2'><label>$label</label>";
+
+                            if ($id === 'sale_person') {
+                                echo '<select id="sale_person" name="sale_person" class="custom-select custom-select-sm" style="min-width: 130px;" '.($req?'required':'').'>';
+                                echo '<option value="">All</option>';
+                                if (!empty($sales_agents)) {
+                                    foreach ($sales_agents as $agent) {
+                                        echo '<option value="' . htmlspecialchars($agent['idtbl_sales_person']) . '">' . htmlspecialchars($agent['sales_person_name']) . '</option>';
+                                    }
+                                }
+                                echo '</select>';
+                            }
+                            else if ($id === 'series') {
+                                echo '<select id="series" name="series" class="custom-select custom-select-sm" '.($req?'required':'').'>';
+                                echo '<option value="">Select Series</option>';
+                                echo '<option value="1">Series 1</option>';
+                                echo '<option value="2">Series 2</option>';
+                                echo '</select>';
+                            }
+                            else {
+                                $readonly = ($id === 'balance_amount') ? 'readonly' : '';
+                                echo "<input type='$type' step='0.01' class='form-control' id='$id' name='$id' $readonly ".($req?'required':'').">";
+                            }
+
+                            echo "</div>";
                         }
                         ?>
                         <div class='col-md-4 mb-2'>
@@ -157,7 +225,9 @@
                     </div>
                     <div class="mb-3">
                         <label>Payment Details</label>
-                        <input type="text" class="form-control" name="payment_details" required>
+                        <select id="payment_details" name="payment_details" class="form-control" required>
+                            <option value="">Select Details</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -173,125 +243,18 @@
 
 <script>
 $(document).ready(function() {
-    // Debtor Table
-    var table = $('#debtorTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: apiBaseUrl + '/v1/cashier_debitor',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + api_token }
-        },
-        columns: [
-            { data: 'id' },
-            { data: 'date' },
-            { data: 'job_no' },
-            { data: 'sale_person' },
-            { data: 'customer_name' },
-            { data: 'phone_no' },
-            { data: 'vehicle_no' },
-            { data: 'vehicle_type' },
-            {
-                data: 'inv_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            {
-                data: 'advance_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            {
-                data: 'balance_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            {
-                data: null,
-                render: function(data, type, row) {
-                    const today = new Date();
-                    const recordDate = new Date(row.date);
-                    const diffDays = Math.floor((today - recordDate) / (1000 * 60 * 60 * 24));
-                    return diffDays >= 0 ? diffDays : 0;
-                }
-            },
-            { data: 'approved_by' },
-            {
-                data: 'id',
-                render: function(data) {
-                    return `
-                        <button class="btn btn-sm btn-success transferBtn" data-id="${data}" title="Transfer">
-                            <i class="fas fa-exchange-alt"></i>
-                        </button>
-                        <button class="btn btn-sm btn-primary editBtn" data-id="${data}" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger deleteBtn" data-id="${data}" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    `;
-                }
 
-            }
-        ],
-        order: [[0, 'desc']]
-    });
+    loadDebtorTable(1);
+    loadCreditTable(1);
 
-    // Credit Table
-    var creditTable = $('#creditTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: apiBaseUrl + '/v1/credit_settlement_list',
-            type: 'GET',
-            headers: { 'Authorization': 'Bearer ' + api_token }
-        },
-        columns: [
-            { data: 'id' },
-            { data: 'credited_date' },
-            { data: 'job_no' },
-            { data: 'sale_person' },
-            { data: 'customer_name' },
-            { data: 'phone_no' },
-            { data: 'vehicle_no' },
-            { data: 'vehicle_type' },
-            {
-                data: 'inv_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            {
-                data: 'advance_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            {
-                data: 'balance_amount',
-                className: 'text-right',
-                render: function(data, type, row) {
-                    if (data === null || data === '') return '0.00';
-                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                }
-            },
-            { data: 'settlement_date' },
-            { data: 'payment_details' }
-        ]
-    });
+    // $('#filterBtn').on('click', function() {
+    //     $('#dataTable').DataTable().ajax.reload();
+    // });
+
+    // $('#clearFilterBtn').on('click', function() {
+    //     $('#date_from, #date_to, #sales_agent, #job_status, #status, #payment_status').val('');
+    //     $('#dataTable').DataTable().ajax.reload();
+    // });
 
     $('#approved_by').on('change', function() {
         if ($(this).val() === 'Other') {
@@ -400,6 +363,34 @@ $(document).ready(function() {
     // Transfer to Credit
     $('#debtorTable').on('click', '.transferBtn', function() {
         $('#transfer_debtor_id').val($(this).data('id'));
+
+        const series = $(this).data('series');
+
+        const paymentDropdown = $('#payment_details');
+        paymentDropdown.empty().append('<option value="">Select Payment Detail</option>');
+        if(series==1){
+            const options = [
+                'Cash',
+                'Bank Transfer - ECW Com',
+                'Cheque - ECW COM',
+                'Cheque - BOC Nittambuwa',
+                'Other'
+            ];
+            options.forEach(opt => {
+                paymentDropdown.append(`<option value="${opt}">${opt}</option>`);
+            });
+        }else if(series==2){
+            const options = [
+                'Cash',
+                'Other'
+            ];
+            options.forEach(opt => {
+                paymentDropdown.append(`<option value="${opt}">${opt}</option>`);
+            });
+        }else{
+            paymentDropdown.empty().append('<option value="">Select Payment Detail</option>');
+        }
+        
         $('#transferModal').modal('show');
     });
 
@@ -423,6 +414,251 @@ $(document).ready(function() {
             },
             error: () => alert('Transfer failed!')
         });
+    });
+});
+
+function loadDebtorTable(series){
+    if ($.fn.DataTable.isDataTable('#debtorTable')) {
+        $('#debtorTable').DataTable().clear().destroy();
+    }
+
+    var table = $('#debtorTable').DataTable({
+        processing: true,
+        serverSide: true,
+        dom: 'Bfrtip',
+        buttons: [
+            // {
+            //     extend: 'excelHtml5',
+            //     title: 'Debtor List',
+            //     exportOptions: { columns: ':visible' }
+            // },
+            // {
+            //     text: 'S1 & S2 Debtor PDF', 
+            //     action: function (e, dt, node, config) {
+            //         exportPDF('debitor', 3); 
+            //     },
+            //     className: 'btn btn-danger btn-sm d-none',
+            //     attr: { id: 'btnS1S2Debtor' }
+            // },
+            {
+                text: 'Debtor PDF', 
+                action: function (e, dt, node, config) {
+                    exportPDF('debitor', series); 
+                },
+                className: 'btn btn-danger btn-sm',
+                attr: { id: 'btnDebtor' }
+            }
+        ],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        pageLength: -1,
+        ajax: {
+            url: apiBaseUrl + '/v1/cashier_debitor?series=' + encodeURIComponent(series),
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + api_token }
+        },
+        columns: [
+            { data: 'id' },
+            { data: 'date' },
+            { data: 'job_no' },
+            { data: 'sales_person_code' },
+            { data: 'sales_person_name' },
+            { data: 'customer_name' },
+            { data: 'phone_no' },
+            { data: 'vehicle_no' },
+            { data: 'vehicle_type' },
+            {
+                data: 'inv_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'advance_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'balance_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    const today = new Date();
+                    const recordDate = new Date(row.date);
+                    const diffDays = Math.floor((today - recordDate) / (1000 * 60 * 60 * 24));
+                    return diffDays >= 0 ? diffDays : 0;
+                }
+            },
+            { data: 'approved_by' },
+            {
+                data: 'id',
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn btn-sm btn-success transferBtn" 
+                            data-id="${row.id}" 
+                            data-series="${row.series}" 
+                            title="Transfer">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                        <button class="btn btn-sm btn-primary editBtn" 
+                            data-id="${row.id}" 
+                            title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger deleteBtn" 
+                            data-id="${row.id}" 
+                            title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `;
+                }
+            }
+        ],
+        order: [[0, 'desc']],
+        footerCallback: function(row, data, start, end, display) {
+            let api = this.api();
+
+            const pageTotal = (index) => api.column(index, { page: 'current' }).data().reduce((a, b) => parseFloat(a) + parseFloat(b || 0), 0);
+            $('#total_inv').html(pageTotal(9).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            $('#total_advance').html(pageTotal(10).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            $('#total_balance').html(pageTotal(11).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+        }
+    });
+}
+
+function loadCreditTable(series){
+    if ($.fn.DataTable.isDataTable('#creditTable')) {
+        $('#creditTable').DataTable().clear().destroy();
+    }
+
+    var creditTable = $('#creditTable').DataTable({
+        processing: true,
+        serverSide: true,
+        dom: 'Bfrtip',
+        buttons: [
+            // {
+            //     extend: 'excelHtml5',
+            //     title: 'Credit List',
+            //     exportOptions: { columns: ':visible' }
+            // },
+            // {
+            //     text: 'S1 & S2 Credit List PDF', 
+            //     action: function (e, dt, node, config) {
+            //         exportPDF('credit', 3); 
+            //     },
+            //     className: 'btn btn-danger btn-sm d-none',
+            //     attr: { id: 'btnS1S2List' }
+            // },
+            {
+                text: 'Credit List PDF', 
+                action: function (e, dt, node, config) {
+                    exportPDF('credit', series); 
+                },
+                className: 'btn btn-danger btn-sm',
+                attr: { id: 'btnList' }
+            }
+        ],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        pageLength: -1,
+        ajax: {
+            url: apiBaseUrl + '/v1/credit_settlement_list?series=' + encodeURIComponent(series),
+            type: 'GET',
+            headers: { 'Authorization': 'Bearer ' + api_token }
+        },
+        columns: [
+            { data: 'id' },
+            { data: 'credited_date' },
+            { data: 'job_no' },
+            { data: 'sales_person_code' },
+            { data: 'sales_person_name' },
+            { data: 'customer_name' },
+            { data: 'phone_no' },
+            { data: 'vehicle_no' },
+            { data: 'vehicle_type' },
+            {
+                data: 'inv_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'advance_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'balance_amount',
+                className: 'text-right',
+                render: function(data, type, row) {
+                    if (data === null || data === '') return '0.00';
+                    return parseFloat(data).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                }
+            },
+            { data: 'settlement_date' },
+            { data: 'payment_details' }
+        ],
+        order: [[0, 'desc']],
+        footerCallback: function(row, data, start, end, display) {
+            let api2 = this.api();
+      
+            const pageTotal2 = (index) => api2.column(index, { page: 'current' }).data().reduce((a, b) => a + parseFloat((b || '0').toString().replace(/,/g, '')), 0);
+            $('#total_inv2').html(pageTotal2(9).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            $('#total_advance2').html(pageTotal2(10).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+            $('#total_balance2').html(pageTotal2(11).toLocaleString(undefined, { minimumFractionDigits: 2 }));
+
+        }
+    });
+}
+
+function exportPDF(type, series) {
+    const baseUrl = "<?php echo base_url(); ?>CashierDebitor/exportPDF";
+    const url = `${baseUrl}?type=${encodeURIComponent(type)}&series=${encodeURIComponent(series)}`;
+    window.open(url, '_blank');
+}
+
+$(document).ready(function() {
+    let showSecret = "boom";
+    let hideSecret = "hide";
+    let buffer = "";
+
+    $(document).on('keydown', function(e) {
+        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+            buffer += e.key.toLowerCase();
+            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+            }
+            if (buffer === showSecret) {
+                $('#btnS1S2Debtor').removeClass('d-none');
+                $('#btnS1S2List').removeClass('d-none');
+                loadDebtorTable(3);
+                loadCreditTable(3);
+                $('#headerTag').text('Both Series');
+                buffer = "";
+            }
+            if (buffer === hideSecret) {
+                $('#btnS1S2Debtor').addClass('d-none');
+                $('#btnS1S2List').addClass('d-none');
+                loadDebtorTable(1);
+                loadCreditTable(1);
+                $('#headerTag').text('');
+                buffer = "";
+            }
+        }
     });
 });
 </script>

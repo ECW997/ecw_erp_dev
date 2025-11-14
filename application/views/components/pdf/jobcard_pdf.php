@@ -603,58 +603,60 @@
                             </tr>
                         </table>
 
-                        <div class="signature-section">
-                            <table style="page-break-inside: avoid;" class="signature-table">
-                                <tr>
-                                    <th style="width:3%;">#</th>
-                                    <th style="width:10%;">EMP CODE</th>
-                                    <th style="width:8%;">RATE</th>
-                                    <th style="width:19%;">EMPLOYEE</th>
-                                    <th style="width:10%;">E-R OFFICER</th>
-                                    <th style="width:10%;">PROD. SUPERVISOR</th>
-                                    <th style="width:10%;">QUALITY SUPERVISOR</th>
-                                    <th style="width:10%;">UPDATED HR</th>
-                                    <th style="width:10%;">CHECKED HR</th>
-                                    <th style="width:10%;">CHECKED ACC</th>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
+                        <?php if (($item['job_maincategory_groups_text'] ?? '') != "VIP Package"): ?>
+                            <div class="signature-section">
+                                <table style="page-break-inside: avoid;" class="signature-table">
+                                    <tr>
+                                        <th style="width:3%;">#</th>
+                                        <th style="width:10%;">EMP CODE</th>
+                                        <th style="width:8%;">RATE</th>
+                                        <th style="width:19%;">EMPLOYEE</th>
+                                        <th style="width:10%;">E-R OFFICER</th>
+                                        <th style="width:10%;">PROD. SUPERVISOR</th>
+                                        <th style="width:10%;">QUALITY SUPERVISOR</th>
+                                        <th style="width:10%;">UPDATED HR</th>
+                                        <th style="width:10%;">CHECKED HR</th>
+                                        <th style="width:10%;">CHECKED ACC</th>
+                                    </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div style="border-bottom: 1px dashed #000;margin_bottom:4px"></div>
                     <?php $joblist_cnt++; ?>
@@ -665,7 +667,61 @@
             <?php if ($categoryIndex < $totalCategories - 1): ?>
             <div class="category-separator"></div>
             <?php endif; ?>
-
+                <?php if (($item['job_maincategory_groups_text'] ?? '') == "VIP Package"): ?>
+                    <div class="signature-section">
+                        <table style="page-break-inside: avoid;" class="signature-table">
+                            <tr>
+                                <th style="width:3%;">#</th>
+                                <th style="width:10%;">EMP CODE</th>
+                                <th style="width:8%;">RATE</th>
+                                <th style="width:19%;">EMPLOYEE</th>
+                                <th style="width:10%;">E-R OFFICER</th>
+                                <th style="width:10%;">PROD. SUPERVISOR</th>
+                                <th style="width:10%;">QUALITY SUPERVISOR</th>
+                                <th style="width:10%;">UPDATED HR</th>
+                                <th style="width:10%;">CHECKED HR</th>
+                                <th style="width:10%;">CHECKED ACC</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="border-bottom: 2px dashed #000;margin-bottom:10px;margin-top:10px"></div>
+                <?php endif; ?>
             <?php $mainJob_cnt++; ?>
             <?php endforeach; ?>
         </div>
