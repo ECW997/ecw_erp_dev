@@ -90,7 +90,7 @@ $is_denied = ($status === 'Cancelled');
                             <div class="col-8">
                                 <div class="row g-2 p-3">
                                     <div class="col-12 col-sm-6 col-md-2 d-grid <?= ($addcheck == 0) ? 'd-none' : '' ?>">
-                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 "
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 w-100 open-new-jobcard-modal"
                                             data-bs-toggle="modal" data-bs-target="#selectCustomerInquiryModal">
                                             <i class="fas fa-plus me-2"></i> New Job Card
                                         </button>
@@ -247,47 +247,6 @@ $(document).ready(function() {
         $menu.append(groupHtml);
     });
 
-
-    const categoryMenu = <?= json_encode($category_menu ?? []) ?>;
-
-    const $menu = $('#mainCategoryGroupMenu');
-    $menu.empty();
-
-    categoryMenu.forEach(group => {
-        const groupId = group.id;
-        const groupName = group.group_name;
-
-        let dropdownHtml = '';
-        if (group.categories && group.categories.length > 0) {
-            group.categories.forEach(cat => {
-                dropdownHtml += `
-                    <li>
-                        <a href="#" class="job-category-item" data-id="${cat.idtbl_main_job_category}">
-                            ${cat.main_job_category}
-                        </a>
-                    </li>
-                `;
-            });
-        } else {
-            dropdownHtml = `<li><a href="#" class="text-muted">No Categories</a></li>`;
-        }
-
-        const groupHtml = `
-            <li>
-                <a href="#">
-                    <span class="main-group-menu badge bg-dark text-white px-2 py-1 rounded-pill pointer"
-                        style="cursor:pointer; font-size:0.875rem;">
-                        ${groupName}
-                    </span>
-                </a>
-                <ul class="dropdown custom-dropdown-scroll" id="dropdown-${groupId}">
-                    ${dropdownHtml}
-                </ul>
-            </li>
-        `;
-
-        $menu.append(groupHtml);
-    });
 
     $(document).on('click', '.job-category-item', function() {
         showAddJobItemModal(this);

@@ -226,6 +226,17 @@ else if($functionmenu=='CashierOldAdvance'){
     $cancelcheck=checkprivilege($menuprivilegearray, 24, 9);
 }
 
+else if($functionmenu=='CashierOldAdvance'){
+    $addcheck=checkprivilege($menuprivilegearray, 25, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 25, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 25, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 25, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 25, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 25, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 25, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 25, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 25, 9);
+}
 
 else if($functionmenu=='Finance'){
     $addcheck=checkprivilege($menuprivilegearray, 21, 1);
@@ -540,7 +551,7 @@ function checkprivilege($arraymenu, $menuID, $type){
                         <?php } ?>
 
                         <?php if(menucheck($menuprivilegearray, 25)==1){ ?>
-                        <a class="nav-link p-0 px-3 py-1 text-light d-none secretMenu"
+                        <a class="nav-link p-0 px-3 py-1 text-light"
                             href="<?php echo base_url().'CashierDebitor'; ?>">
                             Debitor List</a>
                         <?php } ?>

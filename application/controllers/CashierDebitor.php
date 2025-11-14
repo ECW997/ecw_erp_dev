@@ -9,6 +9,7 @@ class CashierDebitor extends CI_Controller {
         parent::__construct();
         $this->load->helper('api_helper');
         $this->load->model('CashierDebitorinfo');
+        $this->load->model('JobCardinfo');
         
         $auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -16,8 +17,10 @@ class CashierDebitor extends CI_Controller {
     }
 
     public function index() {
+        $branch_id = $this->session->userdata('branch_id');
         $this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
+        $result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
 
         $this->load->view('cashier_debtor_list', $result);
     }
@@ -37,6 +40,7 @@ class CashierDebitor extends CI_Controller {
             'advance_amount' => $this->input->post('advance_amount'),
             'balance_amount' => $this->input->post('balance_amount'),
             'number_of_days' => $this->input->post('number_of_days'),
+            'series' => $this->input->post('series'),
             'approved_by' => $this->input->post('approved_by'),
             'recordID' => $this->input->post('debtor_id')
         ];
@@ -109,4 +113,56 @@ class CashierDebitor extends CI_Controller {
             redirect('CashierDebitor');
         }
     }
+
+    public function exportPDF(){
+		$type=$this->input->get('type');
+        $series=$this->input->get('series');
+
+        $response=$this->CashierDebitorinfo->debtorOrCreditPDF($this->api_token,$type,['series' => $series]);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch job card data');
+		}
+
+		$pdf_data = [
+            'main_data' => [
+                'type' => $response['data']['type'],
+                'series' => $response['data']['series'],
+                'title' => $response['data']['title'],
+                'records_count' => $response['data']['records_count'],
+                'generated_at' => $response['data']['generated_at']
+            ],
+            'details_data' => $response['data']['records'], 
+            'summary_data' => $response['data']['totals'] 
+        ];
+
+		$this->load->library('Pdf');
+
+		$this->pdf->setPaper('A4', 'landscape');                      
+		$this->pdf->set_option('defaultFont', 'Helvetica');           
+		$this->pdf->set_option('isRemoteEnabled', true); 
+
+		$html = $this->load->view('components/pdf/debtor_report_pdf', $pdf_data, TRUE);
+
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+
+        $filename = strtolower($type) . '_report_' . $series . '_' . date('Y_m_d_His') . '.pdf';
+
+        $user_agent = $this->input->server('HTTP_USER_AGENT');
+        $is_electron = strpos($user_agent, 'Electron') !== false;
+        
+        if ($is_electron) {
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Length: ' . strlen($this->pdf->output()));
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
+            
+            echo $this->pdf->output();
+        } else {
+            $this->pdf->stream($filename, ['Attachment' => 0]);
+        }
+
+	}
 }

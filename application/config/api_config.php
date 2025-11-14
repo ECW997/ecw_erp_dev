@@ -136,6 +136,7 @@ $config['api_endpoints'] = [
 
     'cashier_debitor_v1' => '/v1/cashier_debitor',
     'cashier_debitor_transfer_v1' => '/v1/cashier_debitor_transfer',
+    'cashier_debitor_pdf_v1' => '/v1/cashier_debitor_pdf',
 
 
 

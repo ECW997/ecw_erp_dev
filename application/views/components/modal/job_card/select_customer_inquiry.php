@@ -56,8 +56,37 @@
 let company_id = "<?php echo ucfirst($_SESSION['company_id']); ?>";
 let branch_id = "<?php echo ucfirst($_SESSION['branch_id']); ?>";
 
-$(document).ready(function () {
-	$('#inquiryListDataTable').DataTable({
+let inquiryDataTable = null;
+
+$(document).on('click', '.open-new-jobcard-modal', function(e) {
+    e.preventDefault();
+    
+    // Show the modal first
+    $('#selectCustomerInquiryModal').modal('show');
+    
+    // Initialize DataTable after modal is shown
+    setTimeout(() => {
+        initializeInquiryDataTable();
+    }, 300);
+});
+
+// Initialize DataTable when modal is shown
+$(document).on('show.bs.modal', '#selectCustomerInquiryModal', function () {
+    initializeInquiryDataTable();
+});
+
+// Clean up when modal is hidden
+$(document).on('hide.bs.modal', '#selectCustomerInquiryModal', function () {
+    destroyInquiryDataTable();
+});
+
+function initializeInquiryDataTable() {
+	  // Destroy existing instance if it exists
+    if (inquiryDataTable) {
+        destroyInquiryDataTable();
+    }
+
+	inquiryDataTable = $('#inquiryListDataTable').DataTable({
 		"destroy": true,
 		"processing": true,
 		"serverSide": true,
@@ -124,7 +153,87 @@ $(document).ready(function () {
 			$('[data-toggle="tooltip"]').tooltip();
 		}
 	});
-});
+
+}
+
+function destroyInquiryDataTable() {
+    if (inquiryDataTable) {
+        inquiryDataTable.destroy();
+        inquiryDataTable = null;
+    }
+    // Clear the table body to prevent duplicate initialization
+    $('#inquiryListDataTable').empty();
+}
+
+// $(document).ready(function () {
+// 	$('#inquiryListDataTable').DataTable({
+// 		"destroy": true,
+// 		"processing": true,
+// 		"serverSide": true,
+// 		dom: "<<'col-sm-12'f>>" + "<'row'<'col-sm-12'tr>>" +
+// 			"<'row'<'col-sm-5'i><'col-sm-7'p>>",
+// 		responsive: true,
+// 		lengthMenu: [
+// 			[10, 25, 50, -1],
+// 			[10, 25, 50, 'All'],
+// 		],
+// 		ajax: {
+// 			url: apiBaseUrl + '/v1/customer_inquiry_list',
+// 			type: "GET",
+// 			headers: {
+// 				'Accept': 'application/json',
+// 				'Content-Type': 'application/json',
+// 				'Authorization': 'Bearer ' + api_token
+// 			},
+// 			data: function(d) {
+//                     d.company_id = company_id;
+//                     d.branch_id = branch_id;
+//             },
+// 			dataSrc: function (json) {
+// 				if (json.status === false && json.code === 401) {
+// 					falseResponse(errorObj);
+// 				} else {
+// 					return json.data;
+// 				}
+// 			},
+// 			error: function (xhr, status, error) {
+// 				if (xhr.status === 401) {
+// 					falseResponse(errorObj);
+// 				}
+// 			}
+// 		},
+// 		"order": [
+// 			[0, "desc"]
+// 		],
+// 		"columns": [{
+// 				"data": "customer_name"
+// 			},
+// 			{
+// 				"data": "sales_person_name"
+// 			},
+// 			{
+// 				"data": "inquiry_number"
+// 			},
+// 			{
+// 				"data": "vehicle_number"
+// 			},
+// 			{
+// 				"targets": -1,
+// 				"className": 'text-center',
+// 				"data": null,
+// 				"render": function (data, type, full) {
+// 					var input = '';
+// 					input += '<input class="form-check-input form-check-input-width form-check-lg border border-2 border-primary shadow-lg" type="radio" name="ch_inquiry" id="'+full['idtbl_customer_inquiry']+'" value="'+full['idtbl_customer_inquiry']+'">';
+
+// 					return input;
+// 				}
+// 			}
+// 		],
+// 		drawCallback: function (settings) {
+// 			$('[data-toggle="tooltip"]').tooltip();
+// 		}
+// 	});
+// });
 
 var customer_inq_id=0;
 $(document).on('click','#inqNextBtn', function(){
