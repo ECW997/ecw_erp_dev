@@ -125,7 +125,6 @@ include "include/v2/topnavbar.php";
                                     </button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -136,6 +135,7 @@ include "include/v2/topnavbar.php";
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
+                                <?php $tax_invoice = $invoice_main_data[0]['inv_tax_type'] ?? 0; ?>
 
                                 <?php if ($shift_status === 'current_user'): ?>
                                 <button type="button"
@@ -157,7 +157,7 @@ include "include/v2/topnavbar.php";
                                 </button>
 
                                 <button type="button" id="export_taxinvoice" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
-                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                   <?= ($tax_invoice == 1 && $is_confirmed == 1) ? '' : 'disabled' ?>
                                     onclick="exportTaxInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
                                     <i class="fas fa-print me-1"></i> Print Tax Invoice
                                 </button>
@@ -591,7 +591,14 @@ function createInvoice() {
         customer_id: $('#customer_id').val(),
         customer_name: $('#customer_name').val(),
         vehicle_no: $('#vehicle_no').val(),
-        vat_reg_no: $('#vat_reg_no').val(),
+
+        inv_tax_type: $('input[name="inv_tax_type"]:checked').val(),
+        inv_add_vat: $('input[name="inv_add_vat"]:checked').val(),
+
+        vat_reg_no: $('#vat_number').val(),
+        total_inv_amout_withouttax: parseFloat($('#modeltotalpaymentwithouttax').val()) || 0,
+
+
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
         contact_no: $('#customer_contact').val(),
@@ -748,28 +755,28 @@ function cancelInvoice() {
     });
 }
 
-$(document).ready(function() {
-    let showSecret = "tax";
-    let hideSecret = "hide";
-    let buffer = "";
+// $(document).ready(function() {
+//     let showSecret = "tax";
+//     let hideSecret = "hide";
+//     let buffer = "";
 
-    $(document).on('keydown', function(e) {
-        if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
-            buffer += e.key.toLowerCase();
-            if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
-                buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
-            }
-            if (buffer === showSecret) {
-                $('#export_taxinvoice').show();
-                buffer = "";
-            }
-            if (buffer === hideSecret) {
-                $('#export_taxinvoice').hide();
-                buffer = "";
-            }
-        }
-    });
-});
+//     $(document).on('keydown', function(e) {
+//         if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+//             buffer += e.key.toLowerCase();
+//             if (buffer.length > Math.max(showSecret.length, hideSecret.length)) {
+//                 buffer = buffer.slice(-Math.max(showSecret.length, hideSecret.length));
+//             }
+//             if (buffer === showSecret) {
+//                 $('#export_taxinvoice').show();
+//                 buffer = "";
+//             }
+//             if (buffer === hideSecret) {
+//                 $('#export_taxinvoice').hide();
+//                 buffer = "";
+//             }
+//         }
+//     });
+// });
 
 function exportInvoicePDF(invoice_id) {
     const baseUrl = "<?php echo base_url(); ?>Invoice/invoicePDF";

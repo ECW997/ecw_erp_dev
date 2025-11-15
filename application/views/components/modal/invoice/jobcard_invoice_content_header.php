@@ -69,22 +69,27 @@
                             <label class="form-label small fw-bold">Vehicle No <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="vehicle_no" class="form-control form-control-sm input-field"
-                                id="vehicle_no" required readonly>
+                                id="vehicle_no"
+                                value="<?= isset($invoice_main_data[0]['vehicle_number']) ? $invoice_main_data[0]['vehicle_number'] : '' ?>" required readonly>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 d-none">
                         <div class="form-group">
                             <label class="form-label small fw-bold">VAT Reg No</label>
                             <input type="text" name="vat_reg_no" class="form-control form-control-sm input-field"
-                                id="vat_reg_no" required readonly>
+                                id="vat_reg_no"
+                                value="<?= isset($invoice_main_data[0]['tax_number']) ? $invoice_main_data[0]['tax_number'] : '' ?>"
+                                required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold">Vehicle In Date <span
                                     class="text-danger">*</span></label>
-                            <input type="date" class="form-control form-control-sm input-field" name="vehicle_in_date"
-                                id="vehicle_in_date" required readonly>
+                            <input type="text" class="form-control form-control-sm input-field" name="vehicle_in_date"
+                                id="vehicle_in_date"
+                                value="<?= isset($invoice_main_data[0]['job_start_datetime']) ? $invoice_main_data[0]['job_start_datetime'] : '' ?>"
+                                required readonly>
                         </div>
                     </div>
                     <div class="col-md-3">

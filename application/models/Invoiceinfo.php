@@ -96,4 +96,10 @@ class Invoiceinfo extends CI_Model{
         return call_api('GET', 'search_customer_v1', $form_data, $headers);
     }
 
+
+    public function getLatestTax($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'get_latest_tax_v1', $form_data, $headers);
+    }
+
 }
