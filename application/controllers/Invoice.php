@@ -395,4 +395,22 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->searchCustomer($this->api_token, $id);
 		echo json_encode($response);
 	}
+
+
+	public function getLatestTax(){
+		$api_token = $this->session->userdata('api_token');
+
+		if (!$api_token) {
+			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
+			redirect('Welcome/Logout');
+			return;
+		}
+
+		$form_data = [
+            'tax_name' => $this->input->post('tax_name'),
+        ];
+
+		$response = $this->Invoiceinfo->getLatestTax($api_token,$form_data);
+		echo json_encode($response);
+	}
 }

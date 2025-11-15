@@ -103,6 +103,7 @@ $config['api_endpoints'] = [
     'cancel_invoice_v1' => '/v1/cancelInvoice',
     'get_invoice_pdf_v1' => '/v1/get_invoice_pdf',
     'search_customer_v1' => '/v1/search_customer',
+    'get_latest_tax_v1' => '/v1/get_latest_tax',
 
 
     'tax_master_v1' => '/v1/tax_master',
