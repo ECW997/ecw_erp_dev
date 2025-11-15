@@ -109,34 +109,6 @@ include "include/topnavbar.php";
                     </div>
                     <hr>
                     <div class="card-body p-0 p-2">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="scrollbar pb-3" id="style-2">
-                                    <table class="table table-bordered table-striped table-sm nowrap w-100"
-                                        id="dataTable">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Date</th>
-                                                <th>Job Card No</th>
-                                                <th>Customer</th>
-                                                <th>Vehicle</th>
-                                                <th>Scheduled</th>
-                                                <th>Completed</th>
-                                                <th>Handover</th>
-                                                <th>Sales Agent</th>
-                                                <th>Job Status</th>
-                                                <th>Status</th>
-        										<th class="text-right">Actions</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card-body p-0 p-2 secure_section d-none">
                         <h3>Sales Job Card</h3>
                         <div class="row">
                             <div class="col-12">
@@ -161,6 +133,34 @@ include "include/topnavbar.php";
                                                 <th>Status</th>
                                                 <th>Payment Status</th>
                                                 <th class="text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="card-body p-0 p-2 secure_section d-none">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="scrollbar pb-3" id="style-2">
+                                    <table class="table table-bordered table-striped table-sm nowrap w-100"
+                                        id="dataTable">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Date</th>
+                                                <th>Job Card No</th>
+                                                <th>Customer</th>
+                                                <th>Vehicle</th>
+                                                <th>Scheduled</th>
+                                                <th>Completed</th>
+                                                <th>Handover</th>
+                                                <th>Sales Agent</th>
+                                                <th>Job Status</th>
+                                                <th>Status</th>
+        										<th class="text-right">Actions</th>
                                             </tr>
                                         </thead>
                                     </table>
