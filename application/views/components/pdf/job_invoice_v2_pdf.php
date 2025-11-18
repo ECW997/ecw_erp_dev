@@ -143,7 +143,7 @@ switch ($main_data['branch_id']) {
 		<tr>
 			<th style="width:10%;" class="header_th">Address</th>
         	<th style="width:20%;" class="header_th"><span> : </span>
-			<?= $main_data['invoice_type'] == '1' 
+			<?= $main_data['invoice_type'] == 'indirect' 
 			? 	($main_data['address'] ?? '') . ' ' . 
 				($main_data['address_2'] ?? '') . ' ' . 
 				($main_data['city'] ?? '') . ' ' . 

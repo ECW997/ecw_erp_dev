@@ -58,10 +58,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label small fw-bold">Address <span class="text-danger">*</span></label>
-                            <input type="text" name="customer_address" class="form-control form-control-sm input-field"
-                                id="customer_address"
-                                value="<?= isset($invoice_main_data[0]['customer_address']) ? $invoice_main_data[0]['customer_address'] : '' ?>"
-                                required readonly>
+                            <textarea name="customer_address" 
+                                    class="form-control form-control-sm input-field" 
+                                    id="customer_address" 
+                                    required readonly rows="3"><?=
+                                (isset($invoice_main_data[0]['address']) ? $invoice_main_data[0]['address'] : '') .
+                                (isset($invoice_main_data[0]['address_2']) ? "\n" . $invoice_main_data[0]['address_2'] : '')
+                            ?></textarea>
                         </div>
                     </div>
                     <div class="col-md-3">
