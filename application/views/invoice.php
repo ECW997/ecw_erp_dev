@@ -652,7 +652,7 @@ function createInvoice() {
                 btn.innerHTML = `Update Invoice <i class="fas fa-plus-circle ml-2"></i>`;
                 setTimeout(function() {
                     window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' + result
-                        .data + '/1';
+                        .data + '/'+seriesType;
                 }, 500)
             } else {
                 falseResponse(result);

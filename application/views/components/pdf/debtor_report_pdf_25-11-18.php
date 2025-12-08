@@ -178,13 +178,12 @@
                 <?php if(isset($main_data['type']) && $main_data['type'] === 'debitor'): ?>
                     <th style="width: 3%;">#</th>
                     <th style="width: 7%;">Date</th>
-                    <th style="width: 8%;">Job No</th>
-                    <th style="width: 8%;">Sale Person Code</th>
+                    <th style="width: 10%;">Job No</th>
                     <th style="width: 10%;">Sale Person</th>
-                    <th style="width: 12%;">Customer Name</th>
+                    <th style="width: 16%;">Customer Name</th>
                     <th style="width: 8%;">Phone No</th>
                     <th style="width: 8%;">Vehicle No</th>
-                    <th style="width: 8%;">Vehicle Type</th>
+                    <th style="width: 10%;">Vehicle Type</th>
                     <th style="width: 8%;" class="text-right">Inv Amount</th>
                     <th style="width: 8%;" class="text-right">Advance Amount</th>
                     <th style="width: 8%;" class="text-right">Balance Amount</th>
@@ -193,18 +192,17 @@
                 <?php else: ?>
                     <th style="width: 3%;">#</th>
                     <th style="width: 7%;">Credited Date</th>
-                    <th style="width: 8%;">Job No</th>
-                    <th style="width: 8%;">Sale Person Code</th>
+                    <th style="width: 10%;">Job No</th>
                     <th style="width: 10%;">Sale Person</th>
-                    <th style="width: 12%;">Customer Name</th>
+                    <th style="width: 15%;">Customer Name</th>
                     <th style="width: 8%;">Phone No</th>
                     <th style="width: 8%;">Vehicle No</th>
-                    <th style="width: 8%;">Vehicle Type</th>
+                    <th style="width: 10%;">Vehicle Type</th>
                     <th style="width: 8%;" class="text-right">Inv Amount</th>
                     <th style="width: 8%;" class="text-right">Advance Amount</th>
                     <th style="width: 8%;" class="text-right">Balance Amount</th>
                     <th style="width: 7%;">Settlement Date</th>
-                    <th style="width: 7%;">Payment Details</th>
+                    <th style="width: 8%;">Payment Details</th>
                 <?php endif; ?>
             </tr>
         </thead>
@@ -226,10 +224,11 @@
                         <?= htmlspecialchars(is_object($row) ? ($row->job_no ?? 'N/A') : ($row['job_no'] ?? 'N/A')) ?>
                     </td>
                     <td style="border: 1px solid #000;">
-                        <?= htmlspecialchars(is_object($row) ? ($row->sales_person_code ?? 'N/A') : ($row['sales_person_code'] ?? 'N/A')) ?>
-                    </td>
-                    <td style="border: 1px solid #000;">
-                        <?= htmlspecialchars(is_object($row) ? ($row->sales_person_name ?? 'N/A') : ($row['sales_person_name'] ?? 'N/A')) ?>
+                        <?= htmlspecialchars(
+                            (is_object($row) ? ($row->sales_person_code ?? 'N/A') : ($row['sales_person_code'] ?? 'N/A'))
+                            . ' - ' .
+                            (is_object($row) ? ($row->sales_person_name ?? 'N/A') : ($row['sales_person_name'] ?? 'N/A'))
+                        ) ?>
                     </td>
                     <td style="border: 1px solid #000;">
                         <?= htmlspecialchars(is_object($row) ? ($row->customer_name ?? 'N/A') : ($row['customer_name'] ?? 'N/A')) ?>
@@ -287,10 +286,11 @@
                         <?= htmlspecialchars(is_object($row) ? ($row->job_no ?? 'N/A') : ($row['job_no'] ?? 'N/A')) ?>
                     </td>
                     <td style="border: 1px solid #000;">
-                        <?= htmlspecialchars(is_object($row) ? ($row->sales_person_code ?? 'N/A') : ($row['sales_person_code'] ?? 'N/A')) ?>
-                    </td>
-                    <td style="border: 1px solid #000;">
-                        <?= htmlspecialchars(is_object($row) ? ($row->sales_person_name ?? 'N/A') : ($row['sales_person_name'] ?? 'N/A')) ?>
+                        <?= htmlspecialchars(
+                            (is_object($row) ? ($row->sales_person_code ?? 'N/A') : ($row['sales_person_code'] ?? 'N/A'))
+                            . ' - ' .
+                            (is_object($row) ? ($row->sales_person_name ?? 'N/A') : ($row['sales_person_name'] ?? 'N/A'))
+                        ) ?>
                     </td>
                     <td style="border: 1px solid #000;">
                         <?= htmlspecialchars(is_object($row) ? ($row->customer_name ?? 'N/A') : ($row['customer_name'] ?? 'N/A')) ?>

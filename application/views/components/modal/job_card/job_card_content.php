@@ -121,6 +121,18 @@
                             <?= $header_approved_check ?></td>
                         <td class="text-right"><?= number_format($summlist['discount_amount'],2) ?></td>
                     </tr>
+                    <?php
+                    $net_amount = ($net_total ?? 0) 
+                                - (($deduct_total ?? 0) 
+                                + ($summlist['total_line_discount'] ?? 0) 
+                                + ($summlist['discount_amount'] ?? 0));
+                    ?>
+                    <tr>
+                        <td class="text-left">Net Amount</td>
+                        <td class="text-right" style="border-bottom:1px solid #000;border-top:1px solid #000;">
+                            <?= number_format($net_amount, 2) ?>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="text-left">Advance</td>
                         <td class="text-right"><?= number_format($summlist['advance'],2) ?></td>
@@ -194,6 +206,7 @@
                             <?= $job_main_data[0]['address_2'] ?? '' ?></td>
                         <td class="text-left" id="content_inq_date"><?= $job_main_data[0]['inquery_date'] ?? '' ?>
                         </td>
+                        <td class="text-left fw-bold">Sales Person</td>
                         <td class="text-left fw-bold">Handover Date</td>
                         <td class="text-left fw-bold">Days</td>
                         <td class="text-left fw-bold">Payment Method</td>
@@ -202,7 +215,7 @@
                     <tr>
                         <td class="text-left" id="content_cus_contact">
                             <?= $job_main_data[0]['customer_mobile_num'] ?? '' ?></td>
-                        <td class="text-left"></td>
+                        <td class="text-left"><?= $job_main_data[0]['sales_person_name'] ?? '' ?> - <?= $job_main_data[0]['sales_person_code'] ?? '' ?></td>
                         <td class="text-left" id="content_hand_over_date">
                             <?= $job_main_data[0]['handover_date'] ?? '' ?></td>
                         <td class="text-left fw-bold text-success" style="font-size: 25px;">

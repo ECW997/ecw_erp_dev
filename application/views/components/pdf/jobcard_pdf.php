@@ -577,8 +577,8 @@
                             <tr>
                                 <td class="job-number"><?= $joblist_cnt ?></td>
                                 <td colspan="2" class="job-description">
-                                    <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> -
-                                        <?= $joblist['option_text'] ?? 'N/A' ?> - </strong>
+                                    <strong><?= $joblist['option_group_text'] ?? 'N/A' ?> - </strong>
+                                         <?= $joblist['option_text'] ?? 'N/A' ?> - </strong> 
                                     <?= $joblist['combined_option'] ?? 'N/A' ?>
                                     <?= ($joblist['description'] != 'image' && $joblist['description'] != 'dot_image') ? ($joblist['child_value_name'] ?? ''):'' ?>(<?= $joblist['price_category'] ?? 'N/A' ?>)
 

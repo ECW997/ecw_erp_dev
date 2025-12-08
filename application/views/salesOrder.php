@@ -714,14 +714,22 @@ function renderAvailableJobs() {
     let totalPriceSum = 0;
 
 	$.each(availableJobs, function (index, job) {
+
+        let total = parseFloat(job.total) || 0;
+        let net = parseFloat(job.net_amount) || 0;
+        let discount = parseFloat(job.line_discount) || 0;
+
+        const displayTotal = (job.subCategory == 'Exchange') ? `(${total.toFixed(2)})` : total.toFixed(2);
+        const displayNet = (job.subCategory == 'Exchange') ? `(${net.toFixed(2)})` : net.toFixed(2);
+        
 		const row = $(`
                         <tr class="job-row" data-job-id="${job.jobId}">
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
-                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${displayTotal}</td>
                             <td class="text-right">${job.line_discount}</td>
-                            <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
+                            <td class="text-right">${displayNet}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-primary transfer-btn move-to-selected" data-job-id="${job.jobId}"> <i class="fas fa-arrow-right"></i> </button>
                             </td>
@@ -729,9 +737,17 @@ function renderAvailableJobs() {
                     `);
 		tbody.append(row);
 
-        subTotalSum += parseFloat(job.total) || 0;
-        lineDiscountSum += parseFloat(job.line_discount) || 0;
-        totalPriceSum += parseFloat(job.net_amount) || 0;
+        if (job.subCategory === 'Exchange') {
+            // Deduct values
+            subTotalSum -= total;
+            lineDiscountSum -= discount;
+            totalPriceSum -= net;
+        } else {
+            // Add values
+            subTotalSum += total;
+            lineDiscountSum += discount;
+            totalPriceSum += net;
+        }
 	});
 
     $('#availableJobsSubTotal').text(formatCurrency(subTotalSum));
@@ -755,14 +771,21 @@ function renderSelectedJobs() {
     let totalPriceSum = 0;
     
 	$.each(selectedJobs, function (index, job) {
+        let total = parseFloat(job.total) || 0;
+        let net = parseFloat(job.net_amount) || 0;
+        let discount = parseFloat(job.line_discount) || 0;
+
+        const displayTotal = (job.subCategory == 'Exchange') ? `(${total.toFixed(2)})` : total.toFixed(2);
+        const displayNet = (job.subCategory == 'Exchange') ? `(${net.toFixed(2)})` : net.toFixed(2);
+
 		const row = $(`
                          <tr class="job-row" data-job-id="${job.jobId}">
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
-                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${displayTotal}</td>
                             <td class="text-right">${job.line_discount}</td>
-                            <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
+                            <td class="text-right">${displayNet}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-danger transfer-btn move-to-available" data-job-id="${job.jobId}">
                                      <i class="fas fa-undo"></i>
@@ -772,9 +795,17 @@ function renderSelectedJobs() {
                     `);
 		tbody.append(row);
 
-        subTotalSum += parseFloat(job.total) || 0;
-        lineDiscountSum += parseFloat(job.line_discount) || 0;
-        totalPriceSum += parseFloat(job.net_amount) || 0;
+        if (job.subCategory === 'Exchange') {
+            // Deduct values
+            subTotalSum -= total;
+            lineDiscountSum -= discount;
+            totalPriceSum -= net;
+        } else {
+            // Add values
+            subTotalSum += total;
+            lineDiscountSum += discount;
+            totalPriceSum += net;
+        }
 	});
 
     $('#selectedJobsSubTotal').text(formatCurrency(subTotalSum));
@@ -859,20 +890,24 @@ function updateCounts() {
 }
 
 function updatePriceSummary() {
-    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+    // const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+    const totalAvailablePrice = availableJobs.reduce((sum, job) => {
+        const amount = parseFloat(job.net_amount || 0);
+        return job.subCategory == 'Exchange' ? sum - amount : sum + amount;
+    }, 0);
     
     const headerDiscount = parseFloat($('#HeaderDiscountPrice').text()) || 0;
     const totalAvailableJobprice = totalAvailablePrice - headerDiscount;
-	const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
-	const difference = totalAvailableJobprice - orderValue;
+	const finalOrderValue = totalAvailableJobprice < 0 ? 0 : totalAvailableJobprice;
+	const difference = totalAvailableJobprice - finalOrderValue;
 
     $('#subTotal').text(`${totalAvailablePrice.toFixed(2)}`);
     $('#subTotalText').text(formatCurrency(totalAvailablePrice));
 	$('#totalJobsPrice').text(`${totalAvailableJobprice.toFixed(2)}`);
     $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
-	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
-    $('#displayOrderValueText').text(formatCurrency(orderValue));
-    $('#confirmedOrderValue').val(totalAvailableJobprice < 0 ? 0 : totalAvailableJobprice);
+	$('#displayOrderValue').text(`${finalOrderValue.toFixed(2)}`);
+    $('#displayOrderValueText').text(formatCurrency(finalOrderValue));
+    $('#confirmedOrderValue').val(finalOrderValue);
 
 	const $differenceElement = $('#priceDifference');
     const $differenceElementText = $('#priceDifferenceText');

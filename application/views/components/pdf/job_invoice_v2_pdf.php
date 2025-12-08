@@ -202,8 +202,12 @@ switch ($main_data['branch_id']) {
 				<td class="datatable_data_td" style="text-align:right">
 					<?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'],0). '%' ?>
 				</td>
+				<?php
+					$line_net_total = (float)$item['line_total_after_discount'];
+					$is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
+				?>
 				<td class="datatable_data_td" style="text-align:right">
-					<?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'],2) ?>
+					<?= $line_net_total == 0 ? '' : ($is_exchange ? '(' . number_format($line_net_total, 2) . ')' : number_format($line_net_total, 2)) ?>
 				</td>
 			</tr>
 			<?php
@@ -236,6 +240,7 @@ switch ($main_data['branch_id']) {
 				$inv_discount_amount = (float)($main_data['inv_discount_amount'] ?? 0);
 				// $total_discount = $main_data['invoice_type'] == 'direct' ? $inv_discount_amount : $inv_discount_amount + $total_line_discount;
 				$total_discount = $inv_discount_amount;
+				$net_total_after_discount = $inv_gross_total - $total_discount;
 				$advance = (float)($main_data['inv_advance_total'] ?? 0);
 				$grand_total = $inv_gross_total - ($total_discount + $advance);
 				$total_paid = (float)($total_paid_for_ref ?? 0);
@@ -253,16 +258,23 @@ switch ($main_data['branch_id']) {
 						<tr>
 							<td class="datatable_data_td" style="width:60%;">Discount Total</td>
 							<td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-							<td class="datatable_data_td" style="width:30%; text-align:right;">
-								<?= number_format($total_discount ?? 0, 2) ?>
+							<td class="datatable_data_td" style="width:30%; text-align:right; border-bottom: 1px solid #000;">
+								<?= ($total_discount > 0) ? '(' . number_format($total_discount, 2) . ')' : number_format($total_discount ?? 0, 2) ?>
 							</td>
 						</tr>
 						<tr>
+                            <td class="datatable_data_td" style="width:60%;">Net Amount</td>
+                            <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
+                            <td class="datatable_data_td" style="width:30%; text-align:right;">
+                                <?= number_format($net_total_after_discount ?? 0, 2) ?>
+                            </td>
+                        </tr>
+						<tr>
 							<td class="datatable_data_td">Advance</td>
 							<td class="datatable_data_td" style="text-align:center;">:</td>
-							<td class="datatable_data_td" style="text-align:right;">
-								<?= number_format($advance ?? 0, 2) ?>
-							</td>
+							<td class="datatable_data_td" style="text-align:right; border-bottom: 1px solid #000;">
+                                <?= ($advance > 0) ? '(' . number_format($advance, 2) . ')' : number_format($advance ?? 0, 2) ?>
+                            </td>
 						</tr>
 						<!-- <tr>
 							<td class="datatable_data_td">Grand Total</td>

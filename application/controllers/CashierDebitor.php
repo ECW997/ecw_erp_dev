@@ -97,11 +97,13 @@ class CashierDebitor extends CI_Controller {
         $debtor_id = $this->input->post('debtor_id');
         $settlement_date = $this->input->post('settlement_date');
         $payment_details = $this->input->post('payment_details');
+        $remarks = $this->input->post('remarks');
 
         $form_data = [
             'recordID' => $debtor_id,
             'settlement_date' => $settlement_date,
-            'payment_details' => $payment_details
+            'payment_details' => $payment_details,
+            'remarks' => $remarks
         ];
 
         $response = $this->CashierDebitorinfo->debtorTransferToCredit($this->api_token, $form_data);
@@ -138,7 +140,7 @@ class CashierDebitor extends CI_Controller {
 
 		$this->load->library('Pdf');
 
-		$this->pdf->setPaper('A4', 'landscape');                      
+		$this->pdf->setPaper('A4', 'portrait');                      
 		$this->pdf->set_option('defaultFont', 'Helvetica');           
 		$this->pdf->set_option('isRemoteEnabled', true); 
 

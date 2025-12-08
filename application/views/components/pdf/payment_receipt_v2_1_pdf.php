@@ -2,11 +2,9 @@
 <html>
 <head><meta charset="UTF-8">
 <title>ECW Software</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/x-icon" href="assets/img/ecw2.jpg" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+<link rel="stylesheet" href="<?php echo base_url('assets/fonts/roboto.css'); ?>">
+<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>assets/img/logo-icon.png" />
+<link rel="stylesheet" href="<?php echo base_url('assets/plugins/fontawesome/all.css'); ?>" />
 <style>
 @page {
 	  margin: 30mm 15mm 15mm 1mm;
@@ -179,7 +177,13 @@ switch ($header['company_branch_id']) {
                         <td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'],2) ?></td>
                         <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
+                        <?php
+                            $line_net_total = (float)$item['line_total_after_discount'];
+                            $is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
+                        ?>
+                        <td class="datatable_data_td" style="text-align:right">
+                            <?= $line_net_total == 0 ? '' : ($is_exchange ? '(' . number_format($line_net_total, 2) . ')' : number_format($line_net_total, 2)) ?>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -214,6 +218,12 @@ switch ($header['company_branch_id']) {
                             </table>
                         </td>
 
+                        <?php
+                            $gross_total = $invoice['totals']['gross_total'] ?? 0;
+                            $total_discount = $invoice['totals']['total_discount'] ?? 0;
+
+                            $net_total_after_discount = $gross_total - $total_discount;
+                        ?>
                         <td style="width:50%; vertical-align:top; padding-left:10px;">
                             <table style="width:100%;">
                                 <tr>
@@ -224,12 +234,27 @@ switch ($header['company_branch_id']) {
                                 <tr>
                                     <td class="datatable_data_td" style="width:60%;">Discount Total</td>
                                     <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="width:30%; text-align:right;"><?= number_format($invoice['totals']['total_discount'] ?? 0, 2) ?></td>
+                                    <td class="datatable_data_td" style="width:30%; text-align:right; border-bottom:1px solid #000;">
+                                        <?= ($invoice['totals']['total_discount'] > 0) 
+                                            ? '(' . number_format($invoice['totals']['total_discount'], 2) . ')' 
+                                            : number_format($invoice['totals']['total_discount'] ?? 0, 2) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="datatable_data_td" style="width:60%;">Net Amount</td>
+                                    <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
+                                    <td class="datatable_data_td" style="width:30%; text-align:right;">
+                                        <?= number_format($net_total_after_discount ?? 0, 2) ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="datatable_data_td">Advance</td>
                                     <td class="datatable_data_td" style="text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right;"><?= number_format($invoice['totals']['advance_total'] ?? 0, 2) ?></td>
+                                    <td class="datatable_data_td" style="text-align:right; border-bottom:1px solid #000;">
+                                        <?= ($invoice['totals']['advance_total'] > 0)
+                                            ? '(' . number_format($invoice['totals']['advance_total'], 2) . ')'
+                                            : number_format($invoice['totals']['advance_total'] ?? 0, 2) ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="datatable_data_td" style="font-weight:bold;">Current Paid</td>

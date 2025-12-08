@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>ECW Software</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/x-icon" href="assets/img/ecw2.jpg" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+<link rel="stylesheet" href="<?php echo base_url('assets/fonts/roboto.css'); ?>">
+<link rel="icon" type="image/x-icon" href="<?php echo base_url(); ?>assets/img/logo-icon.png" />
+<link rel="stylesheet" href="<?php echo base_url('assets/plugins/fontawesome/all.css'); ?>" />
 <style>
 @page {
 	margin: 27mm 15mm 15mm 1mm;
@@ -151,12 +149,26 @@ $district = $header['district'] ?? '';
 							<td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?? '' ?></td>
 							<td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'] ?? 0,2) ?></td>
 							<td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
-							<td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_total_after_discount'], 2) ?></td>
+							<?php
+								$line_net_total = (float)$item['line_total_after_discount'];
+								$is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
+							?>
+							<td class="datatable_data_td" style="text-align:right">
+								<?= $line_net_total == 0 ? '' : ($is_exchange ? '(' . number_format($line_net_total, 2) . ')' : number_format($line_net_total, 2)) ?>
+							</td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
 
+				<?php
+                    $gross_total = $totals['gross_total'] ?? 0;
+                    $total_discount = $totals['total_discount'] ?? 0;
+
+                    $net_total_after_discount = $gross_total - $total_discount;
+
+					$advance_total = $totals['advance_total'] ?? 0;
+                ?>
 				<div style="margin-top:10px;border-top: 1.5px solid #000;">
 					<table>
 						<tr>
@@ -184,12 +196,29 @@ $district = $header['district'] ?? '';
 									<tr>
 										<td class="datatable_data_td">Discount Total</td>
 										<td class="datatable_data_td" style="text-align:center;">:</td>
-										<td class="datatable_data_td" style="text-align:right;"><?= number_format($totals['total_discount'] ?? 0, 2) ?></td>
+										<td class="datatable_data_td" style="text-align:right; border-bottom:1px solid #000;">
+											<?= ($total_discount > 0)
+												? '(' . number_format($total_discount, 2) . ')'
+												: number_format($total_discount, 2)
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td class="datatable_data_td" style="width:60%;">Net Amount</td>
+										<td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
+										<td class="datatable_data_td" style="width:30%; text-align:right;">
+											<?= number_format($net_total_after_discount ?? 0, 2) ?>
+										</td>
 									</tr>
 									<tr>
 										<td class="datatable_data_td">Advance</td>
 										<td class="datatable_data_td" style="text-align:center;">:</td>
-										<td class="datatable_data_td" style="text-align:right;"><?= number_format($totals['advance_total'] ?? 0, 2) ?></td>
+										<td class="datatable_data_td" style="text-align:right; border-bottom:1px solid #000;">
+											<?= ($advance_total > 0)
+												? '(' . number_format($advance_total, 2) . ')'
+												: number_format($advance_total, 2)
+											?>
+										</td>
 									</tr>
 									<tr>
 										<td class="datatable_data_td" style="font-weight:bold;">Current Paid</td>

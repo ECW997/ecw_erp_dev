@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="<?php echo base_url('assets/plugins/fontawesome/all.css'); ?>" />
 <style>
 @page {
-	  margin: 35mm 15mm 15mm 1mm;
+	  margin: 30mm 15mm 15mm 1mm;
       /* top right bottom left */
 }
 
@@ -19,10 +19,10 @@ body {
 
 header {
     position: fixed;
-    top: -38mm;
+    top: -30mm;
     left: 0;
     right: 0;
-    height: 38mm;
+    height: 30mm;
 }
 
 footer {
@@ -120,95 +120,42 @@ switch ($header['company_branch_id']) {
 <header>
 	<table>
 		<tr>
-			<th>
-				<img style="height:65px;margin-left:5px" src="<?php echo base_url() ?>assets/img/logo-icon.png" />
-			</th>
-            <th colspan="3" style="width:83%;font-size:14px;font-weight:500;" class="header_th">
+            <th colspan="2" style="height:65px;width:83%;font-size:14px;font-weight:500;" class="header_th">
 				<table style="width:100%;">
 					<tr>
-						<td style="text-align:right; width:60%;">PAYMENT RECEIPT</td>
-						<td style="text-align:right; width:40%;">
-							<?php if ($header['print_receipt_cnt'] > 1): ?>
-								<span style="font-size:11px;color: rgba(200, 0, 0, 1);">(DUPLICATE)</span>
-							<?php endif; ?>
-						</td>
+						<td style="text-align:right; width:55%;">RECEIPT</td>
+						<td style="text-align:right; width:45%;"><span style="font-size:11px;color: rgba(200, 0, 0, 1);"></span></td>
 					</tr>
 				</table>
 			</th>
 		</tr>
 		<tr>
-			<th style="width:10%;" class="header_th">Cus. Code</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $header['customer_code'] ?></th>
-			<th style="width:10%;" class="header_th">Receipt No.</th>
-			<th style="width:10%;" class="header_th"><span> : </span><?= $header['receipt_number'] ?></th>
+			<th style="width:20%;" class="header_th">Cus Name</th>
+			<th style="width:90%;" class="header_th"><span> : </span><?= $header['customer_name'] ?></th>
 		</tr>
 		<tr>
-			<th style="width:10%;" class="header_th">Cus Name</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $header['customer_name'] ?></th>
-			<th style="width:10%;" class="header_th">Date</th>
-			<th style="width:10%;" class="header_th"><span> : </span><?= date('d/m/Y',strtotime($header['receipt_date'])) ?></th>
-		</tr>
-		 <tr>
-        	<th style="width:10%;" class="header_th">Address</th>
-        	<th style="width:20%;" class="header_th"><span> : </span><?= ($header['address'] ?? '') . 
+			<th style="width:10%;" class="header_th">Address</th>
+			<th style="width:90%;" class="header_th"><span> : </span>
+				<?= ($header['address'] ?? '') . 
                         (!empty($header['address_2']) ? ', ' . $header['address_2'] : '') . 
                         (!empty($header['city']) ? ', ' . $header['city'] : '') . 
-                        (!empty($header['district']) ? ', ' . $header['district'] : '') ?></th>
-        	<th style="width:10%;" class="header_th">S.P.Code</th>
-        	<th style="width:10%;" class="header_th"><span> : </span><?= $header['sales_person_code'] ?></th>
-        </tr>
-        <tr>
-			<th style="width:10%;" class="header_th">Vehicle No</th>
-			<th style="width:25%;" class="header_th"><span> : </span><?= $header['Vehicle_no'] ?></th>
-			<th style="width:10%;" class="header_th">JobCard No</th>
-			<th style="width:10%;" class="header_th"><span> : </span><?= $header['jobcard_no'] ?></th>
+                        (!empty($header['district']) ? ', ' . $header['district'] : '') ?>
+			</th>
 		</tr>
-        <tr>
-            <th style="width:10%;" class="header_th">Vehicle Type.</th>
-            <th style="width:10%;" class="header_th"><span> : </span><?= ($header['brand_name'] ?? '') . 
-                        (!empty($header['model_name']) ? ', ' . $header['model_name'] : '') ?></th>
-          	<th style="width:10%;" class="header_th" colspan="1" style="vertical-align: bottom;"></th>
-			<th style="width:10%; vertical-align: bottom;" class="header_th"></th>
-        </tr>
+		<tr>
+			<th style="width:10%;" class="header_th">Date</th>
+			<th style="width:90%;" class="header_th"><span> : <?= date('d/m/Y',strtotime($header['receipt_date'])) ?></th>
+		</tr>
 	</table>
 </header>
 
 <footer>
-	<table>
-		<tr>
-			<td style="width:65%;" class="footer_text"><?= $companyOutput ?></td>
-			<td style="width:20%;text-align:center;" class="footer_text">FIND US</td>
-			<td rowspan="2" style="width:20%;text-align:right;" class="footer_text">
-				<i class="fab fa-facebook-square" style="margin-right:2px;font-size:14px;"></i>
-				<i class="fab fa-tiktok" style="margin-right:2px;font-size:14px;"></i>
-				<i class="fab fa-instagram-square" style="margin-right:2px;font-size:14px;"></i>
-				<i class="fab fa-youtube" style="margin-right:2px;font-size:14px;"></i>
-			</td>
-		</tr>
-		<tr>
-			<td class="footer_text"><?= $branchOutput ?></td>
-			<td style="text-align:center;" class="footer_text">FOLLOW US</td>
-		</tr>
-		<tr>
-			<td colspan="3" class="footer_text" style="letter-spacing: 2.8px; text-align:center;">SOUTH ASIA'S LARGEST INTERIOR MODIFICATION CENTER</td>
-		</tr>
-	</table>
+	
 </footer>
 
 <?php foreach ($invoices as $inv_index => $invoice): ?>
     <div style="<?= ($inv_index < count($invoices) - 1) ? 'page-break-after: always;' : '' ?>">
         <div style="margin-bottom: 20px;">
-            <h4 style="margin: 0 0 5px 0;">
-                <?php 
-                    if (!empty($invoice['invoice']['invoice_number'])) {
-                        echo 'Invoice No: ' . $invoice['invoice']['invoice_number'];
-                    } elseif (!empty($invoice['invoice']['job_card_number'])) {
-                        echo 'Advance Payment - Jobcard No: ' . $invoice['invoice']['job_card_number'];
-                    } else {
-                        echo 'Advance Payment';
-                    }
-                ?>
-            </h4>
             <table>
                 <thead>
                     <tr>
@@ -271,13 +218,6 @@ switch ($header['company_branch_id']) {
                             </table>
                         </td>
 
-                        <?php
-                            $gross_total = $invoice['totals']['gross_total'] ?? 0;
-                            $total_discount = $invoice['totals']['total_discount'] ?? 0;
-
-                            $net_total_after_discount = $gross_total - $total_discount;
-                        ?>
-
                         <td style="width:50%; vertical-align:top; padding-left:10px;">
                             <table style="width:100%;">
                                 <tr>
@@ -288,27 +228,12 @@ switch ($header['company_branch_id']) {
                                 <tr>
                                     <td class="datatable_data_td" style="width:60%;">Discount Total</td>
                                     <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="width:30%; text-align:right; border-bottom:1px solid #000;">
-                                        <?= ($invoice['totals']['total_discount'] > 0) 
-                                            ? '(' . number_format($invoice['totals']['total_discount'], 2) . ')' 
-                                            : number_format($invoice['totals']['total_discount'] ?? 0, 2) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="width:60%;">Net Amount</td>
-                                    <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="width:30%; text-align:right;">
-                                        <?= number_format($net_total_after_discount ?? 0, 2) ?>
-                                    </td>
+                                    <td class="datatable_data_td" style="width:30%; text-align:right;"><?= number_format($invoice['totals']['total_discount'] ?? 0, 2) ?></td>
                                 </tr>
                                 <tr>
                                     <td class="datatable_data_td">Advance</td>
                                     <td class="datatable_data_td" style="text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; border-bottom:1px solid #000;">
-                                        <?= ($invoice['totals']['advance_total'] > 0)
-                                            ? '(' . number_format($invoice['totals']['advance_total'], 2) . ')'
-                                            : number_format($invoice['totals']['advance_total'] ?? 0, 2) ?>
-                                    </td>
+                                    <td class="datatable_data_td" style="text-align:right;"><?= number_format($invoice['totals']['advance_total'] ?? 0, 2) ?></td>
                                 </tr>
                                 <tr>
                                     <td class="datatable_data_td" style="font-weight:bold;">Current Paid</td>

@@ -473,7 +473,7 @@
                                 <div class="col-2">
                                     <label class="small form-label text-dark mb-1">Invoice Series Type</label>
                                     <div class="input-group input-group-sm">
-                                        <select class="form-control form-control-sm selecter2 px-0" name="series_type"
+                                        <select class="form-control form-control-sm px-0" name="series_type"
                                             id="series_type" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
                                             <option value=" " <?= $selected_series_type == ' ' ? 'selected' : '' ?>>
                                                 Select Series Type</option>

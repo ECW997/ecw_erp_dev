@@ -247,7 +247,7 @@ class Payment extends CI_Controller {
 
 		$receiptView = ($payment_type == 'JobCard')
 			? ($series_type == 1 ? 'components/pdf/advance_receipt_pdf' : 'components/pdf/advance_receipt_v2_pdf')
-			: ($series_type == 1 ? 'components/pdf/payment_receipt_pdf' : 'components/pdf/payment_receipt_v2_1_pdf');
+			: ($series_type == 1 ? 'components/pdf/payment_receipt_pdf' : 'components/pdf/payment_receipt_new_v2_1_pdf');
 
 		$receipt_html = $this->load->view($receiptView, $pdf_data, TRUE);
 
@@ -324,13 +324,13 @@ class Payment extends CI_Controller {
 
 		$this->load->library('Pdf');
 
-		$customPaper = array(0, 0, 382.84, 380.84); 
-		// $customPaper = array(0, 0, 396, 396); 
-		$this->pdf->setPaper($customPaper);    
+		// $customPaper = array(0, 0, 382.84, 380.84); 
+		$customPaper = array(0, 0, 227, 1000);
+		// $this->pdf->setPaper($customPaper);    
 		$this->pdf->set_option('defaultFont', 'Helvetica');           
 		$this->pdf->set_option('isRemoteEnabled', true); 
 
-		$html = $this->load->view('components/pdf/payment_receipt_v2_pdf', $pdf_data, TRUE);
+		$html = $this->load->view('components/pdf/payment_receipt_new_v2_pdf', $pdf_data, TRUE);
 
 		$this->pdf->loadHtml($html);
 		$this->pdf->render();
@@ -375,9 +375,10 @@ class Payment extends CI_Controller {
 		
 	}
 
-	public function cancelPayment($id) {
+	public function cancelPayment($id, $series) {
 		$form_data = [
 			'id' => $id,
+			'series' => $series,
 		];
 
 		$response = $this->Paymentinfo->cancelPayment($this->api_token,$form_data);
