@@ -64,6 +64,7 @@ function menucheck($arraymenu, $menuID){
 
     <script>
     var apiBaseUrl = "https://devapi.ecw.lk/api";
+    // var apiBaseUrl = "http://erpapi.ecw.lk/api";
     var api_token = <?php echo json_encode($_SESSION['api_token']); ?>;
     var errorObj = {
         message: "Your session has expired. Please login again.",

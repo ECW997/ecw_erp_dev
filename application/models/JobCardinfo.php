@@ -115,6 +115,11 @@ class JobCardinfo extends CI_Model{
         return call_api('POST', 'exportJobCardExcelData_v1', $form_data, $headers);
     }
 
+     public function exportJobCardcategoryData($api_token,$form_data) {
+        $headers = get_api_headers($api_token);
+        return call_api('POST', 'exportJobCardSummaryData_v1', $form_data, $headers);
+    }
+
 
 
 

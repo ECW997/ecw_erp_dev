@@ -44,17 +44,6 @@ include "include/v2/topnavbar.php";
             font-size: 1.1em;
         }
         </style>
-        <?php
-            $shift_status = 'not_started'; 
-
-            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
-                if ($check_cashier_shift['code'] == 200) {
-                    $shift_status = 'current_user';
-                } else {
-                    $shift_status = 'other_user';
-                }
-            }
-        ?>
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -98,11 +87,16 @@ include "include/v2/topnavbar.php";
                             <div class="col-12">
                                 <div class="form-header mb-4">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <?php if ($shift_status === 'current_user'): ?>
+                                       <div>
+                                            
                                                 <button type="button"
                                                     class="btn btn-primary btn-sm rounded-2 action-btn print_receipt <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
                                                     onclick="exportPaymentReceipt(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
+                                                    <i class="fas fa-cash-register me-1"></i> Print Receipt
+                                                </button>
+                                                <button type="button"
+                                                    class="btn btn-secondary btn-sm rounded-2 action-btn d-none print_receipt_v3 <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? '' : 'd-none' ?>"
+                                                    onclick="exportPaymentReceiptV3(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
                                                     <i class="fas fa-cash-register me-1"></i> Print Receipt
                                                 </button>
                                                 <button type="button"
@@ -110,7 +104,7 @@ include "include/v2/topnavbar.php";
                                                     onclick="exportPaymentReceiptV2(<?= isset($payment_main_data['id']) ? $payment_main_data['id'] : 0 ?>)">
                                                     <i class="fas fa-cash-register me-1"></i> Print S2 Receipt
                                                 </button>
-                                            <?php endif; ?>
+                                           
                                         </div>
 
                                         <span class="badge bg-secondary">
@@ -238,13 +232,11 @@ include "include/v2/topnavbar.php";
                                                 </div>
                                             </div>
                                             <div class="col-md-4 d-flex align-items-end">
-                                                <?php if ($shift_status === 'current_user'): ?>
-                                                    <button type="button"
-                                                        class="btn btn-primary btn-sm w-100 action-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                                        id="addPaymentBtn" onclick="addPayment()">
-                                                        <i class="fas fa-plus me-1"></i> Add Payment
-                                                    </button>
-                                                <?php endif; ?>
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm w-100 action-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                                    id="addPaymentBtn" onclick="addPayment()">
+                                                    <i class="fas fa-plus me-1"></i> Add Payment
+                                                </button>
                                             </div>
                                         </div>
                                         <div id="bankTransferDetails" class="row g-3 mt-2 d-none">
@@ -382,16 +374,6 @@ include "include/v2/topnavbar.php";
                                         <i class="fas fa-check-double me-1"></i> Approve Payment
                                     </button>
                                 </div>
-                                <!-- <div class="form-actions d-flex justify-content-end gap-2 mt-4">
-                                    <?php if ($shift_status === 'current_user' && $approve1check && (!isset($payment_main_data['status']) || $payment_main_data['status'] !== 'Approved')): ?>
-                                        <button type="button"
-                                            class="btn btn-success btn-sm action-btn"
-                                            id="confirmPaymentBtn"
-                                            onclick="confirmPayment()">
-                                            <i class="fas fa-check-double me-1"></i> Approve Payment
-                                        </button>
-                                    <?php endif; ?>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -511,7 +493,7 @@ $(document).ready(function() {
             })
         );
     }
-
+    
     if (realcustomerId && realcustomerName && realJobCardNo) {
         loadingPromises.push(new Promise(function(resolve) {
             var option = new Option((realcustomerName +' | '+realJobCardNo), realcustomerId, true, true);
@@ -546,14 +528,14 @@ $(document).ready(function() {
                 $(this).val(parts.join("."));
             }
         });
-
+        
         $('#paymentAmount, #allocateAmount').on('blur', function () {
-            let val = $(this).val().replace(/,/g, '');
-            if (val && !isNaN(val)) {
-                $(this).val(parseFloat(val).toLocaleString(undefined, { 
+            let value = this.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== "") {
+                this.value = parseFloat(value).toLocaleString(undefined, { 
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2 
-                }));
+                });
             }
         });
 
@@ -563,17 +545,18 @@ $(document).ready(function() {
 
         if (typed.includes("boom")) {
             $(".print_receipt_v2").removeClass("d-none");
+            $(".print_receipt_v3").removeClass("d-none");
             typed = ""; 
         }
         if (typed.includes("hide")) {
             $(".print_receipt_v2").addClass("d-none");
+            $(".print_receipt_v3").addClass("d-none");
             typed = ""; 
         }
         if (typed.length > 10) typed = typed.slice(-10);
     });
 
 });
-
 
 $('#paymentMethod').on('change', function() {
     const method = $(this).val();
@@ -845,6 +828,7 @@ $(document).on('click', '.direct-allocate-btn', function() {
     $('#allocatePaymentModal').modal('show');
 });
 
+
 $('#paymentMethodDropdown').on('change', function() {
     let selectedIndex = $(this).val();
     let data = paymentMap[selectedIndex];
@@ -887,15 +871,15 @@ function getCustomerJobOrInvoiceDetails() {
                         const ref = isJob ? entry.jobcard.job_card_number : entry.invoice.invoice_number;
                         const date = isJob ? entry.jobcard.jobcard_date : entry.invoice.invoice_date;
                         const id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
-                        const total_discount = parseFloat(isJob ? 0 : entry.invoice.inv_discount_amount);
+  						const total_discount = parseFloat(isJob ? 0 : entry.invoice.inv_discount_amount);
                         const advance_paid = parseFloat(isJob ? 0 : entry.invoice.inv_advance_total);
                         const total = parseFloat(isJob ? entry.total : entry.total);
                         const paid = parseFloat(isJob ? entry.paid : entry.paid);
 
                         const bal = parseFloat(isJob ? entry.balance : entry.outstanding);
-                                         
+
                         let actionBtn = '';
-                        let directAllocateBtn = '';
+						let directAllocateBtn = '';
                         if (bal > 0) {
                             if (receipt_status != 'Approved' && addcheck == 1) {
                                 actionBtn = `<button type="button" class="btn btn-sm btn-primary allocate-payment-btn">
@@ -912,6 +896,7 @@ function getCustomerJobOrInvoiceDetails() {
                                                 <i class="fas fa-money-check-alt"></i>
                                             </button>`;
                             }
+                            
                         }
 
                         let allocated_details =
@@ -1392,6 +1377,13 @@ function confirmPayment() {
 
 function exportPaymentReceipt(receipt_id) {
     const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptPDF";
+    const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&series_id=${encodeURIComponent(series_id)}`;
+    window.open(url, '_blank');
+}
+
+
+function exportPaymentReceiptV3(receipt_id) {
+    const baseUrl = "<?php echo base_url(); ?>Payment/advancePaymentPDF2";
     const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }

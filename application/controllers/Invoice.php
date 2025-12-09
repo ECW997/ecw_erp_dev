@@ -12,7 +12,6 @@ class Invoice extends CI_Controller {
 		$this->load->helper('api_helper');
         $this->load->model('Invoiceinfo');
 		$this->load->model('JobCardinfo');
-		$this->load->model('CashierShiftinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -28,46 +27,17 @@ class Invoice extends CI_Controller {
 		$response = $this->Invoiceinfo->getDirectSalesItem($this->api_token,$form_data);
 		echo json_encode($response);
 	}
-	
 	public function index(){
 		$this->load->model('Commeninfo');
-		$check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
-
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
-		$result['check_cashier_shift'] = $check_cashier_shift_response;
-		// $status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
-		// $code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
-		// $is_opening_approved = $check_cashier_shift_response['shift']['opening_approved_at'] == null ? false : true;
-
-		// if ($status === true && $code == 200) {
-		// 	// if($is_opening_approved){
-		// 	// 	$this->load->view('invoiceList', $result);
-		// 	// }else{
-		// 	// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// 	// }
-		// 	$this->load->view('invoiceList', $result);
-		// } elseif ($status === true && $code == 403) {
-		// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// } else {
-		// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// }
-
 		$this->load->view('invoiceList', $result);
-
 	}
 	
 	public function invoiceDetailIndex($id = null, $series_type = null){
 		$branch_id = $this->session->userdata('branch_id');
 		$this->load->model('Commeninfo');
-		$check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
-
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
-		$result['check_cashier_shift'] = $check_cashier_shift_response;
-		// $status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
-		// $code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
-		// $is_opening_approved = $check_cashier_shift_response['shift']['opening_approved_at'] == null ? false : true;
 		$result['sales_agents'] = $this->JobCardinfo->getSalesAgent($this->api_token,$branch_id)['data'];
-
         if ($id !== null) {
 			
 			if($id=='direct'){
@@ -95,20 +65,8 @@ class Invoice extends CI_Controller {
           
         }
 
-		// if ($status === true && $code == 200) {
-		// 	// if($is_opening_approved){
-		// 	// 	$this->load->view('invoice', $result);
-		// 	// }else{
-		// 	// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// 	// }
-		// 	$this->load->view('invoice', $result);
-		// } elseif ($status === true && $code == 403) {
-		// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// } else {
-		// 	$this->load->view('components/modal/cashier/background_layout', $result);
-		// }
-
 		$this->load->view('invoice', $result);
+		// $this->load->view('invoice_type', $result);
 	}
 
 	public function getJobcardNumbers(){
@@ -328,9 +286,10 @@ class Invoice extends CI_Controller {
 			['Attachment' => 0]  
 		);
 	}
-
-
-	public function taxinvoicePDF(){
+  
+  
+  
+  public function taxinvoicePDF(){
 		$id=$this->input->get('invoice_id');
 		$series_type=$this->input->get('series_id');
         $response=$this->Invoiceinfo->getInvoicePdfDetails($this->api_token,$id,['series_type' => $series_type]);
@@ -367,6 +326,7 @@ class Invoice extends CI_Controller {
 			['Attachment' => 0]  
 		);
 	}
+  
 
 	public function insertNewItem(){
 		$form_data = [
@@ -393,24 +353,6 @@ class Invoice extends CI_Controller {
 
 	public function searchCustomer($id) {
 		$response = $this->Invoiceinfo->searchCustomer($this->api_token, $id);
-		echo json_encode($response);
-	}
-
-
-	public function getLatestTax(){
-		$api_token = $this->session->userdata('api_token');
-
-		if (!$api_token) {
-			$this->session->set_flashdata(['res' => '401', 'msg' => 'Not authenticated']);
-			redirect('Welcome/Logout');
-			return;
-		}
-
-		$form_data = [
-            'tax_name' => $this->input->post('tax_name'),
-        ];
-
-		$response = $this->Invoiceinfo->getLatestTax($api_token,$form_data);
 		echo json_encode($response);
 	}
 }

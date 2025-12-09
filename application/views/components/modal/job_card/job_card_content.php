@@ -408,6 +408,7 @@ $(document).ready(function() {
         $('#edit_email').val(<?= json_encode($job_main_data[0]['email'] ?? '') ?>);
         $('#edit_schedule_date').val(<?= json_encode($job_main_data[0]['job_start_datetime'] ?? '') ?>);
         $('#edit_delivery_date').val(<?= json_encode($job_main_data[0]['handover_date'] ?? '') ?>);
+        $('#edit_vehicle_no').val(<?= json_encode($job_main_data[0]['vehicle_number'] ?? '') ?>);
         $('#edit_vat_reg_type').val(<?= json_encode($job_main_data[0]['tax_type'] ?? '') ?>);
         $('#edit_vat_number').val(<?= json_encode($job_main_data[0]['tax_number'] ?? '') ?>);
 

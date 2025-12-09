@@ -146,6 +146,14 @@
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
+                        <label class="col-form-label">Vehicle No</label>
+                        <input type="text" class="form-control" id="edit_vehicle_no" name="edit_vehicle_no"
+                            placeholder="Vehicle No">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-6">
                         <h6 class="col-form-label me-2 text-nowrap">VAT Reg Type <span class="text-danger">*</span></h6>
                         <select class="form-control form-control-sm" id="edit_vat_reg_type"
                             name="edit_vat_reg_type">
@@ -179,9 +187,15 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="editJobCardBtn" class="btn btn-warning">Edit Job Card<i
-                        class="fas fa-plus-circle ml-2"></i></i></button>
-            </div>
+            <!-- <button type="button" id="editJobCardBtn"
+                class="btn btn-warning <?= $showApproveBtn ? '' : 'disabled' ?>">
+                Edit Job Card <i class="fas fa-plus-circle ml-2"></i>
+            </button> -->
+             <button type="button" id="editJobCardBtn"
+                class="btn btn-warning">
+                Edit Job Card <i class="fas fa-plus-circle ml-2"></i>
+            </button>
+        </div>
         </div>
     </div>
 </div>
@@ -408,6 +422,9 @@ function confirmEditJobCard() {
     var edit_email = $('#edit_email').val();
     var edit_schedule_date = $('#edit_schedule_date').val();
     var edit_delivery_date = $('#edit_delivery_date').val();
+
+    var edit_vehicle_no = $('#edit_vehicle_no').val();
+
     var edit_vat_reg_type = $('#edit_vat_reg_type').val();
     var edit_vat_number = $('#edit_vat_number').val();
     var edit_price_category = $('#edit_price_category').val();
@@ -432,6 +449,7 @@ function confirmEditJobCard() {
             email: edit_email,
             schedule_date:edit_schedule_date,
             delivery_date: edit_delivery_date,
+            vehicle_no: edit_vehicle_no,
             vat_reg_type: edit_vat_reg_type,
             vat_number: edit_vat_number,
             price_category: edit_price_category,
@@ -475,4 +493,44 @@ function createNewJobCard() {
         }
     });
 }
+</script>
+
+<!-- <script>
+(function(){
+    var el = document.getElementById('edit_vehicle_no');
+    if (!el) return;
+    el.addEventListener('input', function(e) {
+        var input = e.target.value.toUpperCase().replace(/\s+/g, ''); // Remove spaces and ensure uppercase
+        input = input.replace(/[^A-Z0-9]/g, ''); // Allow only alphanumeric characters
+
+        // Format input for 2 characters, followed by a dash, then up to 4 numbers
+        if (input.length > 2 && input.length <= 6) {
+            input = input.slice(0, 2) + '-' + input.slice(2);
+        }
+        // Handle longer formats like 'CAA-1458' (3 letters, 4 numbers)
+        else if (input.length > 6) {
+            input = input.slice(0, 3) + '-' + input.slice(3);
+        }
+
+        e.target.value = input;
+    });
+})();
+</script> -->
+
+<script>
+document.getElementById('edit_vehicle_no').addEventListener('input', function(e) {
+    let input = e.target.value.toUpperCase().replace(/\s+/g, ''); // Remove spaces and ensure uppercase
+    input = input.replace(/[^A-Z0-9]/g, ''); // Allow only alphanumeric characters
+
+    // Format input for 2 characters, followed by a dash, then 4 numbers
+    if (input.length > 2 && input.length <= 6) {
+        input = input.slice(0, 2) + '-' + input.slice(2);
+    }
+    // Handle longer formats like 'CAA-1458' (3 letters, 4 numbers)
+    else if (input.length > 6) {
+        input = input.slice(0, 3) + '-' + input.slice(3);
+    }
+
+    e.target.value = input;
+});
 </script>
