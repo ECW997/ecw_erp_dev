@@ -244,10 +244,98 @@ class Payment extends CI_Controller {
 		$receipt_pdf->setPaper($customPaper);
 		$receipt_pdf->set_option('defaultFont', 'Helvetica');
 		$receipt_pdf->set_option('isRemoteEnabled', true);
+		
 
 		$receiptView = ($payment_type == 'JobCard')
 			? ($series_type == 1 ? 'components/pdf/advance_receipt_pdf' : 'components/pdf/advance_receipt_v2_pdf')
 			: ($series_type == 1 ? 'components/pdf/payment_receipt_pdf' : 'components/pdf/payment_receipt_v2_1_pdf');
+
+		$receipt_html = $this->load->view($receiptView, $pdf_data, TRUE);
+
+		$receipt_pdf->loadHtml($receipt_html);
+    	$receipt_pdf->render();
+
+		$receipt_path = $upload_dir . 'temp_receipt.pdf';
+		file_put_contents($receipt_path, $receipt_pdf->output());
+
+		if ($payment_type == 'Invoice') {
+			$invoice_id = $pdf_data['invoices'][0]['invoice_id'];
+			$inv_response = $this->Invoiceinfo->getInvoicePdfDetails($this->api_token, $invoice_id, ['series_type' => $series_type]);
+
+			if (!$inv_response['status'] || $inv_response['code'] != 200) {
+				show_error('Failed to fetch Invoice data');
+			}
+
+			$invoice_data = [
+				'main_data'          => $inv_response['data']['main_data'][0],
+				'details_data'       => $inv_response['data']['details_data'],
+				'extra_charge_data'  => $inv_response['data']['extra_charge_data'],
+				'total_paid_for_ref' => $inv_response['data']['total_paid_for_ref'],
+			];
+
+			$invoiceView = ($invoice_data['main_data']['series_type'] == '1')
+				? 'components/pdf/job_invoice_pdf'
+				: 'components/pdf/job_invoice_v2_pdf';
+
+			$invoice_pdf = new Pdf();
+			$invoice_pdf->setPaper($customPaper);
+			$invoice_pdf->set_option('defaultFont', 'Helvetica');
+			$invoice_pdf->set_option('isRemoteEnabled', true);
+
+			$invoice_html = $this->load->view($invoiceView, $invoice_data, TRUE);
+			$invoice_pdf->loadHtml($invoice_html);
+			$invoice_pdf->render();
+
+			$invoice_path = $upload_dir . 'temp_invoice.pdf';
+			file_put_contents($invoice_path, $invoice_pdf->output());
+
+			// Merge PDFs using FPDI
+			$this->load->library('Fpdf_fpdi');
+			$merged_filename = $pdf_data['header']['receipt_number'] . '_with_invoice.pdf';
+			$this->fpdf_fpdi->merge([$receipt_path, $invoice_path], $merged_filename, 'I');
+
+			// Remove temporary files
+			if (file_exists($receipt_path)) unlink($receipt_path);
+			if (file_exists($invoice_path)) unlink($invoice_path);
+
+		} else {
+			$receipt_pdf->stream($pdf_data['header']['receipt_number'] . '.pdf', ['Attachment' => 0]);
+			if (file_exists($receipt_path)) unlink($receipt_path);
+		}
+	}
+
+	public function advancePaymentPDF2(){
+		$this->load->model('Invoiceinfo');
+		$id=$this->input->get('receipt_id');
+		$series_type=$this->input->get('series_id');
+        $response=$this->Paymentinfo->getReceiptPdfDetails($this->api_token,$id,['series_type' => $series_type]);
+
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch Payment data');
+		}
+
+		$pdf_data = [
+			'header' => $response['data']['pay_header'],  
+    		'invoices' => $response['data']['details'], 		
+		];
+
+		$payment_type = $pdf_data['header']['payment_type'];
+		$upload_dir = FCPATH . 'uploads/';
+    	if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+		$this->load->library('Pdf');
+    	$customPaper = [0, 0, 382.84, 380.84];
+
+		$receipt_pdf = new Pdf();
+		$receipt_pdf->setPaper($customPaper);
+		$receipt_pdf->set_option('defaultFont', 'Helvetica');
+		$receipt_pdf->set_option('isRemoteEnabled', true);
+
+		$receiptView = (
+		$series_type == 1
+			? 'components/pdf/advance_receipt_pdf'
+			: 'components/pdf/advance_receipt_v3_pdf'
+		);
 
 		$receipt_html = $this->load->view($receiptView, $pdf_data, TRUE);
 

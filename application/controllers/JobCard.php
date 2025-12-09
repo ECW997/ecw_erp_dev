@@ -269,6 +269,31 @@ class JobCard extends CI_Controller {
 	}
 
 
+	public function exportJobCardcategoryData() {
+
+		$json = file_get_contents('php://input');
+		$data = json_decode($json, true);
+
+		$date_from = $data['date_from'] ?? null;
+		$date_to = $data['date_to'] ?? null;
+		$type = $data['type'] ?? 'indirect';
+
+		if (empty($date_from) || empty($date_to)) {
+			echo json_encode(['status' => false, 'error' => 'No date range received']);
+			return;
+		}
+
+		$form_data = [
+			'date_from' => $date_from,
+			'date_to' => $date_to,
+			'type' => $type
+		];
+
+		$response = $this->JobCardinfo->exportJobCardcategoryData($this->api_token, $form_data);
+		echo json_encode($response);
+	}
+
+
 
 
 	public function insertJobCardDetail() {
@@ -430,6 +455,7 @@ class JobCard extends CI_Controller {
 			'email' => $this->input->post('email'),
 			'schedule_date' => $this->input->post('schedule_date'),
 			'delivery_date' => $this->input->post('delivery_date'),
+			'vehicle_no' => $this->input->post('vehicle_no'),
 			'vat_reg_type' => $this->input->post('vat_reg_type'),
 			'vat_number' => $this->input->post('vat_number'),
 			'price_category' => $this->input->post('price_category'),

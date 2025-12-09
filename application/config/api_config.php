@@ -72,6 +72,7 @@ $config['api_endpoints'] = [
     'jobcard_header_update_v1' => '/v1/jobcard_header_update',
     'get_jobcard_edit_details_v1' => '/v1/get_jobcard_edit_details',
     'exportJobCardExcelData_v1' => '/v1/exportJobCardExcelData',
+    'exportJobCardSummaryData_v1' => '/v1/exportJobCardSummaryData',
 
     'quickSearchJobDetails_v1' => '/v1/quickSearchJobDetails',
 
