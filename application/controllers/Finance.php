@@ -20,7 +20,21 @@ class Finance extends CI_Controller {
     public function index(){
 		$this->load->model('Commeninfo');
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
-		$this->load->view('finance', $result);
+		$this->load->view('Finance/Shifts', $result);
+	}
+
+    public function accountMaster(){
+		$this->load->model('Commeninfo');
+		$this->load->model('Finance/AccountMasterinfo');
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
+		$this->load->view('Finance/AccountMaster', $result);
+	}
+
+    public function approval(){
+		$this->load->model('Commeninfo');
+		$this->load->model('Finance/Approvalinfo');
+		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
+		$this->load->view('Finance/Approval', $result);
 	}
     
 }

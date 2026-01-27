@@ -29,6 +29,40 @@ include "include/topnavbar.php";
                 <div class="card">
                     <div class="card-body p-0 p-2">
                         <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="mb-0"><i class="fas fa-file-csv mr-2"></i>CSV Upload</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="<?php echo base_url() ?>Employee/EmployeeCsvUpload" method="post" 
+                                            enctype="multipart/form-data" id="csvUploadForm">
+                                            <div class="row align-items-end">
+                                                <div class="col-md-6">
+                                                    <label class="small font-weight-bold text-dark">Upload CSV File*</label>
+                                                    <input type="file" class="form-control form-control-sm" name="csv_file" 
+                                                        id="csv_file" accept=".csv" required>
+                                                    <small class="form-text text-muted">
+                                                        CSV Format: First column = Emp No, Second column = Emp Name
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button type="submit" class="btn btn-success btn-sm px-4" 
+                                                        <?php if($addcheck==0){echo 'disabled';} ?>>
+                                                        <i class="fas fa-upload"></i>&nbsp;Upload CSV
+                                                    </button>
+                                                    <button type="button" class="btn btn-info btn-sm px-3" onclick="downloadSampleCsv()">
+                                                        <i class="fas fa-download"></i>&nbsp;Download Sample
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <hr class="my-2">
+                            </div>
                             <div class="col-12">
                                 <form action="<?php echo base_url() ?>Employee/Employeeinsertupdate" method="post"
         							autocomplete="off" enctype="multipart/form-data">
@@ -356,6 +390,53 @@ include "include/topnavbar.php";
 
     function delete_confirm() {
         return confirm("Are you sure you want to remove this?");
+    }
+
+    // CSV Upload form handling
+    $('#csvUploadForm').on('submit', function(e) {
+        var fileInput = $('#csv_file')[0];
+        if (fileInput.files.length === 0) {
+            e.preventDefault();
+            alert('Please select a CSV file to upload');
+            return false;
+        }
+        
+        var fileName = fileInput.files[0].name;
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+        
+        if (fileExtension !== 'csv') {
+            e.preventDefault();
+            alert('Please upload a valid CSV file');
+            return false;
+        }
+        
+        // Show loading indicator
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>&nbsp;Uploading...');
+        
+        // Re-enable button after 10 seconds in case of error
+        setTimeout(function() {
+            submitBtn.prop('disabled', false).html(originalText);
+        }, 10000);
+    });
+
+    // Download sample CSV
+    function downloadSampleCsv() {
+        var csvContent = 'Emp No,Emp Name\n';
+        csvContent += 'EMP001,John Doe\n';
+        csvContent += 'EMP002,Jane Smith\n';
+        csvContent += 'EMP003,Robert Johnson\n';
+        
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        var url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'employee_sample.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
 <?php include "include/footer.php"; ?>

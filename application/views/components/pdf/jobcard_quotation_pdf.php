@@ -339,7 +339,7 @@
                 <div class="company-info">ECW Software Solutions</div>
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
-                        <td style="font-size:14px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <td style="font-size:14px; font-weight:bold; text-align:left; padding:0px; width:50%;">Quotation No: <?= $main_data['job_card_number'] ?? $main_data['job_card_number'] ?? 'N/A' ?></td>
                         <td style="font-size:14px; font-weight:bold; text-align:right; padding:0px; width:50%;">Handover Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
                     </tr>
                 </table>
@@ -387,12 +387,6 @@
                         <td><?= $main_data['sales_person_name'] ?? 'N/A' ?></td>
                         <th>Sales Code:</th>
                         <td><?= $main_data['sales_person_code'] ?? 'N/A' ?></td>
-                    </tr>
-                    <tr>
-                        <th>Job Card No:</th>
-                        <td><?= $main_data['job_card_number'] ?? 'N/A' ?></td>
-                        <th>Quotation No:</th>
-                        <td><?= $main_data['quotation_no'] ?? 'None' ?></td>
                     </tr>
                     <tr>
                         <th>Created Date:</th>

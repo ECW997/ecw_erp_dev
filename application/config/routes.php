@@ -56,3 +56,59 @@ $route['translate_uri_dashes'] = FALSE;
 $route['JobCard/(:num)'] = 'JobCard/index/$1';
 $route['Invoice/(:num)'] = 'Invoice/index/$1';
 $route['Payment/(:num)'] = 'Payment/index/$1';
+
+// Cashier Routes - Controllers moved to root controllers directory
+$route['Cashier/Shift'] = 'CashierShift';
+$route['Cashier/Shift/(:any)'] = 'CashierShift/$1';
+
+$route['Cashier/Handover'] = 'CashierHandover';
+$route['Cashier/Handover/(:any)'] = 'CashierHandover/$1';
+
+$route['Cashier/Summary'] = 'CashierSummary';
+$route['Cashier/Summary/getCashBookSummary/(:num)'] = 'CashierSummary/getCashBookSummary/$1';
+$route['Cashier/Summary/getCalculatedSummary/(:num)'] = 'CashierSummary/getCalculatedSummary/$1';
+$route['Cashier/Summary/saveCashBookSummary/(:num)'] = 'CashierSummary/saveCashBookSummary/$1';
+$route['Cashier/Summary/(:any)'] = 'CashierSummary/$1';
+
+$route['Cashier/Shift/getRealTimeCashProgress/(:num)'] = 'CashierShift/getRealTimeCashProgress/$1';
+
+$route['Cashier/TransactionLedger'] = 'CashierTransactionLedger';
+$route['Cashier/TransactionLedger/reverseTransaction/(:num)'] = 'CashierTransactionLedger/reverseTransaction/$1';
+$route['Cashier/TransactionLedger/(:any)'] = 'CashierTransactionLedger/$1';
+
+$route['Cashier/CashMovement/approveCashMovement/(:num)'] = 'CashierCashMovement/approveCashMovement/$1';
+$route['Cashier/CashMovement/cancelCashMovementApproval/(:num)'] = 'CashierCashMovement/cancelCashMovementApproval/$1';
+$route['Cashier/CashMovement/deleteCashMovement/(:num)'] = 'CashierCashMovement/deleteCashMovement/$1';
+$route['Cashier/CashMovement/updateCashMovement/(:num)'] = 'CashierCashMovement/updateCashMovement/$1';
+$route['Cashier/CashMovement/getCashMovement/(:num)'] = 'CashierCashMovement/getCashMovement/$1';
+$route['Cashier/CashMovement/getCashMovementById/(:num)'] = 'CashierCashMovement/getCashMovementById/$1';
+$route['Cashier/CashMovement/printPettyCashVoucher/(:num)'] = 'CashierCashMovement/printPettyCashVoucher/$1';
+$route['Cashier/CashMovement/getSupplierJobsBySupplier/(:num)'] = 'CashierCashMovement/getSupplierJobsBySupplier/$1';
+$route['Cashier/CashMovement/getSupplierJobsWithAdvances/(:num)'] = 'CashierCashMovement/getSupplierJobsWithAdvances/$1';
+$route['Cashier/CashMovement/getAdvancePaymentsByJob/(:num)'] = 'CashierCashMovement/getAdvancePaymentsByJob/$1';
+$route['Cashier/CashMovement/updateSupplierJob/(:num)'] = 'CashierCashMovement/updateSupplierJob/$1';
+$route['Cashier/CashMovement'] = 'CashierCashMovement';
+$route['Cashier/CashMovement/(:any)'] = 'CashierCashMovement/$1';
+
+$route['Cashier/Adjustment'] = 'CashierAdjustment';
+$route['Cashier/Adjustment/(:any)'] = 'CashierAdjustment/$1';
+
+$route['Cashier/IouSettlement'] = 'CashierIouSettlement';
+$route['Cashier/IouSettlement/(:any)'] = 'CashierIouSettlement/$1';
+
+$route['Cashier/Auth'] = 'CashierAuth';
+$route['Cashier/Auth/(:any)'] = 'CashierAuth/$1';
+
+$route['Cashier/CashSafeTransaction'] = 'CashSafeTransaction';
+$route['Cashier/CashSafeTransaction/(:any)'] = 'CashSafeTransaction/$1';
+
+$route['Cashier/CashBook'] = 'CashierCashBook';
+$route['Cashier/CashBook/(:any)'] = 'CashierCashBook/$1';
+
+// Cashier Report Routes
+$route['Cashier/Report/dailySummary'] = 'CashierReport/dailySummary';
+$route['Cashier/Report/paymentSummary'] = 'CashierReport/paymentSummary';
+$route['Cashier/Report/discrepancy'] = 'CashierReport/discrepancy';
+$route['Cashier/Report/cashOutSummary'] = 'CashierReport/cashOutSummary';
+$route['Cashier/Report/outstandingIous'] = 'CashierReport/outstandingIous';
+$route['Cashier/Report/(:any)'] = 'CashierReport/$1';

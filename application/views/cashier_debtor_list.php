@@ -104,6 +104,7 @@
                                         <th class="text-right">Balance Amount</th>
                                         <th>Settlement Date</th>
                                         <th>Payment Details</th>
+                                        <th>Remark</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -112,7 +113,7 @@
                                         <th id="total_inv2" class="text-right"></th>
                                         <th id="total_advance2" class="text-right"></th>
                                         <th id="total_balance2" class="text-right"></th>
-                                        <th colspan="2"></th>
+                                        <th colspan="3"></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -219,6 +220,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="transfer_debtor_id" name="debtor_id">
+                    <input type="hidden" id="transfer_debtor_series" name="transfer_debtor_series">
                     <div class="mb-3">
                         <label>Settlement Date</label>
                         <input type="date" class="form-control" name="settlement_date" required>
@@ -228,6 +230,10 @@
                         <select id="payment_details" name="payment_details" class="form-control" required>
                             <option value="">Select Details</option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Remarks</label>
+                        <textarea name="remarks" id="remarks" class="form-control" rows="3" placeholder="Add any remarks..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -300,7 +306,8 @@ $(document).ready(function() {
             success: function(res) {
                 if(res.status){
                     success_toastify(res.message);
-                    table.ajax.reload();
+                    $('#debtorForm')[0].reset();
+                    loadDebtorTable($('#series').val());
                     $('#debtorModal').modal('hide');
                 } else {
                     error_toastify(res.message);
@@ -332,6 +339,7 @@ $(document).ready(function() {
                 $('#advance_amount').val(result.data.advance_amount);
                 $('#balance_amount').val(result.data.balance_amount);
                 $('#number_of_days').val(result.data.number_of_days);
+                $('#series').val(result.data.series);
                 $('#approved_by').val(result.data.approved_by);
 
                 $('#debtorModal').modal('show');
@@ -363,6 +371,7 @@ $(document).ready(function() {
     // Transfer to Credit
     $('#debtorTable').on('click', '.transferBtn', function() {
         $('#transfer_debtor_id').val($(this).data('id'));
+        $('#transfer_debtor_series').val($(this).data('series'));
 
         const series = $(this).data('series');
 
@@ -405,9 +414,10 @@ $(document).ready(function() {
             success: function(res) {
                 if(res.status){
                     success_toastify(res.message);
+                    $('#transferForm')[0].reset();
                     $('#transferModal').modal('hide');
-                    table.ajax.reload();
-                    creditTable.ajax.reload();
+                    loadDebtorTable($('#transfer_debtor_series').val());
+                    loadCreditTable($('#transfer_debtor_series').val());
                 } else {
                     error_toastify(res.message);
                 }
@@ -610,7 +620,8 @@ function loadCreditTable(series){
                 }
             },
             { data: 'settlement_date' },
-            { data: 'payment_details' }
+            { data: 'payment_details' },
+            { data: 'remark' }
         ],
         order: [[0, 'desc']],
         footerCallback: function(row, data, start, end, display) {

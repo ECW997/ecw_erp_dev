@@ -283,7 +283,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#series_type').val('1').trigger('change');
+    // $('#series_type').val('1').trigger('change');
 });
 
 function getDirectSalesItemDetails(item_id) {

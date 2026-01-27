@@ -143,6 +143,16 @@ include "include/v2/topnavbar.php";
     <?php
     $is_approve = (isset($relationDetails['status']) && $relationDetails['status'] === 'Approved');
     $is_button_hidden = $is_edit ? $editcheck == 0 : $addcheck == 0;
+  
+    $shift_status = 'not_started'; 
+
+    if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+        if ($check_cashier_shift['code'] == 200) {
+            $shift_status = 'current_user';
+        } else {
+            $shift_status = 'other_user';
+        }
+    }
     ?>
     <div id="layoutSidenav_content">
         <main>
@@ -199,11 +209,13 @@ include "include/v2/topnavbar.php";
                                 <?php if ($is_approve): ?>
                                     <span class="badge bg-success">Approved</span>
                                 <?php else: ?>
-                                    <button type="button"
-                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
-                                        onclick="approveConfirm();" id="approve-btn">
-                                        <i class="fas fa-check me-1"></i> Approve
-                                    </button>
+                                    <?php if ($shift_status === 'current_user'): ?>
+                                        <button type="button"
+                                            class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
+                                            onclick="approveConfirm();" id="approve-btn">
+                                            <i class="fas fa-check me-1"></i> Approve 
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -377,11 +389,13 @@ include "include/v2/topnavbar.php";
                                     <span class="badge bg-success">This order has been approved and cannot be modified.</span>
                                 </div>
                             <?php else: ?>
-                        	<div class="col-md-2 d-flex align-items-center justify-content-end">
-                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
-                        			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
-                        		</button>
-                        	</div>
+                                <?php if ($shift_status === 'current_user'): ?>
+                                    <div class="col-md-2 d-flex align-items-center justify-content-end">
+                                        <button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
+                                            <i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                         <div class="col-md-2">
@@ -714,14 +728,22 @@ function renderAvailableJobs() {
     let totalPriceSum = 0;
 
 	$.each(availableJobs, function (index, job) {
+
+        let total = parseFloat(job.total) || 0;
+        let net = parseFloat(job.net_amount) || 0;
+        let discount = parseFloat(job.line_discount) || 0;
+
+        const displayTotal = (job.subCategory == 'Exchange') ? `(${total.toFixed(2)})` : total.toFixed(2);
+        const displayNet = (job.subCategory == 'Exchange') ? `(${net.toFixed(2)})` : net.toFixed(2);
+        
 		const row = $(`
                         <tr class="job-row" data-job-id="${job.jobId}">
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
-                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${displayTotal}</td>
                             <td class="text-right">${job.line_discount}</td>
-                            <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
+                            <td class="text-right">${displayNet}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-primary transfer-btn move-to-selected" data-job-id="${job.jobId}"> <i class="fas fa-arrow-right"></i> </button>
                             </td>
@@ -729,9 +751,17 @@ function renderAvailableJobs() {
                     `);
 		tbody.append(row);
 
-        subTotalSum += parseFloat(job.total) || 0;
-        lineDiscountSum += parseFloat(job.line_discount) || 0;
-        totalPriceSum += parseFloat(job.net_amount) || 0;
+        if (job.subCategory === 'Exchange') {
+            // Deduct values
+            subTotalSum -= total;
+            lineDiscountSum -= discount;
+            totalPriceSum -= net;
+        } else {
+            // Add values
+            subTotalSum += total;
+            lineDiscountSum += discount;
+            totalPriceSum += net;
+        }
 	});
 
     $('#availableJobsSubTotal').text(formatCurrency(subTotalSum));
@@ -755,14 +785,21 @@ function renderSelectedJobs() {
     let totalPriceSum = 0;
     
 	$.each(selectedJobs, function (index, job) {
+        let total = parseFloat(job.total) || 0;
+        let net = parseFloat(job.net_amount) || 0;
+        let discount = parseFloat(job.line_discount) || 0;
+
+        const displayTotal = (job.subCategory == 'Exchange') ? `(${total.toFixed(2)})` : total.toFixed(2);
+        const displayNet = (job.subCategory == 'Exchange') ? `(${net.toFixed(2)})` : net.toFixed(2);
+
 		const row = $(`
                          <tr class="job-row" data-job-id="${job.jobId}">
                             <td class="text-center">${rowCnt++}</td>
                             <td class="text-left">${job.subCategory}-${job.optionGroup}-${job.option}</td>
                             <td class="text-center">${job.qty}</td>
-                            <td class="text-right">${job.total}</td>
+                            <td class="text-right">${displayTotal}</td>
                             <td class="text-right">${job.line_discount}</td>
-                            <td class="text-right">${(parseFloat(job.net_amount).toFixed(2))}</td>
+                            <td class="text-right">${displayNet}</td>
                             <td class="text-center <?= $is_approve ? 'd-none' : ''; ?>">
                                 <button class="btn btn-sm btn-danger transfer-btn move-to-available" data-job-id="${job.jobId}">
                                      <i class="fas fa-undo"></i>
@@ -772,9 +809,17 @@ function renderSelectedJobs() {
                     `);
 		tbody.append(row);
 
-        subTotalSum += parseFloat(job.total) || 0;
-        lineDiscountSum += parseFloat(job.line_discount) || 0;
-        totalPriceSum += parseFloat(job.net_amount) || 0;
+        if (job.subCategory === 'Exchange') {
+            // Deduct values
+            subTotalSum -= total;
+            lineDiscountSum -= discount;
+            totalPriceSum -= net;
+        } else {
+            // Add values
+            subTotalSum += total;
+            lineDiscountSum += discount;
+            totalPriceSum += net;
+        }
 	});
 
     $('#selectedJobsSubTotal').text(formatCurrency(subTotalSum));
@@ -859,26 +904,30 @@ function updateCounts() {
 }
 
 function updatePriceSummary() {
-    const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+    // const totalAvailablePrice = availableJobs.reduce((sum, job) => sum + parseFloat(job.net_amount || 0), 0);
+    const totalAvailablePrice = availableJobs.reduce((sum, job) => {
+        const amount = parseFloat(job.net_amount || 0);
+        return job.subCategory == 'Exchange' ? sum - amount : sum + amount;
+    }, 0);
     
     const headerDiscount = parseFloat($('#HeaderDiscountPrice').text()) || 0;
     const totalAvailableJobprice = totalAvailablePrice - headerDiscount;
-	const orderValue = parseFloat($('#confirmedOrderValue').val()) || 0;
-	const difference = totalAvailableJobprice - orderValue;
+	const finalOrderValue = totalAvailableJobprice < 0 ? 0 : totalAvailableJobprice;
+	const difference = totalAvailableJobprice - finalOrderValue;
 
     $('#subTotal').text(`${totalAvailablePrice.toFixed(2)}`);
     $('#subTotalText').text(formatCurrency(totalAvailablePrice));
 	$('#totalJobsPrice').text(`${totalAvailableJobprice.toFixed(2)}`);
     $('#totalJobsPriceText').text(formatCurrency(totalAvailableJobprice));
-	$('#displayOrderValue').text(`${orderValue.toFixed(2)}`);
-    $('#displayOrderValueText').text(formatCurrency(orderValue));
-    $('#confirmedOrderValue').val(totalAvailableJobprice < 0 ? 0 : totalAvailableJobprice);
+	$('#displayOrderValue').text(`${finalOrderValue.toFixed(2)}`);
+    $('#displayOrderValueText').text(formatCurrency(finalOrderValue));
+    $('#confirmedOrderValue').val(finalOrderValue);
 
 	const $differenceElement = $('#priceDifference');
     const $differenceElementText = $('#priceDifferenceText');
 	const $statusElement = $('#priceStatus');
 
-	if (difference == 0 && totalAvailableJobprice > 0 && orderValue > 0) {
+	if (difference == 0 && totalAvailableJobprice > 0 && finalOrderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success d-none');
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-success');
 		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
@@ -888,7 +937,7 @@ function updatePriceSummary() {
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-warning');
 		$statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
 		// $('#confirmBtn').prop('disabled', true);
-	} else if (difference < 0 && orderValue > 0) {
+	} else if (difference < 0 && finalOrderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger d-none');
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-danger');
 		$statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');

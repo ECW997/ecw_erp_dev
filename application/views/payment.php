@@ -157,11 +157,11 @@ include "include/v2/topnavbar.php";
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Type</option>
                                                     <option value="JobCard"
-                                                        <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'JobCard' ? 'selected' : '' ?>>
+                                                        <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] == 'JobCard' ? 'selected' : '' ?>>
                                                         Advance Payment
                                                     </option>
                                                     <option value="Invoice"
-                                                        <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] === 'Invoice' ? 'selected' : '' ?>>
+                                                        <?= isset($payment_main_data['payment_type']) && $payment_main_data['payment_type'] == 'Invoice' ? 'selected' : '' ?>>
                                                         Invoice Payment
                                                     </option>
                                                 </select>
@@ -175,11 +175,11 @@ include "include/v2/topnavbar.php";
                                                     <?= isset($payment_main_data['status']) && $payment_main_data['status'] == 'Approved' ? 'disabled' : '' ?>>
                                                     <option value="">Select Type</option>
                                                     <option value="1"
-                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '1' ? 'selected' : 'selected' ?>>
+                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] == '1' ? 'selected' : 'selected' ?>>
                                                         Series 01
                                                     </option>
                                                     <option value="2"
-                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] === '2' ? 'selected' : '' ?>>
+                                                        <?= isset($payment_main_data['series_type']) && $payment_main_data['series_type'] == '2' ? 'selected' : '' ?>>
                                                         Series 02
                                                     </option>
                                                 </select>
@@ -228,6 +228,7 @@ include "include/v2/topnavbar.php";
                                                         <option value="CREDIT_CARD">Credit Card</option>
                                                         <option value="CHEQUE">Cheque</option>
                                                         <option value="FREE">Free</option>
+                                                        <option value="STAMP_DUTY">Stamp Duty</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -238,9 +239,27 @@ include "include/v2/topnavbar.php";
                                                     <i class="fas fa-plus me-1"></i> Add Payment
                                                 </button>
                                             </div>
+
+                                            <div class="col-md-8 d-none" id="company_bank_account_div">
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Company Bank Account</label>
+                                                    <select class="form-select form-select-sm input-highlight"
+                                                        name="company_bank_account" id="company_bank_account">
+                                                        <option value="">Select Account</option>
+                                                        <?php foreach ($company_bank as $account): ?>
+                                                            <option value="<?= $account['id'] ?>"><?= $account['account_name'] ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label small fw-bold text-dark">Remark</label>
+                                                    <textarea class="form-control form-control-sm input-highlight" name="remark" id="remark"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
+                                        
                                         <div id="bankTransferDetails" class="row g-3 mt-2 d-none">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="form-label small fw-bold text-dark">Bank Name</label>
                                                     <input type="text"
@@ -248,7 +267,7 @@ include "include/v2/topnavbar.php";
                                                         name="bank_name">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="form-label small fw-bold text-dark">Transaction
                                                         ID</label>
@@ -561,11 +580,18 @@ $(document).ready(function() {
 $('#paymentMethod').on('change', function() {
     const method = $(this).val();
     $('#bankTransferDetails, #chequeDetails').addClass('d-none');
-
+    $('#company_bank_account_div').addClass('d-none');
+    $('#company_bank_account').val('');
+    $('#remark').val('');
+    
     if (method === 'BANK_TRANSFER') {
         $('#bankTransferDetails').removeClass('d-none');
+        $('#company_bank_account_div').removeClass('d-none');
+        $('#company_bank_account').val('1');
     } else if (method === 'CHEQUE') {
         $('#chequeDetails').removeClass('d-none');
+        $('#company_bank_account_div').removeClass('d-none');
+        $('#company_bank_account').val('1');
     }
 });
 
@@ -620,6 +646,7 @@ $('#confirmAllocateBtn').on('click', function() {
         alert("Please select a payment method.");
         return;
     }
+    
 
     let refBalanceText = selectedTargetRow.find('.ref_balance').text();
     let Balance = parseFloat(refBalanceText.replace(/,/g, "")) || 0;
@@ -715,6 +742,8 @@ function addPayment() {
 
     let method = $('#paymentMethod').val();
     let amount = parseFloat( ($('#paymentAmount').val() || '0').replace(/,/g, '') ) || 0;
+    let company_bank_account = $('#company_bank_account').val() || '';
+    let remark = $('#remark').val() || '';
     let bankName = $('input[name="bank_name"]').val() || '';
     let transactionId = $('input[name="transaction_id"]').val() || '';
     let chequeNumber = $('input[name="cheque_number"]').val() || '';
@@ -740,6 +769,8 @@ function addPayment() {
         method: method,
         pay_amount: parseFloat(amount),
         bank_name: bankName || null,
+        company_bank_account: company_bank_account || null,
+        remark: remark || null,
         transaction_id: transactionId || null,
         cheque_number: chequeNumber || null,
         cheque_date: chequeDate || null,
@@ -868,7 +899,7 @@ function getCustomerJobOrInvoiceDetails() {
                         const isJob = paymentType == 'JobCard';
                         const ref_id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
                         const series_type = isJob ? '' : entry.invoice.series_type;
-                        const ref = isJob ? entry.jobcard.job_card_number : entry.invoice.invoice_number;
+                        const ref = isJob ? entry.jobcard.job_card_number2 : entry.invoice.invoice_number;
                         const date = isJob ? entry.jobcard.jobcard_date : entry.invoice.invoice_date;
                         const id = isJob ? entry.jobcard.idtbl_jobcard : entry.invoice.id;
   						const total_discount = parseFloat(isJob ? 0 : entry.invoice.inv_discount_amount);
@@ -1376,9 +1407,53 @@ function confirmPayment() {
 }
 
 function exportPaymentReceipt(receipt_id) {
-    const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptPDF";
-    const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&series_id=${encodeURIComponent(series_id)}`;
-    window.open(url, '_blank');
+    // Show loading indicator
+    const loadingWindow = window.open('', '_blank');
+    loadingWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Generating PDF...</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding: 50px;
+                    background: #f5f5f5;
+                }
+                .loader {
+                    display: inline-block;
+                    width: 50px;
+                    height: 50px;
+                    border: 5px solid #f3f3f3;
+                    border-top: 5px solid #3498db;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 20px auto;
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                h2 { color: #333; margin-bottom: 20px; }
+                p { color: #666; }
+            </style>
+        </head>
+        <body>
+            <h2>Generating PDF...</h2>
+            <div class="loader"></div>
+            <p>Please wait while we prepare your document.</p>
+        </body>
+        </html>
+    `);
+    
+    // Open PDF after a short delay (to show loading message)
+    setTimeout(function() {
+        const baseUrl = "<?php echo base_url(); ?>Payment/paymentReceiptPDF";
+        const url = `${baseUrl}?receipt_id=${encodeURIComponent(receipt_id)}&series_id=${encodeURIComponent(series_id)}`;
+        loadingWindow.location.href = url;
+    }, 100);
 }
 
 

@@ -322,10 +322,11 @@ $(document).ready(function() {
 $(document).on('click', '.btnCancel', function(e) {
     e.preventDefault();
     const paymentId = $(this).data('id');
+    const series = $(this).data('series');
 
     if (confirm("Are you sure you want to cancel this payment?")) {
         $.ajax({
-            url: '<?php echo base_url() ?>Payment/cancelPayment/' + paymentId,
+            url: '<?php echo base_url() ?>Payment/cancelPayment/' + paymentId + '/' + series,
             method: 'POST',
             dataType: 'json',
             success: function(result) {
@@ -487,7 +488,7 @@ function loadPaymentListTable(){
                     if (cancelcheck == 1 && shift_status === "current_user") {
                         if(full['status'] == 'Approved'){
                         button += '<a href="#" data-id="' + full['id'] + 
-                            '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
+                            '" data-series="1" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
                             '<i class="fas fa-ban"></i></a>';
                         }
                     }
@@ -645,7 +646,7 @@ function loadTempPaymentListTable(){
                     if (cancelcheck == 1 && shift_status === "current_user") {
                         if(full['status'] == 'Approved'){
                         button += '<a href="#" data-id="' + full['id'] + 
-                            '" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
+                            '" data-series="2" title="Cancel" class="btn btn-danger btn-sm btnCancel mr-1">' +
                             '<i class="fas fa-ban"></i></a>';
                         }
                     }

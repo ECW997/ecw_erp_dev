@@ -122,11 +122,38 @@ include "include/v2/topnavbar.php";
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="button"
-                                    class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                    data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
-                                    <i class="fas fa-plus me-1"></i> New Invoice
-                                </button>
+                                <?php 
+                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0;
+                                $payment_type = $invoice_main_data[0]['payment_type'] ?? 0;
+                                $inv_payment_status = $invoice_main_data[0]['inv_payment_status'] ?? 0;
+                                // Show gate pass button when: is_confirmed == 1 AND ((payment_type == 1 && inv_payment_status == 1) OR payment_type == 2)
+                                $show_gate_pass = ($is_confirmed == 1);
+                                ?>
+
+                                <?php if ($shift_status === 'current_user'): ?>
+                                    <button type="button"
+                                        class="btn btn-primary btn-sm rounded-2 action-btn-fixed <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                        data-bs-toggle="modal" data-bs-target="#invoiceTypeModal">
+                                        <i class="fas fa-plus me-1"></i> New Invoice
+                                    </button>
+
+                                    <button type="button"
+                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
+                                        data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
+                                        <i class="fas fa-check me-1"></i> Approve
+                                    </button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                        <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                        onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                        <i class="fas fa-print me-1"></i> Print Invoice
+                                    </button>
+
+                                    <button type="button" class="btn btn-info btn-sm rounded-2 action-btn-fixed <?= $show_gate_pass ? '' : 'd-none' ?>"
+                                        onclick="exportGatePassPDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                        <i class="fas fa-file-export me-1"></i> Print Gate Pass
+                                    </button>
+                                <?php endif; ?>
 
                                 <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
                                 <?php $tax_invoice = $invoice_main_data[0]['inv_tax_type'] ?? 0; ?>
@@ -756,6 +783,12 @@ function exportInvoicePDF(invoice_id) {
     window.open(url, '_blank');
 }
   
+
+function exportGatePassPDF(invoice_id) {
+    const baseUrl = "<?php echo base_url(); ?>Invoice/gatePassPDF";
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
+    window.open(url, '_blank');
+}
 
 function selectInvoiceType(type) {
     const baseUrl = "<?= base_url('Invoice/invoiceDetailIndex/') ?>";

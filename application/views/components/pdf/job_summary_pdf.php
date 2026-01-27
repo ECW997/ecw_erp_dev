@@ -187,7 +187,7 @@ switch ($main_data['company_branch_id']) {
                 <th style="width:10%;" class="header_th">Cus. Code</th>
                 <th style="width:20%;" class="header_th"><span> : </span><?= $main_data['customer_code'] ?></th>
                 <th style="width:10%;" class="header_th">Job No.</th>
-                <th style="width:10%;" class="header_th"><span> : </span><?= $main_data['job_card_number'] ?></th>
+                <th style="width:10%;" class="header_th"><span> : </span><?= $main_data['job_card_number2'] ?? $main_data['job_card_number'] ?? 'N/A' ?></th>
             </tr>
             <tr>
                 <th style="width:10%;" class="header_th">Cus Name</th>
