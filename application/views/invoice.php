@@ -135,7 +135,13 @@ include "include/v2/topnavbar.php";
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="d-flex flex-wrap gap-2">
-                                <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
+                                <?php 
+                                $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0;
+                                $payment_type = $invoice_main_data[0]['payment_type'] ?? 0;
+                                $inv_payment_status = $invoice_main_data[0]['inv_payment_status'] ?? 0;
+                                // Show gate pass button when: is_confirmed == 1 AND ((payment_type == 1 && inv_payment_status == 1) OR payment_type == 2)
+                                $show_gate_pass = ($is_confirmed == 1);
+                                ?>
 
                                 <?php if ($shift_status === 'current_user'): ?>
                                     <button type="button"
@@ -154,6 +160,11 @@ include "include/v2/topnavbar.php";
                                         <?= $is_confirmed == 1 ? '' : 'disabled' ?>
                                         onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
                                         <i class="fas fa-print me-1"></i> Print Invoice
+                                    </button>
+
+                                    <button type="button" class="btn btn-info btn-sm rounded-2 action-btn-fixed <?= $show_gate_pass ? '' : 'd-none' ?>"
+                                        onclick="exportGatePassPDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                        <i class="fas fa-file-export me-1"></i> Print Gate Pass
                                     </button>
                                 <?php endif; ?>
 
@@ -743,6 +754,12 @@ function cancelInvoice() {
 
 function exportInvoicePDF(invoice_id) {
     const baseUrl = "<?php echo base_url(); ?>Invoice/invoicePDF";
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
+    window.open(url, '_blank');
+}
+
+function exportGatePassPDF(invoice_id) {
+    const baseUrl = "<?php echo base_url(); ?>Invoice/gatePassPDF";
     const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }

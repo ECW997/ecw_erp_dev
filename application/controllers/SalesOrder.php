@@ -198,7 +198,7 @@ class SalesOrder extends CI_Controller {
 		$user_agent = $this->input->server('HTTP_USER_AGENT');
 		$is_electron = strpos($user_agent, 'Electron') !== false;
 		
-		$filename = $pdf_data['main_data']['job_card_number'] . '.pdf';
+		$filename = $pdf_data['main_data']['job_card_number2'] . '.pdf';
 		
 		if ($is_electron) {
 			// For Electron: Set proper headers for download

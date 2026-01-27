@@ -143,6 +143,16 @@ include "include/v2/topnavbar.php";
     <?php
     $is_approve = (isset($relationDetails['status']) && $relationDetails['status'] === 'Approved');
     $is_button_hidden = $is_edit ? $editcheck == 0 : $addcheck == 0;
+  
+    $shift_status = 'not_started'; 
+
+    if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+        if ($check_cashier_shift['code'] == 200) {
+            $shift_status = 'current_user';
+        } else {
+            $shift_status = 'other_user';
+        }
+    }
     ?>
     <div id="layoutSidenav_content">
         <main>
@@ -199,11 +209,13 @@ include "include/v2/topnavbar.php";
                                 <?php if ($is_approve): ?>
                                     <span class="badge bg-success">Approved</span>
                                 <?php else: ?>
-                                    <button type="button"
-                                        class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
-                                        onclick="approveConfirm();" id="approve-btn">
-                                        <i class="fas fa-check me-1"></i> Approve
-                                    </button>
+                                    <?php if ($shift_status === 'current_user'): ?>
+                                        <button type="button"
+                                            class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0 || !$is_edit) ? 'd-none' : '' ?>"
+                                            onclick="approveConfirm();" id="approve-btn">
+                                            <i class="fas fa-check me-1"></i> Approve 
+                                        </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -377,11 +389,13 @@ include "include/v2/topnavbar.php";
                                     <span class="badge bg-success">This order has been approved and cannot be modified.</span>
                                 </div>
                             <?php else: ?>
-                        	<div class="col-md-2 d-flex align-items-center justify-content-end">
-                        		<button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
-                        			<i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
-                        		</button>
-                        	</div>
+                                <?php if ($shift_status === 'current_user'): ?>
+                                    <div class="col-md-2 d-flex align-items-center justify-content-end">
+                                        <button class="btn btn-primary btn-sm px-4 <?= $is_button_hidden ? 'd-none' : '' ?>" id="confirmBtn" onclick="confirmOrder();">
+                                            <i class="bi bi-check-circle"></i> <?= $is_edit ? 'Update' : 'Create'; ?> Order
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                         <div class="col-md-2">
@@ -913,7 +927,7 @@ function updatePriceSummary() {
     const $differenceElementText = $('#priceDifferenceText');
 	const $statusElement = $('#priceStatus');
 
-	if (difference == 0 && totalAvailableJobprice > 0 && orderValue > 0) {
+	if (difference == 0 && totalAvailableJobprice > 0 && finalOrderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-success d-none');
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-success');
 		$statusElement.text('Match').removeClass().addClass('badge status-badge bg-success');
@@ -923,7 +937,7 @@ function updatePriceSummary() {
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-warning');
 		$statusElement.text('Over Budget').removeClass().addClass('badge status-badge bg-warning');
 		// $('#confirmBtn').prop('disabled', true);
-	} else if (difference < 0 && orderValue > 0) {
+	} else if (difference < 0 && finalOrderValue > 0) {
 		$differenceElement.text(`${difference.toFixed(2)}`).removeClass().addClass('text-danger d-none');
         $differenceElementText.text(formatCurrency(difference)).removeClass().addClass('text-danger');
 		$statusElement.text('Under Budget').removeClass().addClass('badge status-badge bg-info');

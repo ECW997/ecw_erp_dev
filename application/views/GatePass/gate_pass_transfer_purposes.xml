@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transfer_purposes>
+    <purpose id="1">Repair</purpose>
+    <purpose id="2">Service</purpose>
+    <purpose id="3">Inspection</purpose>
+    <purpose id="4">Maintenance</purpose>
+    <purpose id="5">Testing</purpose>
+    <purpose id="6">Delivery</purpose>
+    <purpose id="7">Pickup</purpose>
+    <purpose id="8">Warranty Work</purpose>
+    <purpose id="9">Customization</purpose>
+    <purpose id="10">Fill Fuel</purpose>
+    <purpose id="11">Change Tyre</purpose>
+    <purpose id="12">Tyre Patch Fix</purpose>
+    <purpose id="13">Tyre Balancing</purpose>
+    <purpose id="14">Tyre Alignment</purpose>
+    <purpose id="15">Battery Replacement</purpose>
+    <purpose id="16">Battery Charging</purpose>
+    <purpose id="17">Oil Change</purpose>
+    <purpose id="18">Filter Replacement</purpose>
+    <purpose id="19">Brake Service</purpose>
+    <purpose id="20">Engine Tune-up</purpose>
+    <purpose id="21">AC Service</purpose>
+    <purpose id="22">Body Work</purpose>
+    <purpose id="23">Paint Work</purpose>
+    <purpose id="24">Dent Removal</purpose>
+    <purpose id="25">Glass Replacement</purpose>
+    <purpose id="26">Electrical Work</purpose>
+    <purpose id="27">Transmission Service</purpose>
+    <purpose id="28">Suspension Work</purpose>
+    <purpose id="29">Exhaust System</purpose>
+    <purpose id="30">Wheel Alignment</purpose>
+    <purpose id="31">Wheel Balancing</purpose>
+    <purpose id="32">Interior Cleaning</purpose>
+    <purpose id="33">Exterior Cleaning</purpose>
+    <purpose id="34">Other</purpose>
+</transfer_purposes>
+

@@ -218,21 +218,36 @@ switch ($main_data['branch_id']) {
 		<tbody>
 			<?php
 			$total_line_discount = 0;
-			foreach ($details_data as $i => $item): ?>
+			// Calculate tax per line item if VAT is added
+			$tax_per_line = 0;
+			$details_count = count($details_data);
+			if (isset($main_data['inv_add_vat']) && $main_data['inv_add_vat'] == 1 && $details_count > 0) {
+				$total_tax = (float)($main_data['inv_total_tax'] ?? 0);
+				$tax_per_line = $total_tax / $details_count;
+			}
+			
+			foreach ($details_data as $i => $item): 
+				$line_net_total = (float)$item['line_total_after_discount'];
+				$unit_price = (float)$item['unit_price'];
+				// Add tax per line to each item's total if VAT is added
+				if ($tax_per_line > 0) {
+					$quantity = (float)$item['quantity'];
+					$tax_per_unit = $quantity > 0 ? $tax_per_line / $quantity : 0;
+					$unit_price += $tax_per_unit;
+					$line_net_total += $tax_per_line;
+				}
+				$is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
+			?>
 			<tr>
 				<td class="datatable_data_td"><?= $i+1 ?></td>
 				<td class="datatable_data_td"><?= $item['description'] ?></td>
 				<td class="datatable_data_td" style="text-align:center"><?= $item['quantity'] ?></td>
 				<td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
 				<td class="datatable_data_td" style="text-align:right">
-					<?= number_format($item['unit_price'],2) ?></td>
+					<?= number_format($unit_price, 2) ?></td>
 				<td class="datatable_data_td" style="text-align:right">
 					<?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'],0). '%' ?>
 				</td>
-				<?php
-					$line_net_total = (float)$item['line_total_after_discount'];
-					$is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
-				?>
 				<td class="datatable_data_td" style="text-align:right">
 					<?= $line_net_total == 0 ? '' : ($is_exchange ? '(' . number_format($line_net_total, 2) . ')' : number_format($line_net_total, 2)) ?>
 				</td>
@@ -267,9 +282,16 @@ switch ($main_data['branch_id']) {
 				$inv_discount_amount = (float)($main_data['inv_discount_amount'] ?? 0);
 				// $total_discount = $main_data['invoice_type'] == 'direct' ? $inv_discount_amount : $inv_discount_amount + $total_line_discount;
 				$total_discount = $inv_discount_amount;
-				$net_total_after_discount = $inv_gross_total - $total_discount;
+				
+				// If VAT is added, it's already distributed to line items, so add to gross total
+				$total_tax_added = 0;
+				if (isset($main_data['inv_add_vat']) && $main_data['inv_add_vat'] == 1) {
+					$total_tax_added = (float)($main_data['inv_total_tax'] ?? 0);
+				}
+				
+				$net_total_after_discount = $inv_gross_total - $total_discount + $total_tax_added;
 				$advance = (float)($main_data['inv_advance_total'] ?? 0);
-				$grand_total = $inv_gross_total - ($total_discount + $advance);
+				$grand_total = $inv_gross_total - ($total_discount + $advance) + $total_tax_added;
 				$total_paid = (float)($total_paid_for_ref ?? 0);
 				$total_net_balance = $grand_total - $total_paid;
 				?>
@@ -279,7 +301,7 @@ switch ($main_data['branch_id']) {
 							<td class="datatable_data_td" style="width:60%;">Grand Total</td>
 							<td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
 							<td class="datatable_data_td" style="width:30%; text-align:right;">
-								<?= number_format($inv_gross_total ?? 0, 2) ?>
+								<?= number_format(($inv_gross_total ?? 0) + $total_tax_added, 2) ?>
 							</td>
 						</tr>
 						<tr>

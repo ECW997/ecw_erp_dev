@@ -292,6 +292,7 @@ class Invoice extends CI_Controller {
     }
 
 	public function invoicePDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('invoice_id');
 		$series_type=$this->input->get('series_id');
         $response=$this->Invoiceinfo->getInvoicePdfDetails($this->api_token,$id,['series_type' => $series_type]);
@@ -327,6 +328,128 @@ class Invoice extends CI_Controller {
 			$pdf_data['main_data']['invoice_number'] . '.pdf', 
 			['Attachment' => 0]  
 		);
+
+		// Log print operation for invoice
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		log_document_print('invoice', $id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => 'Invoice printed (Series: ' . $series_type . ')'
+		]);
+	}
+
+	public function gatePassPDF(){
+		$this->load->helper('doc_access_helper');
+		$id=$this->input->get('invoice_id');
+		$series_type=$this->input->get('series_id');
+		$response=$this->Invoiceinfo->getInvoicePdfDetails($this->api_token,$id,['series_type' => $series_type]);
+		
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch gate pass data');
+		}
+		
+		$pdf_data = [
+			'main_data' => $response['data']['main_data'][0]
+		];
+		
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		$real_jobcard_no = $response['data']['main_data'][0]['real_jobcard_no'];
+		$real_jobcard_id = $response['data']['main_data'][0]['real_jobcard_id'];
+		$payment_type = $response['data']['main_data'][0]['payment_type'] ?? 1;
+		$invoice_number = $response['data']['main_data'][0]['invoice_number'] ?? '';
+		$credit_type = ($payment_type == 1) ? 'Non-Credit' : 'Credit';
+		
+		// Flag to indicate whether this print should be marked as DUPLICATE on the PDF
+		$is_duplicate = false;
+		
+		// Check if gate pass already exists for this job card
+		$existing_logs = get_document_access_logs('gatepass_out', $real_jobcard_id, [
+			'status' => 'active'
+		]);
+		
+		// if ($existing_logs['status'] && $existing_logs['code'] == 200) {
+		// 	// API is paginated: actual rows are in ['data']['data']
+		// 	$logs_payload = $existing_logs['data'] ?? [];
+		// 	$logs_data = isset($logs_payload['data']) ? $logs_payload['data'] : $logs_payload;
+
+		// 	// Check if there are any active records
+		// 	if (is_array($logs_data) && count($logs_data) > 0) {
+		// 		$active_logs = array_filter($logs_data, function($log) {
+		// 			return isset($log['status']) && $log['status'] === 'active';
+		// 		});
+				
+		// 		if (count($active_logs) > 0) {
+		// 			// Gate pass already issued - show error message
+		// 			$error_message = 'Gate pass has already been issued for Job Card: ' . $real_jobcard_no;
+		// 			if (!empty($invoice_number)) {
+		// 				$error_message .= ' (Invoice No: ' . $invoice_number . ')';
+		// 			}
+		// 			$error_message .= '. Please check the existing gate pass record.';
+		// 			show_error($error_message, 400, 'Duplicate Gate Pass');
+		// 			return;
+		// 		}
+		// 	}
+		// }
+
+		// If there are NO active records, but there IS some history (non-active),
+		// we will allow printing but mark the PDF as DUPLICATE.
+		$all_logs = get_document_access_logs('gatepass_out', $real_jobcard_id, []);
+		if ($all_logs['status'] && $all_logs['code'] == 200) {
+			$all_payload = $all_logs['data'] ?? [];
+			$all_data = isset($all_payload['data']) ? $all_payload['data'] : $all_payload;
+
+			if (is_array($all_data) && count($all_data) > 0) {
+				// At least one historical record exists (could be inactive/deleted)
+				$is_duplicate = true;
+			}
+		}
+
+		// Pass duplicate flag to PDF
+		$pdf_data['is_duplicate'] = $is_duplicate;
+		
+		// Log print operation for gate pass (before PDF generation to ensure it executes)
+		$remarks = 'Gate pass out printed (Series: ' . $series_type . ', Type: ' . $credit_type . ', Job Card: ' . $real_jobcard_no;
+		if (!empty($invoice_number)) {
+			$remarks .= ', Invoice No: ' . $invoice_number;
+		}
+		$remarks .= ')';
+		
+		log_document_print('gatepass_out', $real_jobcard_id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => $remarks
+		]);
+		
+		$this->load->library('Pdf');
+		// Receipt printer dimensions (80mm width, variable height)
+		$customPaper = array(0, 0, 382.84, 380.84);
+		$this->pdf->setPaper($customPaper);
+		$this->pdf->set_option('defaultFont', 'Helvetica');
+		$this->pdf->set_option('isRemoteEnabled', true);
+		
+		if($pdf_data['main_data']['payment_type'] == 1){
+			$html = $this->load->view('components/pdf/gate_pass_out_noncredit_pdf', $pdf_data, TRUE);
+		}else{
+			$html = $this->load->view('components/pdf/gate_pass_out_credit_pdf', $pdf_data, TRUE);
+		}
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+		$this->pdf->stream('gate_pass.pdf', ['Attachment' => 0]);
+	}
+
+	public function invoiceExcelData(){
+		$id = $this->input->get('invoice_id');
+		$series_type = $this->input->get('series_id');
+
+		if (!$id || !$series_type) {
+			echo json_encode(['status' => false, 'code' => 400, 'message' => 'Missing invoice id or series id']);
+			return;
+		}
+
+		$response = $this->Invoiceinfo->getInvoicePdfDetails($this->api_token, $id, ['series_type' => $series_type]);
+		echo json_encode($response);
 	}
 
 	public function insertNewItem(){

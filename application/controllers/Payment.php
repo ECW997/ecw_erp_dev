@@ -12,6 +12,7 @@ class Payment extends CI_Controller {
 		$this->load->helper('api_helper');
         $this->load->model('Paymentinfo');
 		$this->load->model('CashierShiftinfo');
+		$this->load->model('Companyinfo');
 
 		$auth_info = auth_check();
 		$this->api_token = $auth_info['api_token'];
@@ -51,6 +52,8 @@ class Payment extends CI_Controller {
 
 		$result['menuaccess'] = json_decode(json_encode($this->Commeninfo->getMenuPrivilege($this->api_token,'')['data'] ?? []));
  		$result['check_cashier_shift'] = $check_cashier_shift_response;
+		$result['company_bank'] = $this->Companyinfo->getCompanyBank($this->api_token)['data'];
+		
 		// $status = isset($check_cashier_shift_response['status']) ? $check_cashier_shift_response['status'] : false;
 		// $code   = isset($check_cashier_shift_response['code']) ? $check_cashier_shift_response['code'] : 0;
 		// $is_opening_approved = $check_cashier_shift_response['shift']['opening_approved_at'] == null ? false : true;
@@ -92,6 +95,7 @@ class Payment extends CI_Controller {
 		// 	$this->load->view('components/modal/cashier/background_layout', $result);
 		// }
 
+		
 		$this->load->view('payment', $result);
 	}
 
@@ -219,12 +223,20 @@ class Payment extends CI_Controller {
     }
 
 	public function paymentReceiptPDF(){
+		// Start output buffering and clear any previous output
+		if (ob_get_level()) {
+			ob_end_clean();
+		}
+		ob_start();
+		
 		$this->load->model('Invoiceinfo');
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('receipt_id');
 		$series_type=$this->input->get('series_id');
         $response=$this->Paymentinfo->getReceiptPdfDetails($this->api_token,$id,['series_type' => $series_type]);
 
 		if (!$response['status'] || $response['code'] != 200) {
+			ob_end_clean();
 			show_error('Failed to fetch Payment data');
 		}
 
@@ -247,7 +259,7 @@ class Payment extends CI_Controller {
 
 		$receiptView = ($payment_type == 'JobCard')
 			? ($series_type == 1 ? 'components/pdf/advance_receipt_pdf' : 'components/pdf/advance_receipt_v2_pdf')
-			: ($series_type == 1 ? 'components/pdf/payment_receipt_pdf' : 'components/pdf/payment_receipt_new_v2_1_pdf');
+			: ($series_type == 1 ? 'components/pdf/payment_receipt_pdf' : 'components/pdf/payment_receipt_v2_1_pdf');
 
 		$receipt_html = $this->load->view($receiptView, $pdf_data, TRUE);
 
@@ -288,22 +300,183 @@ class Payment extends CI_Controller {
 			$invoice_path = $upload_dir . 'temp_invoice.pdf';
 			file_put_contents($invoice_path, $invoice_pdf->output());
 
-			// Merge PDFs using FPDI
-			$this->load->library('Fpdf_fpdi');
-			$merged_filename = $pdf_data['header']['receipt_number'] . '_with_invoice.pdf';
-			$this->fpdf_fpdi->merge([$receipt_path, $invoice_path], $merged_filename, 'I');
+			// Get job card information for logging
+			$real_jobcard_id = $invoice_data['main_data']['real_jobcard_id'] ?? null;
+			$real_jobcard_no = $invoice_data['main_data']['real_jobcard_no'] ?? '';
 
-			// Remove temporary files
-			if (file_exists($receipt_path)) unlink($receipt_path);
-			if (file_exists($invoice_path)) unlink($invoice_path);
+			// Log print operation for receipt
+			$branch_id = $this->session->userdata('branch_id');
+			$company_id = $this->session->userdata('company_id');
+			$receipt_remarks = 'Receipt printed with invoice (Series: ' . $series_type;
+			if (!empty($real_jobcard_no)) {
+				$receipt_remarks .= ', Job Card: ' . $real_jobcard_no;
+			}
+			$receipt_remarks .= ')';
+			
+			log_document_print('payment', $id, [
+				'branch_id' => $branch_id,
+				'company_id' => $company_id,
+				'remarks' => $receipt_remarks
+			]);
+
+			// Log print operation for invoice
+			$invoice_remarks = 'Invoice printed with receipt (Series: ' . $series_type;
+			if (!empty($real_jobcard_no)) {
+				$invoice_remarks .= ', Job Card: ' . $real_jobcard_no;
+			}
+			$invoice_remarks .= ')';
+			
+			log_document_print('invoice', $invoice_id, [
+				'branch_id' => $branch_id,
+				'company_id' => $company_id,
+				'remarks' => $invoice_remarks
+			]);
+
+			// Generate gate pass PDF
+			$gate_pass_payment_type = $invoice_data['main_data']['payment_type'] ?? 1;
+			$invoice_number = $invoice_data['main_data']['invoice_number'] ?? '';
+			$credit_type = ($gate_pass_payment_type == 1) ? 'Non-Credit' : 'Credit';
+
+			if ($real_jobcard_id) {
+				// Check if gate pass already exists for this job card (active records)
+				$existing_logs = get_document_access_logs('gatepass_out', $real_jobcard_id, [
+					'status' => 'active'
+				]);
+				
+				$has_active_gate_pass = false;
+				if ($existing_logs['status'] && $existing_logs['code'] == 200) {
+					// API is paginated: actual rows are in ['data']['data']
+					$logs_payload = $existing_logs['data'] ?? [];
+					$logs_data = isset($logs_payload['data']) ? $logs_payload['data'] : $logs_payload;
+
+					// Check if there are any active records
+					if (is_array($logs_data) && count($logs_data) > 0) {
+						$active_logs = array_filter($logs_data, function($log) {
+							return isset($log['status']) && $log['status'] === 'active';
+						});
+						
+						if (count($active_logs) > 0) {
+							// Active gate pass exists - skip gate pass generation
+							$has_active_gate_pass = true;
+						}
+					}
+				}
+
+				if (!$has_active_gate_pass) {
+					// No active gate pass - proceed with generation
+					// Flag to indicate whether this print should be marked as DUPLICATE on the PDF
+					$is_duplicate = false;
+					
+					// Check for duplicate gate passes (non-active records)
+					$all_logs = get_document_access_logs('gatepass_out', $real_jobcard_id, []);
+					if ($all_logs['status'] && $all_logs['code'] == 200) {
+						$all_payload = $all_logs['data'] ?? [];
+						$all_data = isset($all_payload['data']) ? $all_payload['data'] : $all_payload;
+
+						if (is_array($all_data) && count($all_data) > 0) {
+							// At least one historical record exists (could be inactive/deleted)
+							$is_duplicate = true;
+						}
+					}
+
+					$gate_pass_data = [
+						'main_data' => $invoice_data['main_data'],
+						'is_duplicate' => $is_duplicate
+					];
+
+					$gate_pass_pdf = new Pdf();
+					$gate_pass_pdf->setPaper($customPaper);
+					$gate_pass_pdf->set_option('defaultFont', 'Helvetica');
+					$gate_pass_pdf->set_option('isRemoteEnabled', true);
+
+					if ($gate_pass_payment_type == 1) {
+						$gate_pass_html = $this->load->view('components/pdf/gate_pass_out_noncredit_pdf', $gate_pass_data, TRUE);
+					} else {
+						$gate_pass_html = $this->load->view('components/pdf/gate_pass_out_credit_pdf', $gate_pass_data, TRUE);
+					}
+
+					$gate_pass_pdf->loadHtml($gate_pass_html);
+					$gate_pass_pdf->render();
+
+					$gate_pass_path = $upload_dir . 'temp_gate_pass.pdf';
+					file_put_contents($gate_pass_path, $gate_pass_pdf->output());
+
+					// Merge all PDFs: receipt + invoice + gate pass
+					ob_end_clean(); // Clear output buffer before PDF merge
+					$this->load->library('Fpdf_fpdi');
+					$merged_filename = $pdf_data['header']['receipt_number'] . '_with_invoice_gatepass.pdf';
+					$this->fpdf_fpdi->merge([$receipt_path, $invoice_path, $gate_pass_path], $merged_filename, 'I');
+
+					// Log print operation for gate pass
+					$gate_pass_remarks = 'Gate pass out printed (Series: ' . $series_type . ', Type: ' . $credit_type . ', Job Card: ' . $real_jobcard_no;
+					if (!empty($invoice_number)) {
+						$gate_pass_remarks .= ', Invoice No: ' . $invoice_number;
+					}
+					$gate_pass_remarks .= ')';
+					
+					log_document_print('gatepass_out', $real_jobcard_id, [
+						'branch_id' => $branch_id,
+						'company_id' => $company_id,
+						'remarks' => $gate_pass_remarks
+					]);
+
+					// Remove temporary files
+					if (file_exists($receipt_path)) unlink($receipt_path);
+					if (file_exists($invoice_path)) unlink($invoice_path);
+					if (file_exists($gate_pass_path)) unlink($gate_pass_path);
+				} else {
+					// Active gate pass exists - merge receipt + invoice without gate pass
+					ob_end_clean(); // Clear output buffer before PDF merge
+					$this->load->library('Fpdf_fpdi');
+					$merged_filename = $pdf_data['header']['receipt_number'] . '_with_invoice.pdf';
+					$this->fpdf_fpdi->merge([$receipt_path, $invoice_path], $merged_filename, 'I');
+
+					// Remove temporary files
+					if (file_exists($receipt_path)) unlink($receipt_path);
+					if (file_exists($invoice_path)) unlink($invoice_path);
+				}
+			} else {
+				// No job card ID, just merge receipt + invoice without gate pass
+				ob_end_clean(); // Clear output buffer before PDF merge
+				$this->load->library('Fpdf_fpdi');
+				$merged_filename = $pdf_data['header']['receipt_number'] . '_with_invoice.pdf';
+				$this->fpdf_fpdi->merge([$receipt_path, $invoice_path], $merged_filename, 'I');
+
+				// Remove temporary files
+				if (file_exists($receipt_path)) unlink($receipt_path);
+				if (file_exists($invoice_path)) unlink($invoice_path);
+			}
 
 		} else {
+			ob_end_clean(); // Clear output buffer before PDF stream
 			$receipt_pdf->stream($pdf_data['header']['receipt_number'] . '.pdf', ['Attachment' => 0]);
 			if (file_exists($receipt_path)) unlink($receipt_path);
+			
+			// Get job card information for logging (from invoices/details if available)
+			$real_jobcard_no = '';
+			if (!empty($pdf_data['header'])) {
+				$real_jobcard_no = $pdf_data['header']['jobcard_no'];
+			}
+			
+			// Log print operation for receipt
+			$branch_id = $this->session->userdata('branch_id');
+			$company_id = $this->session->userdata('company_id');
+			$receipt_remarks = 'Receipt printed (Series: ' . $series_type . ', Type: ' . $payment_type;
+			if (!empty($real_jobcard_no)) {
+				$receipt_remarks .= ', Job Card: ' . $real_jobcard_no;
+			}
+			$receipt_remarks .= ')';
+			
+			log_document_print('payment', $id, [
+				'branch_id' => $branch_id,
+				'company_id' => $company_id,
+				'remarks' => $receipt_remarks
+			]);
 		}
 	}
 
 	public function paymentReceiptV2PDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('receipt_id');
 		$type=$this->input->get('type');
 
@@ -324,22 +497,31 @@ class Payment extends CI_Controller {
 
 		$this->load->library('Pdf');
 
-		// $customPaper = array(0, 0, 382.84, 380.84); 
-		$customPaper = array(0, 0, 227, 1000);
-		// $this->pdf->setPaper($customPaper);    
+		$customPaper = array(0, 0, 382.84, 380.84); 
+		// $customPaper = array(0, 0, 227, 1000);
+		$this->pdf->setPaper($customPaper);    
 		$this->pdf->set_option('defaultFont', 'Helvetica');           
 		$this->pdf->set_option('isRemoteEnabled', true); 
 
-		$html = $this->load->view('components/pdf/payment_receipt_new_v2_pdf', $pdf_data, TRUE);
+		$html = $this->load->view('components/pdf/payment_receipt_v2_pdf', $pdf_data, TRUE);
 
 		$this->pdf->loadHtml($html);
 		$this->pdf->render();
 		$this->pdf->stream('receipt.pdf', ['Attachment' => 0]);
 		
+		// Log print operation for receipt
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		log_document_print('payment', $id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => 'Receipt V2 printed (Type: ' . $type . ')'
+		]);
 	}
 
 
 	public function paymentReceiptV3PDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('receipt_id');
 		$type=$this->input->get('type');
 
@@ -372,7 +554,14 @@ class Payment extends CI_Controller {
 			$this->pdf->render();
 			$this->pdf->stream('receipt.pdf', ['Attachment' => 0]  
 			);
-		
+			// Log print operation for receipt
+			$branch_id = $this->session->userdata('branch_id');
+			$company_id = $this->session->userdata('company_id');
+			log_document_print('payment', $id, [
+				'branch_id' => $branch_id,
+				'company_id' => $company_id,
+				'remarks' => 'Receipt V3 printed (Type: ' . $type . ')'
+			]);
 	}
 
 	public function cancelPayment($id, $series) {

@@ -61,6 +61,17 @@ include "include/topnavbar.php";
       }
     } 
     </style>
+        <?php
+            $shift_status = 'not_started'; 
+
+            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
+                if ($check_cashier_shift['code'] == 200) {
+                    $shift_status = 'current_user';
+                } else {
+                    $shift_status = 'other_user';
+                }
+            }
+        ?>
         <main>
             <div class="page-header page-header-light bg-white shadow">
         	    <div class="container-fluid">
@@ -69,9 +80,11 @@ include "include/topnavbar.php";
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Sales Order List</span>
         				</h1>
-                        <a href="<?= base_url('SalesOrder/salesOrderDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
-                            <i class="fas fa-plus mr-2"></i>Create New Sales Order
-                        </a>
+                        <?php if ($shift_status === 'current_user'): ?>
+                            <a href="<?= base_url('SalesOrder/salesOrderDetailIndex') ?>" class="btn btn-primary btn-sm px-4 p-2 <?php if($addcheck==0){echo 'd-none';} ?>">
+                                <i class="fas fa-plus mr-2"></i>Create New Sales Order
+                            </a>
+                        <?php endif; ?>
         			</div>
         		</div>
         	</div>
@@ -366,7 +379,7 @@ function loadPaymentListTable(){
         		"data": "jobcard_date"
         	},
         	{
-        		"data": "job_card_number"
+        		"data": "job_card_number2"
         	},
         	{
         		"data": "customer_name"
@@ -464,6 +477,13 @@ function loadPaymentListTable(){
         		"className": 'text-right',
         		"data": null,
         		"render": function (data, type, full) {
+        			var status = full['relation_status'];
+        			var allowedStatuses = ['Draft', 'Pending', 'Re-Approve Pending'];
+        			
+        			if (!allowedStatuses.includes(status)) {
+        				return '';
+        			}
+        			
         			var button = '';
         			button += '<a href="' + base_url + 'SalesOrder/salesOrderDetailIndex/' + full['relation_id'] + '" title="View" class="btn btn-secondary btn-sm btnView mr-1">' +
         				'<i class="fas fa-external-link-alt"></i></a>';
@@ -559,7 +579,7 @@ function loadSalesOrderListTable(){
                 "data": "salesorder_no"
             },
             {
-                "data": "job_card_number"
+                "data": "job_card_number2"
             },
             {
                 "data": "customer_name"

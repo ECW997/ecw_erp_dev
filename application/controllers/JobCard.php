@@ -63,6 +63,7 @@ class JobCard extends CI_Controller {
 	}
  
     public function jobCardPDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('jobcard_id');
         $response=$this->JobCardinfo->getJobById($this->api_token,$id);
 
@@ -96,7 +97,7 @@ class JobCard extends CI_Controller {
 		$user_agent = $this->input->server('HTTP_USER_AGENT');
 		$is_electron = strpos($user_agent, 'Electron') !== false;
 		
-		$filename = $pdf_data['main_data']['job_card_number'] . '.pdf';
+		$filename = $pdf_data['main_data']['job_card_number2'] . '.pdf';
 		
 		if ($is_electron) {
 			// For Electron: Set proper headers for download
@@ -111,9 +112,19 @@ class JobCard extends CI_Controller {
 			// For regular browsers: Use stream method
 			$this->pdf->stream($filename, ['Attachment' => 0]);
 		}
+
+		// Log print operation for job card
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		log_document_print('jobcard', $id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => 'Job card printed'
+		]);
 	}
 
 	public function jobCardQuotationPDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('jobcard_id');
         $response=$this->JobCardinfo->getJobById($this->api_token,$id);
 
@@ -141,9 +152,18 @@ class JobCard extends CI_Controller {
 			$pdf_data['main_data']['job_card_number'] . '.pdf', 
 			['Attachment' => 0]  
 		);
+		 // Log print operation for job card
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		log_document_print('jobcard_quotation', $id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => 'Job card quotation printed'
+		]);
 	}
 
 	public function jobSummaryPDF(){
+		$this->load->helper('doc_access_helper');
 		$id=$this->input->get('jobcard_id');
         $response=$this->JobCardinfo->getJobById($this->api_token,$id);
 
@@ -158,7 +178,6 @@ class JobCard extends CI_Controller {
 			'is_header_discount_approved' => $response['data']['is_header_discount_approved'],
 			'is_line_discount_approved' => $response['data']['is_line_discount_approved']    
 		];
-
 		$this->load->library('Pdf');
 
 	   	// $customPaper = array(0, 0, 382.84, 380.84); 
@@ -175,6 +194,101 @@ class JobCard extends CI_Controller {
 			$pdf_data['main_data']['job_card_number'] . '.pdf', 
 			['Attachment' => 0]  
 		);
+		 // Log print operation for job card
+		 $branch_id = $this->session->userdata('branch_id');
+		 $company_id = $this->session->userdata('company_id');
+		 log_document_print('jobcard_summary', $id, [
+			 'branch_id' => $branch_id,
+			 'company_id' => $company_id,
+			 'remarks' => 'Job card summary printed'
+		 ]);
+	}
+
+	public function gatePassPDF(){
+		$this->load->helper('doc_access_helper');
+		$id=$this->input->get('jobcard_id');
+
+		$response=$this->JobCardinfo->getJobById($this->api_token,$id);
+		
+		if (!$response['status'] || $response['code'] != 200) {
+			show_error('Failed to fetch gate pass data');
+		}
+		
+		$pdf_data = [
+			'main_data' => $response['data']['main_data'][0]
+		];
+		
+		$branch_id = $this->session->userdata('branch_id');
+		$company_id = $this->session->userdata('company_id');
+		$real_jobcard_no = $response['data']['main_data'][0]['job_card_number2'];
+		$real_jobcard_id = $response['data']['main_data'][0]['idtbl_jobcard'];
+		
+		// Flag to indicate whether this print should be marked as DUPLICATE on the PDF
+		$is_duplicate = false;
+		
+		// Check if gate pass already exists for this job card
+		$existing_logs = get_document_access_logs('gatepass_in', $real_jobcard_id, [
+			'status' => 'active'
+		]);
+		
+		if ($existing_logs['status'] && $existing_logs['code'] == 200) {
+			// API is paginated: actual rows are in ['data']['data']
+			$logs_payload = $existing_logs['data'] ?? [];
+			$logs_data = isset($logs_payload['data']) ? $logs_payload['data'] : $logs_payload;
+
+			// Check if there are any active records
+			if (is_array($logs_data) && count($logs_data) > 0) {
+				$active_logs = array_filter($logs_data, function($log) {
+					return isset($log['status']) && $log['status'] === 'active';
+				});
+				
+				if (count($active_logs) > 0) {
+					// Gate pass already issued - show error message
+					$error_message = 'Gate pass has already been issued for Job Card: ' . $real_jobcard_no;
+					$error_message .= '. Please check the existing gate pass record.';
+					show_error($error_message, 400, 'Duplicate Gate Pass');
+					return;
+				}
+			}
+		}
+
+		// If there are NO active records, but there IS some history (non-active),
+		// we will allow printing but mark the PDF as DUPLICATE.
+		$all_logs = get_document_access_logs('gatepass_in', $real_jobcard_id, []);
+		if ($all_logs['status'] && $all_logs['code'] == 200) {
+			$all_payload = $all_logs['data'] ?? [];
+			$all_data = isset($all_payload['data']) ? $all_payload['data'] : $all_payload;
+
+			if (is_array($all_data) && count($all_data) > 0) {
+				// At least one historical record exists (could be inactive/deleted)
+				$is_duplicate = true;
+			}
+		}
+
+		// Pass duplicate flag to PDF
+		$pdf_data['is_duplicate'] = $is_duplicate;
+		
+		// Log print operation for gate pass (before PDF generation to ensure it executes)
+		$remarks = 'Gate pass in printed (Job Card: ' . $real_jobcard_no;
+		$remarks .= ')';
+		
+		log_document_print('gatepass_in', $real_jobcard_id, [
+			'branch_id' => $branch_id,
+			'company_id' => $company_id,
+			'remarks' => $remarks
+		]);
+		
+		$this->load->library('Pdf');
+		// Receipt printer dimensions (80mm width, variable height)
+		$customPaper = array(0, 0, 382.84, 380.84);
+		$this->pdf->setPaper($customPaper);
+		$this->pdf->set_option('defaultFont', 'Helvetica');
+		$this->pdf->set_option('isRemoteEnabled', true);
+		$html = $this->load->view('components/pdf/gate_pass_in_pdf', $pdf_data, TRUE);
+
+		$this->pdf->loadHtml($html);
+		$this->pdf->render();
+		$this->pdf->stream('gate_pass_in.pdf', ['Attachment' => 0]);
 	}
 
     public function getCustomerDetails($id) {
@@ -458,5 +572,34 @@ class JobCard extends CI_Controller {
 		$data['data'] = $response;
 		$html = $this->load->view('components/modal/job_card/edit_job_item', $data, true);
         echo ($html);
+    }
+
+    public function confirmJobCard() {
+        $jobcard_id = $this->input->post('jobcard_id');
+
+        if (!$jobcard_id) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Job Card ID is required'
+            ]);
+            return;
+        }
+
+        $form_data = [
+            'jobcard_id' => $jobcard_id,
+            'confirmation_status' => 'Confirmed'
+        ];
+
+        $response = $this->JobCardinfo->updateJobCardConfirmation($this->api_token, $form_data);
+
+        if ($response) {
+            echo json_encode($response);
+        } else {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Failed to update job card confirmation status',
+                'code' => 500
+            ]);
+        }
     }
 }

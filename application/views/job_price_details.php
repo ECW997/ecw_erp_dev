@@ -56,6 +56,11 @@ include "include/topnavbar.php";
                     <div class="card">
                         <div class="card-body p-0 p-2">
                             <div class="col-12">
+                                <div class="d-flex justify-content-end mb-2" id="exportButtonContainer" style="display: none !important;">
+                                    <button type="button" class="btn btn-success btn-sm" id="exportToExcelBtn" onclick="exportToExcel()">
+                                        <i class="fas fa-file-excel mr-2"></i>Export to Excel
+                                    </button>
+                                </div>
                                 <div class="scrollbar pb-3" id="style-2">
                                     <div id="dataTable"></div>
                                 </div>
@@ -165,6 +170,7 @@ include "include/topnavbar.php";
         }
 
         $("#dataTable").html('');
+        $("#exportButtonContainer").hide();
         $.ajax({
             type: "GET",
             url: '<?php echo base_url() ?>Job_price_details/jobOptionPricingDetailsList',
@@ -175,6 +181,12 @@ include "include/topnavbar.php";
             success: function (result) {
                 if(result){
                     $("#dataTable").html(result);
+                    // Show export button when data is loaded
+                    if($("#dataTable table").length > 0) {
+                        $("#exportButtonContainer").show();
+                    } else {
+                        $("#exportButtonContainer").hide();
+                    }
                 }  
             },
             error: function () {
@@ -318,9 +330,40 @@ include "include/topnavbar.php";
     function delete_confirm() {
         return confirm("Are you sure you want to remove this?");
     }
+
+    function exportToExcel() {
+        var table = $("#dataTable table");
+        
+        if (table.length === 0) {
+            error_toastify('No data available to export!');
+            return;
+        }
+
+        // Get sub category name for filename
+        var subCategoryText = $('#sub_job_category option:selected').text() || 'Job_Pricing';
+        var fileName = subCategoryText.replace(/[^a-z0-9]/gi, '_') + '_' + new Date().toISOString().split('T')[0] + '.xlsx';
+
+        // Create workbook
+        var wb = XLSX.utils.book_new();
+        
+        // Get the table element
+        var tableElement = table[0];
+        
+        // Convert table to worksheet
+        var ws = XLSX.utils.table_to_sheet(tableElement);
+        
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, "Pricing Details");
+        
+        // Write file
+        XLSX.writeFile(wb, fileName);
+        
+        success_toastify('Excel file exported successfully!');
+    }
 </script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <?php include "include/footer.php"; ?>

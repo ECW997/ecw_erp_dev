@@ -26,6 +26,8 @@ $config['api_endpoints'] = [
 
     'menu_privilege_v1' => '/v1/menu_privilege',
 
+    'get_company_bank_v1' => '/v1/get_company_bank',
+
     'check_dublicate_entry_v1' => '/v1/check_dublicate_entry',
     'main_job_category_v1' => '/v1/main_job_category',
     'main_job_category_status_v1' => '/v1/main_job_category_status',
@@ -69,6 +71,7 @@ $config['api_endpoints'] = [
     'get_sales_agents_v1' => '/v1/get_sales_agents',
     'jobcard_item_delete_v1' => '/v1/jobcard_item_delete',
     'jobcard_header_update_v1' => '/v1/jobcard_header_update',
+    'jobcard_confirmation_update_v1' => '/v1/jobcard_confirmation_update',
     'get_jobcard_edit_details_v1' => '/v1/get_jobcard_edit_details',
     'exportJobCardExcelData_v1' => '/v1/exportJobCardExcelData',
 
@@ -124,22 +127,149 @@ $config['api_endpoints'] = [
 
     'item_v1' => '/v1/item',
 
-    'cashier_shift_v1' => '/v1/cashier_shift',
-    'update_shift_opening_balance_v1' => '/v1/update_shift_opening_balance',
-    'approve_shift_opening_balance_v1' => '/v1/approve_shift_opening_balance',
+    // ============================================================
+    // OLD CASHIER ENDPOINTS - COMMENTED OUT (Using new organized structure)
+    // ============================================================
+    // 'cashier_shift_v1' => '/v1/cashier_shift',
+    // 'update_shift_opening_balance_v1' => '/v1/update_shift_opening_balance',
+    // 'approve_shift_opening_balance_v1' => '/v1/approve_shift_opening_balance',
+    // 'verify_shift_closing_balance_v1' => '/v1/verify_shift_closing_balance',
+    // 'update_shift_closing_balance_v1' => '/v1/update_shift_closing_balance',
+    // 'get_all_cashier_log_v1' => '/v1/get_all_cashier_log',
+    // 'cashier_handover_v1' => '/v1/cashier_handover',
+    // 'verify_cash_handover_v1' => '/v1/verify_cash_handover',
+    // 'cashier_handover_voucher_v1' => '/v1/cashier_handover_voucher',
+    // 'cashier_shift_summary_v1' => '/v1/cashier_shift_summary',
+    // 'cashier_shift_transaction_ledger_v1' => '/v1/cashier_shift_transaction_ledger',
+    // 'transaction_ledger_by_shift_v1' => '/v1/transaction_ledger_by_shift',
+    // 'transaction_ledger_reversals_v1' => '/v1/transaction_ledger_reversals',
+    // 'cashier_cash_movement_v1' => '/v1/cashier_cash_movement',
+    // 'cashier_shift_adjustment_v1' => '/v1/cashier_shift_adjustment',
+    // 'iou_settlement_v1' => '/v1/iou_settlement',
+    // 'outstanding_ious_v1' => '/v1/outstanding_ious',
+    // 'cashier_auth_authorize_v1' => '/v1/cashier_auth_authorize',
+    // 'cashier_auth_session_v1' => '/v1/cashier_auth_session',
+    // 'cashier_auth_logout_v1' => '/v1/cashier_auth_logout',
+    // 'cashier_report_daily_summary_v1' => '/v1/cashier_report_daily_summary',
+    // 'cashier_report_payment_summary_v1' => '/v1/cashier_report_payment_summary',
+    // 'cashier_report_discrepancy_v1' => '/v1/cashier_report_discrepancy',
+    // 'cashier_report_cash_out_summary_v1' => '/v1/cashier_report_cash_out_summary',
+    // 'cashier_report_outstanding_ious_v1' => '/v1/cashier_report_outstanding_ious',
 
-    'cashier_handover_v1' => '/v1/cashier_handover',
-
-    'cashier_shift_summary_v1' => '/v1/cashier_shift_summary',
-
-    'cashier_shift_transaction_ledger_v1' => '/v1/cashier_shift_transaction_ledger',
+    'credit_settlement_list_v1' => '/v1/credit_settlement_list',
 
     'cashier_debitor_v1' => '/v1/cashier_debitor',
     'cashier_debitor_transfer_v1' => '/v1/cashier_debitor_transfer',
     'cashier_debitor_pdf_v1' => '/v1/cashier_debitor_pdf',
 
+    // ============================================================
+    // NEW CASHIER ENDPOINTS v1 (Organized Structure - /cashier/*)
+    // ============================================================
+    // Shift Management (Base paths - IDs are appended by call_api helper)
+    'cashier_shift_v1' => '/v1/cashier/shift',
+    'get_all_cashier_log_v1' => '/v1/cashier/shift/get_all_cashier_log',
+    'update_shift_opening_balance_v1' => '/v1/cashier/shift',  // PUT: /v1/cashier/shift/{id}/update_opening_balance (handled in model)
+    'approve_shift_opening_balance_v1' => '/v1/cashier/shift', // PUT: /v1/cashier/shift/{id}/approve_opening_balance (handled in model)
+    'verify_shift_closing_balance_v1' => '/v1/cashier/shift',  // PUT: /v1/cashier/shift/{id}/verify_closing_balance (handled in model)
+    'update_shift_closing_balance_v1' => '/v1/cashier/shift',  // PUT: /v1/cashier/shift/{id}/update_closing_balance (handled in model)
+    'cashier_shift_current_balance_v1' => '/v1/cashier/shift/current_balance',
+    'cashier_shift_closing_validation_v1' => '/v1/cashier/shift', // GET: /v1/cashier/shift/{id}/closing_validation (handled in model)
+    'cashier_shift_discrepancy_analysis_v1' => '/v1/cashier/shift', // GET: /v1/cashier/shift/{id}/discrepancy_analysis (handled in model)
+    'cashier_shift_generate_summary_v1' => '/v1/cashier/shift', // GET: /v1/cashier/shift/{id}/summary (handled in model)
+    'cashier_shift_get_cash_book_summary_v1' => '/v1/cashier/shift', // GET: /v1/cashier/shift/{id}/cash_book_summary (handled in model)
+    'cashier_shift_save_cash_book_summary_v1' => '/v1/cashier/shift', // POST: /v1/cashier/shift/{id}/cash_book_summary (handled in model)
 
+    // Handover (Base paths - IDs are appended by call_api helper)
+    'cashier_handover_v1' => '/v1/cashier/handover',
+    'cashier_handover_datatable_v1' => '/v1/cashier/handover/datatable',
+    'verify_cash_handover_v1' => '/v1/cashier/handover', // PUT: /v1/cashier/handover/{id}/verify (handled in model)
+    'cashier_handover_voucher_v1' => '/v1/cashier/handover', // GET: /v1/cashier/handover/{id}/voucher (handled in model)
 
+    // Shift Summary
+    'cashier_shift_summary_v1' => '/v1/cashier/shift_summary',
+    'cashier_shift_summary_datatable_v1' => '/v1/cashier/shift_summary/datatable',
+
+    // Transaction Ledger
+    'cashier_shift_transaction_ledger_v1' => '/v1/cashier/transaction_ledger',
+    'transaction_ledger_by_shift_v1' => '/v1/cashier/transaction_ledger/by_shift', // GET: /v1/cashier/transaction_ledger/by_shift/{shiftId} (handled in model)
+    'transaction_ledger_reversals_v1' => '/v1/cashier/transaction_ledger/reversals',
+    'cashier_transaction_ledger_datatable_v1' => '/v1/cashier/transaction_ledger/datatable',
+    'cashier_transaction_ledger_reverse_v1' => '/v1/cashier/transaction_ledger', // POST: /v1/cashier/transaction_ledger/{id}/reverse (handled in model)
+
+    // Cash Movements
+    'cashier_cash_movement_v1' => '/v1/cashier/cash_movement',
+    'cashier_cash_movement_datatable_v1' => '/v1/cashier/cash_movement/datatable',
+    'cashier_cash_movement_sources_v1' => '/v1/cashier/cash_movement/sources',
+    'cashier_cash_movement_payment_categories_v1' => '/v1/cashier/cash_movement/payment-categories',
+    'cashier_cash_movement_suppliers_v1' => '/v1/cashier/cash_movement/suppliers',
+    'cashier_cash_movement_outsource_suppliers_v1' => '/v1/cashier/cash_movement/outsource-suppliers',
+    'cashier_cash_movement_employee_advance_export_excel_v1' => '/v1/cashier/cash_movement/export-employee-advances-excel',
+
+    // Supplier Jobs (for Out Source Supplier Advance Payments)
+    'cashier_supplier_jobs_by_supplier_v1' => '/v1/cashier/supplier-jobs/by-supplier', // GET: /v1/cashier/supplier-jobs/by-supplier/{supplier_id} (handled in model)
+    'cashier_supplier_jobs_create_v1' => '/v1/cashier/supplier-jobs',
+    'cashier_supplier_jobs_update_v1' => '/v1/cashier/supplier-jobs', // PUT: /v1/cashier/supplier-jobs/{id} (handled in model)
+    'cashier_supplier_jobs_advances_v1' => '/v1/cashier/supplier-jobs', // GET: /v1/cashier/supplier-jobs/{job_id}/advances (handled in model)
+    'cashier_supplier_jobs_with_advances_v1' => '/v1/cashier/supplier-jobs/by-supplier', // GET: /v1/cashier/supplier-jobs/by-supplier/{supplier_id}/with-advances (handled in model)
+
+    // Payee Masters
+    'cashier_payee_masters_v1' => '/v1/cashier/payee-masters', // GET: /v1/cashier/payee-masters (list all payees)
+    'cashier_payee_masters_create_v1' => '/v1/cashier/payee-masters', // POST: /v1/cashier/payee-masters (create new payee)
+
+    // Shift Adjustments
+    'cashier_shift_adjustment_v1' => '/v1/cashier/shift_adjustment',
+    'cashier_shift_adjustment_datatable_v1' => '/v1/cashier/shift_adjustment/datatable',
+
+    // IOU Settlements
+    'iou_settlement_v1' => '/v1/cashier/iou_settlement',
+    'iou_settlement_datatable_v1' => '/v1/cashier/iou_settlement/datatable',
+    'outstanding_ious_v1' => '/v1/cashier/iou_settlement/outstanding/list',
+    'outstanding_ious_datatable_v1' => '/v1/cashier/iou_settlement/outstanding/datatable',
+
+    // Cash Safe Transactions
+    'cash_safe_transaction_v1' => '/v1/cashier/cash_safe_v1',
+    'cash_safe_transaction_datatable_v1' => '/v1/cashier/cash_safe/datatable_v1',
+    'cash_safe_transaction_options_v1' => '/v1/cashier/cash_safe/options_v1',
+    'cash_safe_transaction_summary_v1' => '/v1/cashier/cash_safe/summary_v1',
+
+    // Cashier Authorization
+    'cashier_auth_authorize_v1' => '/v1/cashier/auth/authorize',
+    'cashier_auth_session_v1' => '/v1/cashier/auth/session',
+    'cashier_auth_logout_v1' => '/v1/cashier/auth/logout',
+    
+    // Cashier Session Management
+    'cashier_sessions_v1' => '/v1/cashier/sessions',
+    'cashier_sessions_active_v1' => '/v1/cashier/sessions/active',
+    'cashier_sessions_current_v1' => '/v1/cashier/sessions/current',
+    'cashier_sessions_statistics_v1' => '/v1/cashier/sessions/statistics',
+    'cashier_session_show_v1' => '/v1/cashier/sessions', // GET: /v1/cashier/sessions/{id} (handled in model)
+    'cashier_session_update_v1' => '/v1/cashier/sessions', // PUT: /v1/cashier/sessions/{id} (handled in model)
+    'cashier_session_force_logout_v1' => '/v1/cashier/sessions', // POST: /v1/cashier/sessions/{id}/force-logout (handled in model)
+    'cashier_sessions_cleanup_v1' => '/v1/cashier/sessions/cleanup',
+    'cashier_session_delete_v1' => '/v1/cashier/sessions', // DELETE: /v1/cashier/sessions/{id} (handled in model)
+
+    // Reports
+    'cashier_report_daily_summary_v1' => '/v1/cashier/reports/daily_summary',
+    'cashier_report_payment_summary_v1' => '/v1/cashier/reports/payment_summary',
+    'cashier_report_discrepancy_v1' => '/v1/cashier/reports/discrepancy',
+    'cashier_report_cash_out_summary_v1' => '/v1/cashier/reports/cash_out_summary',
+    'cashier_report_outstanding_ious_v1' => '/v1/cashier/reports/outstanding_ious',
+
+    // Transaction Logs (Audit Trail)
+    'cashier_transaction_log_v1' => '/v1/cashier/transaction_log',
+
+    // ============================================================
+    // FINANCE MODULE ENDPOINTS v1
+    // ============================================================
+    // Account Master
+    'finance_account_master_v1' => '/v1/finance/account_master',
+    'finance_account_master_tree_v1' => '/v1/finance/account_master/tree',
+    
+    // Finance Approvals
+    'finance_approval_v1' => '/v1/finance/approval',
+    'finance_approval_approve_v1' => '/v1/finance/approval', // POST: /v1/finance/approval/{id}/approve (handled in model)
+    'finance_approval_reject_v1' => '/v1/finance/approval', // POST: /v1/finance/approval/{id}/reject (handled in model)
+    'finance_approval_pending_v1' => '/v1/finance/approval/pending/list',
 
 
 
@@ -162,4 +292,34 @@ $config['api_endpoints'] = [
 
     'permissions_v2' => '/v2/permissions',
     'all_permissions_v2' => '/v2/all_permissions',
+
+    // ============================================================
+    // DOCUMENT ACCESS ENDPOINTS v1
+    // ============================================================
+    'doc_access_type_v1' => '/v1/doc_access_type',
+    'doc_access_v1' => '/v1/doc_access',
+
+    // ============================================================
+    // GATE PASS ENDPOINTS v1
+    // ============================================================
+    'gate_pass_list_v1' => '/v1/gate-pass',
+    'gate_pass_show_v1' => '/v1/gate-pass', // GET: /v1/gate-pass/{id}
+    'gate_pass_generate_in_v1' => '/v1/gate-pass/generate-in',
+    'gate_pass_generate_in_1_v1' => '/v1/gate-pass/generate-in-1',
+    'gate_pass_generate_in_2_v1' => '/v1/gate-pass/generate-in-2',
+    'gate_pass_generate_out_v1' => '/v1/gate-pass/generate-out', // Auto-detects OUT type based on job status
+    'gate_pass_generate_out_1_v1' => '/v1/gate-pass/generate-out-1',
+    'gate_pass_generate_out_2_v1' => '/v1/gate-pass/generate-out-2',
+    'gate_pass_generate_out_3_v1' => '/v1/gate-pass/generate-out-3',
+    'gate_pass_generate_internal_v1' => '/v1/gate-pass/generate-internal',
+    'gate_pass_generate_external_in_v1' => '/v1/gate-pass/generate-external-in',
+    'gate_pass_generate_external_out_v1' => '/v1/gate-pass/generate-external-out',
+    'gate_pass_print_v1' => '/v1/gate-pass', // POST: /v1/gate-pass/{id}/print
+    'gate_pass_mark_return_v1' => '/v1/gate-pass', // POST: /v1/gate-pass/{id}/mark-return
+    'gate_pass_job_card_status_v1' => '/v1/gate-pass/job-card', // GET: /v1/gate-pass/job-card/{jobCardId}/status
+    'gate_pass_available_types_v1' => '/v1/gate-pass/job-card', // GET: /v1/gate-pass/job-card/{jobCardId}/available-types
+    'gate_pass_locations_v1' => '/v1/gate-pass/locations',
+    'gate_pass_locations_create_v1' => '/v1/gate-pass/locations',
+    'gate_pass_locations_update_v1' => '/v1/gate-pass/locations', // PUT: /v1/gate-pass/locations/{id}
+    'gate_pass_locations_delete_v1' => '/v1/gate-pass/locations', // DELETE: /v1/gate-pass/locations/{id}
 ];

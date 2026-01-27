@@ -1,6 +1,15 @@
 <?php
 class Companyinfo extends CI_Model{
 
+    public function __construct() {
+        parent::__construct();
+        $this->load->helper('api_helper'); 
+    }
+    
+    public function getCompanyBank($api_token) {
+        $headers = get_api_headers($api_token);
+        return call_api('GET', 'get_company_bank_v1', [], $headers);
+    }
 
     public function Getcompanybranch() {
 		$company_id = $this->input->post('company_id');

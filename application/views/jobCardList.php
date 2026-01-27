@@ -257,12 +257,27 @@ $(document).ready(function() {
                 className: 'btn btn-success btn-sm',
                 title: 'Job Card List',
                 text: '<i class="fas fa-file-csv mr-2"></i> CSV',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
+            },
+            {
+                extend: 'excel',
+                className: 'btn btn-info btn-sm',
+                title: 'Job Card List',
+                text: '<i class="fas fa-file-excel mr-2"></i> Excel',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
             },
             {
                 extend: 'pdf',
                 className: 'btn btn-danger btn-sm',
                 title: 'Job Card List',
                 text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+                exportOptions: {
+                    columns: ':not(:last-child)'
+                }
             },
             {
                 extend: 'print',
@@ -315,7 +330,13 @@ $(document).ready(function() {
                 "data": "jobcard_date"
             },
             {
-                "data": "job_card_number"
+                "data": "job_card_number2",
+                render: function(data, type, row) {
+                    if (data === null || data === '') {
+                        return '<span style="color: rgba(107, 114, 128, 0.7); font-weight: normal;">' + row.job_card_number + '</span>';
+                    }
+                    return data;
+                }
             },
             {
                 "data": "customer_name"

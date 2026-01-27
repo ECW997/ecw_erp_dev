@@ -153,141 +153,89 @@ switch ($header['company_branch_id']) {
 	
 </footer>
 
-<?php foreach ($invoices as $inv_index => $invoice): ?>
-    <div style="<?= ($inv_index < count($invoices) - 1) ? 'page-break-after: always;' : '' ?>">
-        <div style="margin-bottom: 20px;">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="datatable_td" style="width:3%">#</th>
-                        <th class="datatable_td" style="width:46%">DESCRIPTION</th>
-                        <th class="datatable_td" style="width:5%">QTY</th>
-                        <th class="datatable_td" style="width:10%">UNIT</th>
-                        <th class="datatable_td" style="width:13%">RATE</th>
-                        <th class="datatable_td" style="width:8%">DISC.</th>
-                        <th class="datatable_td" style="width:15%">AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody>   
-                    <?php foreach ($invoice['invoice_details'] as $i => $item): ?>
-                    <tr>
-                        <td class="datatable_data_td"><?= $i+1 ?></td>
-                        <td class="datatable_data_td"><?= $item['description'] ?></td>
-                        <td class="datatable_data_td" style="text-align:center"><?= $item['quantity'] ?></td>
-                        <td class="datatable_data_td" style="text-align:center"><?= $item['unit'] ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= number_format($item['unit_price'],2) ?></td>
-                        <td class="datatable_data_td" style="text-align:right"><?= $item['line_total_after_discount'] == 0 ? '' : number_format($item['line_discount_pc'], 0). '%' ?></td>
-                        <?php
-                            $line_net_total = (float)$item['line_total_after_discount'];
-                            $is_exchange = (stripos($item['description'], 'Exchange') !== false); // Case-insensitive search
-                        ?>
-                        <td class="datatable_data_td" style="text-align:right">
-                            <?= $line_net_total == 0 ? '' : ($is_exchange ? '(' . number_format($line_net_total, 2) . ')' : number_format($line_net_total, 2)) ?>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+<!-- ================= BODY ================= -->
+<div class="content">
 
-            <div style="margin-top:10px;border-top: 1.5px solid #000;">
-                <table>
-                    <tr>
-                        <td style="width:50%; vertical-align:top; padding-right:10px;">
-                            <table>
-                                <?php
-                                $total_paid = 0;
-                                foreach ($invoice['payment_methods'][0]['transactions'] as $txn):
-                                    $total_paid += (float)$txn['allocated_amount'];
-                                ?>
-                                <tr>
-                                    <td class="datatable_data_td"><?= $txn['pay_method_label'] ?></td>
-                                    <td class="datatable_data_td" style="text-align:right"><?= number_format($txn['allocated_amount'],2) ?></td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <tr>
-                                    <td colspan="2" style="height:40px;"></td>
-                                </tr>
-                               <!-- <tr>
-                                    <td style="width: 50%; text-align: center;" class="datatable_data_td">........................</td>
-                                    <td style="width: 50%; text-align: center;" class="datatable_data_td">........................</td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 50%; text-align: center;" class="datatable_data_td">Customer</td>
-                                    <td style="width: 50%; text-align: center;" class="datatable_data_td">Cashier</td>
-                                </tr> -->
-                            </table>
-                        </td>
+<table style="margin-top:30px;">
+<thead>
+<tr>
+<th class="datatable_td" style="width:100%;text-align:center; nowrap;">Payment & Summary</th>
+</tr>
+</thead>
 
-                        <?php
-                            $gross_total = $invoice['totals']['gross_total'] ?? 0;
-                            $total_discount = $invoice['totals']['total_discount'] ?? 0;
+<tbody>
 
-                            $net_total_after_discount = $gross_total - $total_discount;
-                        ?>
-                        <td style="width:50%; vertical-align:top; padding-left:10px;">
-                            <table style="width:100%;">
-                                <tr>
-                                    <td class="datatable_data_td">Grand Total</td>
-                                    <td class="datatable_data_td" style="text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right;"><?= number_format($invoice['totals']['gross_total'] ?? 0, 2) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="width:60%;">Discount Total</td>
-                                    <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="width:30%; text-align:right; border-bottom:1px solid #000;">
-                                        <?= ($invoice['totals']['total_discount'] > 0) 
-                                            ? '(' . number_format($invoice['totals']['total_discount'], 2) . ')' 
-                                            : number_format($invoice['totals']['total_discount'] ?? 0, 2) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="width:60%;">Net Amount</td>
-                                    <td class="datatable_data_td" style="width:10%; text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="width:30%; text-align:right;">
-                                        <?= number_format($net_total_after_discount ?? 0, 2) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td">Advance</td>
-                                    <td class="datatable_data_td" style="text-align:center;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; border-bottom:1px solid #000;">
-                                        <?= ($invoice['totals']['advance_total'] > 0)
-                                            ? '(' . number_format($invoice['totals']['advance_total'], 2) . ')'
-                                            : number_format($invoice['totals']['advance_total'] ?? 0, 2) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="font-weight:bold;">Current Paid</td>
-                                    <td class="datatable_data_td" style="text-align:center; font-weight:bold;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; font-weight:bold;"><?= number_format($invoice['totals']['total_current_paid'] ?? 0, 2) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="font-weight:bold;">Total Paid</td>
-                                    <td class="datatable_data_td" style="text-align:center; font-weight:bold;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; font-weight:bold;">
-                                        <?= number_format(
-                                            ($invoice['totals']['total_paid_for_ref'] ?? 0) + 
-                                            ($invoice['totals']['advance_total'] ?? 0), 
-                                            2
-                                        ) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="datatable_data_td" style="border-top:1px solid #000; border-bottom:3px double #000; font-weight:bold;">Net Balance</td>
-                                    <td class="datatable_data_td" style="text-align:center; border-top:1px solid #000; border-bottom:3px double #000; font-weight:bold;">:</td>
-                                    <td class="datatable_data_td" style="text-align:right; border-top:1px solid #000; border-bottom:3px double #000; font-weight:bold;">
-                                        <?= number_format(($invoice['totals']['grand_total'] ?? 0) - ($invoice['totals']['total_paid_for_ref'] ?? 0), 2) ?>
-                                    </td>
-                                </tr>
-                                
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>   
+<?php foreach ($invoices as $invoice): 
+    $gross = $invoice['totals']['gross_total'] ?? 0;
+    $discount = $invoice['totals']['total_discount'] ?? 0;
+    $net = $gross - $discount;
+?>
+
+<tr>
+
+<!-- LEFT PAYMENTS + RIGHT TOTALS -->
+<td class="datatable_data_td">
+
+<table style="width:100%;">
+<tr>
+<td style="width:50%;vertical-align:top;border-right:1px solid #000;">
+
+<!-- PAYMENT METHODS -->
+<table style="width:100%;">
+<tr>
+<th style="text-align:left;">Payment Method</th>
+<th style="text-align:right;">Amount</th>
+</tr>
+
+<?php foreach ($invoice['payment_methods'][0]['transactions'] as $txn): ?>
+<tr>
+<td><?= ucfirst($txn['pay_method_label']) ?></td>
+<td style="text-align:right;"><?= number_format($txn['allocated_amount'],2) ?></td>
+</tr>
 <?php endforeach; ?>
+
+<tr>
+<td style="font-weight:bold;border-top:1px solid #000;">Total Current Paid</td>
+<td style="text-align:right;font-weight:bold;border-top:1px solid #000;">
+<?= number_format($invoice['totals']['total_current_paid'],2) ?>
+</td>
+</tr>
+</table>
+
+</td>
+
+<!-- TOTAL SUMMARY -->
+<td style="width:50%;vertical-align:top;">
+
+<table style="width:100%;">
+<tr><td>Gross Total</td><td>:</td><td style="text-align:right"><?= number_format($gross,2) ?></td></tr>
+<tr><td>Discount</td><td>:</td><td style="text-align:right;border-bottom:1px solid #000;"><?= ($invoice['totals']['total_discount'] > 0) ? '(' . number_format($invoice['totals']['total_discount'], 2) . ')' : number_format($invoice['totals']['total_discount'] ?? 0, 2) ?></td></tr>
+<tr><td>Net Total</td><td>:</td><td style="text-align:right"><?= number_format($net,2) ?></td></tr>
+<tr><td>Advance</td><td>:</td><td style="text-align:right;border-bottom:1px solid #000;"><?= ($invoice['totals']['advance_total'] > 0)? '(' . number_format($invoice['totals']['advance_total'], 2) . ')' : number_format($invoice['totals']['advance_total'] ?? 0, 2) ?></td></tr>
+<tr><td style="font-weight:bold;">Total Paid</td><td>:</td><td style="text-align:right;font-weight:bold;"><?= number_format(($invoice['totals']['total_paid_for_ref'] ?? 0) + ($invoice['totals']['advance_total'] ?? 0),2) ?></td></tr>
+<tr>
+<td style="font-weight:bold;border-top:1px solid #000;border-bottom:3px double #000;">Balance</td>
+<td style="border-top:1px solid #000;border-bottom:3px double #000;">:</td>
+<td style="text-align:right;font-weight:bold;border-top:1px solid #000;border-bottom:3px double #000; font-weight:bold;">
+    <?= number_format(($invoice['totals']['grand_total'] ?? 0) - ($invoice['totals']['total_paid_for_ref'] ?? 0),2) ?>
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+
+</table>
+</td>
+</tr>
+
+
+<?php endforeach; ?>
+
+</tbody>
+</table>
+
+</div>
 
 </body>
 </html>

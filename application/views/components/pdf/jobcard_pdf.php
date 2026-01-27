@@ -447,7 +447,7 @@
                 <table style="width: 100%; margin-top: 5px;">
                     <tr>
                         <td style="font-size:20px; font-weight:bold; text-align:left; padding:0px; width:50%;">Job Card
-                            No: <?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                            No: <?= $main_data['job_card_number2'] ?? $main_data['job_card_number'] ?? 'N/A' ?></td>
                         <td style="font-size:20px; font-weight:bold; text-align:right; padding:0px; width:50%;">Delivery
                             Date: <?= date('d/m/Y', strtotime($main_data['handover_date'])) ?></td>
                     </tr>
@@ -493,7 +493,7 @@
                     </tr>
                     <tr>
                         <th>Job Card No:</th>
-                        <td><?= $main_data['job_card_number'] ?? 'N/A' ?></td>
+                        <td><?= $main_data['job_card_number2'] ?? $main_data['job_card_number'] ?? 'N/A' ?></td>
                         <th>Payment Method:</th>
                         <td><?= $main_data['payment_type'] ?? 'N/A' ?></td>
                     </tr>
