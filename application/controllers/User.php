@@ -139,7 +139,13 @@ class User extends CI_Controller {
 		];
 
 		$method = $recordOption == 1 ? 'userAccountInsert' : 'userAccountUpdate';
-		$response = $this->Userinfo->$method($this->api_token, $form_data);
+		$response = null;
+		if($method == 'userAccountInsert'){
+			$response = $this->Userinfo->userAccountInsert($this->api_token, $form_data);
+		}else{
+			$response = $this->Userinfo->userAccountUpdate($this->api_token, $form_data);
+		}
+		
 		
 		$redirect_url = 'User/Useraccount';
 		$this->handleResponse($redirect_url,$response);

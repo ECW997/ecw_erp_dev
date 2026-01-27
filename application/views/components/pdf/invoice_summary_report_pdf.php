@@ -185,20 +185,27 @@
 
 
     <?php
-    $total_ecw = 0;
+    $total_gross = 0;
+    $total_vat = 0;
+    $total_net = 0;
     foreach ($report as $row) {
-        $total_ecw += $row['Invoice Amount'] ?? 0;
+        $total_gross += $row['Gross Total'] ?? 0;
+        $total_vat += $row['Vat Amount'] ?? 0;
+        $total_net += $row['Invoice Net Amount'] ?? 0;
     }
     ?>
 
     <table style="border: 1px solid #000;">
         <thead>
             <tr>
-                <th style="text-align: left; width:15%;">Invoice Date</th>
-                <th style="text-align: left; width:20%;">Invoice No</th>
-                <th style="text-align: left; width:20%;">Jobcard No</th>
-                <th style="text-align: left; width:25%;">Customer Name</th>
-                <th style="text-align: right; width:25%;">Invoice Amount</th>
+                <th style="text-align: left; width:12%;">Invoice Date</th>
+                <th style="text-align: left; width:12%;">Invoice No</th>
+                <th style="text-align: left; width:12%;">Jobcard No</th>
+                <th style="text-align: left; width:15%;">Customer Name</th>
+                <th style="text-align: left; width:12%;">Tax Number</th>
+                <th style="text-align: right; width:12%;">Gross Amount</th>
+                <th style="text-align: right; width:12%;">Tax Amount</th>
+                <th style="text-align: right; width:13%;">Invoice Net Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -208,14 +215,19 @@
                 <td style="text-align: left; "><?= htmlspecialchars($row['Invoice No'] ?? 0, 2) ?></td>
                 <td style="text-align: left; "><?= htmlspecialchars($row['Jobcard No'] ?? 0, 2) ?></td>
                 <td style="text-align: left; "><?= htmlspecialchars($row['Customer Name'] ?? 0, 2) ?></td>
-                <td style="text-align: right; "><?= number_format($row['Invoice Amount'] ?? 0, 2) ?></td>
+                <td style="text-align: left; "><?= htmlspecialchars($row['Vat Number'] ?? 0, 2) ?></td>
+                <td style="text-align: right; "><?= number_format($row['Gross Total'] ?? 0, 2) ?></td>
+                <td style="text-align: right; "><?= number_format($row['Vat Amount'] ?? 0, 2) ?></td>
+                <td style="text-align: right; "><?= number_format($row['Invoice Net Amount'] ?? 0, 2) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="4" style="text-align: right;">Total Invoice Amount</th>
-                <th style="text-align: right; background-color: #cce5ff"><?= number_format($total_ecw, 2) ?></th>
+                <th colspan="5" style="text-align: right;">Total Amount</th>
+                <th style="text-align: right; background-color: #cce5ff"><?= number_format($total_gross ?? 0, 2) ?></th>
+                <th style="text-align: right; background-color: #cce5ff"><?= number_format($total_vat ?? 0, 2) ?></th>
+                <th style="text-align: right; background-color: #cce5ff"><?= number_format($total_net ?? 0, 2) ?></th>
             </tr>
         </tfoot>
     </table>

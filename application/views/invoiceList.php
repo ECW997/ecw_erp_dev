@@ -110,13 +110,11 @@ include "include/topnavbar.php";
         					<div class="page-header-icon"><i class="fas fa-list-ul"></i></div>
         					<span>Invoice List</span>
         				</h1>
-                        <?php if ($shift_status === 'current_user'): ?>
                             <button
                                 class="btn btn-primary btn-sm px-4 mt-auto p-2 <?php if ($addcheck == 0) echo 'd-none'; ?>"
                                 data-toggle="modal" data-target="#invoiceTypeModal">
                                 <i class="fas fa-plus mr-3"></i>Create New Invoice
                             </button>
-                        <?php endif; ?>
         			</div>
         		</div>
         	</div>

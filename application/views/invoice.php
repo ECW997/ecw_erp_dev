@@ -69,19 +69,6 @@ include "include/v2/topnavbar.php";
             font-size: 1.1em;
         }
         </style>
-
-        <?php
-            $shift_status = 'not_started'; 
-
-            if (!empty($check_cashier_shift['status']) && $check_cashier_shift['status']) {
-                if ($check_cashier_shift['code'] == 200) {
-                    $shift_status = 'current_user';
-                } else {
-                    $shift_status = 'other_user';
-                }
-            }
-        ?>
-
         <main>
             <div class="page-header page-header-light bg-gray shadow">
                 <div class="container-fluid">
@@ -168,6 +155,30 @@ include "include/v2/topnavbar.php";
                                     </button>
                                 <?php endif; ?>
 
+                                <?php $is_confirmed = $invoice_main_data[0]['is_confirmed'] ?? 0; ?>
+                                <?php $tax_invoice = $invoice_main_data[0]['inv_tax_type'] ?? 0; ?>
+
+                                <button type="button"
+                                    class="btn btn-success btn-sm rounded-2 action-btn-fixed <?= ($approve1check == 0) ? 'd-none' : '' ?>"
+                                    data-bs-toggle="modal" data-bs-target="#invoiceApproveModal">
+                                    <i class="fas fa-check me-1"></i> Approve
+                                </button>
+
+                                <button type="button" class="btn btn-secondary btn-sm rounded-2 action-btn-fixed"
+                                    <?= $is_confirmed == 1 ? '' : 'disabled' ?>
+                                    onclick="exportInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                    <i class="fas fa-print me-1"></i> Print Invoice
+                                </button>
+
+                              
+                              <button type="button" id="export_taxinvoice" class="btn btn-info btn-sm rounded-2 action-btn-fixed"
+                                   <?= ($tax_invoice == 1 && $is_confirmed == 1) ? '' : 'disabled' ?>
+                                    onclick="exportTaxInvoicePDF(<?= $invoice_main_data[0]['id'] ?? '' ?>);">
+                                    <i class="fas fa-print me-1"></i> Print Tax Invoice
+                                </button>
+
+                                                 
+                              
                                 <input type="text" name="invoice_id"
                                     class="form-control form-control-sm input-highlight d-none" id="invoice_id"
                                     value="<?= isset($invoice_main_data[0]['id']) ? $invoice_main_data[0]['id'] : '' ?>"
@@ -594,7 +605,12 @@ function createInvoice() {
         customer_id: $('#customer_id').val(),
         customer_name: $('#customer_name').val(),
         vehicle_no: $('#vehicle_no').val(),
-        vat_reg_no: $('#vat_reg_no').val(),
+      
+        inv_tax_type: $('input[name="inv_tax_type"]:checked').val(),
+        inv_add_vat: $('input[name="inv_add_vat"]:checked').val(),
+        vat_reg_no: $('#vat_number').val(),
+        total_inv_amout_withouttax: parseFloat($('#modeltotalpaymentwithouttax').val()) || 0,
+      
         vehicle_in_date: $('#vehicle_in_date').val(),
         customer_address: $('#customer_address').val(),
         contact_no: $('#customer_contact').val(),
@@ -710,7 +726,7 @@ function approveInvoice() {
                 setTimeout(function() {
                     // window.location.href = '<?= base_url("Invoice/invoiceDetailIndex/") ?>' +
                     //     approveData.id + '/1';
-
+                    
                     window.location.href = paymentDetailUrl;
                 }, 1000);
             } else {
@@ -750,6 +766,9 @@ function cancelInvoice() {
         }
     });
 }
+  
+  
+
 
 
 function exportInvoicePDF(invoice_id) {
@@ -757,6 +776,13 @@ function exportInvoicePDF(invoice_id) {
     const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
     window.open(url, '_blank');
 }
+  
+  function exportTaxInvoicePDF(invoice_id) {
+    const baseUrl = "<?php echo base_url(); ?>Invoice/taxinvoicePDF";
+    const url = `${baseUrl}?invoice_id=${encodeURIComponent(invoice_id)}&series_id=${encodeURIComponent(series_id)}`;
+    window.open(url, '_blank');
+}
+  
 
 function exportGatePassPDF(invoice_id) {
     const baseUrl = "<?php echo base_url(); ?>Invoice/gatePassPDF";

@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $config['api_base_url'] = 'https://devapi.ecw.lk/api';
+// $config['api_base_url'] = 'http://erpapi.ecw.lk/api';
 
 $config['api_endpoints'] = [
     'auth_check' => '/v1/auth_check',
@@ -74,6 +75,7 @@ $config['api_endpoints'] = [
     'jobcard_confirmation_update_v1' => '/v1/jobcard_confirmation_update',
     'get_jobcard_edit_details_v1' => '/v1/get_jobcard_edit_details',
     'exportJobCardExcelData_v1' => '/v1/exportJobCardExcelData',
+    'exportJobCardSummaryData_v1' => '/v1/exportJobCardSummaryData',
 
     'quickSearchJobDetails_v1' => '/v1/quickSearchJobDetails',
 
@@ -87,7 +89,7 @@ $config['api_endpoints'] = [
     'get_map_pdf_v1' => '/v1/get_map_pdf',
 
     'media_library_v1' => '/v1/media_library',
-    'media_library_status_v1' => '/v1/media_library_status',
+    'media_library_status_v1' => '/v1/media_library_status1',
 
     'sales_order_v1' => '/v1/sales_order',
     'get_sel2_jobcard_number_v1' => '/v1/get_sel2_jobcard',
@@ -105,6 +107,11 @@ $config['api_endpoints'] = [
     'cancel_invoice_v1' => '/v1/cancelInvoice',
     'get_invoice_pdf_v1' => '/v1/get_invoice_pdf',
     'search_customer_v1' => '/v1/search_customer',
+    'get_latest_tax_v1' => '/v1/get_latest_tax',
+
+
+    'tax_master_v1' => '/v1/tax_master',
+    'tax_control_status_v1' => '/v1/tax_control_status',
 
     'payment_v1' => '/v1/payment',
     'get_sel2_customer_v1' => '/v1/get_sel2_customer',

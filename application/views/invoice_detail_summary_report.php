@@ -104,10 +104,14 @@ include "include/topnavbar.php";
                                     </form>
 
                                     <?php
-                                    $total_ecw = 0;
+                                    $total_gross = 0;
+                                    $total_vat = 0;
+                                    $total_net = 0;
                                     if (!empty($report['data'])) {
                                         foreach ($report['data'] as $row) {
-                                            $total_ecw += $row['Invoice Amount'] ?? 0;
+                                            $total_gross += $row['Gross Total'] ?? 0;
+                                            $total_vat += $row['Vat Amount'] ?? 0;
+                                            $total_net += $row['Invoice Net Amount'] ?? 0;
                                         }
                                     }
                                     ?>
@@ -117,11 +121,14 @@ include "include/topnavbar.php";
                                             id="outstandingTable">
                                             <thead class="thead-light">
                                                 <tr>
-                                                    <th style="text-align: left; width:15%;">Invoice Date</th>
-                                                    <th style="text-align: left; width:20%;">Invoice No</th>
-                                                    <th style="text-align: left; width:20%;">Jobcard No</th>
-                                                    <th style="text-align: left; width:25%;">Customer Name</th>
-                                                    <th style="text-align: right; width:25%;">Invoice Amount</th>
+                                                    <th style="text-align: left; width:12%;">Invoice Date</th>
+                                                    <th style="text-align: left; width:12%;">Invoice No</th>
+                                                    <th style="text-align: left; width:12%;">Jobcard No</th>
+                                                    <th style="text-align: left; width:15%;">Customer Name</th>
+                                                    <th style="text-align: left; width:12%;">Vat Number</th>
+                                                    <th style="text-align: right; width:12%;">Gross Total</th>
+                                                    <th style="text-align: right; width:12%;">Vat Amount</th>
+                                                    <th style="text-align: right; width:13%;">Invoice Net Amount</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -129,21 +136,33 @@ include "include/topnavbar.php";
                                                 <tr>
                                                     <td><?= htmlspecialchars($row['Date'] ?? '') ?></td>
                                                     <td style="text-align: left;">
-                                                        <?= htmlspecialchars($row['Invoice No'] ?? 0, 2) ?></td>
+                                                        <?= htmlspecialchars($row['Invoice No'] ?? '') ?></td>
                                                     <td style="text-align: left;">
-                                                        <?= htmlspecialchars($row['Jobcard No'] ?? 0, 2) ?></td>
+                                                        <?= htmlspecialchars($row['Jobcard No'] ?? '') ?></td>
                                                     <td style="text-align: left;">
                                                         <?= htmlspecialchars($row['Customer Name'] ?? '') ?></td>
+                                                    <td style="text-align: left;">
+                                                        <?= htmlspecialchars($row['Vat Number'] ?? '') ?></td>
                                                     <td style="text-align: right;">
-                                                        <?= number_format($row['Invoice Amount'] ?? 0, 2) ?></td>
+                                                        <?= number_format($row['Gross Total'] ?? 0, 2) ?></td>
+                                                    <td style="text-align: right;">
+                                                        <?= number_format($row['Vat Amount'] ?? 0, 2) ?></td>
+                                                    <td style="text-align: right;">
+                                                        <?= number_format($row['Invoice Net Amount'] ?? 0, 2) ?></td>
                                                 </tr>
                                                 <?php endforeach; ?>
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <th colspan="4" style="text-align: right;">Total Invoice Amount</th>
-                                                    <th class="secret-col" style="text-align: right;">
-                                                        <?= number_format($total_ecw, 2) ?>
+                                                    <th colspan="5" style="text-align: right;">Total</th>
+                                                    <th style="text-align: right;">
+                                                        <?= number_format($total_gross, 2) ?>
+                                                    </th>
+                                                    <th style="text-align: right;">
+                                                        <?= number_format($total_vat, 2) ?>
+                                                    </th>
+                                                    <th style="text-align: right;">
+                                                        <?= number_format($total_net, 2) ?>
                                                     </th>
                                                 </tr>
                                             </tfoot>
@@ -187,7 +206,7 @@ $(document).ready(function() {
         orientation: 'landscape',
         pageSize: 'A4',
         customize: function(doc) {
-            doc.content[1].table.widths = ['20%', '20%', '20%', '20%', '20%'];
+            doc.content[1].table.widths = ['12%', '12%', '12%', '15%', '12%', '12%', '12%', '13%'];
 
             doc.content.unshift({
                 text: 'Invoice Summary Report',
@@ -282,55 +301,61 @@ $(document).ready(function() {
 
     var table = $('#outstandingTable').DataTable();
     var extraButtons = [{
-            extend: 'excelHtml5',
-            className: 'btn btn-success btn-sm',
-            text: '<i class="fas fa-file-excel mr-2"></i> Excel',
-            exportOptions: {
-                columns: ':visible'
-            },
-            customize: function(xlsx) {
-                // Set sheet name
-                var sheetName = $('#f_branch_name').val() || 'Invoice Summary Report';
-                xlsx.xl['workbook.xml'].getElementsByTagName('sheet')[0].setAttribute('name',
-                sheetName);
-
-                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-
-                // Set column widths
-                $('col', sheet).attr('width', 25);
-
-                // Add custom title row
-                var header = '<row r="1">' +
-                    '<c t="inlineStr" r="A1"><is><t>Invoice Summary Report</t></is></c>' +
-                    '</row>';
-                sheet.childNodes[0].childNodes[1].innerHTML = header + sheet.childNodes[0].childNodes[1]
-                    .innerHTML;
-
-                // Style the title row
-                $('row:eq(0) c', sheet).attr('s', '51');
-
-                // Calculate total for Invoice Amount
-                var totalInvoiceAmount = 0;
-                $('#outstandingTable tbody tr').each(function() {
-                    var amount = parseFloat($(this).find('td:eq(4)').text().replace(/,/g,
-                        '')) || 0;
-                    totalInvoiceAmount += amount;
-                });
-
-                // Add totals row at the end
-                var lastRow = $('sheetData row', sheet).length + 1;
-                var totalsRow =
-                    '<row r="' + lastRow + '">' +
-                    '<c t="inlineStr" r="A' + lastRow + '"><is><t>Total</t></is></c>' +
-                    '<c r="B' + lastRow + '"/>' +
-                    '<c r="C' + lastRow + '"/>' +
-                    '<c r="D' + lastRow + '"/>' +
-                    '<c t="n" r="E' + lastRow + '"><v>' + totalInvoiceAmount.toFixed(2) + '</v></c>' +
-                    '</row>';
-
-                $('sheetData', sheet).append(totalsRow);
-            }
+        extend: 'excelHtml5',
+        className: 'btn btn-success btn-sm',
+        text: '<i class="fas fa-file-excel mr-2"></i> Excel',
+        exportOptions: {
+            columns: ':visible'
         },
+        customize: function(xlsx) {
+            // Set sheet name
+            var sheetName = $('#f_branch_name').val() || 'Invoice Summary Report';
+            xlsx.xl['workbook.xml'].getElementsByTagName('sheet')[0].setAttribute('name', sheetName);
+
+            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+            // Set column widths
+            $('col', sheet).attr('width', 25);
+
+            // Add custom title row
+            var header = '<row r="1">' +
+                '<c t="inlineStr" r="A1"><is><t>Invoice Summary Report</t></is></c>' +
+                '</row>';
+            sheet.childNodes[0].childNodes[1].innerHTML = header + sheet.childNodes[0].childNodes[1].innerHTML;
+
+            // Style the title row
+            $('row:eq(0) c', sheet).attr('s', '51');
+
+            // Calculate totals for Gross Total, Vat Amount, and Invoice Net Amount
+            var totalGross = 0;
+            var totalVat = 0;
+            var totalNet = 0;
+            $('#outstandingTable tbody tr').each(function() {
+                var gross = parseFloat($(this).find('td:eq(5)').text().replace(/,/g, '')) || 0;
+                var vat = parseFloat($(this).find('td:eq(6)').text().replace(/,/g, '')) || 0;
+                var net = parseFloat($(this).find('td:eq(7)').text().replace(/,/g, '')) || 0;
+                totalGross += gross;
+                totalVat += vat;
+                totalNet += net;
+            });
+
+            // Add totals row at the end
+            var lastRow = $('sheetData row', sheet).length + 1;
+            var totalsRow =
+                '<row r="' + lastRow + '">' +
+                '<c t="inlineStr" r="A' + lastRow + '"><is><t>Total</t></is></c>' +
+                '<c r="B' + lastRow + '"/>' +
+                '<c r="C' + lastRow + '"/>' +
+                '<c r="D' + lastRow + '"/>' +
+                '<c r="E' + lastRow + '"/>' +
+                '<c t="n" r="F' + lastRow + '"><v>' + totalGross.toFixed(2) + '</v></c>' +
+                '<c t="n" r="G' + lastRow + '"><v>' + totalVat.toFixed(2) + '</v></c>' +
+                '<c t="n" r="H' + lastRow + '"><v>' + totalNet.toFixed(2) + '</v></c>' +
+                '</row>';
+
+            $('sheetData', sheet).append(totalsRow);
+        }
+    },
         {
             text: '<i class="fas fa-print me-2"></i> All Summary PDF',
             className: 'btn btn-primary btn-sm rounded-2',

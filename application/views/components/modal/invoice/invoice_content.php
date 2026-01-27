@@ -111,22 +111,20 @@
                                 <input type="number" step="any" name="chargeamount"
                                     class="form-control form-control-sm text-end" id="chargeamount" required>
                             </div>
-                            <?php if ($shift_status === 'current_user'): ?>
-                                <div class="col-12 mt-2">
-                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                        <button type="button" title="Insert" id="secondformsubmit"
-                                            class="btn btn-success btn-sm add-extra-charge-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
-                                            onclick="insertExtraCharge();">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                        <button type="button" title="Update" id="secondupdateformsubmit"
-                                            class="btn btn-warning btn-sm d-none update-extra-charge-btn <?= ($editcheck == 0) ? 'd-none' : '' ?>"
-                                            onclick="updateExtraCharge();">
-                                            <i class="fas fa-sync"></i>
-                                        </button>
-                                    </div>
+                            <div class="col-12 mt-2">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" title="Insert" id="secondformsubmit"
+                                        class="btn btn-success btn-sm add-extra-charge-btn <?= ($addcheck == 0) ? 'd-none' : '' ?>"
+                                        onclick="insertExtraCharge();">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <button type="button" title="Update" id="secondupdateformsubmit"
+                                        class="btn btn-warning btn-sm d-none update-extra-charge-btn <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                        onclick="updateExtraCharge();">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
                                 </div>
-                            <?php endif; ?>
+                            </div>
                         </div>
                     </form>
 
@@ -149,20 +147,18 @@
                                     <td class="text-end d-none insert_status">existing</td>
                                     <td class="text-end d-none row_id"><?php echo $item['id']; ?></td>
                                     <td class="text-end <?= $is_confirmed == 0 ? '' : 'd-none' ?>">
-                                        <?php if ($shift_status === 'current_user'): ?>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" title="Edit"
-                                                    class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
-                                                    id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
-                                                    <i class="fas fa-pen"></i>
-                                                </button>
-                                                <button type="button" title="Delete"
-                                                    class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
-                                                    id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        <?php endif; ?>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" title="Edit"
+                                                class="btn btn-primary <?= ($editcheck == 0) ? 'd-none' : '' ?>"
+                                                id="<?php echo $item['id']; ?>" onclick="editExtraChargeRow(this)">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <button type="button" title="Delete"
+                                                class="btn btn-danger <?= ($deletecheck == 0) ? 'd-none' : '' ?>"
+                                                id="<?php echo $item['id']; ?>" onclick="deleteExtraChargeRow(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -210,21 +206,24 @@
 
             <div class="col-lg">
                 <div class="form-group">
-                    <label class="form-label small fw-bold" id="hidden_sub_total_label" style="display:none;">Hidden Sub Tot</label>
+                    <label class="form-label small fw-bold" id="hidden_sub_total_label" style="display:none;">Hidden Sub
+                        Tot</label>
                     <input type="text" name="hidden_sub_total" class="form-control form-control-sm input-field"
                         id="hidden_sub_total" style="display:none;" required readonly>
                 </div>
             </div>
             <div class="col-lg">
                 <div class="form-group">
-                    <label class="form-label small fw-bold" id="hidden_line_discount_label" style="display:none;">Hidden line Discount</label>
+                   <label class="form-label small fw-bold" id="hidden_line_discount_label" style="display:none;">Hidden
+                        line Discount</label>
                     <input type="text" name="hidden_line_discount" class="form-control form-control-sm input-field"
                         id="hidden_line_discount" style="display:none;" required readonly>
                 </div>
             </div>
             <div class="col-lg">
                 <div class="form-group">
-                    <label class="form-label small fw-bold" id="hidden_net_total_label" style="display:none;">Hidden Net Amount</label>
+                    <label class="form-label small fw-bold" id="hidden_net_total_label" style="display:none;">Hidden Net
+                        Amount</label>
                     <input type="text" name="hidden_net_total" class="form-control form-control-sm input-field"
                         id="hidden_net_total" style="display:none;" required readonly>
                 </div>
@@ -269,7 +268,6 @@
                                                                 class="small form-label text-dark d-none">Reciepts</label>
                                                         </div>
 
-                                                        <?php if ($shift_status === 'current_user'): ?>
                                                         <div class="col-4 mt-2">
                                                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                                                 <button type="button" title="Insert"
@@ -285,7 +283,6 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <?php endif; ?>
                                                     </div>
                                                 </form>
 
@@ -369,100 +366,188 @@
 
                             <div class="row mt-5">
                                 <div class="col-md-12">
-                                    <div class="row g-3">
-                                        <div class="col">
+                                    <div class="row">
+                                      
+                                      <div class="col-2 d-flex align-items-center" style="gap: 5rem;">
+                                            <label class="small form-label text-dark mb-0 ">Tax Invoice</label>
+                                            <?php $selected_invoice_tax = $invoice_main_data[0]['inv_tax_type'] ?? '0'; ?>
+                                            <div class="form-switch-toggle">
+                                                <input class="form-switch-input" type="radio" name="inv_tax_type"
+                                                    id="inv_tax_type_no" value="0"
+                                                    <?= ($selected_invoice_tax == '0') ? 'checked' : '' ?>
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
+                                                <label class="form-switch-label" for="inv_tax_type_no">No</label>
+
+                                                <input class="form-switch-input" type="radio" name="inv_tax_type"
+                                                    id="inv_tax_type_yes" value="1"
+                                                    <?= ($selected_invoice_tax == '1') ? 'checked' : '' ?>
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
+                                                <label class="form-switch-label" for="inv_tax_type_yes">Yes</label>
+
+                                                <span class="form-switch-slider"></span>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-2 d-flex align-items-center" style="gap: 5rem;">
+                                            <label class="small form-label text-dark mb-0 ">Add VAT</label>
+                                            <?php $selected_add_vat = $invoice_main_data[0]['inv_add_vat'] ?? '0'; ?>
+                                            <div class="form-switch-toggle">
+                                                <input class="form-switch-input" type="radio" name="inv_add_vat"
+                                                    id="inv_add_vat_no" value="0"
+                                                    <?= ($selected_add_vat == '0') ? 'checked' : '' ?>
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
+                                                <label class="form-switch-label" for="inv_add_vat_no">No</label>
+
+                                                <input class="form-switch-input" type="radio" name="inv_add_vat"
+                                                    id="inv_add_vat_yes" value="1"
+                                                    <?= ($selected_add_vat == '1') ? 'checked' : '' ?>
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?> required>
+                                                <label class="form-switch-label" for="inv_add_vat_yes">Yes</label>
+
+                                                <span class="form-switch-slider"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2">
+                                            <label class="small form-label text-dark mb-1">Customer Tax No</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" id="vat_number" name="vat_number"
+                                                    value="<?= isset($invoice_main_data[0]['tax_number']) ? $invoice_main_data[0]['tax_number'] : '' ?>"
+                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?>
+                                                    class="form-control text-start bg-light">
+                                            </div>
+                                        </div>
+                                      
+                                        <div class="col-3">
                                             <label class="small form-label text-dark mb-1">Sub Total + Extra
                                                 Charges</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="text" id="total_sub_amount_text"
-                                                    name="total_sub_amount_text" class="form-control text-end bg-light"
-                                                    readonly>
+                                                <span class="input-group-text bg-light text-dark fw-bold">Rs.</span>
+                                               <input type="text" id="total_sub_amount_text"
+                                                    name="total_sub_amount_text"
+                                                    class="form-control text-end bg-light text-dark fw-bold" readonly>
                                             </div>
                                                 <input type="number" step="any" id="total_sub_amount"
                                                     name="total_sub_amount" class="form-control text-end bg-light d-none"
                                                     readonly>
                                         </div>
-                                        <div class="col">
+                                       <div class="col-3">
                                             <label class="small form-label text-dark mb-1">Total Discount</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="text" id="total_discount_text"
-                                                    name="total_discount_text" class="form-control text-end bg-light"
-                                                    readonly>
+                                                <span class="input-group-text bg-light text-dark fw-bold">Rs.</span>
+                                                 <input type="text" id="total_discount_text" name="total_discount_text"
+                                                    class="form-control text-end bg-light text-dark fw-bold" readonly>
                                             </div>
-                                                <input type="number" step="any" id="total_discount"
-                                                    name="total_discount" class="form-control text-end bg-light d-none"
-                                                    readonly>
+                                                <input type="number" step="any" id="total_discount" name="total_discount"
+                                                class="form-control text-end bg-light d-none" readonly>
                                         </div>
+                                      </div>
+                                </div>
+                              
+                              <div class="row mt-5">
+                                    <div class="col-md-12">
+                                        <div class="row g-3">
                                         <div class="col d-none">
                                             <label class="small form-label text-dark mb-1">Grand Total</label>
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="number" step="any" id="hiddenfulltotal"
-                                                    name="hiddenfulltotal" class="form-control text-end bg-light"
-                                                    readonly>
+                                                <span class="input-group-text bg-light text-dark fw-bold">Rs.</span>
+                                               <input type="number" step="any" id="hiddenfulltotal"
+                                                        name="hiddenfulltotal"
+                                                        class="form-control text-end bg-light text-dark fw-bold"
+                                                        readonly>
                                             </div>
                                         </div>
                                         <div class="col">
-                                            <label class="small form-label text-dark mb-1">VAT (%)</label>
-                                            <div class="input-group input-group-sm">
-                                                <input type="number" id="vat" name="vat" class="form-control text-end"
-                                                    value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '0' ?>"
-                                                    onkeyup="finaltotalcalculate();" required
-                                                    <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
-                                                <span class="input-group-text">%</span>
+                                                <label class="small form-label text-dark mb-1">VAT (%)</label>
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" id="vat" name="vat"
+                                                        class="form-control text-end bg-light text-dark fw-bold"
+                                                        value="<?= isset($invoice_main_data[0]['inv_tax_pc']) ? $invoice_main_data[0]['inv_tax_pc'] : '0' ?>"
+                                                        onkeyup="finaltotalcalculate();" required readonly
+                                                        <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                                    <span class="input-group-text bg-light text-dark fw-bold">%</span>
+                                                </div>
                                             </div>
-                                        </div>
+                                          
+                                          
                                         <div class="col">
-                                            <label class="small form-label text-dark mb-1">VAT Amount</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="text" id="vatamount_text" name="vatamount_text"
-                                                    class="form-control text-end bg-light" value="0" readonly>
-                                            </div>
+                                                <label class="small form-label text-dark mb-1">VAT Amount</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-light text-dark fw-bold">Rs.</span>
+                                                    <input type="text" id="vatamount_text" name="vatamount_text"
+                                                        class="form-control text-end bg-light text-dark fw-bold"
+                                                        value="0" readonly>
+                                                </div>
                                                 <input type="number" id="vatamount" name="vatamount"
-                                                    class="form-control text-end bg-light d-none" value="0" readonly>
-                                        </div>
-                                        <div class="col">
-                                            <label class="small form-label text-dark mb-1">Total Advance Amount</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-light">Rs.</span>
-                                                <input type="text" id="advanceamount_text" name="advanceamount_text"
                                                     class="form-control text-end bg-light" value="0" readonly>
                                             </div>
-                                                <input type="number" id="advanceamount" name="advanceamount"
-                                                    class="form-control text-end bg-light d-none" value="0" readonly> 
-                                        </div>
-                                        <div class="col">
-                                            <label class="small form-label text-dark mb-1">Total invoice Amount</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-warning text-white fw-bold">Rs.</span>
-                                                <input type="text" id="modeltotalpayment_text"
-                                                    name="modeltotalpayment_text"
-                                                    class="form-control text-end bg-warning text-white fw-bold"
-                                                    readonly>
+                                          
+                                          <div class="col">
+                                                <label class="small form-label text-dark mb-1">Total Invoice
+                                                    Amount without Tax</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span
+                                                        class="input-group-text bg-warning text-white fw-bold">Rs.</span>
+                                                    <input type="text" id="modeltotalpaymentwithouttax_text"
+                                                        name="modeltotalpaymentwithouttax_text"
+                                                        class="form-control text-end bg-warning text-white fw-bold"
+                                                        readonly>
+                                                </div>
+                                                <input type="number" step="any" id="modeltotalpaymentwithouttax"
+                                                    name="modeltotalpaymentwithouttax"
+                                                    class="form-control text-end text-dark fw-bold d-none" readonly>
                                             </div>
+                                          
+                                          
+                                          <div class="col">
+                                                <label class="small form-label text-dark mb-1">Total Invoice
+                                                    Amount with Tax</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span
+                                                        class="input-group-text bg-warning text-white fw-bold">Rs.</span>
+                                                    <input type="text" id="modeltotalpayment_text"
+                                                        name="modeltotalpayment_text"
+                                                        class="form-control text-end bg-warning text-white fw-bold"
+                                                        readonly>
+                                                </div>
                                                 <input type="number" step="any" id="modeltotalpayment"
                                                     name="modeltotalpayment"
-                                                    class="form-control text-end bg-warning text-white fw-bold d-none"
-                                                    readonly>
-                                        </div>
+                                                    class="form-control text-end text-dark fw-bold" readonly>
+                                            </div>
+                                          
+                                          
+                                        <div class="col">
+                                                <label class="small form-label text-dark mb-1">Total Advance
+                                                    Amount</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text text-white fw-bold"
+                                                        style="background-color: #f36078ff;">Rs.</span>
+                                                    <input type="text" id="advanceamount_text" name="advanceamount_text"
+                                                        class="form-control text-end text-white fw-bold"
+                                                        style="background-color: #f36078ff;" value="0" readonly>
+                                                </div>
+                                                <input type="number" id="advanceamount" name="advanceamount"
+                                                    class="form-control text-end bg-light d-none" value="0" readonly>
+                                            </div>
+                                          
 
                                         <div class="col">
-                                            <label class="small form-label text-dark mb-1">Total Payable Amount</label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-success text-white fw-bold">Rs.</span>
-                                                <input type="text" id="modeltotalpayablepayment_text"
-                                                    name="modeltotalpayablepayment_text"
-                                                    class="form-control text-end bg-success text-white fw-bold"
-                                                    readonly>
-                                            </div>
+                                                <label class="small form-label text-dark mb-1">Total Payable
+                                                    Amount</label>
+                                                <div class="input-group input-group-sm">
+                                                    <span
+                                                        class="input-group-text bg-success text-white fw-bold">Rs.</span>
+                                                    <input type="text" id="modeltotalpayablepayment_text"
+                                                        name="modeltotalpayablepayment_text"
+                                                        class="form-control text-end bg-success text-white fw-bold"
+                                                        readonly>
+                                                </div>
                                                 <input type="number" step="any" id="modeltotalpayablepayment"
                                                     name="modeltotalpayablepayment"
                                                     class="form-control text-end bg-success text-white fw-bold d-none"
                                                     readonly>
-                                        </div>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -488,15 +573,19 @@
                                 <div class="col-2">
                                     <label class="small form-label text-dark mb-1">Payment Method</label>
                                     <div class="input-group input-group-sm">
-                                        <select class="form-control form-control-sm selecter2 px-0" name="paymenttype"
-                                            id="paymenttype" required <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
-                                            <option value=" " <?= $selected_payment_type == ' ' ? 'selected' : '' ?>>
-                                                Select Payment Method</option>
-                                            <option value="1" <?= $selected_payment_type == '1' ? 'selected' : '' ?>>
-                                                Non-Credit</option>
-                                            <option value="2" <?= $selected_payment_type == '2' ? 'selected' : '' ?>>
-                                                Credit</option>
-                                        </select>
+                                        <select class="form-control form-control-sm selecter2 px-0"
+                                                name="paymenttype" id="paymenttype" required
+                                                <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                                <option value=" "
+                                                    <?= $selected_payment_type == ' ' ? 'selected' : '' ?>>
+                                                    Select Payment Method</option>
+                                                <option value="1"
+                                                    <?= $selected_payment_type == '1' ? 'selected' : '' ?>>
+                                                    Non-Credit</option>
+                                                <option value="2"
+                                                    <?= $selected_payment_type == '2' ? 'selected' : '' ?>>
+                                                    Credit</option>
+                                            </select>
                                     </div>
                                 </div>
                                 <div class="col-2" id="predict_days_col">
@@ -509,17 +598,18 @@
                                     </div>
                                 </div>
                                 <div class="col-2" id="due_date_col">
-                                    <label class="form-label small fw-bold">Due Date <span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" class="form-control form-control-sm input-field" name="due_date"
-                                        id="due_date" readonly
-                                        value="<?= isset($invoice_main_data[0]['due_date']) ? $invoice_main_data[0]['due_date'] : date('Y-m-d') ?>"
-                                        <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
-                                </div>
+                                        <label class="form-label small fw-bold">Due Date <span
+                                                class="text-danger">*</span></label>
+                                        <input type="date" class="form-control form-control-sm input-field"
+                                            name="due_date" id="due_date" readonly
+                                            value="<?= isset($invoice_main_data[0]['due_date']) ? $invoice_main_data[0]['due_date'] : date('Y-m-d') ?>"
+                                            <?= $is_confirmed == 0 ? '' : 'disabled' ?>>
+                                    </div>
                                 <div class="col-md">
                                     <label class="small form-label text-dark">Remarks</label>
-                                    <textarea name="remark" id="remark" class="form-control form-control-sm" rows="2"
-                                        <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
+                                     <textarea name="remark" id="remark" class="form-control form-control-sm"
+                                            rows="2"
+                                            <?= $is_confirmed == 0 ? '' : 'disabled' ?>><?= $invoice_main_data[0]['notes'] ?? '' ?></textarea>
 
 
                                     <input type="hidden" name="jobcard_id"
@@ -535,18 +625,17 @@
                                         value="<?= isset($invoice_main_data[0]['is_confirmed']) ? $invoice_main_data[0]['is_confirmed'] : '' ?>"
                                         required>
                                 </div>
-                                <?php if ($shift_status === 'current_user'): ?>
-                                    <div class="col-md-2 d-flex align-items-end">
-                                        <?php
-                                        $is_button_hidden = ($is_confirmed != 0) || ($is_edit ? $editcheck == 0 : $addcheck == 0);
-                                        ?>
-                                        <button type="button" id="btncreateorder"
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <?php
+                                    $is_button_hidden = ($is_confirmed != 0) || ($is_edit ? $editcheck == 0 : $addcheck == 0);
+                                    ?>
+                                    <button type="button" id="btncreateorder"
                                             class="btn btn-primary w-100 fw-bold <?= $is_button_hidden ? 'd-none' : '' ?>"
                                             onclick="createInvoice();">
-                                            <i class="fas fa-save me-2"></i><?= $is_edit ? 'Update' : 'Create'; ?> Invoice
+                                            <i class="fas fa-save me-2"></i><?= $is_edit ? 'Update' : 'Create'; ?>
+                                            Invoice
                                         </button>
-                                    </div>
-                                <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -571,6 +660,68 @@
     border-color: #0d6efd;
     background-color: #f8f9fa;
 }
+  
+ .form-switch-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        background: #f1f3f4;
+        border-radius: 2rem;
+        padding: 4px 16px;
+        min-width: 110px;
+        height: 38px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    }
+
+    .form-switch-input {
+        display: none;
+    }
+
+    .form-switch-label {
+        position: relative;
+        z-index: 2;
+        cursor: pointer;
+        font-weight: 500;
+        color: #555;
+        margin: 0 10px;
+        transition: color 0.2s;
+    }
+
+    .form-switch-slider {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        width: 48px;
+        height: 30px;
+        background: #e9ecef;
+        border-radius: 1.5rem;
+        transition: left 0.3s cubic-bezier(.4, 2, .3, 1), background 0.2s;
+        z-index: 1;
+    }
+
+    .form-switch-input:checked+.form-switch-label {
+        color: #fff;
+    }
+
+    #inv_tax_type_no:checked~.form-switch-slider {
+        left: 4px;
+        background: #dc3545;
+    }
+
+    #inv_tax_type_yes:checked~.form-switch-slider {
+        left: 58px;
+        background: #198754;
+    }
+
+    #inv_add_vat_no:checked~.form-switch-slider {
+        left: 4px;
+        background: #dc3545;
+    }
+
+    #inv_add_vat_yes:checked~.form-switch-slider {
+        left: 58px;
+        background: #198754;
+    }
 </style>
 
 <?php if (!empty($invoice_detail_data)) : ?>
@@ -1286,75 +1437,101 @@ function allExtraChargeCalculation() {
     finaltotalcalculate();
 }
 
-function finaltotalcalculate() {
-    let tableTotal = parseFloat($('#hidetotalorder').val()) || 0;
-    let extrachargeTotal = parseFloat($('#hidechargestotal').val()) || 0;
+//function finaltotalcalculate() {
+   // let tableTotal = parseFloat($('#hidetotalorder').val()) || 0;
+   // let extrachargeTotal = parseFloat($('#hidechargestotal').val()) || 0;
 
-    let subTotal = parseFloat($('#hidetotalorder').val()) + extrachargeTotal;
-    $('#total_sub_amount').val(subTotal.toFixed(2));
-    $('#total_sub_amount_text').val(formatCurrency(subTotal));
+   // let subTotal = parseFloat($('#hidetotalorder').val()) + extrachargeTotal;
+   // $('#total_sub_amount').val(subTotal.toFixed(2));
+   // $('#total_sub_amount_text').val(formatCurrency(subTotal));
 
-    let totalDiscount = parseFloat($('#total_discount').val()) || 0;
+    //let totalDiscount = parseFloat($('#total_discount').val()) || 0;
 
-    let totalAdvance = parseFloat($('#advanceamount').val()) || 0;
+   // let totalAdvance = parseFloat($('#advanceamount').val()) || 0;
 
-    let lastTotal = (tableTotal + extrachargeTotal) - totalDiscount;
-    $('#hiddenfulltotal').val(lastTotal.toFixed(2));
+   // let lastTotal = (tableTotal + extrachargeTotal) - totalDiscount;
+   // $('#hiddenfulltotal').val(lastTotal.toFixed(2));
 
-    let vatPercent = parseFloat($('#vat').val()) || 0;
-    let vatamount = (lastTotal * vatPercent) / 100;
-    $('#vatamount').val(vatamount.toFixed(2));
-    $('#vatamount_text').val(formatCurrency(vatamount));
+   // let vatPercent = parseFloat($('#vat').val()) || 0;
+   // let vatamount = (lastTotal * vatPercent) / 100;
+  //  $('#vatamount').val(vatamount.toFixed(2));
+   // $('#vatamount_text').val(formatCurrency(vatamount));
 
-    let totalPayment = lastTotal + vatamount;
-    let totalpayblePayment = (lastTotal + vatamount) - totalAdvance;
-    var showsum = addCommas(parseFloat(totalPayment).toFixed(2));
-    $('#grand-total-amount').text('Rs. ' + showsum);
-    $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
-    $('#modeltotalpayment').val(totalPayment.toFixed(2));
-    $('#modeltotalpayment_text').val(formatCurrency(totalPayment));
-    $('#modeltotalpayablepayment').val(totalpayblePayment.toFixed(2));
-    $('#modeltotalpayablepayment_text').val(formatCurrency(totalpayblePayment));
+   // let totalPayment = lastTotal + vatamount;
+   // let totalpayblePayment = (lastTotal + vatamount) - totalAdvance;
+   // var showsum = addCommas(parseFloat(totalPayment).toFixed(2));
+   // $('#grand-total-amount').text('Rs. ' + showsum);
+   // $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
+   // $('#modeltotalpayment').val(totalPayment.toFixed(2));
+   // $('#modeltotalpayment_text').val(formatCurrency(totalPayment));
+   // $('#modeltotalpayablepayment').val(totalpayblePayment.toFixed(2));
+    //$('#modeltotalpayablepayment_text').val(formatCurrency(totalpayblePayment));
 
-    let advancePayment = parseFloat($('#payment_total_advance_amount').val()) || 0;
-
-    // const payments = [];
-    // let totalPaid = 0;
-
-    // $('.payment-toggle:checked').each(function() {
-    //   const type = $(this).val();
-    //   const card = $(this).closest('.payment-method-card');
-    //   const amount = parseFloat(card.find('.amount-input input,.bank-amount').val()) || 0;
-
-    //   const payment = { type, amount };
-    //   if(type === '3') {
-    //     payment.reference = card.find('.bank-reference').val() || '';
-    //   }
-
-    //   payments.push(payment);
-    //   totalPaid += amount;
-    // });
-
-    // $('#payment_data').val(JSON.stringify(payments));
-
-    // totalPaid = totalPaid + advancePayment;
-    // $('#total-paid-amount').text('Rs. ' + addCommas(totalPaid.toFixed(2)));
-    // $('#payment_total_paid_amount').val(totalPaid.toFixed(2));
-
-    // var balancePayment = totalPayment - totalPaid;
-    // balancePayment = balancePayment < 0 ? Math.abs(balancePayment) : 0;
-    // $('#total-balance-amount').text('Rs. ' + addCommas(balancePayment.toFixed(2)));
-    // $('#payment_total_balance_amount').val(balancePayment.toFixed(2));
+   // let advancePayment = parseFloat($('#payment_total_advance_amount').val()) || 0;
 
 
-    // var arrearsPayment = totalPayment - totalPaid;
-    // arrearsPayment = arrearsPayment > 0 ? Math.abs(arrearsPayment) : 0;
-    // $('#total-arrears-amount').text('Rs. ' + addCommas(arrearsPayment.toFixed(2)));
-    // $('#payment_total_arrears_amount').val(arrearsPayment.toFixed(2));
+//}
+
+  
+  function finaltotalcalculate() {
+        let tableTotal = parseFloat($('#hidetotalorder').val()) || 0;
+        let extrachargeTotal = parseFloat($('#hidechargestotal').val()) || 0;
+        let totalDiscount = parseFloat($('#total_discount').val()) || 0;
+        let totalAdvance = parseFloat($('#advanceamount').val()) || 0;
+        let vatPercent = parseFloat($('#vat').val()) || 0;
+
+        // --- Subtotal (before discount) ---
+        let subTotal = parseFloat($('#hidetotalorder').val()) + extrachargeTotal;
+        $('#total_sub_amount').val(subTotal.toFixed(2));
+        $('#total_sub_amount_text').val(formatCurrency(subTotal));
 
 
-}
+        // --- Total after discount ---
+        let lastTotal = subTotal - totalDiscount;
+        $('#hiddenfulltotal').val(lastTotal.toFixed(2));
 
+
+        // let vatamount = (lastTotal * vatPercent) / 100;
+        // $('#vatamount').val(vatamount.toFixed(2));
+        // $('#vatamount_text').val(formatCurrency(vatamount));
+
+        // --- Get Add VAT selection ---
+        let addVAT = $('input[name="inv_add_vat"]:checked').val(); // 0 = No, 1 = Yes
+
+        let vatamount = 0;
+        let totalPayment_without_tax = 0;
+        let totalPayment = 0;
+
+        if (addVAT === "0") {
+            // VAT already included in lastTotal 
+            totalPayment_without_tax = (lastTotal * 100) / (vatPercent + 100);
+            vatamount = lastTotal - totalPayment_without_tax;
+            totalPayment = totalPayment_without_tax + vatamount;
+        } else {
+            // VAT added on top of lastTotal
+            vatamount = (lastTotal * vatPercent) / 100;
+            totalPayment_without_tax = lastTotal;
+            totalPayment = lastTotal + vatamount;
+        }
+
+        // --- Update VAT and Totals ---
+        $('#vatamount').val(vatamount.toFixed(2));
+        $('#vatamount_text').val(formatCurrency(vatamount));
+
+        $('#modeltotalpaymentwithouttax').val(totalPayment_without_tax.toFixed(2));
+        $('#modeltotalpaymentwithouttax_text').val(formatCurrency(totalPayment_without_tax));
+
+        // --- Final payable after advance ---
+        let totalpayblePayment = totalPayment - totalAdvance;
+
+        $('#grand-total-amount').text('Rs. ' + addCommas(parseFloat(totalPayment).toFixed(2)));
+        $('#payment_total_grand_amount').val(totalPayment.toFixed(2));
+        $('#modeltotalpayment').val(totalPayment.toFixed(2));
+        $('#modeltotalpayment_text').val(formatCurrency(totalPayment));
+        $('#modeltotalpayablepayment').val(totalpayblePayment.toFixed(2));
+        $('#modeltotalpayablepayment_text').val(formatCurrency(totalpayblePayment));
+
+    }
 
 // Soft Delete Functions
 function ItemSoftDelete(button) {
@@ -1449,3 +1626,19 @@ $(document).ready(function() {
     });
 });
 </script>
+  <script>
+    $(document).ready(function() {
+        $('input[name="inv_tax_type"]').change(function() {
+            if ($(this).val() === '1') {
+                $('#vat').val(18).trigger('keyup');
+                finaltotalcalculate();
+            } else {
+                $('#vat').val(0).trigger('keyup');
+                finaltotalcalculate();
+            }
+        });
+        $('input[name="inv_add_vat"]').on('change', function() {
+            finaltotalcalculate();
+        });
+    });
+    </script>
