@@ -196,6 +196,7 @@ $printed_time = $printed_datetime->format('H:i');
 // Extract data from gate pass
 $gp = $gate_pass;
 $jobCard = $gp['job_card'] ?? [];
+$sales_person = $jobCard['sales_person_name'] ?? '';
 $to_location = $gp['to_location'] ?? [];
 $location = $gp['location'] ?? $to_location;
 $vehicle_number = $jobCard['vehicle_number'] ?? 'N/A';
@@ -225,16 +226,16 @@ $remarks = $gp['remarks'] ?? '';
 			<td class="label">Job Card No:</td>
 			<td class="value"><?= $job_card_number ?></td>
 		</tr>
+		<?php if (!empty($sales_person)): ?>
+		<tr>
+			<td class="label">Sales Person:</td>
+			<td class="value"><?= $sales_person ?></td>
+		</tr>
+		<?php endif; ?>
 		<?php if (!empty($to_location['location_name'])): ?>
 		<tr>
 			<td class="label">To Location:</td>
 			<td class="value"><?= $to_location['location_name'] ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($location['location_name'])): ?>
-		<tr>
-			<td class="label">Gate Location:</td>
-			<td class="value"><?= $location['location_name'] ?></td>
 		</tr>
 		<?php endif; ?>
 		<?php if (!empty($transfer_purpose) && $transfer_purpose !== 'N/A'): ?>

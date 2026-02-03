@@ -329,4 +329,13 @@ $config['api_endpoints'] = [
     'gate_pass_locations_create_v1' => '/v1/gate-pass/locations',
     'gate_pass_locations_update_v1' => '/v1/gate-pass/locations', // PUT: /v1/gate-pass/locations/{id}
     'gate_pass_locations_delete_v1' => '/v1/gate-pass/locations', // DELETE: /v1/gate-pass/locations/{id}
+
+    // ============================================================
+    // ADMIN PORTAL ENDPOINTS v1
+    // ============================================================
+    'admin_portal_get_sales_order_details_v1' => '/v1/admin-portal/sales-order', // GET: /v1/admin-portal/sales-order/{id}
+    'admin_portal_get_relation_details_v1' => '/v1/admin-portal/sales-order-relation', // GET: /v1/admin-portal/sales-order-relation/{id}
+    'admin_portal_emergency_action_v1' => '/v1/admin-portal/emergency-action',
+    'admin_portal_get_logs_v1' => '/v1/admin-portal/logs',
+    'admin_portal_get_log_v1' => '/v1/admin-portal/logs', // GET: /v1/admin-portal/logs/{id}
 ];

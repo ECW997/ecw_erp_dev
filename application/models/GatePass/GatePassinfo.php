@@ -100,6 +100,51 @@ class GatePassinfo extends CI_Model {
         return $this->make_api_call('POST', $url, [], $headers);
     }
 
+    public function approveGatePass($api_token, $id) {
+        $headers = get_api_headers($api_token);
+        $CI =& get_instance();
+        $CI->config->load('api_config');
+        $base_url = $CI->config->item('api_base_url');
+        $url = $base_url . '/v1/gate-pass/' . $id . '/approve';
+        return $this->make_api_call('POST', $url, [], $headers);
+    }
+
+    public function ignoreDocAccess($api_token, $id) {
+        $headers = get_api_headers($api_token);
+        $CI =& get_instance();
+        $CI->config->load('api_config');
+        $base_url = $CI->config->item('api_base_url');
+        $url = $base_url . '/v1/gate-pass/' . $id . '/ignore-doc-access';
+        return $this->make_api_call('POST', $url, [], $headers);
+    }
+
+    public function createReprintApproveRequest($api_token, $gate_pass_id, $reason) {
+        $headers = get_api_headers($api_token);
+        $CI =& get_instance();
+        $CI->config->load('api_config');
+        $base_url = $CI->config->item('api_base_url');
+        $url = $base_url . '/v1/gate-pass/' . $gate_pass_id . '/reprint-approve-request';
+        return $this->make_api_call('POST', $url, ['reason' => $reason], $headers);
+    }
+
+    public function listReprintRequests($api_token) {
+        $headers = get_api_headers($api_token);
+        $CI =& get_instance();
+        $CI->config->load('api_config');
+        $base_url = $CI->config->item('api_base_url');
+        $url = $base_url . '/v1/gate-pass/reprint-requests';
+        return $this->make_api_call('GET', $url, [], $headers);
+    }
+
+    public function approveReprintRequest($api_token, $request_id) {
+        $headers = get_api_headers($api_token);
+        $CI =& get_instance();
+        $CI->config->load('api_config');
+        $base_url = $CI->config->item('api_base_url');
+        $url = $base_url . '/v1/gate-pass/reprint-requests/' . $request_id . '/approve';
+        return $this->make_api_call('POST', $url, [], $headers);
+    }
+
     public function getJobCardStatus($api_token, $jobCardId) {
         $headers = get_api_headers($api_token);
         $CI =& get_instance();

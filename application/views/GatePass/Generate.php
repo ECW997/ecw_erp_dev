@@ -213,7 +213,29 @@
 
                             <!-- External Transfer Fields (for EXTERNAL category) -->
                             <div class="form-section" id="externalFields" style="display: none;">
-                                <h6><i class="fas fa-building"></i> External Party Information</h6>
+                                <!-- Common Transfer Purpose Section -->
+                                <h6><i class="fas fa-info-circle"></i> Transfer Purpose (Common) <span id="transfer_purpose_required" style="display: none;">*</span></h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Transfer Purpose <span id="transfer_purpose_label_required" style="display: none;">*</span></label>
+                                        <select id="external_transfer_purpose" class="form-control select2" style="width: 100%;">
+                                            <option value="">Select Transfer Purpose</option>
+                                            <?php if (!empty($transfer_purposes)) : ?>
+                                            <?php foreach ($transfer_purposes as $purpose) : ?>
+                                            <option value="<?= htmlspecialchars($purpose['name']) ?>"><?= htmlspecialchars($purpose['name']) ?></option>
+                                            <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                        <small class="form-text text-muted">Search and select from predefined purposes <span id="transfer_purpose_hint" style="display: none;">(Required for External OUT)</span></small>
+                                        <input type="text" id="external_transfer_purpose_custom" class="form-control mt-2" placeholder="Or enter custom purpose" style="display: none;" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Expected Return Date</label>
+                                        <input type="date" id="expected_return_date" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <h6 class="mt-3"><i class="fas fa-building"></i> External Party Information</h6>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>External Party Name *</label>
@@ -241,27 +263,8 @@
                                         <input type="text" id="external_party_address" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-md-6">
-                                        <label>Transfer Purpose *</label>
-                                        <select id="external_transfer_purpose" class="form-control select2" style="width: 100%;" required>
-                                            <option value="">Select Transfer Purpose</option>
-                                            <?php if (!empty($transfer_purposes)) : ?>
-                                            <?php foreach ($transfer_purposes as $purpose) : ?>
-                                            <option value="<?= htmlspecialchars($purpose['name']) ?>"><?= htmlspecialchars($purpose['name']) ?></option>
-                                            <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </select>
-                                        <small class="form-text text-muted">Search and select from predefined purposes</small>
-                                        <input type="text" id="external_transfer_purpose_custom" class="form-control mt-2" placeholder="Or enter custom purpose" style="display: none;" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Expected Return Date</label>
-                                        <input type="date" id="expected_return_date" class="form-control" />
-                                    </div>
-                                </div>
 
-                                <h6 class="mt-3">Company Driver/Worker Information</h6>
+                                <h6 class="mt-3"><i class="fas fa-users"></i> Company Driver/Worker Information</h6>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label>Driver (Employee ID)</label>
@@ -331,6 +334,9 @@ var jobCard = <?= json_encode($job_card ?? null) ?>;
 var defaultLocationId = <?= json_encode($default_location_id ?? null) ?>;
 var defaultLocationId = <?= json_encode($default_location_id ?? null) ?>;
 
+// Store customer data globally for auto-fill
+window.currentCustomerData = null;
+
 $(document).ready(function() {
     // Initialize Job Card Select2
     var jobCardSelect = $('#job_card_id');
@@ -393,7 +399,14 @@ $(document).ready(function() {
             autoPopulateFromLocation();
         }
         if ($('#externalFields').is(':visible')) {
-            $('#external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_name, #company_driver_contact, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom').prop('disabled', false);
+            // Enable all external party and company/worker information fields together
+            // Remove both disabled and readonly attributes, and reset styling
+            var externalFields = '#external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_id, #company_driver_name, #company_driver_contact, #company_worker_id, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom';
+            $(externalFields).prop('disabled', false).prop('readonly', false).removeAttr('readonly').css({
+                'background-color': '',
+                'cursor': '',
+                'opacity': '1'
+            });
         }
     }
     
@@ -405,8 +418,8 @@ $(document).ready(function() {
         $('#pass_category, #gate_pass_type').prop('disabled', true).val('');
         $('#location_id').prop('disabled', true); // Don't clear location_id value to preserve options
         
-        // Disable all other fields
-        $('#from_location_id, #to_location_id, #external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_name, #company_driver_contact, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom').prop('disabled', true).val('');
+        // Disable all other fields (including all external party and company/worker fields)
+        $('#from_location_id, #to_location_id, #external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_id, #company_driver_name, #company_driver_contact, #company_worker_id, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom').prop('disabled', true).val('');
         $('#from_location_id').css('background-color', '').css('cursor', '');
         
         // Hide internal/external fields
@@ -433,6 +446,7 @@ $(document).ready(function() {
             $('#jobCardInfo').hide();
             $('#gatePassStatusAlert').hide().html('');
             window.currentGatePassStatus = {};
+            window.currentCustomerData = null; // Clear customer data
             $('#pass_category option[value="MAIN"]').prop('disabled', false);
             $('#pass_category').val('').trigger('change');
         }
@@ -465,7 +479,8 @@ $(document).ready(function() {
         }
         
         // Reset gate pass type readonly state when category changes
-        if (category !== 'INTERNAL') {
+        // EXTERNAL and INTERNAL will be set to readonly after auto-selection
+        if (category !== 'INTERNAL' && category !== 'EXTERNAL') {
             $('#gate_pass_type').prop('readonly', false).prop('disabled', false).css('background-color', '').css('cursor', '');
             $('#gate_pass_type_hint').hide();
         }
@@ -474,10 +489,26 @@ $(document).ready(function() {
         toggleFieldSections();
         updateLocationDefault();
         
+        // Ensure external fields are enabled when EXTERNAL category is selected
+        if (category === 'EXTERNAL') {
+            // Enable all external party and company/worker information fields
+            // Remove both disabled and readonly attributes, and reset styling
+            var externalFields = '#external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_id, #company_driver_name, #company_driver_contact, #company_worker_id, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom';
+            $(externalFields).prop('disabled', false).prop('readonly', false).removeAttr('readonly').css({
+                'background-color': '',
+                'cursor': '',
+                'opacity': '1'
+            });
+        }
+        
         // Auto-select type after options are updated (use setTimeout to ensure DOM is ready)
         setTimeout(function() {
             if (category === 'INTERNAL') {
                 autoSelectInternalType();
+            } else if (category === 'EXTERNAL') {
+                autoSelectExternalType();
+                // Update transfer purpose required status after type is selected
+                updateTransferPurposeRequired();
             } else if (category === 'MAIN') {
                 autoSelectMainType();
             }
@@ -505,8 +536,16 @@ $(document).ready(function() {
                 updateInternalLocationId();
             }, 100);
             locationHint.hide();
+        } else if (category === 'EXTERNAL') {
+            // For EXTERNAL category, auto-select location based on gate pass type
+            locationSelect.prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+            // Update location_id immediately when category changes to EXTERNAL
+            setTimeout(function() {
+                updateExternalLocationId();
+            }, 100);
+            locationHint.hide();
         } else {
-            // For EXTERNAL or other categories, clear selection and enable
+            // For other categories, clear selection and enable
             locationSelect.val('');
             locationSelect.prop('readonly', false).css('background-color', '').css('cursor', '');
             locationHint.hide();
@@ -567,16 +606,73 @@ $(document).ready(function() {
         }
     }
     
-    // Prevent manual changes to location_id when it's auto-selected for INTERNAL
+    // Function to update location_id for EXTERNAL category based on gate pass type
+    function updateExternalLocationId() {
+        var category = $('#pass_category').val();
+        if (category !== 'EXTERNAL') {
+            autoSelectedLocationId = null;
+            return;
+        }
+        
+        var gatePassType = $('#gate_pass_type').val();
+        var locationSelect = $('#location_id');
+        var status = window.currentGatePassStatus || {};
+        
+        if (gatePassType === 'TEMP_IN') {
+            // TEMP_IN: Vehicle coming back to company -> use default/production location
+            if (defaultLocationId) {
+                autoSelectedLocationId = defaultLocationId;
+                locationSelect.val(defaultLocationId).trigger('change');
+                locationSelect.prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+                $('#location_hint').show().text('Default: Production location (vehicle returning)');
+            } else {
+                autoSelectedLocationId = null;
+                locationSelect.val('');
+                $('#location_hint').hide();
+            }
+        } else if (gatePassType === 'TEMP_OUT') {
+            // TEMP_OUT: Vehicle going out -> use current location from tracking
+            var currentLocationId = getCurrentLocationFromTracking();
+            if (currentLocationId) {
+                autoSelectedLocationId = currentLocationId;
+                locationSelect.val(currentLocationId).trigger('change');
+                locationSelect.prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+                $('#location_hint').show().text('Auto-selected: Current vehicle location (vehicle leaving)');
+            } else {
+                // Fallback to default location if current location not found
+                if (defaultLocationId) {
+                    autoSelectedLocationId = defaultLocationId;
+                    locationSelect.val(defaultLocationId).trigger('change');
+                    locationSelect.prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+                    $('#location_hint').show().text('Default: Production location');
+                } else {
+                    autoSelectedLocationId = null;
+                    locationSelect.val('');
+                    $('#location_hint').hide();
+                }
+            }
+        } else {
+            autoSelectedLocationId = null;
+            locationSelect.val('');
+            $('#location_hint').hide();
+        }
+    }
+    
+    // Prevent manual changes to location_id when it's auto-selected for INTERNAL or EXTERNAL
     $('#location_id').on('change', function() {
         var category = $('#pass_category').val();
-        if (category === 'INTERNAL' && autoSelectedLocationId !== null) {
+        if ((category === 'INTERNAL' || category === 'EXTERNAL') && autoSelectedLocationId !== null) {
             // If user tries to manually change an auto-selected value, revert it
             var currentValue = $(this).val();
             if (currentValue != autoSelectedLocationId) {
-                error_toastify('Gate Location is auto-managed for INTERNAL category and cannot be changed manually.');
+                var categoryName = category === 'INTERNAL' ? 'INTERNAL' : 'EXTERNAL';
+                error_toastify('Gate Location is auto-managed for ' + categoryName + ' category and cannot be changed manually.');
                 $(this).val(autoSelectedLocationId);
-                updateInternalLocationId();
+                if (category === 'INTERNAL') {
+                    updateInternalLocationId();
+                } else if (category === 'EXTERNAL') {
+                    updateExternalLocationId();
+                }
             }
         }
     });
@@ -658,7 +754,7 @@ $(document).ready(function() {
         }
     });
     
-    // When gate pass type changes for INTERNAL, update location_id
+    // When gate pass type changes for INTERNAL or EXTERNAL, update location_id
     // Also check if user manually changed it (remove readonly if they did)
     $('#gate_pass_type').on('change', function() {
         var category = $('#pass_category').val();
@@ -677,8 +773,174 @@ $(document).ready(function() {
                 $this.prop('readonly', false).css('background-color', '').css('cursor', '');
                 $('#gate_pass_type_hint').hide();
             }
+        } else if (category === 'EXTERNAL') {
+            // Update location_id immediately when gate pass type changes for EXTERNAL
+            setTimeout(function() {
+                updateExternalLocationId();
+            }, 50);
+            
+            // Update transfer purpose required status based on gate pass type
+            updateTransferPurposeRequired();
+            
+            // If user manually changed the value, allow editing (remove readonly)
+            var $this = $(this);
+            if ($this.prop('readonly')) {
+                $this.prop('readonly', false).css('background-color', '').css('cursor', '');
+                $('#gate_pass_type_hint').hide();
+            }
         }
     });
+    
+    // Function to update transfer purpose required status based on gate pass type
+    function updateTransferPurposeRequired() {
+        var category = $('#pass_category').val();
+        var gatePassType = $('#gate_pass_type').val();
+        
+        if (category === 'EXTERNAL') {
+            // Transfer purpose is required only for External OUT
+            if (gatePassType === 'TEMP_OUT') {
+                $('#external_transfer_purpose').prop('required', true);
+                $('#transfer_purpose_required').show();
+                $('#transfer_purpose_label_required').show();
+                $('#transfer_purpose_hint').show();
+            } else {
+                // TEMP_IN - not required
+                $('#external_transfer_purpose').prop('required', false);
+                $('#transfer_purpose_required').hide();
+                $('#transfer_purpose_label_required').hide();
+                $('#transfer_purpose_hint').hide();
+            }
+        } else {
+            // Not external category - remove required
+            $('#external_transfer_purpose').prop('required', false);
+            $('#transfer_purpose_required').hide();
+            $('#transfer_purpose_label_required').hide();
+            $('#transfer_purpose_hint').hide();
+        }
+    }
+    
+    /**
+     * Check latest OUT gate pass (internal or external) and auto-trigger external type if needed
+     */
+    function checkAndAutoTriggerExternalType(status) {
+        // Check if MAIN IN exists without MAIN OUT
+        if (!status.has_in || status.has_out) {
+            return; // Only trigger when MAIN IN exists without MAIN OUT
+        }
+        
+        // Use latest_out_gate_pass from backend if available, otherwise find it manually
+        var latestOutGatePass = status.latest_out_gate_pass || null;
+        
+        if (!latestOutGatePass) {
+            // Fallback: Get latest OUT gate pass from gate passes array
+            var gatePasses = status.gate_passes || [];
+            var latestOutDate = null;
+            
+            gatePasses.forEach(function(gp) {
+                if (gp.gate_pass_type === 'TEMP_OUT' && gp.status === 'ACTIVE') {
+                    var gpDate = new Date(gp.created_at);
+                    if (!latestOutDate || gpDate > latestOutDate) {
+                        latestOutDate = gpDate;
+                        latestOutGatePass = gp;
+                    }
+                }
+            });
+        }
+        
+        // If latest OUT is external, auto-trigger external category
+        if (latestOutGatePass && latestOutGatePass.pass_category === 'EXTERNAL') {
+            // Auto-select EXTERNAL category
+            var currentCategory = $('#pass_category').val();
+            if (currentCategory !== 'EXTERNAL') {
+                $('#pass_category').val('EXTERNAL').trigger('change');
+                
+                // Show info message
+                var alertHtml = '<div class="alert alert-info alert-dismissible fade show mt-2" role="alert">' +
+                    '<strong><i class="fas fa-info-circle"></i> Auto-selected:</strong> ' +
+                    'Latest gate pass OUT is External. External category has been auto-selected. ' +
+                    'Please create External IN gate pass to bring the vehicle back.' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>';
+                
+                // Append to gate pass status alert or show separately
+                if ($('#gatePassStatusAlert').length) {
+                    $('#gatePassStatusAlert').after(alertHtml);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Function to auto-select EXTERNAL gate pass type based on latest record
+     * Logic: If any TEMP_OUT external exists (active), auto-select TEMP_IN, else auto-select TEMP_OUT
+     */
+    function autoSelectExternalType() {
+        var category = $('#pass_category').val();
+        if (category !== 'EXTERNAL') {
+            // Reset readonly state if not EXTERNAL
+            $('#gate_pass_type').prop('readonly', false).prop('disabled', false).css('background-color', '');
+            $('#gate_pass_type_hint').hide();
+            return; // Only for EXTERNAL category
+        }
+        
+        var status = window.currentGatePassStatus || {};
+        var gatePassTypeSelect = $('#gate_pass_type');
+        var wasAutoSelected = false;
+        
+        var gatePasses = status.gate_passes || [];
+        var hasActiveExternalOut = false;
+        
+        // Check latest_out_gate_pass from backend first (most reliable)
+        var latestOutGatePass = status.latest_out_gate_pass || null;
+        if (latestOutGatePass && 
+            latestOutGatePass.pass_category === 'EXTERNAL' && 
+            latestOutGatePass.gate_pass_type === 'TEMP_OUT' &&
+            latestOutGatePass.status === 'ACTIVE') {
+            hasActiveExternalOut = true;
+        }
+        
+        // Also check gate passes array for any active TEMP_OUT external gate pass
+        if (!hasActiveExternalOut) {
+            gatePasses.forEach(function(gp) {
+                if (gp.pass_category === 'EXTERNAL' && 
+                    gp.gate_pass_type === 'TEMP_OUT' && 
+                    gp.status === 'ACTIVE') {
+                    hasActiveExternalOut = true;
+                    return false; // Break loop
+                }
+            });
+        }
+        
+        // Auto-select based on latest record
+        // If any TEMP_OUT external exists (active), auto-select TEMP_IN, else auto-select TEMP_OUT
+        if (hasActiveExternalOut) {
+            // Vehicle is OUT (external) -> need TEMP_IN to bring back
+            gatePassTypeSelect.val('TEMP_IN').trigger('change');
+            wasAutoSelected = true;
+        } else {
+            // No active external OUT -> vehicle is IN -> can create TEMP_OUT
+            gatePassTypeSelect.val('TEMP_OUT').trigger('change');
+            wasAutoSelected = true;
+        }
+        
+        // If auto-selected, make field readonly and update location
+        if (wasAutoSelected) {
+            gatePassTypeSelect.prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+            $('#gate_pass_type_hint').show();
+            // Update location after gate pass type is selected
+            setTimeout(function() {
+                updateExternalLocationId();
+                // Update transfer purpose required status
+                updateTransferPurposeRequired();
+            }, 100);
+        } else {
+            // If not auto-selected, allow manual selection
+            gatePassTypeSelect.prop('readonly', false).css('background-color', '').css('cursor', '');
+            $('#gate_pass_type_hint').hide();
+            // Update transfer purpose required status
+            updateTransferPurposeRequired();
+        }
+    }
     
     // Function to auto-select INTERNAL gate pass type based on vehicle status
     function autoSelectInternalType() {
@@ -754,6 +1016,81 @@ $(document).ready(function() {
             $('#external_transfer_purpose_custom').hide().prop('required', false);
             transferPurposeSelect.prop('required', true);
         }
+    });
+
+    // External Party Type change handler - auto-fill customer details when "Customer" is selected
+    $('#external_party_type').on('change', function() {
+        var partyType = $(this).val();
+        var category = $('#pass_category').val();
+        
+        // Only auto-fill if EXTERNAL category is selected
+        if (category !== 'EXTERNAL') {
+            return;
+        }
+        
+        if (partyType === 'Customer' && window.currentCustomerData) {
+            // Auto-fill external party information from customer data
+            var customerData = window.currentCustomerData;
+            var filledFields = [];
+            
+            if (customerData.name) {
+                $('#external_party_name').val(customerData.name).trigger('change');
+                filledFields.push('Name');
+            }
+            
+            if (customerData.contact) {
+                $('#external_party_contact').val(customerData.contact).trigger('change');
+                filledFields.push('Contact');
+            }
+            
+            if (customerData.address) {
+                // Build full address including address_2, city, and district if available
+                var fullAddress = customerData.address;
+                if (customerData.address_2 && customerData.address_2.trim() !== '') {
+                    fullAddress += ', ' + customerData.address_2;
+                }
+                if (customerData.city && customerData.city.trim() !== '') {
+                    fullAddress += ', ' + customerData.city;
+                }
+                if (customerData.district && customerData.district.trim() !== '') {
+                    fullAddress += ', ' + customerData.district;
+                }
+                $('#external_party_address').val(fullAddress).trigger('change');
+                filledFields.push('Address');
+            }
+            
+            // Show success message if any fields were filled
+            if (filledFields.length > 0) {
+                if (typeof success_toastify === 'function') {
+                    success_toastify('Customer details auto-filled: ' + filledFields.join(', '));
+                } else if (typeof toastify === 'function') {
+                    toastify({
+                        text: 'Customer details auto-filled: ' + filledFields.join(', '),
+                        duration: 3000,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }).showToast();
+                } else {
+                    console.log('Customer details auto-filled: ' + filledFields.join(', '));
+                }
+            } else {
+                // No customer data available
+                if (typeof error_toastify === 'function') {
+                    error_toastify('Customer data not available for auto-fill.');
+                } else {
+                    console.warn('Customer data not available for auto-fill.');
+                }
+            }
+        } else if (partyType === 'Customer' && !window.currentCustomerData) {
+            // Customer selected but no customer data available
+            if (typeof error_toastify === 'function') {
+                error_toastify('Customer data not found. Please fill manually.');
+            } else {
+                console.warn('Customer data not found. Please fill manually.');
+            }
+        }
+        // If partyType is not 'Customer', don't clear fields - allow user to keep data
     });
 
     // Form submit
@@ -903,13 +1240,14 @@ $(document).ready(function() {
     }
 
     // Function to determine current location based on gate pass tracking
+    // Includes INTERNAL, MAIN, and EXTERNAL gate passes to determine current location
     function getCurrentLocationFromTracking() {
         var status = window.currentGatePassStatus || {};
         var gatePasses = status.gate_passes || [];
         
-        // Filter only INTERNAL and MAIN gate passes, sorted by date (newest first)
+        // Filter INTERNAL, MAIN, and EXTERNAL gate passes, sorted by date (newest first)
         var relevantGatePasses = gatePasses.filter(function(gp) {
-            return gp.pass_category === 'INTERNAL' || gp.pass_category === 'MAIN';
+            return gp.pass_category === 'INTERNAL' || gp.pass_category === 'MAIN' || gp.pass_category === 'EXTERNAL';
         });
         
         // Sort by created_at (newest first)
@@ -936,15 +1274,29 @@ $(document).ready(function() {
         });
         
         sortedByDate.forEach(function(gp) {
-            if (gp.gate_pass_type === 'TEMP_OUT') {
-                // Vehicle left from_location, so current location is now to_location
-                if (gp.to_location_id) {
-                    currentLocationId = gp.to_location_id;
+            if (gp.pass_category === 'INTERNAL') {
+                if (gp.gate_pass_type === 'TEMP_OUT') {
+                    // Vehicle left from_location, so current location is now to_location
+                    if (gp.to_location_id) {
+                        currentLocationId = gp.to_location_id;
+                    }
+                } else if (gp.gate_pass_type === 'TEMP_IN') {
+                    // Vehicle entered to_location, so current location is to_location
+                    if (gp.to_location_id) {
+                        currentLocationId = gp.to_location_id;
+                    }
                 }
-            } else if (gp.gate_pass_type === 'TEMP_IN') {
-                // Vehicle entered to_location, so current location is to_location
-                if (gp.to_location_id) {
-                    currentLocationId = gp.to_location_id;
+            } else if (gp.pass_category === 'EXTERNAL') {
+                if (gp.gate_pass_type === 'TEMP_OUT') {
+                    // Vehicle went out to external party, current location is the location_id where it left from
+                    if (gp.location_id) {
+                        currentLocationId = gp.location_id;
+                    }
+                } else if (gp.gate_pass_type === 'TEMP_IN') {
+                    // Vehicle returned from external party, current location is the location_id where it returned to
+                    if (gp.location_id) {
+                        currentLocationId = gp.location_id;
+                    }
                 }
             }
         });
@@ -1010,11 +1362,27 @@ $(document).ready(function() {
             $('#internalFields').hide();
             $('#externalFields').show();
             $('#from_location_id, #to_location_id').prop('required', false);
-            $('#external_party_name, #external_party_type, #external_transfer_purpose').prop('required', true);
+            $('#external_party_name, #external_party_type').prop('required', true);
+            // Transfer purpose required status will be set by updateTransferPurposeRequired() based on gate pass type
+            updateTransferPurposeRequired();
             
-            // Enable location_id for EXTERNAL
-            $('#location_id').prop('readonly', false).css('background-color', '').css('cursor', '');
-            autoSelectedLocationId = null; // Clear auto-selected value
+            // Enable all external party and company/worker information fields
+            // Remove both disabled and readonly attributes, and reset styling to make them editable
+            var externalFields = '#external_party_name, #external_party_type, #external_transfer_purpose, #external_party_contact, #external_party_address, #expected_return_date, #company_driver_id, #company_driver_name, #company_driver_contact, #company_worker_id, #company_worker_name, #company_worker_contact, #external_transfer_purpose_custom';
+            $(externalFields).prop('disabled', false).prop('readonly', false).removeAttr('readonly').css({
+                'background-color': '',
+                'cursor': '',
+                'opacity': '1'
+            });
+            
+            // Make location_id readonly and auto-sync based on gate pass type for EXTERNAL
+            // TEMP_IN: location_id = default/production location (vehicle returning)
+            // TEMP_OUT: location_id = current location from tracking (vehicle leaving)
+            $('#location_id').prop('readonly', true).prop('disabled', false).css('background-color', '#e9ecef').css('cursor', 'not-allowed');
+            // Update location_id with a slight delay to ensure all fields are ready
+            setTimeout(function() {
+                updateExternalLocationId();
+            }, 100);
         } else {
             $('#internalFields').hide();
             $('#externalFields').hide();
@@ -1088,15 +1456,35 @@ $(document).ready(function() {
                         
                         // Handle customer - could be object or nested
                         var customerName = '-';
+                        var customerData = null;
+                        
                         if (jobCard.customer_name) {
                             customerName = jobCard.customer_name;
+                            customerData = {
+                                name: jobCard.customer_name,
+                                contact: jobCard.customer_contact || jobCard.customer_phone || jobCard.customer_mobile_num || jobCard.customer_mobile || jobCard.contact || jobCard.phone || '',
+                                address: jobCard.customer_address || jobCard.address || ''
+                            };
                         } else if (jobCard.customer) {
                             if (typeof jobCard.customer === 'object') {
                                 customerName = jobCard.customer.customer_name || jobCard.customer.name || '-';
+                                
+                                // Extract customer data with all address fields separately for proper handling
+                                customerData = {
+                                    name: jobCard.customer.customer_name || jobCard.customer.name || '',
+                                    contact: jobCard.customer.customer_mobile_num || jobCard.customer.customer_mobile_num_2 || jobCard.customer.customer_contact || jobCard.customer.contact || jobCard.customer.phone || jobCard.customer.mobile || '',
+                                    address: jobCard.customer.address || jobCard.customer.address_line1 || '',
+                                    address_2: jobCard.customer.address_2 || '',
+                                    city: jobCard.customer.city || '',
+                                    district: jobCard.customer.district || ''
+                                };
                             } else {
                                 customerName = jobCard.customer;
                             }
                         }
+                        
+                        // Store customer data globally for auto-fill
+                        window.currentCustomerData = customerData;
                         $('#customerName').text(customerName);
                         
                         // Update confirmation status
@@ -1355,9 +1743,14 @@ $(document).ready(function() {
                     if (category === 'INTERNAL') {
                         autoSelectInternalType();
                         autoPopulateFromLocation();
+                    } else if (category === 'EXTERNAL') {
+                        autoSelectExternalType();
                     } else if (category === 'MAIN') {
                         autoSelectMainType();
                     }
+                    
+                    // Auto-trigger external gate pass type if latest OUT is external
+                    checkAndAutoTriggerExternalType(status);
                 }
             },
             error: function(xhr) {
@@ -1447,6 +1840,53 @@ $(document).ready(function() {
             error_toastify('Cannot generate ' + category + ' gate pass. MAIN IN gate pass must be created first.');
             return;
         }
+        
+        // Frontend validation: Check latest OUT gate pass for EXTERNAL category
+        if (category === 'EXTERNAL') {
+            // Use latest_out_gate_pass from backend if available
+            var latestOutGatePass = status.latest_out_gate_pass || null;
+            var gatePasses = status.gate_passes || [];
+            
+            // Fallback: Find latest OUT gate pass manually if not provided by backend
+            if (!latestOutGatePass) {
+                var latestOutDate = null;
+                gatePasses.forEach(function(gp) {
+                    if (gp.gate_pass_type === 'TEMP_OUT' && gp.status === 'ACTIVE') {
+                        var gpDate = new Date(gp.created_at);
+                        if (!latestOutDate || gpDate > latestOutDate) {
+                            latestOutDate = gpDate;
+                            latestOutGatePass = gp;
+                        }
+                    }
+                });
+            }
+            
+            // If MAIN IN exists without MAIN OUT, and latest OUT is external, must create External IN
+            if (status.has_in && !status.has_out && latestOutGatePass) {
+                if (latestOutGatePass.pass_category === 'EXTERNAL' && type === 'TEMP_OUT') {
+                    error_toastify('Cannot generate External OUT. Latest gate pass OUT is External. Please create External IN gate pass first to bring the vehicle back.');
+                    return;
+                } else if (latestOutGatePass.pass_category === 'INTERNAL' && type === 'TEMP_OUT') {
+                    error_toastify('Cannot generate External OUT. Latest gate pass OUT is Internal. Please create Internal IN or External IN gate pass first to bring the vehicle back.');
+                    return;
+                }
+            }
+            
+            // Validate that if there's an active OUT (internal or external), next must be IN
+            var hasActiveOut = false;
+            var activeOutCategory = null;
+            gatePasses.forEach(function(gp) {
+                if (gp.gate_pass_type === 'TEMP_OUT' && gp.status === 'ACTIVE') {
+                    hasActiveOut = true;
+                    activeOutCategory = gp.pass_category;
+                }
+            });
+            
+            if (hasActiveOut && type === 'TEMP_OUT') {
+                error_toastify('Cannot generate External OUT. Vehicle is currently OUT (' + activeOutCategory + '). Please create an IN gate pass first to bring the vehicle back.');
+                return;
+            }
+        }
 
         // Backend validation: Check MAIN IN/OUT restrictions
         if (category === 'MAIN') {
@@ -1491,22 +1931,28 @@ $(document).ready(function() {
             return;
         }
 
-        // Validate transfer purpose for EXTERNAL category
+        // Validate transfer purpose for EXTERNAL category - only required for External OUT
         if (category === 'EXTERNAL') {
-            var transferPurpose = $('#external_transfer_purpose').val();
-            if (transferPurpose === 'Other') {
-                transferPurpose = $('#external_transfer_purpose_custom').val();
+            var gatePassType = $('#gate_pass_type').val();
+            
+            // Transfer purpose is required only for External OUT (TEMP_OUT)
+            if (gatePassType === 'TEMP_OUT') {
+                var transferPurpose = $('#external_transfer_purpose').val();
+                if (transferPurpose === 'Other') {
+                    transferPurpose = $('#external_transfer_purpose_custom').val();
+                    if (!transferPurpose) {
+                        error_toastify("Please enter a custom transfer purpose");
+                        $('#external_transfer_purpose_custom').focus();
+                        return;
+                    }
+                }
                 if (!transferPurpose) {
-                    error_toastify("Please enter a custom transfer purpose");
-                    $('#external_transfer_purpose_custom').focus();
+                    error_toastify("Please select or enter a transfer purpose (Required for External OUT)");
+                    $('#external_transfer_purpose').focus();
                     return;
                 }
             }
-            if (!transferPurpose) {
-                error_toastify("Please select or enter a transfer purpose");
-                $('#external_transfer_purpose').focus();
-                return;
-            }
+            // For External IN (TEMP_IN), transfer purpose is optional - no validation needed
         }
 
         var formData = {

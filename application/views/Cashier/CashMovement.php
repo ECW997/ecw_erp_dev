@@ -193,7 +193,7 @@
                                             <option value="">-- All --</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                    <div class="col-md-2 col-sm-2 col-6 mb-2">
                                         <label for="filterMovementType" class="small mb-0 mr-1">Type:</label>
                                         <select id="filterMovementType" class="form-control form-control-sm" style="height: 32px;">
                                             <option value="">-- All --</option>
@@ -201,7 +201,7 @@
                                             <option value="cash_out">Cash Out</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                    <div class="col-md-2 col-sm-2 col-6 mb-2">
                                         <label for="filterSource" class="small mb-0 mr-1">Source:</label>
                                         <select id="filterSource" class="form-control form-control-sm select2" style="width: 100% !important;">
                                             <option value="">-- All --</option>
@@ -224,6 +224,10 @@
                                     <div class="col-md-2 col-sm-4 col-6 mb-2">
                                         <label for="filterDateTo" class="small mb-0 mr-1">Date To:</label>
                                         <input type="date" id="filterDateTo" class="form-control form-control-sm" style="height: 32px;">
+                                    </div>
+                                    <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                        <label for="exportEmployeeAdvancesMonth" class="small mb-0 mr-1">Advances Month:</label>
+                                        <input type="month" id="exportEmployeeAdvancesMonth" class="form-control form-control-sm" style="height: 32px;">
                                     </div>
                                     <div class="col-md-1 col-sm-12 mb-2 text-right">
                                         <button type="button" id="toggleSeries2Btn" class="btn btn-sm btn-secondary mb-1" style="display: none;" title="Hide Series 2" data-toggle="tooltip" data-placement="top">
@@ -4044,12 +4048,17 @@ $(document).ready(function() {
         // Get current branch ID from PHP session
         let branchId = '<?= $this->session->userdata("branch_id") ?: 1 ?>';
 
-        // Get current date range for export (use current month if no filters set)
+        // Get export month from manual selection; fallback to current month if not set
         let month = '';
-        let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        let currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-        month = currentYear + '-' + currentMonth;
+        let selectedMonth = $('#exportEmployeeAdvancesMonth').val();
+        if (selectedMonth && selectedMonth !== '') {
+            month = selectedMonth;
+        } else {
+            let currentDate = new Date();
+            let currentYear = currentDate.getFullYear();
+            let currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+            month = currentYear + '-' + currentMonth;
+        }
 
         // Show loading state
         let $btn = $(this);

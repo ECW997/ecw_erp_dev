@@ -10,6 +10,7 @@ class GatePass extends CI_Controller {
         $this->load->helper('api_helper');
         $this->load->model('GatePass/GatePassinfo');
         $this->load->model('Commeninfo');
+        $this->load->model('CashierShiftinfo');
 
         $auth_info = auth_check();
         $this->api_token = $auth_info['api_token'];
@@ -20,9 +21,8 @@ class GatePass extends CI_Controller {
      * Gate Pass List Page
      */
     public function index() {
-        echo '<pre>';
-        print_r($this->auth_user);
-        echo '</pre>';
+        $check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
+		$data['check_cashier_shift'] = $check_cashier_shift_response;
         // Load locations for filters
         $locations_response = $this->GatePassinfo->getLocations($this->api_token, []);
         $data['locations'] = isset($locations_response['data']) ? $locations_response['data'] : [];
@@ -37,6 +37,8 @@ class GatePass extends CI_Controller {
      * Vehicle Tracking Dashboard
      */
     public function vehicleTracking() {
+        $check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
+		$data['check_cashier_shift'] = $check_cashier_shift_response;
         // Load locations
         $locations_response = $this->GatePassinfo->getLocations($this->api_token, []);
         $data['locations'] = isset($locations_response['data']) ? $locations_response['data'] : [];
@@ -52,6 +54,8 @@ class GatePass extends CI_Controller {
      */
     public function generateForm() {
         $job_card_id = $this->input->get('job_card_id');
+        $check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
+		$data['check_cashier_shift'] = $check_cashier_shift_response;
         
         // Load locations
         $locations_response = $this->GatePassinfo->getLocations($this->api_token, []);
@@ -202,6 +206,8 @@ class GatePass extends CI_Controller {
      */
     public function view($id) {
         $gate_pass_response = $this->GatePassinfo->getGatePassById($this->api_token, $id);
+        $check_cashier_shift_response = $this->CashierShiftinfo->checkCashierShift($this->api_token, []);
+		$data['check_cashier_shift'] = $check_cashier_shift_response;
         
         // Convert array to object if needed
         if (isset($gate_pass_response['data'])) {
@@ -222,6 +228,7 @@ class GatePass extends CI_Controller {
 
     // AJAX Methods
     public function getGatePasses() {
+        // Get all request parameters (including DataTables server-side parameters)
         $form_data = [
             'date_from' => $this->input->get('date_from'),
             'date_to' => $this->input->get('date_to'),
@@ -229,10 +236,34 @@ class GatePass extends CI_Controller {
             'pass_category' => $this->input->get('pass_category'),
             'status' => $this->input->get('status'),
             'job_card_id' => $this->input->get('job_card_id'),
+            'vehicle_tracking' => $this->input->get('vehicle_tracking'),
+            'page' => $this->input->get('page'),
+            'per_page' => $this->input->get('per_page'),
+            // DataTables server-side parameters
+            'draw' => $this->input->get('draw'),
+            'start' => $this->input->get('start'),
+            'length' => $this->input->get('length'),
+            'order' => $this->input->get('order'),
+            'search' => $this->input->get('search'),
         ];
         
         $response = $this->GatePassinfo->getGatePasses($this->api_token, $form_data);
-        echo json_encode($response);
+        
+        // For DataTables server-side, response should be: { draw, recordsTotal, recordsFiltered, data }
+        // If response has status wrapper, extract the data part
+        if (isset($response['status']) && isset($response['data']) && isset($response['data']['draw'])) {
+            // Response is wrapped: { status: true, data: { draw, recordsTotal, ... } }
+            // Extract the DataTables format from response.data
+            $dataTablesResponse = $response['data'];
+        } else {
+            // Response is already in DataTables format or direct array
+            $dataTablesResponse = $response;
+        }
+        
+        // Output JSON response
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($dataTablesResponse));
     }
 
     public function generateIn() {
@@ -516,7 +547,7 @@ class GatePass extends CI_Controller {
                 $pdf_view = 'GatePass/pdf/external_out';
             }
         }
-        
+
         // Load PDF library
         $this->load->library('Pdf');
         // Receipt printer dimensions (80mm width, variable height)
@@ -619,5 +650,51 @@ class GatePass extends CI_Controller {
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($response));
+    }
+
+    /**
+     * Approve a draft gate pass
+     */
+    public function approveGatePass($id)
+    {
+        $response = $this->GatePassinfo->approveGatePass($this->api_token, $id);
+        $this->sendJsonResponse($response);
+    }
+
+    /**
+     * Mark latest active doc_access as ignore (allows reprint)
+     */
+    public function ignoreDocAccess($id)
+    {
+        $response = $this->GatePassinfo->ignoreDocAccess($this->api_token, $id);
+        $this->sendJsonResponse($response);
+    }
+
+    /**
+     * Create reprint approve request (with reason)
+     */
+    public function createReprintApproveRequest($id)
+    {
+        $reason = $this->input->post('reason') ?: $this->input->get_post('reason');
+        $response = $this->GatePassinfo->createReprintApproveRequest($this->api_token, $id, $reason ?: '');
+        $this->sendJsonResponse($response);
+    }
+
+    /**
+     * List pending reprint requests (for finance manager)
+     */
+    public function listReprintRequests()
+    {
+        $response = $this->GatePassinfo->listReprintRequests($this->api_token);
+        $this->sendJsonResponse($response);
+    }
+
+    /**
+     * Approve a reprint request (finance manager)
+     */
+    public function approveReprintRequest($requestId)
+    {
+        $response = $this->GatePassinfo->approveReprintRequest($this->api_token, $requestId);
+        $this->sendJsonResponse($response);
     }
 }

@@ -10,6 +10,14 @@
 	margin: 3mm 15mm 2mm 1mm;
 }
 
+@page:first {
+	margin: 3mm 15mm 2mm 1mm;
+}
+
+@page:not(:first) {
+	margin: 5mm 15mm 2mm 1mm;
+}
+
 * {
 	padding: 0;
 	box-sizing: border-box;
@@ -33,14 +41,15 @@ body {
 	text-align: center;
 }
 
+
 .gate-pass-header {
 	text-align: center;
-	margin: 0 0 8px 0;
+	margin: 0 0 6px 0;
 	width: 100%;
 }
 
 .gate-pass-title {
-	font-size: 34px;
+	font-size: 32px;
 	font-weight: 700;
 	letter-spacing: 2px;
 	margin: 0;
@@ -51,7 +60,7 @@ body {
 }
 
 .gate-pass-type {
-	font-size: 24px;
+	font-size: 22px;
 	font-weight: 700;
 	letter-spacing: 2px;
 	margin: 2px 0;
@@ -62,15 +71,15 @@ body {
 }
 
 .vehicle-number-label {
-	font-size: 20px;
+	font-size: 18px;
 	font-weight: 400;
-	margin: 8px 0 2px 0;
+	margin: 6px 0 2px 0;
 	padding: 0;
 	text-align: center;
 }
 
 .vehicle-number {
-	font-size: 34px;
+	font-size: 32px;
 	font-weight: 700;
 	letter-spacing: 4px;
 	margin: 0;
@@ -81,7 +90,7 @@ body {
 }
 
 .gate-pass-table {
-	margin: 12px auto;
+	margin: 8px auto;
 	width: 100%;
 	border: 1px solid #d0d0d0;
 	border-collapse: collapse;
@@ -93,26 +102,40 @@ body {
 }
 
 .gate-pass-table td {
-	padding: 7px 3px;
+	padding: 5px 3px;
 	border: 1.5px solid rgb(0, 0, 0);
-	font-size: 12px;
-	line-height: 1.4;
+	font-size: 11px;
+	line-height: 1.3;
 	vertical-align: middle;
 	text-align: center;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .gate-pass-table td.label {
 	font-weight: 400;
 	width: 27%;
 	text-align: center;
+	font-size: 10px;
 }
 
 .gate-pass-table td.value {
 	font-weight: 600;
 	width: 23%;
 	text-align: center;
+	font-size: 11px;
 }
 
+/* Address field - allow wrapping */
+.gate-pass-table td.value.address-value {
+	font-size: 10px;
+	line-height: 1.2;
+	text-align: left;
+	padding: 4px 3px;
+	word-break: break-word;
+}
+
+/* Signature Section */
 .signature-area {
 	margin: 55px 0 10px 0;
 	width: 100%;
@@ -125,30 +148,25 @@ body {
 }
 
 .signature-table td {
-	padding: 15px 0 0 0;
+	padding: 15px 2px 0 2px;
 	vertical-align: top;
-}
-
-.signature-table td:first-child {
-	width: 45%;
+	width: 25%;
 	text-align: center;
-}
-
-.signature-table td:nth-child(2) {
-	width: 10%;
-	padding: 0;
-}
-
-.signature-table td:last-child {
-	width: 45%;
-	text-align: right;
 }
 
 .signature-line {
 	border-top: 2px dashed #000;
 	padding-top: 4px;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: 400;
+	white-space: nowrap;
+	line-height: 1.2;
+	margin: 0 8px;
+}
+
+.signature-line.left {
+	text-align: left;
+	padding-right: 10px;
 }
 
 .signature-line.center {
@@ -156,29 +174,36 @@ body {
 	padding: 0 10px;
 }
 
+.signature-line.right {
+	text-align: right;
+	padding-left: 10px;
+}
+
 .print-info {
-	margin-top: 12px;
+	margin-top: 8px;
 	font-weight: 700;
-	font-size: 10px;
+	font-size: 9px;
 	text-align: center;
-	line-height: 1.4;
+	line-height: 1.3;
 	width: 100%;
 }
 
 .duplicate-label {
 	color:rgb(0, 0, 0);
 	font-weight: 700;
-	font-size: 14px;
+	font-size: 13px;
 	text-transform: uppercase;
-	margin-bottom: 4px;
+	margin-bottom: 3px;
 }
 
 .gate-pass-number {
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 600;
-	margin: 4px 0;
+	margin: 3px 0;
 	text-align: center;
 }
+
+
 </style>
 <?php
 $CI =& get_instance();
@@ -196,6 +221,7 @@ $printed_time = $printed_datetime->format('H:i');
 // Extract data from gate pass
 $gp = $gate_pass;
 $jobCard = $gp['job_card'] ?? [];
+$sales_person = $jobCard['sales_person_name'] ?? '';
 $location = $gp['location'] ?? [];
 $vehicle_number = $jobCard['vehicle_number'] ?? 'N/A';
 $job_card_number = $jobCard['real_jobcard_no'] ?? $jobCard['job_card_number2'] ?? 'N/A';
@@ -216,13 +242,13 @@ $remarks = $gp['remarks'] ?? '';
 <body>
 
 <div class="wrapper">
-<div class="content">
+<div class="content first-page">
 	<?php if (!empty($is_duplicate)): ?>
 		<div class="duplicate-label">DUPLICATE</div>
 	<?php endif; ?>
 	<div class="gate-pass-header">
 		<div class="gate-pass-title">GATE PASS</div>
-		<div class="gate-pass-type">EXTERNAL - OUT</div>
+		<div class="gate-pass-type">EXTERNAL - TEMP OUT</div>
 		<div class="gate-pass-number">No: <?= $gate_pass_number ?></div>
 		<div class="vehicle-number-label">Vehicle Number</div>
 		<div class="vehicle-number"><?= strtoupper($vehicle_number) ?></div>
@@ -233,44 +259,20 @@ $remarks = $gp['remarks'] ?? '';
 			<td class="label">Job Card No:</td>
 			<td class="value"><?= $job_card_number ?></td>
 		</tr>
+		<?php if (!empty($sales_person)): ?>
+		<tr>
+			<td class="label">Sales Person:</td>
+			<td class="value"><?= $sales_person ?></td>
+		</tr>
+		<?php endif; ?>
 		<tr>
 			<td class="label">External Party:</td>
 			<td class="value"><?= $external_party_name ?></td>
 		</tr>
-		<?php if (!empty($external_party_type)): ?>
-		<tr>
-			<td class="label">Party Type:</td>
-			<td class="value"><?= $external_party_type ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($external_party_contact)): ?>
-		<tr>
-			<td class="label">Contact:</td>
-			<td class="value"><?= $external_party_contact ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($external_party_address)): ?>
-		<tr>
-			<td class="label">Address:</td>
-			<td class="value"><?= $external_party_address ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($location['location_name'])): ?>
-		<tr>
-			<td class="label">Gate Location:</td>
-			<td class="value"><?= $location['location_name'] ?></td>
-		</tr>
-		<?php endif; ?>
 		<?php if (!empty($external_transfer_purpose) && $external_transfer_purpose !== 'N/A'): ?>
 		<tr>
 			<td class="label">Transfer Purpose:</td>
 			<td class="value"><?= $external_transfer_purpose ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($expected_return_date)): ?>
-		<tr>
-			<td class="label">Expected Return:</td>
-			<td class="value"><?= $expected_return_date ?></td>
 		</tr>
 		<?php endif; ?>
 		<?php if (!empty($company_driver_name)): ?>
@@ -296,15 +298,24 @@ $remarks = $gp['remarks'] ?? '';
 	<div class="signature-area">
 		<table class="signature-table">
 			<tr>
-				<td class="center">
+				<td>
 					<div class="signature-line center">
-						Sign: Authorized Person
+						Sales Person
 					</div>
 				</td>
-                <td></td>
+				<td>
+					<div class="signature-line center">
+						Cashier
+					</div>
+				</td>
 				<td class="center">
 					<div class="signature-line center">
-						Sign: Security Officer
+						Authorized Person
+					</div>
+				</td>
+				<td class="center">
+					<div class="signature-line center">
+						Security Officer
 					</div>
 				</td>
 			</tr>

@@ -202,6 +202,17 @@
                                 <p class="text-muted mt-2">Loading vehicles...</p>
                             </div>
                         </div>
+                        <!-- Pagination -->
+                        <div id="paginationContainer" class="mt-4 d-none">
+                            <nav aria-label="Vehicle pagination">
+                                <ul class="pagination justify-content-center" id="pagination">
+                                    <!-- Pagination will be generated here -->
+                                </ul>
+                            </nav>
+                            <div class="text-center mt-2">
+                                <small class="text-muted" id="paginationInfo"></small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -213,6 +224,9 @@
 <?php include APPPATH . "views/include/footerscripts.php"; ?>
 <script>
 var base_url = '<?= base_url() ?>';
+var currentPage = 1;
+var perPage = 10; // Job cards per page
+var allVehicles = {}; // Store all vehicles for pagination
 
 $(document).ready(function() {
     // Load locations
@@ -223,6 +237,7 @@ $(document).ready(function() {
     
     // Filter button
     $('#filterBtn').on('click', function() {
+        currentPage = 1; // Reset to first page when filtering
         loadVehicles();
     });
 
@@ -265,7 +280,10 @@ $(document).ready(function() {
             dataType: "json",
             data: {
                 status: 'ACTIVE',
-                date_from: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0]
+                vehicle_tracking: true,
+                date_from: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
+                page: currentPage,
+                per_page: perPage
             },
             success: function(response) {
                 // Handle string response (double-encoded JSON)
@@ -287,18 +305,25 @@ $(document).ready(function() {
                 }
                 
                 if (response && (response.status === true || response.status === 'true' || response.status === 1)) {
-                    // Handle both paginated and non-paginated responses
+                    // Handle server-side paginated response for vehicle tracking
                     var gatePasses = [];
+                    var paginationData = null;
                     
                     if (response.data) {
+                        // Check if it's a server-side paginated response (vehicle tracking)
+                        if (response.pagination && Array.isArray(response.data)) {
+                            // Server-side paginated response: { data: [...], pagination: {...} }
+                            gatePasses = response.data;
+                            paginationData = response.pagination;
+                        }
                         // Check if it's a paginated response (Laravel paginator)
-                        if (response.data.data && Array.isArray(response.data.data)) {
+                        else if (response.data.data && Array.isArray(response.data.data)) {
                             // Paginated response: { data: { data: [...], current_page: 1, ... } }
                             gatePasses = response.data.data;
                         } 
                         // Check if it's a direct array (non-paginated)
                         else if (Array.isArray(response.data)) {
-                            // Direct array response (when status=ACTIVE, backend returns all records)
+                            // Direct array response (backward compatibility)
                             gatePasses = response.data;
                         } 
                         // Check for alternative structure
@@ -321,13 +346,23 @@ $(document).ready(function() {
                         var vehicles = groupByJobCard(gatePasses);
                         
                         if (Object.keys(vehicles).length > 0) {
-                            displayVehicles(vehicles, status, location, search);
+                            // Use server-side pagination if available, otherwise use client-side
+                            if (paginationData) {
+                                // Server-side pagination
+                                displayVehicles(vehicles, status, location, search, paginationData);
+                            } else {
+                                // Client-side pagination (backward compatibility)
+                                allVehicles = vehicles;
+                                displayVehicles(vehicles, status, location, search);
+                            }
                             updateSummary(vehicles);
                         } else {
                             $('#vehicleList').html('<div class="col-12 text-center py-5"><p class="text-muted">No vehicles found. Gate passes exist but job card relationships may be missing.</p></div>');
+                            $('#paginationContainer').addClass('d-none');
                         }
                     } else {
                         $('#vehicleList').html('<div class="col-12 text-center py-5"><p class="text-muted">No gate passes found</p></div>');
+                        $('#paginationContainer').addClass('d-none');
                     }
                 } else {
                     var errorMsg = 'Unknown error';
@@ -555,11 +590,14 @@ $(document).ready(function() {
         return vehicles;
     }
 
-    function displayVehicles(vehicles, statusFilter, locationFilter, searchFilter) {
+    function displayVehicles(vehicles, statusFilter, locationFilter, searchFilter, serverPaginationData) {
         var html = '';
         var modalsHtml = '';
+        var filteredVehicles = [];
         var count = 0;
+        var useServerPagination = serverPaginationData !== undefined && serverPaginationData !== null;
 
+        // First, filter vehicles based on filters
         Object.keys(vehicles).forEach(function(jobCardId) {
             var vehicle = vehicles[jobCardId];
             var jobCard = vehicle.jobCard;
@@ -573,6 +611,37 @@ $(document).ready(function() {
                 if (vehicleNo.indexOf(searchLower) === -1 && jobCardNo.indexOf(searchLower) === -1) return;
             }
 
+            filteredVehicles.push({
+                jobCardId: jobCardId,
+                vehicle: vehicle,
+                jobCard: jobCard
+            });
+        });
+
+        // Use server-side pagination if available, otherwise use client-side
+        var totalVehicles, totalPages, startIndex, endIndex, paginatedVehicles;
+        
+        if (useServerPagination) {
+            // Server-side pagination - vehicles are already paginated
+            totalVehicles = serverPaginationData.total;
+            totalPages = serverPaginationData.last_page;
+            startIndex = serverPaginationData.from - 1;
+            endIndex = serverPaginationData.to;
+            paginatedVehicles = filteredVehicles; // Already paginated by server
+        } else {
+            // Client-side pagination
+            totalVehicles = filteredVehicles.length;
+            totalPages = Math.ceil(totalVehicles / perPage);
+            startIndex = (currentPage - 1) * perPage;
+            endIndex = Math.min(startIndex + perPage, totalVehicles);
+            paginatedVehicles = filteredVehicles.slice(startIndex, endIndex);
+        }
+
+        // Display paginated vehicles
+        paginatedVehicles.forEach(function(item) {
+            var jobCardId = item.jobCardId;
+            var vehicle = item.vehicle;
+            var jobCard = item.jobCard;
             count++;
 
             var statusClass = 'status-in';
@@ -617,10 +686,12 @@ $(document).ready(function() {
             html += '</div>';
             html += '<div class="mt-2">';
             
-            // Show first 3 gate passes in card preview
-            var recentPasses = vehicle.gatePasses.slice().sort(function(a, b) {
-                return new Date(b.created_at) - new Date(a.created_at);
-            }).slice(0, 3);
+            // Show last 3 gate passes in card preview (chronological order - oldest first)
+            // Sort chronologically first, then take the last 3
+            var sortedPasses = vehicle.gatePasses.slice().sort(function(a, b) {
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            var recentPasses = sortedPasses.slice(-3); // Get last 3 gate passes
             
             if (recentPasses.length === 0) {
                 html += '<p class="text-muted small mb-0">No gate passes found</p>';
@@ -772,6 +843,88 @@ $(document).ready(function() {
             // Append modals to body
             $('body').append(modalsHtml);
         }
+
+        // Display pagination
+        if (totalPages > 1) {
+            if (useServerPagination) {
+                displayPagination(totalPages, totalVehicles, serverPaginationData.from, serverPaginationData.to, true);
+            } else {
+                displayPagination(totalPages, totalVehicles, startIndex + 1, endIndex, false);
+            }
+        } else {
+            $('#paginationContainer').addClass('d-none');
+        }
+    }
+
+    function displayPagination(totalPages, totalVehicles, from, to, useServerPagination) {
+        useServerPagination = useServerPagination || false;
+        $('#paginationContainer').removeClass('d-none');
+        
+        var html = '';
+        
+        // Previous button
+        html += '<li class="page-item' + (currentPage === 1 ? ' disabled' : '') + '">';
+        html += '<a class="page-link" href="#" data-page="' + (currentPage - 1) + '">Previous</a>';
+        html += '</li>';
+        
+        // Page numbers
+        var startPage = Math.max(1, currentPage - 2);
+        var endPage = Math.min(totalPages, currentPage + 2);
+        
+        if (startPage > 1) {
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>';
+            if (startPage > 2) {
+                html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+            }
+        }
+        
+        for (var i = startPage; i <= endPage; i++) {
+            html += '<li class="page-item' + (i === currentPage ? ' active' : '') + '">';
+            html += '<a class="page-link" href="#" data-page="' + i + '">' + i + '</a>';
+            html += '</li>';
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+            }
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="' + totalPages + '">' + totalPages + '</a></li>';
+        }
+        
+        // Next button
+        html += '<li class="page-item' + (currentPage === totalPages ? ' disabled' : '') + '">';
+        html += '<a class="page-link" href="#" data-page="' + (currentPage + 1) + '">Next</a>';
+        html += '</li>';
+        
+        $('#pagination').html(html);
+        
+        // Pagination info
+        var info = 'Showing ' + from + ' to ' + to + ' of ' + totalVehicles + ' job cards';
+        $('#paginationInfo').text(info);
+        
+        // Remove existing handlers to prevent duplicates
+        $('#pagination').off('click', '.page-link');
+        
+        // Attach click handlers
+        $('#pagination').on('click', '.page-link', function(e) {
+            e.preventDefault();
+            var page = parseInt($(this).data('page'));
+            if (page && !isNaN(page) && page !== currentPage && page >= 1 && page <= totalPages && !$(this).parent().hasClass('disabled')) {
+                currentPage = page;
+                // Scroll to top of vehicle list
+                $('html, body').animate({
+                    scrollTop: $('#vehicleList').offset().top - 100
+                }, 300);
+                
+                if (useServerPagination) {
+                    // Reload from server with new page
+                    loadVehicles();
+                } else {
+                    // Client-side pagination - re-display vehicles with current filters
+                    displayVehicles(allVehicles, $('#filterStatus').val(), $('#filterLocation').val(), $('#searchVehicle').val());
+                }
+            }
+        });
     }
 
     function updateSummary(vehicles) {

@@ -1,0 +1,40 @@
+-- Admin Portal Sales Order Cancellation Logs Table
+-- This table stores all sales order cancellation emergency actions performed by admins
+-- Model: App\Models\AdminPortal\SalesOrderCancellationLog
+
+CREATE TABLE IF NOT EXISTS `admin_portal_sales_order_cancellation_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `action_type` varchar(50) NOT NULL DEFAULT 'SALES_ORDER_CANCEL',
+  `sales_order_relation_id` int(11) DEFAULT NULL,
+  `sales_order_header_id` int(11) DEFAULT NULL,
+  `exclude_sales_order_header_id` int(11) DEFAULT NULL,
+  `invoice_id` int(11) DEFAULT NULL ,
+  `exclude_invoice_id` int(11) DEFAULT NULL ,
+  `payment_id` int(11) DEFAULT NULL,
+  `temp_payment_id` int(11) DEFAULT NULL,
+  `job_card_id` int(11) DEFAULT NULL,
+  `reason` text NOT NULL,
+  `action_details` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'PENDING',
+  `error_message` text DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `branch_id` int(11) NOT NULL,
+  `status_upd` int(11) NOT NULL DEFAULT 0,
+  `status_upd_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_action_type` (`action_type`),
+  KEY `idx_sales_order_relation_id` (`sales_order_relation_id`),
+  KEY `idx_sales_order_header_id` (`sales_order_header_id`),
+  KEY `idx_exclude_sales_order_header_id` (`exclude_sales_order_header_id`),
+  KEY `idx_invoice_id` (`invoice_id`),
+  KEY `idx_exclude_invoice_id` (`exclude_invoice_id`),
+  KEY `idx_payment_id` (`payment_id`),
+  KEY `idx_temp_payment_id` (`temp_payment_id`),
+  KEY `idx_job_card_id` (`job_card_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_branch_id` (`branch_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Admin Portal Sales Order Cancellation Logs';

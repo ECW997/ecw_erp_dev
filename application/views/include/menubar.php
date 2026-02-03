@@ -253,13 +253,23 @@ else if($functionmenu=='GatePass' || $functionmenu=='GatePass/vehicleTracking' |
     $editcheck=checkprivilege($menuprivilegearray, 42, 2);
     $statuscheck=checkprivilege($menuprivilegearray, 42, 3);
     $deletecheck=checkprivilege($menuprivilegearray, 42, 4);
-    $approve1check=checkprivilege($menuprivilegearray, 42, 5);
-    $approve2check=checkprivilege($menuprivilegearray, 42, 6);
-    $approve3check=checkprivilege($menuprivilegearray, 42, 7);
+    $printcheck=checkprivilege($menuprivilegearray, 42, 5);
+    $approvecheck=checkprivilege($menuprivilegearray, 42, 6);
+    $re_print_approvecheck=checkprivilege($menuprivilegearray, 42, 7);
     $approve4check=checkprivilege($menuprivilegearray, 42, 8);
     $cancelcheck=checkprivilege($menuprivilegearray, 42, 9);
-    // Print check - using approve1 for now, can be customized later
-    $printcheck=checkprivilege($menuprivilegearray, 42, 5);
+   
+}
+else if($functionmenu=='AdminPortal' || strpos($functionmenu, 'AdminPortal/') === 0){
+    $addcheck=checkprivilege($menuprivilegearray, 43, 1);
+    $editcheck=checkprivilege($menuprivilegearray, 43, 2);
+    $statuscheck=checkprivilege($menuprivilegearray, 43, 3);
+    $deletecheck=checkprivilege($menuprivilegearray, 43, 4);
+    $approve1check=checkprivilege($menuprivilegearray, 43, 5);
+    $approve2check=checkprivilege($menuprivilegearray, 43, 6);
+    $approve3check=checkprivilege($menuprivilegearray, 43, 7);
+    $approve4check=checkprivilege($menuprivilegearray, 43, 8);
+    $cancelcheck=checkprivilege($menuprivilegearray, 43, 9);
 }
 
 else if($functionmenu=='Finance' || $functionmenu=='Finance/accountMaster' || $functionmenu=='Finance/approval'){
@@ -750,6 +760,16 @@ function checkprivilege($arraymenu, $menuID, $type){
             </div>
             <?php } ?>
 
+            <?php if(menucheck($menuprivilegearray, 43)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-light" href="<?php echo base_url().'AdminPortal'; ?>">
+                <div class="nav-link-icon">
+                    <lord-icon src="https://cdn.lordicon.com/wxnxiano.json" trigger="loop" delay="2000"
+                        colors="primary:#ffffff,secondary:#ff6b6b" style="width:25px;height:25px">
+                    </lord-icon>
+                    <!-- <i class="fas fa-exclamation-triangle"></i> -->
+                </div>Admin Portal
+            </a>
+            <?php }?>
 
             <?php if(menucheck($menuprivilegearray, 1)==1 || menucheck($menuprivilegearray, 2)==1 || menucheck($menuprivilegearray, 3)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-light" href="javascript:void(0);" data-toggle="collapse"

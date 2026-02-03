@@ -41,13 +41,12 @@
         <?php include APPPATH . "views/include/menubar.php"; ?>
     </div>
     <?php
-    // Check permissions using menuaccess (Menu ID: 42 for Gate Pass)
-    // Note: checkprivilege() function is defined in menubar.php, so we call it after including menubar.php
-    $addcheck = isset($menuaccess) ? checkprivilege($menuaccess, 42, 1) : 0; // Add permission
-    $editcheck = isset($menuaccess) ? checkprivilege($menuaccess, 42, 2) : 0; // Edit permission
-    $statuscheck = isset($menuaccess) ? checkprivilege($menuaccess, 42, 3) : 0; // Status permission
-    $deletecheck = isset($menuaccess) ? checkprivilege($menuaccess, 42, 4) : 0; // Delete permission
-    $printcheck = isset($menuaccess) ? checkprivilege($menuaccess, 42, 5) : 0; // Print permission (approve1)
+    // Gate Pass permissions (Menu ID: 42) are set in menubar.php when on GatePass; ensure they exist
+    if (!isset($addcheck)) $addcheck = 0;
+    if (!isset($editcheck)) $editcheck = 0;
+    if (!isset($statuscheck)) $statuscheck = 0;
+    if (!isset($deletecheck)) $deletecheck = 0;
+    if (!isset($printcheck)) $printcheck = 0;
     
     // Get current user type ID from session
     $current_user_type_id = $this->session->userdata('user_type_id');
@@ -59,13 +58,14 @@
     // Check if user can print MAIN IN/OUT gate passes
     $can_print_main = false;
     if ($printcheck == 1) {
-        if (isset($gate_pass) && $gate_pass && isset($gate_pass->pass_category) && $gate_pass->pass_category === 'MAIN') {
-            // For MAIN IN/OUT, check both printcheck AND user type
-            $can_print_main = in_array($current_user_type_id, $allowed_user_types_for_main);
-        } else {
-            // For INTERNAL/EXTERNAL, only check printcheck
-            $can_print_main = true;
-        }
+        // if (isset($gate_pass) && $gate_pass && isset($gate_pass->pass_category) && $gate_pass->pass_category === 'MAIN') {
+        //     // For MAIN IN/OUT, check both printcheck AND user type
+        //     $can_print_main = in_array($current_user_type_id, $allowed_user_types_for_main);
+        // } else {
+        //     // For INTERNAL/EXTERNAL, only check printcheck
+        //     $can_print_main = true;
+        // }
+        $can_print_main = in_array($current_user_type_id, $allowed_user_types_for_main);
     }
     ?>
     <div id="layoutSidenav_content">
@@ -132,6 +132,66 @@
                                     ?>
                                     <span class="badge <?= $badgeClass ?>"><?= $status ?></span>
                                 </div>
+                                <?php
+                                $reprint_req = isset($gate_pass->reprint_request) && $gate_pass->reprint_request ? $gate_pass->reprint_request : null;
+                                if ($reprint_req && in_array($gate_pass->status ?? '', ['APPROVED', 'ACTIVE'])) :
+                                    $req_status = is_object($reprint_req) ? ($reprint_req->status ?? '') : ($reprint_req['status'] ?? '');
+                                    $req_reason = is_object($reprint_req) ? ($reprint_req->reason ?? '') : ($reprint_req['reason'] ?? '');
+                                    $req_requested_at = is_object($reprint_req) ? ($reprint_req->requested_at ?? '') : ($reprint_req['requested_at'] ?? '');
+                                    $req_approved_at = is_object($reprint_req) ? ($reprint_req->approved_at ?? '') : ($reprint_req['approved_at'] ?? '');
+                                    $req_consumed_at = is_object($reprint_req) ? ($reprint_req->consumed_at ?? '') : ($reprint_req['consumed_at'] ?? '');
+                                    $doc_access_active = isset($gate_pass->latest_doc_access_active) && ($gate_pass->latest_doc_access_active === true || $gate_pass->latest_doc_access_active === 1);
+                                    $doc_access_has_any = isset($gate_pass->doc_access_has_any_record) && ($gate_pass->doc_access_has_any_record === true || $gate_pass->doc_access_has_any_record === 1);
+                                    $doc_access_ignore = !$doc_access_active;
+                                    $stage_class = 'secondary';
+                                    $stage_text = '';
+                                    if ($req_status === 'PENDING') {
+                                        $stage_class = 'warning';
+                                        $stage_text = 'Pending – Awaiting finance manager approval';
+                                    } elseif ($req_status === 'APPROVED') {
+                                        if ($req_consumed_at) {
+                                            $stage_class = 'secondary';
+                                            $stage_text = 'Approved – Already used (reprint done)';
+                                        } elseif ($doc_access_ignore && $doc_access_has_any) {
+                                            $stage_class = 'success';
+                                            $stage_text = 'Approved – You can reprint';
+                                        } elseif (!$doc_access_has_any) {
+                                            $stage_class = 'info';
+                                            $stage_text = 'Approved – Print once first, then reprint';
+                                        } else {
+                                            $stage_class = 'info';
+                                            $stage_text = 'Approved – Awaiting unlock';
+                                        }
+                                    } elseif ($req_status === 'REJECTED') {
+                                        $stage_class = 'danger';
+                                        $stage_text = 'Rejected';
+                                    } else {
+                                        $stage_text = $req_status;
+                                    }
+                                ?>
+                                <div class="info-row">
+                                    <span class="info-label">Reprint request stage:</span>
+                                    <span class="badge badge-<?= $stage_class ?> badge-gate-pass"><?= htmlspecialchars($stage_text) ?></span>
+                                </div>
+                                <?php if ($req_reason) : ?>
+                                <div class="info-row">
+                                    <span class="info-label">Request reason:</span>
+                                    <?= htmlspecialchars($req_reason) ?>
+                                </div>
+                                <?php endif; ?>
+                                <?php if ($req_requested_at) : ?>
+                                <div class="info-row">
+                                    <span class="info-label">Requested at:</span>
+                                    <?= date('Y-m-d H:i', strtotime($req_requested_at)) ?>
+                                </div>
+                                <?php endif; ?>
+                                <?php if ($req_approved_at && $req_status === 'APPROVED') : ?>
+                                <div class="info-row">
+                                    <span class="info-label">Approved at:</span>
+                                    <?= date('Y-m-d H:i', strtotime($req_approved_at)) ?>
+                                </div>
+                                <?php endif; ?>
+                                <?php endif; ?>
                                 <div class="info-row">
                                     <span class="info-label">Location:</span>
                                     <?= isset($gate_pass->location) ? htmlspecialchars($gate_pass->location->location_name) : '-' ?>

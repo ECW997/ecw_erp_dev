@@ -196,6 +196,7 @@ $printed_time = $printed_datetime->format('H:i');
 // Extract data from gate pass
 $gp = $gate_pass;
 $jobCard = $gp['job_card'] ?? [];
+$sales_person = $jobCard['sales_person_name'] ?? '';
 $location = $gp['location'] ?? [];
 $vehicle_number = $jobCard['vehicle_number'] ?? 'N/A';
 $job_card_number = $jobCard['real_jobcard_no'] ?? $jobCard['job_card_number2'] ?? 'N/A';
@@ -219,7 +220,7 @@ $remarks = $gp['remarks'] ?? '';
 	<?php endif; ?>
 	<div class="gate-pass-header">
 		<div class="gate-pass-title">GATE PASS</div>
-		<div class="gate-pass-type">EXTERNAL - IN</div>
+		<div class="gate-pass-type">EXTERNAL - TEMP IN</div>
 		<div class="gate-pass-number">No: <?= $gate_pass_number ?></div>
 		<div class="vehicle-number-label">Vehicle Number</div>
 		<div class="vehicle-number"><?= strtoupper($vehicle_number) ?></div>
@@ -230,52 +231,16 @@ $remarks = $gp['remarks'] ?? '';
 			<td class="label">Job Card No:</td>
 			<td class="value"><?= $job_card_number ?></td>
 		</tr>
+		<?php if (!empty($sales_person)): ?>
+		<tr>
+			<td class="label">Sales Person:</td>
+			<td class="value"><?= $sales_person ?></td>
+		</tr>
+		<?php endif; ?>
 		<tr>
 			<td class="label">External Party:</td>
 			<td class="value"><?= $external_party_name ?></td>
 		</tr>
-		<?php if (!empty($external_party_type)): ?>
-		<tr>
-			<td class="label">Party Type:</td>
-			<td class="value"><?= $external_party_type ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($external_party_contact)): ?>
-		<tr>
-			<td class="label">Contact:</td>
-			<td class="value"><?= $external_party_contact ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($location['location_name'])): ?>
-		<tr>
-			<td class="label">Gate Location:</td>
-			<td class="value"><?= $location['location_name'] ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($external_transfer_purpose) && $external_transfer_purpose !== 'N/A'): ?>
-		<tr>
-			<td class="label">Transfer Purpose:</td>
-			<td class="value"><?= $external_transfer_purpose ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($expected_return_date)): ?>
-		<tr>
-			<td class="label">Expected Return:</td>
-			<td class="value"><?= $expected_return_date ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($company_driver_name)): ?>
-		<tr>
-			<td class="label">Company Driver:</td>
-			<td class="value"><?= $company_driver_name ?></td>
-		</tr>
-		<?php endif; ?>
-		<?php if (!empty($company_worker_name)): ?>
-		<tr>
-			<td class="label">Company Worker:</td>
-			<td class="value"><?= $company_worker_name ?></td>
-		</tr>
-		<?php endif; ?>
 		<?php if (!empty($remarks)): ?>
 		<tr>
 			<td class="label">Remarks:</td>
@@ -289,13 +254,13 @@ $remarks = $gp['remarks'] ?? '';
 			<tr>
 				<td class="center">
 					<div class="signature-line center">
-						Sign: Authorized Person
+						Authorized Person
 					</div>
 				</td>
                 <td></td>
 				<td class="center">
 					<div class="signature-line center">
-						Sign: Security Officer
+						Security Officer
 					</div>
 				</td>
 			</tr>
